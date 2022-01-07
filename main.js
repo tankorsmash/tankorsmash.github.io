@@ -5543,6 +5543,7 @@ var $elm$core$Platform$Cmd$batch = _Platform_batch;
 var $author$project$ItemShop$AutomaticGPM = function (a) {
 	return {$: 'AutomaticGPM', a: a};
 };
+var $author$project$ItemShop$BrightTheme = {$: 'BrightTheme'};
 var $author$project$ItemShop$ItemsUnlockedTabType = {$: 'ItemsUnlockedTabType'};
 var $author$project$ItemShop$NoHoveredTooltip = {$: 'NoHoveredTooltip'};
 var $author$project$ItemShop$PlayerParty = {$: 'PlayerParty'};
@@ -7195,8 +7196,8 @@ var $author$project$ItemShop$initial_items_for_sale = function (item_db) {
 		_Debug_todo(
 			'ItemShop',
 			{
-				start: {line: 938, column: 17},
-				end: {line: 938, column: 27}
+				start: {line: 945, column: 17},
+				end: {line: 945, column: 27}
 			}),
 		'THERE WAS AN ERROR IN INITIAL ITEM SETUP!!!!',
 		$elm$core$Result$Err(''));
@@ -7291,6 +7292,7 @@ var $author$project$ItemShop$init = function (hash) {
 			ai_updates_paused: false,
 			cached_tooltip_offsets: $elm$core$Dict$empty,
 			characters: characters,
+			colorTheme: $author$project$ItemShop$BrightTheme,
 			globalViewport: $elm$core$Maybe$Nothing,
 			global_seed: $elm$random$Random$initialSeed(4),
 			historical_player_actions: _List_Nil,
@@ -8598,6 +8600,7 @@ var $elm$url$Url$toString = function (url) {
 					_Utils_ap(http, url.host)),
 				url.path)));
 };
+var $author$project$ItemShop$DarkTheme = {$: 'DarkTheme'};
 var $author$project$ItemShop$GotShowDebugElement = function (a) {
 	return {$: 'GotShowDebugElement', a: a};
 };
@@ -9675,8 +9678,8 @@ var $author$project$ItemShop$ai_buy_item_from_shop = F5(
 						return _Debug_todo(
 							'ItemShop',
 							{
-								start: {line: 2760, column: 25},
-								end: {line: 2760, column: 35}
+								start: {line: 2780, column: 25},
+								end: {line: 2780, column: 35}
 							})('');
 					}
 				}()
@@ -9906,8 +9909,8 @@ var $author$project$ItemShop$ai_sell_item_to_shop = F5(
 							_Debug_todo(
 								'ItemShop',
 								{
-									start: {line: 2853, column: 25},
-									end: {line: 2853, column: 35}
+									start: {line: 2873, column: 25},
+									end: {line: 2873, column: 35}
 								}),
 							'',
 							_List_Nil);
@@ -10905,7 +10908,7 @@ var $author$project$ItemShop$update = F2(
 						model,
 						{shouldDisplayShowDebugInventoriesOverlay: shouldDisplayShowDebugInventoriesOverlay, showDebugInventoriesElement: modelElement}),
 					$elm$core$Platform$Cmd$none);
-			default:
+			case 'SacrificeItem':
 				var item = msg.a;
 				return _Utils_Tuple2(
 					A2(
@@ -10933,6 +10936,20 @@ var $author$project$ItemShop$update = F2(
 									model);
 							},
 							$author$project$ItemShop$getPlayer(model))),
+					$elm$core$Platform$Cmd$none);
+			default:
+				var newColorTheme = function () {
+					var _v16 = model.colorTheme;
+					if (_v16.$ === 'BrightTheme') {
+						return $author$project$ItemShop$DarkTheme;
+					} else {
+						return $author$project$ItemShop$BrightTheme;
+					}
+				}();
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{colorTheme: newColorTheme}),
 					$elm$core$Platform$Cmd$none);
 		}
 	});
@@ -16673,6 +16690,336 @@ var $mdgriffith$elm_ui$Element$none = $mdgriffith$elm_ui$Internal$Model$Empty;
 var $elm$virtual_dom$VirtualDom$style = _VirtualDom_style;
 var $elm$html$Html$Attributes$style = $elm$virtual_dom$VirtualDom$style;
 var $author$project$ItemShop$ScrollViewport = {$: 'ScrollViewport'};
+var $mdgriffith$elm_ui$Element$Background$color = function (clr) {
+	return A2(
+		$mdgriffith$elm_ui$Internal$Model$StyleClass,
+		$mdgriffith$elm_ui$Internal$Flag$bgColor,
+		A3(
+			$mdgriffith$elm_ui$Internal$Model$Colored,
+			'bg-' + $mdgriffith$elm_ui$Internal$Model$formatColorClass(clr),
+			'background-color',
+			clr));
+};
+var $mdgriffith$elm_ui$Element$fromRgb = function (clr) {
+	return A4($mdgriffith$elm_ui$Internal$Model$Rgba, clr.red, clr.green, clr.blue, clr.alpha);
+};
+var $avh4$elm_color$Color$toRgba = function (_v0) {
+	var r = _v0.a;
+	var g = _v0.b;
+	var b = _v0.c;
+	var a = _v0.d;
+	return {alpha: a, blue: b, green: g, red: r};
+};
+var $author$project$ItemShop$convertColor = function (color) {
+	return $mdgriffith$elm_ui$Element$fromRgb(
+		$avh4$elm_color$Color$toRgba(color));
+};
+var $avh4$elm_color$Color$RgbaSpace = F4(
+	function (a, b, c, d) {
+		return {$: 'RgbaSpace', a: a, b: b, c: c, d: d};
+	});
+var $avh4$elm_color$Color$darkCharcoal = A4($avh4$elm_color$Color$RgbaSpace, 46 / 255, 52 / 255, 54 / 255, 1.0);
+var $avh4$elm_color$Color$white = A4($avh4$elm_color$Color$RgbaSpace, 255 / 255, 255 / 255, 255 / 255, 1.0);
+var $author$project$ItemShop$defaultSolidColor = function (colorTheme) {
+	if (colorTheme.$ === 'BrightTheme') {
+		return $author$project$ItemShop$convertColor($avh4$elm_color$Color$white);
+	} else {
+		return $author$project$ItemShop$convertColor($avh4$elm_color$Color$darkCharcoal);
+	}
+};
+var $author$project$ItemShop$defaultBackgroundColor = function (colorTheme) {
+	return $mdgriffith$elm_ui$Element$Background$color(
+		$author$project$ItemShop$defaultSolidColor(colorTheme));
+};
+var $mdgriffith$elm_ui$Element$Font$color = function (fontColor) {
+	return A2(
+		$mdgriffith$elm_ui$Internal$Model$StyleClass,
+		$mdgriffith$elm_ui$Internal$Flag$fontColor,
+		A3(
+			$mdgriffith$elm_ui$Internal$Model$Colored,
+			'fc-' + $mdgriffith$elm_ui$Internal$Model$formatColorClass(fontColor),
+			'color',
+			fontColor));
+};
+var $avh4$elm_color$Color$black = A4($avh4$elm_color$Color$RgbaSpace, 0 / 255, 0 / 255, 0 / 255, 1.0);
+var $elm$core$Result$andThen = F2(
+	function (callback, result) {
+		if (result.$ === 'Ok') {
+			var value = result.a;
+			return callback(value);
+		} else {
+			var msg = result.a;
+			return $elm$core$Result$Err(msg);
+		}
+	});
+var $elm$regex$Regex$Match = F4(
+	function (match, index, number, submatches) {
+		return {index: index, match: match, number: number, submatches: submatches};
+	});
+var $elm$regex$Regex$findAtMost = _Regex_findAtMost;
+var $elm$core$Result$fromMaybe = F2(
+	function (err, maybe) {
+		if (maybe.$ === 'Just') {
+			var v = maybe.a;
+			return $elm$core$Result$Ok(v);
+		} else {
+			return $elm$core$Result$Err(err);
+		}
+	});
+var $elm$regex$Regex$fromStringWith = _Regex_fromStringWith;
+var $elm$regex$Regex$fromString = function (string) {
+	return A2(
+		$elm$regex$Regex$fromStringWith,
+		{caseInsensitive: false, multiline: false},
+		string);
+};
+var $elm$core$Result$map = F2(
+	function (func, ra) {
+		if (ra.$ === 'Ok') {
+			var a = ra.a;
+			return $elm$core$Result$Ok(
+				func(a));
+		} else {
+			var e = ra.a;
+			return $elm$core$Result$Err(e);
+		}
+	});
+var $fredcy$elm_parseint$ParseInt$InvalidRadix = function (a) {
+	return {$: 'InvalidRadix', a: a};
+};
+var $fredcy$elm_parseint$ParseInt$InvalidChar = function (a) {
+	return {$: 'InvalidChar', a: a};
+};
+var $fredcy$elm_parseint$ParseInt$OutOfRange = function (a) {
+	return {$: 'OutOfRange', a: a};
+};
+var $fredcy$elm_parseint$ParseInt$charOffset = F2(
+	function (basis, c) {
+		return $elm$core$Char$toCode(c) - $elm$core$Char$toCode(basis);
+	});
+var $fredcy$elm_parseint$ParseInt$isBetween = F3(
+	function (lower, upper, c) {
+		var ci = $elm$core$Char$toCode(c);
+		return (_Utils_cmp(
+			$elm$core$Char$toCode(lower),
+			ci) < 1) && (_Utils_cmp(
+			ci,
+			$elm$core$Char$toCode(upper)) < 1);
+	});
+var $fredcy$elm_parseint$ParseInt$intFromChar = F2(
+	function (radix, c) {
+		var validInt = function (i) {
+			return (_Utils_cmp(i, radix) < 0) ? $elm$core$Result$Ok(i) : $elm$core$Result$Err(
+				$fredcy$elm_parseint$ParseInt$OutOfRange(c));
+		};
+		var toInt = A3(
+			$fredcy$elm_parseint$ParseInt$isBetween,
+			_Utils_chr('0'),
+			_Utils_chr('9'),
+			c) ? $elm$core$Result$Ok(
+			A2(
+				$fredcy$elm_parseint$ParseInt$charOffset,
+				_Utils_chr('0'),
+				c)) : (A3(
+			$fredcy$elm_parseint$ParseInt$isBetween,
+			_Utils_chr('a'),
+			_Utils_chr('z'),
+			c) ? $elm$core$Result$Ok(
+			10 + A2(
+				$fredcy$elm_parseint$ParseInt$charOffset,
+				_Utils_chr('a'),
+				c)) : (A3(
+			$fredcy$elm_parseint$ParseInt$isBetween,
+			_Utils_chr('A'),
+			_Utils_chr('Z'),
+			c) ? $elm$core$Result$Ok(
+			10 + A2(
+				$fredcy$elm_parseint$ParseInt$charOffset,
+				_Utils_chr('A'),
+				c)) : $elm$core$Result$Err(
+			$fredcy$elm_parseint$ParseInt$InvalidChar(c))));
+		return A2($elm$core$Result$andThen, validInt, toInt);
+	});
+var $fredcy$elm_parseint$ParseInt$parseIntR = F2(
+	function (radix, rstring) {
+		var _v0 = $elm$core$String$uncons(rstring);
+		if (_v0.$ === 'Nothing') {
+			return $elm$core$Result$Ok(0);
+		} else {
+			var _v1 = _v0.a;
+			var c = _v1.a;
+			var rest = _v1.b;
+			return A2(
+				$elm$core$Result$andThen,
+				function (ci) {
+					return A2(
+						$elm$core$Result$andThen,
+						function (ri) {
+							return $elm$core$Result$Ok(ci + (ri * radix));
+						},
+						A2($fredcy$elm_parseint$ParseInt$parseIntR, radix, rest));
+				},
+				A2($fredcy$elm_parseint$ParseInt$intFromChar, radix, c));
+		}
+	});
+var $elm$core$String$reverse = _String_reverse;
+var $fredcy$elm_parseint$ParseInt$parseIntRadix = F2(
+	function (radix, string) {
+		return ((2 <= radix) && (radix <= 36)) ? A2(
+			$fredcy$elm_parseint$ParseInt$parseIntR,
+			radix,
+			$elm$core$String$reverse(string)) : $elm$core$Result$Err(
+			$fredcy$elm_parseint$ParseInt$InvalidRadix(radix));
+	});
+var $fredcy$elm_parseint$ParseInt$parseIntHex = $fredcy$elm_parseint$ParseInt$parseIntRadix(16);
+var $avh4$elm_color$Color$rgb = F3(
+	function (r, g, b) {
+		return A4($avh4$elm_color$Color$RgbaSpace, r, g, b, 1.0);
+	});
+var $avh4$elm_color$Color$rgba = F4(
+	function (r, g, b, a) {
+		return A4($avh4$elm_color$Color$RgbaSpace, r, g, b, a);
+	});
+var $elm$core$Basics$pow = _Basics_pow;
+var $noahzgordon$elm_color_extra$Color$Convert$roundToPlaces = F2(
+	function (places, number) {
+		var multiplier = A2($elm$core$Basics$pow, 10, places);
+		return $elm$core$Basics$round(number * multiplier) / multiplier;
+	});
+var $elm$core$String$foldr = _String_foldr;
+var $elm$core$String$toList = function (string) {
+	return A3($elm$core$String$foldr, $elm$core$List$cons, _List_Nil, string);
+};
+var $noahzgordon$elm_color_extra$Color$Convert$hexToColor = function () {
+	var pattern = '' + ('^' + ('#?' + ('(?:' + ('(?:([a-f\\d]{2})([a-f\\d]{2})([a-f\\d]{2}))' + ('|' + ('(?:([a-f\\d])([a-f\\d])([a-f\\d]))' + ('|' + ('(?:([a-f\\d]{2})([a-f\\d]{2})([a-f\\d]{2})([a-f\\d]{2}))' + ('|' + ('(?:([a-f\\d])([a-f\\d])([a-f\\d])([a-f\\d]))' + (')' + '$')))))))))));
+	var extend = function (token) {
+		var _v6 = $elm$core$String$toList(token);
+		if (_v6.b && (!_v6.b.b)) {
+			var token_ = _v6.a;
+			return $elm$core$String$fromList(
+				_List_fromArray(
+					[token_, token_]));
+		} else {
+			return token;
+		}
+	};
+	return A2(
+		$elm$core$Basics$composeR,
+		$elm$core$String$toLower,
+		A2(
+			$elm$core$Basics$composeR,
+			function (str) {
+				return A2(
+					$elm$core$Maybe$map,
+					function (regex) {
+						return A3($elm$regex$Regex$findAtMost, 1, regex, str);
+					},
+					$elm$regex$Regex$fromString(pattern));
+			},
+			A2(
+				$elm$core$Basics$composeR,
+				$elm$core$Maybe$andThen($elm$core$List$head),
+				A2(
+					$elm$core$Basics$composeR,
+					$elm$core$Maybe$map(
+						function ($) {
+							return $.submatches;
+						}),
+					A2(
+						$elm$core$Basics$composeR,
+						$elm$core$Maybe$map(
+							$elm$core$List$filterMap($elm$core$Basics$identity)),
+						A2(
+							$elm$core$Basics$composeR,
+							$elm$core$Result$fromMaybe('Parsing hex regex failed'),
+							$elm$core$Result$andThen(
+								function (colors) {
+									var _v0 = A2(
+										$elm$core$List$map,
+										A2(
+											$elm$core$Basics$composeR,
+											extend,
+											A2(
+												$elm$core$Basics$composeR,
+												$fredcy$elm_parseint$ParseInt$parseIntHex,
+												$elm$core$Result$map($elm$core$Basics$toFloat))),
+										colors);
+									_v0$2:
+									while (true) {
+										if (((((_v0.b && (_v0.a.$ === 'Ok')) && _v0.b.b) && (_v0.b.a.$ === 'Ok')) && _v0.b.b.b) && (_v0.b.b.a.$ === 'Ok')) {
+											if (_v0.b.b.b.b) {
+												if ((_v0.b.b.b.a.$ === 'Ok') && (!_v0.b.b.b.b.b)) {
+													var r = _v0.a.a;
+													var _v1 = _v0.b;
+													var g = _v1.a.a;
+													var _v2 = _v1.b;
+													var b = _v2.a.a;
+													var _v3 = _v2.b;
+													var a = _v3.a.a;
+													return $elm$core$Result$Ok(
+														A4(
+															$avh4$elm_color$Color$rgba,
+															r / 255,
+															g / 255,
+															b / 255,
+															A2($noahzgordon$elm_color_extra$Color$Convert$roundToPlaces, 2, a / 255)));
+												} else {
+													break _v0$2;
+												}
+											} else {
+												var r = _v0.a.a;
+												var _v4 = _v0.b;
+												var g = _v4.a.a;
+												var _v5 = _v4.b;
+												var b = _v5.a.a;
+												return $elm$core$Result$Ok(
+													A3($avh4$elm_color$Color$rgb, r / 255, g / 255, b / 255));
+											}
+										} else {
+											break _v0$2;
+										}
+									}
+									return $elm$core$Result$Err('Parsing ints from hex failed');
+								})))))));
+}();
+var $mdgriffith$elm_ui$Element$rgb = F3(
+	function (r, g, b) {
+		return A4($mdgriffith$elm_ui$Internal$Model$Rgba, r, g, b, 1);
+	});
+var $mdgriffith$elm_ui$Element$rgb255 = F3(
+	function (red, green, blue) {
+		return A4($mdgriffith$elm_ui$Internal$Model$Rgba, red / 255, green / 255, blue / 255, 1);
+	});
+var $author$project$ItemShop$hex_to_color = function (hex_str) {
+	var _v0 = $noahzgordon$elm_color_extra$Color$Convert$hexToColor(hex_str);
+	if (_v0.$ === 'Ok') {
+		var color = _v0.a;
+		var rgba = $avh4$elm_color$Color$toRgba(color);
+		return A3($mdgriffith$elm_ui$Element$rgb, rgba.red, rgba.green, rgba.blue);
+	} else {
+		var err = _v0.a;
+		return A2(
+			_Debug_todo(
+				'ItemShop',
+				{
+					start: {line: 1043, column: 13},
+					end: {line: 1043, column: 23}
+				}),
+			'NOOO',
+			A3($mdgriffith$elm_ui$Element$rgb255, 255, 0, 0));
+	}
+};
+var $author$project$ItemShop$defaultTextColor = function (colorTheme) {
+	if (colorTheme.$ === 'BrightTheme') {
+		return $author$project$ItemShop$convertColor($avh4$elm_color$Color$black);
+	} else {
+		return $author$project$ItemShop$hex_to_color('#ccc');
+	}
+};
+var $author$project$ItemShop$defaultFontColor = function (colorTheme) {
+	return $mdgriffith$elm_ui$Element$Font$color(
+		$author$project$ItemShop$defaultTextColor(colorTheme));
+};
 var $mdgriffith$elm_ui$Internal$Model$Fill = function (a) {
 	return {$: 'Fill', a: a};
 };
@@ -16730,6 +17077,17 @@ var $mdgriffith$elm_ui$Element$Lazy$lazy = F2(
 		return $mdgriffith$elm_ui$Internal$Model$Unstyled(
 			A3($elm$virtual_dom$VirtualDom$lazy3, $mdgriffith$elm_ui$Element$Lazy$apply1, fn, a));
 	});
+var $mdgriffith$elm_ui$Element$Lazy$apply2 = F3(
+	function (fn, a, b) {
+		return $mdgriffith$elm_ui$Element$Lazy$embed(
+			A2(fn, a, b));
+	});
+var $elm$virtual_dom$VirtualDom$lazy4 = _VirtualDom_lazy4;
+var $mdgriffith$elm_ui$Element$Lazy$lazy2 = F3(
+	function (fn, a, b) {
+		return $mdgriffith$elm_ui$Internal$Model$Unstyled(
+			A4($elm$virtual_dom$VirtualDom$lazy4, $mdgriffith$elm_ui$Element$Lazy$apply2, fn, a, b));
+	});
 var $mdgriffith$elm_ui$Internal$Model$NoStaticStyleSheet = {$: 'NoStaticStyleSheet'};
 var $mdgriffith$elm_ui$Internal$Model$RenderModeOption = function (a) {
 	return {$: 'RenderModeOption', a: a};
@@ -16780,16 +17138,6 @@ var $mdgriffith$elm_ui$Internal$Model$Class = F2(
 	});
 var $mdgriffith$elm_ui$Internal$Flag$fontAlignment = $mdgriffith$elm_ui$Internal$Flag$flag(12);
 var $mdgriffith$elm_ui$Element$Font$alignRight = A2($mdgriffith$elm_ui$Internal$Model$Class, $mdgriffith$elm_ui$Internal$Flag$fontAlignment, $mdgriffith$elm_ui$Internal$Style$classes.textRight);
-var $mdgriffith$elm_ui$Element$Background$color = function (clr) {
-	return A2(
-		$mdgriffith$elm_ui$Internal$Model$StyleClass,
-		$mdgriffith$elm_ui$Internal$Flag$bgColor,
-		A3(
-			$mdgriffith$elm_ui$Internal$Model$Colored,
-			'bg-' + $mdgriffith$elm_ui$Internal$Model$formatColorClass(clr),
-			'background-color',
-			clr));
-};
 var $mdgriffith$elm_ui$Internal$Flag$borderColor = $mdgriffith$elm_ui$Internal$Flag$flag(28);
 var $mdgriffith$elm_ui$Element$Border$color = function (clr) {
 	return A2(
@@ -16801,12 +17149,7 @@ var $mdgriffith$elm_ui$Element$Border$color = function (clr) {
 			'border-color',
 			clr));
 };
-var $mdgriffith$elm_ui$Element$rgb = F3(
-	function (r, g, b) {
-		return A4($mdgriffith$elm_ui$Internal$Model$Rgba, r, g, b, 1);
-	});
 var $author$project$ItemShop$color_ultra_light_grey = A3($mdgriffith$elm_ui$Element$rgb, 0.95, 0.95, 0.95);
-var $author$project$ItemShop$color_white = A3($mdgriffith$elm_ui$Element$rgb, 1, 1, 1);
 var $mdgriffith$elm_ui$Internal$Model$Height = function (a) {
 	return {$: 'Height', a: a};
 };
@@ -16834,22 +17177,13 @@ var $mdgriffith$elm_ui$Element$el = F2(
 				_List_fromArray(
 					[child])));
 	});
+var $avh4$elm_color$Color$lightCharcoal = A4($avh4$elm_color$Color$RgbaSpace, 136 / 255, 138 / 255, 133 / 255, 1.0);
 var $author$project$ItemShop$noUserSelect = $mdgriffith$elm_ui$Element$htmlAttribute(
 	A2($elm$html$Html$Attributes$style, 'userSelect', 'none'));
 var $author$project$ItemShop$pointerEventsAll = $mdgriffith$elm_ui$Element$htmlAttribute(
 	A2($elm$html$Html$Attributes$style, 'pointer-events', 'all'));
 var $author$project$ItemShop$pointerEventsNone = $mdgriffith$elm_ui$Element$htmlAttribute(
 	A2($elm$html$Html$Attributes$style, 'pointer-events', 'none'));
-var $mdgriffith$elm_ui$Element$Font$color = function (fontColor) {
-	return A2(
-		$mdgriffith$elm_ui$Internal$Model$StyleClass,
-		$mdgriffith$elm_ui$Internal$Flag$fontColor,
-		A3(
-			$mdgriffith$elm_ui$Internal$Model$Colored,
-			'fc-' + $mdgriffith$elm_ui$Internal$Model$formatColorClass(fontColor),
-			'color',
-			fontColor));
-};
 var $author$project$ItemShop$color_grey = A3($mdgriffith$elm_ui$Element$rgb, 0.35, 0.35, 0.35);
 var $author$project$ItemShop$font_grey = $mdgriffith$elm_ui$Element$Font$color($author$project$ItemShop$color_grey);
 var $mdgriffith$elm_ui$Internal$Model$Describe = function (a) {
@@ -16905,8 +17239,8 @@ var $mdgriffith$elm_ui$Internal$Model$Text = function (a) {
 var $mdgriffith$elm_ui$Element$text = function (content) {
 	return $mdgriffith$elm_ui$Internal$Model$Text(content);
 };
-var $author$project$ItemShop$render_gp_sized = F2(
-	function (count, font_size) {
+var $author$project$ItemShop$render_gp_sized = F3(
+	function (colorTheme, count, font_size) {
 		return A2(
 			$mdgriffith$elm_ui$Element$paragraph,
 			_List_Nil,
@@ -16919,14 +17253,22 @@ var $author$project$ItemShop$render_gp_sized = F2(
 					_List_fromArray(
 						[
 							$mdgriffith$elm_ui$Element$Font$size(font_size),
-							$author$project$ItemShop$font_grey
+							function () {
+							if (colorTheme.$ === 'BrightTheme') {
+								return $author$project$ItemShop$font_grey;
+							} else {
+								return $mdgriffith$elm_ui$Element$Font$color(
+									$author$project$ItemShop$hex_to_color('#777439'));
+							}
+						}()
 						]),
 					$mdgriffith$elm_ui$Element$text('gp'))
 				]));
 	});
-var $author$project$ItemShop$render_gp = function (count) {
-	return A2($author$project$ItemShop$render_gp_sized, count, 12);
-};
+var $author$project$ItemShop$render_gp = F2(
+	function (colorTheme, count) {
+		return A3($author$project$ItemShop$render_gp_sized, colorTheme, count, 12);
+	});
 var $mdgriffith$elm_ui$Internal$Flag$borderRound = $mdgriffith$elm_ui$Internal$Flag$flag(17);
 var $mdgriffith$elm_ui$Element$Border$rounded = function (radius) {
 	return A2(
@@ -17091,28 +17433,11 @@ var $mdgriffith$elm_ui$Element$Input$button = F2(
 					[label])));
 	});
 var $author$project$ItemShop$color_black = A3($mdgriffith$elm_ui$Element$rgb, 0, 0, 0);
-var $mdgriffith$elm_ui$Element$fromRgb = function (clr) {
-	return A4($mdgriffith$elm_ui$Internal$Model$Rgba, clr.red, clr.green, clr.blue, clr.alpha);
-};
-var $avh4$elm_color$Color$toRgba = function (_v0) {
-	var r = _v0.a;
-	var g = _v0.b;
-	var b = _v0.c;
-	var a = _v0.d;
-	return {alpha: a, blue: b, green: g, red: r};
-};
-var $author$project$ItemShop$convertColor = function (color) {
-	return $mdgriffith$elm_ui$Element$fromRgb(
-		$avh4$elm_color$Color$toRgba(color));
-};
-var $avh4$elm_color$Color$RgbaSpace = F4(
-	function (a, b, c, d) {
-		return {$: 'RgbaSpace', a: a, b: b, c: c, d: d};
-	});
 var $avh4$elm_color$Color$red = A4($avh4$elm_color$Color$RgbaSpace, 204 / 255, 0 / 255, 0 / 255, 1.0);
 var $author$project$ItemShop$color_danger = $author$project$ItemShop$convertColor($avh4$elm_color$Color$red);
 var $avh4$elm_color$Color$lightRed = A4($avh4$elm_color$Color$RgbaSpace, 239 / 255, 41 / 255, 41 / 255, 1.0);
 var $author$project$ItemShop$color_danger_bright = $author$project$ItemShop$convertColor($avh4$elm_color$Color$lightRed);
+var $author$project$ItemShop$color_white = A3($mdgriffith$elm_ui$Element$rgb, 1, 1, 1);
 var $mdgriffith$elm_ui$Element$Font$center = A2($mdgriffith$elm_ui$Internal$Model$Class, $mdgriffith$elm_ui$Internal$Flag$fontAlignment, $mdgriffith$elm_ui$Internal$Style$classes.textCenter);
 var $mdgriffith$elm_ui$Internal$Model$Hover = {$: 'Hover'};
 var $mdgriffith$elm_ui$Internal$Model$PseudoSelector = F2(
@@ -17363,8 +17688,16 @@ var $author$project$ItemShop$viewOverlay = function (model) {
 								$mdgriffith$elm_ui$Element$Font$alignRight,
 								$mdgriffith$elm_ui$Element$alignRight,
 								$mdgriffith$elm_ui$Element$alignBottom,
-								$mdgriffith$elm_ui$Element$Background$color($author$project$ItemShop$color_white),
-								$mdgriffith$elm_ui$Element$Border$color($author$project$ItemShop$color_ultra_light_grey),
+								$author$project$ItemShop$defaultBackgroundColor(model.colorTheme),
+								$mdgriffith$elm_ui$Element$Border$color(
+								function () {
+									var _v0 = model.colorTheme;
+									if (_v0.$ === 'BrightTheme') {
+										return $author$project$ItemShop$color_ultra_light_grey;
+									} else {
+										return $author$project$ItemShop$convertColor($avh4$elm_color$Color$lightCharcoal);
+									}
+								}()),
 								$mdgriffith$elm_ui$Element$Border$width(1),
 								$mdgriffith$elm_ui$Element$Border$rounded(3),
 								$author$project$ItemShop$pointerEventsAll,
@@ -17377,7 +17710,7 @@ var $author$project$ItemShop$viewOverlay = function (model) {
 							_List_fromArray(
 								[
 									$mdgriffith$elm_ui$Element$text('Gold: '),
-									$author$project$ItemShop$render_gp(player.held_gold)
+									A2($author$project$ItemShop$render_gp, model.colorTheme, player.held_gold)
 								]))));
 			},
 			$author$project$ItemShop$getPlayer(model)));
@@ -17500,120 +17833,121 @@ var $mdgriffith$elm_ui$Element$spacingXY = F2(
 				x,
 				y));
 	});
-var $author$project$ItemShop$render_item_db_item = function (_v0) {
-	var item = _v0.item;
-	var trade_stats = _v0.trade_stats;
-	var is_unlocked = _v0.is_unlocked;
-	return A2(
-		$mdgriffith$elm_ui$Element$column,
-		_List_fromArray(
-			[
-				$mdgriffith$elm_ui$Element$width(
-				A2($mdgriffith$elm_ui$Element$maximum, 150, $mdgriffith$elm_ui$Element$fill)),
-				$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$fill)
-			]),
-		_List_fromArray(
-			[
-				$mdgriffith$elm_ui$Element$text(item.name),
-				A2(
-				$mdgriffith$elm_ui$Element$row,
-				_List_fromArray(
-					[
-						$mdgriffith$elm_ui$Element$Font$size(12)
-					]),
-				_List_fromArray(
-					[
-						is_unlocked ? $mdgriffith$elm_ui$Element$none : A2(
-						$mdgriffith$elm_ui$Element$el,
-						_List_fromArray(
-							[
-								$mdgriffith$elm_ui$Element$Font$color($author$project$ItemShop$color_primary)
-							]),
-						$mdgriffith$elm_ui$Element$text('LOCKED'))
-					])),
-				A2(
-				$mdgriffith$elm_ui$Element$row,
-				_List_fromArray(
-					[
-						$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
-						$mdgriffith$elm_ui$Element$Font$size(14),
-						A2($mdgriffith$elm_ui$Element$spacingXY, 10, 0)
-					]),
-				_List_fromArray(
-					[
-						$mdgriffith$elm_ui$Element$text(
-						$author$project$ItemShop$item_type_to_pretty_string(item.item_type)),
-						A2(
-						$mdgriffith$elm_ui$Element$el,
-						_List_fromArray(
-							[$mdgriffith$elm_ui$Element$alignRight]),
-						$author$project$ItemShop$render_gp(item.raw_gold_cost))
-					])),
-				A2(
-				$mdgriffith$elm_ui$Element$row,
-				_List_fromArray(
-					[
-						$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
-						$mdgriffith$elm_ui$Element$Font$size(12)
-					]),
-				_List_fromArray(
-					[
-						$mdgriffith$elm_ui$Element$text('Num Bought: '),
-						A2(
-						$author$project$ItemShop$monospace,
-						_List_fromArray(
-							[$mdgriffith$elm_ui$Element$alignRight]),
-						$mdgriffith$elm_ui$Element$text(
-							A3(
-								$elm$core$String$padLeft,
-								3,
-								_Utils_chr('\u2003'),
-								$elm$core$String$fromInt(trade_stats.times_you_bought))))
-					])),
-				A2(
-				$mdgriffith$elm_ui$Element$row,
-				_List_fromArray(
-					[
-						$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
-						$mdgriffith$elm_ui$Element$Font$size(12)
-					]),
-				_List_fromArray(
-					[
-						$mdgriffith$elm_ui$Element$text('Num Sold: '),
-						A2(
-						$author$project$ItemShop$monospace,
-						_List_fromArray(
-							[$mdgriffith$elm_ui$Element$alignRight]),
-						$mdgriffith$elm_ui$Element$text(
-							A3(
-								$elm$core$String$padLeft,
-								3,
-								_Utils_chr('\u2003'),
-								$elm$core$String$fromInt(trade_stats.times_you_sold))))
-					])),
-				A2(
-				$mdgriffith$elm_ui$Element$row,
-				_List_fromArray(
-					[
-						$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
-						$mdgriffith$elm_ui$Element$Font$size(12)
-					]),
-				_List_fromArray(
-					[
-						$mdgriffith$elm_ui$Element$text('Others\' Trades: '),
-						A2(
-						$author$project$ItemShop$monospace,
-						_List_fromArray(
-							[$mdgriffith$elm_ui$Element$alignRight]),
-						$mdgriffith$elm_ui$Element$text(
-							A3(
-								$elm$core$String$padLeft,
-								3,
-								_Utils_chr('\u2003'),
-								$elm$core$String$fromInt(trade_stats.times_others_traded))))
-					]))
-			]));
-};
+var $author$project$ItemShop$render_item_db_item = F2(
+	function (colorTheme, _v0) {
+		var item = _v0.item;
+		var trade_stats = _v0.trade_stats;
+		var is_unlocked = _v0.is_unlocked;
+		return A2(
+			$mdgriffith$elm_ui$Element$column,
+			_List_fromArray(
+				[
+					$mdgriffith$elm_ui$Element$width(
+					A2($mdgriffith$elm_ui$Element$maximum, 150, $mdgriffith$elm_ui$Element$fill)),
+					$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$fill)
+				]),
+			_List_fromArray(
+				[
+					$mdgriffith$elm_ui$Element$text(item.name),
+					A2(
+					$mdgriffith$elm_ui$Element$row,
+					_List_fromArray(
+						[
+							$mdgriffith$elm_ui$Element$Font$size(12)
+						]),
+					_List_fromArray(
+						[
+							is_unlocked ? $mdgriffith$elm_ui$Element$none : A2(
+							$mdgriffith$elm_ui$Element$el,
+							_List_fromArray(
+								[
+									$mdgriffith$elm_ui$Element$Font$color($author$project$ItemShop$color_primary)
+								]),
+							$mdgriffith$elm_ui$Element$text('LOCKED'))
+						])),
+					A2(
+					$mdgriffith$elm_ui$Element$row,
+					_List_fromArray(
+						[
+							$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
+							$mdgriffith$elm_ui$Element$Font$size(14),
+							A2($mdgriffith$elm_ui$Element$spacingXY, 10, 0)
+						]),
+					_List_fromArray(
+						[
+							$mdgriffith$elm_ui$Element$text(
+							$author$project$ItemShop$item_type_to_pretty_string(item.item_type)),
+							A2(
+							$mdgriffith$elm_ui$Element$el,
+							_List_fromArray(
+								[$mdgriffith$elm_ui$Element$alignRight]),
+							A2($author$project$ItemShop$render_gp, colorTheme, item.raw_gold_cost))
+						])),
+					A2(
+					$mdgriffith$elm_ui$Element$row,
+					_List_fromArray(
+						[
+							$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
+							$mdgriffith$elm_ui$Element$Font$size(12)
+						]),
+					_List_fromArray(
+						[
+							$mdgriffith$elm_ui$Element$text('Num Bought: '),
+							A2(
+							$author$project$ItemShop$monospace,
+							_List_fromArray(
+								[$mdgriffith$elm_ui$Element$alignRight]),
+							$mdgriffith$elm_ui$Element$text(
+								A3(
+									$elm$core$String$padLeft,
+									3,
+									_Utils_chr('\u2003'),
+									$elm$core$String$fromInt(trade_stats.times_you_bought))))
+						])),
+					A2(
+					$mdgriffith$elm_ui$Element$row,
+					_List_fromArray(
+						[
+							$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
+							$mdgriffith$elm_ui$Element$Font$size(12)
+						]),
+					_List_fromArray(
+						[
+							$mdgriffith$elm_ui$Element$text('Num Sold: '),
+							A2(
+							$author$project$ItemShop$monospace,
+							_List_fromArray(
+								[$mdgriffith$elm_ui$Element$alignRight]),
+							$mdgriffith$elm_ui$Element$text(
+								A3(
+									$elm$core$String$padLeft,
+									3,
+									_Utils_chr('\u2003'),
+									$elm$core$String$fromInt(trade_stats.times_you_sold))))
+						])),
+					A2(
+					$mdgriffith$elm_ui$Element$row,
+					_List_fromArray(
+						[
+							$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
+							$mdgriffith$elm_ui$Element$Font$size(12)
+						]),
+					_List_fromArray(
+						[
+							$mdgriffith$elm_ui$Element$text('Others\' Trades: '),
+							A2(
+							$author$project$ItemShop$monospace,
+							_List_fromArray(
+								[$mdgriffith$elm_ui$Element$alignRight]),
+							$mdgriffith$elm_ui$Element$text(
+								A3(
+									$elm$core$String$padLeft,
+									3,
+									_Utils_chr('\u2003'),
+									$elm$core$String$fromInt(trade_stats.times_others_traded))))
+						]))
+				]));
+	});
 var $mdgriffith$elm_ui$Internal$Model$Padding = F5(
 	function (a, b, c, d, e) {
 		return {$: 'Padding', a: a, b: b, c: c, d: d, e: e};
@@ -17802,62 +18136,65 @@ var $mdgriffith$elm_ui$Element$wrappedRow = F2(
 			}
 		}
 	});
-var $author$project$ItemShop$view_items_unlocked_tab_type = function (item_db) {
-	var render_item_grid = A2(
-		$elm$core$Basics$composeR,
-		$elm$core$List$map($author$project$ItemShop$render_item_db_item),
-		$mdgriffith$elm_ui$Element$wrappedRow(
+var $author$project$ItemShop$view_items_unlocked_tab_type = F2(
+	function (colorTheme, item_db) {
+		var render_item_grid = A2(
+			$elm$core$Basics$composeR,
+			$elm$core$List$map(
+				$author$project$ItemShop$render_item_db_item(colorTheme)),
+			$mdgriffith$elm_ui$Element$wrappedRow(
+				_List_fromArray(
+					[
+						$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
+						$mdgriffith$elm_ui$Element$spacing(20)
+					])));
+		var filterItemDb = function (filterFn) {
+			return A2(
+				$elm$core$List$filter,
+				filterFn,
+				$elm$core$Dict$values(item_db));
+		};
+		var back_btn = A2(
+			$mdgriffith$elm_ui$Element$link,
+			_List_Nil,
+			{
+				label: A3(
+					$author$project$ItemShop$danger_button,
+					_List_Nil,
+					$author$project$ItemShop$ChangeTabType($author$project$ItemShop$ShopTabType),
+					'Back to Shop'),
+				url: '#shop'
+			});
+		return A2(
+			$mdgriffith$elm_ui$Element$column,
 			_List_fromArray(
 				[
-					$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
-					$mdgriffith$elm_ui$Element$spacing(20)
-				])));
-	var filterItemDb = function (filterFn) {
-		return A2(
-			$elm$core$List$filter,
-			filterFn,
-			$elm$core$Dict$values(item_db));
-	};
-	var back_btn = A2(
-		$mdgriffith$elm_ui$Element$link,
-		_List_Nil,
-		{
-			label: A3(
-				$author$project$ItemShop$danger_button,
-				_List_Nil,
-				$author$project$ItemShop$ChangeTabType($author$project$ItemShop$ShopTabType),
-				'Back to Shop'),
-			url: '#shop'
-		});
-	return A2(
-		$mdgriffith$elm_ui$Element$column,
-		_List_fromArray(
-			[
-				$mdgriffith$elm_ui$Element$spacing(10),
-				$mdgriffith$elm_ui$Element$padding(20)
-			]),
-		_List_fromArray(
-			[
-				$mdgriffith$elm_ui$Element$text('Item Codex'),
-				back_btn,
-				render_item_grid(
-				filterItemDb(
-					function ($) {
-						return $.is_unlocked;
-					})),
-				render_item_grid(
-				filterItemDb(
-					A2(
-						$elm$core$Basics$composeL,
-						$elm$core$Basics$not,
+					$mdgriffith$elm_ui$Element$spacing(10),
+					$mdgriffith$elm_ui$Element$padding(20)
+				]),
+			_List_fromArray(
+				[
+					$mdgriffith$elm_ui$Element$text('Item Codex'),
+					back_btn,
+					render_item_grid(
+					filterItemDb(
 						function ($) {
 							return $.is_unlocked;
-						})))
-			]));
-};
+						})),
+					render_item_grid(
+					filterItemDb(
+						A2(
+							$elm$core$Basics$composeL,
+							$elm$core$Basics$not,
+							function ($) {
+								return $.is_unlocked;
+							})))
+				]));
+	});
 var $author$project$ItemShop$CharacterItems = {$: 'CharacterItems'};
 var $author$project$ItemShop$InventoryItems = {$: 'InventoryItems'};
 var $author$project$ItemShop$ShopItems = {$: 'ShopItems'};
+var $author$project$ItemShop$ToggleColorTheme = {$: 'ToggleColorTheme'};
 var $author$project$ItemShop$ToggleShowMainChart = {$: 'ToggleShowMainChart'};
 var $mdgriffith$elm_ui$Internal$Model$Top = {$: 'Top'};
 var $mdgriffith$elm_ui$Element$alignTop = $mdgriffith$elm_ui$Internal$Model$AlignY($mdgriffith$elm_ui$Internal$Model$Top);
@@ -20110,7 +20447,6 @@ var $terezka$elm_charts$Internal$Svg$distanceY = F3(
 		return $elm$core$Basics$abs(
 			A2($terezka$elm_charts$Internal$Coordinates$toSVGY, plane, point.y) - A2($terezka$elm_charts$Internal$Coordinates$toSVGY, plane, searched.y));
 	});
-var $elm$core$Basics$pow = _Basics_pow;
 var $terezka$elm_charts$Internal$Svg$distanceSquared = F3(
 	function (plane, searched, point) {
 		return A2(
@@ -22591,10 +22927,6 @@ var $terezka$intervals$Intervals$getBeginning = F2(
 			multiple,
 			$elm$core$Basics$round(multiple)) ? min : A2($terezka$intervals$Intervals$ceilingTo, interval, min);
 	});
-var $elm$core$String$foldr = _String_foldr;
-var $elm$core$String$toList = function (string) {
-	return A3($elm$core$String$foldr, $elm$core$List$cons, _List_Nil, string);
-};
 var $myrho$elm_round$Round$addSign = F2(
 	function (signed, str) {
 		var isNotZero = A2(
@@ -22646,7 +22978,6 @@ var $elm$core$String$padRight = F3(
 				n - $elm$core$String$length(string),
 				$elm$core$String$fromChar(_char)));
 	});
-var $elm$core$String$reverse = _String_reverse;
 var $myrho$elm_round$Round$splitComma = function (str) {
 	var _v0 = A2($elm$core$String$split, '.', str);
 	if (_v0.b) {
@@ -25431,17 +25762,6 @@ var $author$project$ItemShop$font_scaled = function (scale) {
 	return $mdgriffith$elm_ui$Element$Font$size(
 		$author$project$ItemShop$scaled(scale));
 };
-var $mdgriffith$elm_ui$Element$Lazy$apply2 = F3(
-	function (fn, a, b) {
-		return $mdgriffith$elm_ui$Element$Lazy$embed(
-			A2(fn, a, b));
-	});
-var $elm$virtual_dom$VirtualDom$lazy4 = _VirtualDom_lazy4;
-var $mdgriffith$elm_ui$Element$Lazy$lazy2 = F3(
-	function (fn, a, b) {
-		return $mdgriffith$elm_ui$Internal$Model$Unstyled(
-			A4($elm$virtual_dom$VirtualDom$lazy4, $mdgriffith$elm_ui$Element$Lazy$apply2, fn, a, b));
-	});
 var $avh4$elm_color$Color$charcoal = A4($avh4$elm_color$Color$RgbaSpace, 85 / 255, 87 / 255, 83 / 255, 1.0);
 var $author$project$ItemShop$color_secondary = $author$project$ItemShop$convertColor($avh4$elm_color$Color$charcoal);
 var $author$project$ItemShop$outline_button_custom = F3(
@@ -25769,49 +26089,54 @@ var $author$project$ItemShop$player_action_log_display = F2(
 						$mdgriffith$elm_ui$Element$text('Welcome!')
 					])));
 	});
-var $author$project$ItemShop$render_single_player_upgrade = function (player_upgrade) {
-	var gpm = player_upgrade.a;
-	return A2(
-		$mdgriffith$elm_ui$Element$paragraph,
-		_List_Nil,
-		_List_fromArray(
-			[
-				$mdgriffith$elm_ui$Element$text('Income: '),
-				$author$project$ItemShop$render_gp(gpm),
-				$mdgriffith$elm_ui$Element$text('/sec')
-			]));
-};
-var $author$project$ItemShop$player_upgrades_display = function (player_upgrades) {
-	return A2(
-		$mdgriffith$elm_ui$Element$column,
-		_List_fromArray(
-			[
-				$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$fill)
-			]),
-		_Utils_ap(
+var $author$project$ItemShop$render_single_player_upgrade = F2(
+	function (colorTheme, player_upgrade) {
+		var gpm = player_upgrade.a;
+		return A2(
+			$mdgriffith$elm_ui$Element$paragraph,
+			_List_Nil,
 			_List_fromArray(
 				[
-					A2(
-					$mdgriffith$elm_ui$Element$el,
-					_List_fromArray(
-						[
-							$author$project$ItemShop$font_scaled(2),
-							$author$project$ItemShop$border_bottom(2),
-							$mdgriffith$elm_ui$Element$alignTop
-						]),
-					$mdgriffith$elm_ui$Element$text('Upgrades'))
+					$mdgriffith$elm_ui$Element$text('Income: '),
+					A2($author$project$ItemShop$render_gp, colorTheme, gpm),
+					$mdgriffith$elm_ui$Element$text('/sec')
+				]));
+	});
+var $author$project$ItemShop$player_upgrades_display = F2(
+	function (colorTheme, player_upgrades) {
+		return A2(
+			$mdgriffith$elm_ui$Element$column,
+			_List_fromArray(
+				[
+					$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$fill)
 				]),
-			_List_fromArray(
-				[
-					A2(
-					$mdgriffith$elm_ui$Element$column,
-					_List_fromArray(
-						[
-							A2($mdgriffith$elm_ui$Element$paddingXY, 0, 10)
-						]),
-					A2($elm$core$List$map, $author$project$ItemShop$render_single_player_upgrade, player_upgrades))
-				])));
-};
+			_Utils_ap(
+				_List_fromArray(
+					[
+						A2(
+						$mdgriffith$elm_ui$Element$el,
+						_List_fromArray(
+							[
+								$author$project$ItemShop$font_scaled(2),
+								$author$project$ItemShop$border_bottom(2),
+								$mdgriffith$elm_ui$Element$alignTop
+							]),
+						$mdgriffith$elm_ui$Element$text('Upgrades'))
+					]),
+				_List_fromArray(
+					[
+						A2(
+						$mdgriffith$elm_ui$Element$column,
+						_List_fromArray(
+							[
+								A2($mdgriffith$elm_ui$Element$paddingXY, 0, 10)
+							]),
+						A2(
+							$elm$core$List$map,
+							$author$project$ItemShop$render_single_player_upgrade(colorTheme),
+							player_upgrades))
+					])));
+	});
 var $author$project$ItemShop$CycleFilterDisplayedItemsBackward = F2(
 	function (a, b) {
 		return {$: 'CycleFilterDisplayedItemsBackward', a: a, b: b};
@@ -25976,263 +26301,6 @@ var $author$project$ItemShop$renderBlood = function (count) {
 	return A2($author$project$ItemShop$renderBlood_sized, count, 12);
 };
 var $mdgriffith$elm_ui$Element$Font$alignLeft = A2($mdgriffith$elm_ui$Internal$Model$Class, $mdgriffith$elm_ui$Internal$Flag$fontAlignment, $mdgriffith$elm_ui$Internal$Style$classes.textLeft);
-var $elm$core$Result$andThen = F2(
-	function (callback, result) {
-		if (result.$ === 'Ok') {
-			var value = result.a;
-			return callback(value);
-		} else {
-			var msg = result.a;
-			return $elm$core$Result$Err(msg);
-		}
-	});
-var $elm$regex$Regex$Match = F4(
-	function (match, index, number, submatches) {
-		return {index: index, match: match, number: number, submatches: submatches};
-	});
-var $elm$regex$Regex$findAtMost = _Regex_findAtMost;
-var $elm$core$Result$fromMaybe = F2(
-	function (err, maybe) {
-		if (maybe.$ === 'Just') {
-			var v = maybe.a;
-			return $elm$core$Result$Ok(v);
-		} else {
-			return $elm$core$Result$Err(err);
-		}
-	});
-var $elm$regex$Regex$fromStringWith = _Regex_fromStringWith;
-var $elm$regex$Regex$fromString = function (string) {
-	return A2(
-		$elm$regex$Regex$fromStringWith,
-		{caseInsensitive: false, multiline: false},
-		string);
-};
-var $elm$core$Result$map = F2(
-	function (func, ra) {
-		if (ra.$ === 'Ok') {
-			var a = ra.a;
-			return $elm$core$Result$Ok(
-				func(a));
-		} else {
-			var e = ra.a;
-			return $elm$core$Result$Err(e);
-		}
-	});
-var $fredcy$elm_parseint$ParseInt$InvalidRadix = function (a) {
-	return {$: 'InvalidRadix', a: a};
-};
-var $fredcy$elm_parseint$ParseInt$InvalidChar = function (a) {
-	return {$: 'InvalidChar', a: a};
-};
-var $fredcy$elm_parseint$ParseInt$OutOfRange = function (a) {
-	return {$: 'OutOfRange', a: a};
-};
-var $fredcy$elm_parseint$ParseInt$charOffset = F2(
-	function (basis, c) {
-		return $elm$core$Char$toCode(c) - $elm$core$Char$toCode(basis);
-	});
-var $fredcy$elm_parseint$ParseInt$isBetween = F3(
-	function (lower, upper, c) {
-		var ci = $elm$core$Char$toCode(c);
-		return (_Utils_cmp(
-			$elm$core$Char$toCode(lower),
-			ci) < 1) && (_Utils_cmp(
-			ci,
-			$elm$core$Char$toCode(upper)) < 1);
-	});
-var $fredcy$elm_parseint$ParseInt$intFromChar = F2(
-	function (radix, c) {
-		var validInt = function (i) {
-			return (_Utils_cmp(i, radix) < 0) ? $elm$core$Result$Ok(i) : $elm$core$Result$Err(
-				$fredcy$elm_parseint$ParseInt$OutOfRange(c));
-		};
-		var toInt = A3(
-			$fredcy$elm_parseint$ParseInt$isBetween,
-			_Utils_chr('0'),
-			_Utils_chr('9'),
-			c) ? $elm$core$Result$Ok(
-			A2(
-				$fredcy$elm_parseint$ParseInt$charOffset,
-				_Utils_chr('0'),
-				c)) : (A3(
-			$fredcy$elm_parseint$ParseInt$isBetween,
-			_Utils_chr('a'),
-			_Utils_chr('z'),
-			c) ? $elm$core$Result$Ok(
-			10 + A2(
-				$fredcy$elm_parseint$ParseInt$charOffset,
-				_Utils_chr('a'),
-				c)) : (A3(
-			$fredcy$elm_parseint$ParseInt$isBetween,
-			_Utils_chr('A'),
-			_Utils_chr('Z'),
-			c) ? $elm$core$Result$Ok(
-			10 + A2(
-				$fredcy$elm_parseint$ParseInt$charOffset,
-				_Utils_chr('A'),
-				c)) : $elm$core$Result$Err(
-			$fredcy$elm_parseint$ParseInt$InvalidChar(c))));
-		return A2($elm$core$Result$andThen, validInt, toInt);
-	});
-var $fredcy$elm_parseint$ParseInt$parseIntR = F2(
-	function (radix, rstring) {
-		var _v0 = $elm$core$String$uncons(rstring);
-		if (_v0.$ === 'Nothing') {
-			return $elm$core$Result$Ok(0);
-		} else {
-			var _v1 = _v0.a;
-			var c = _v1.a;
-			var rest = _v1.b;
-			return A2(
-				$elm$core$Result$andThen,
-				function (ci) {
-					return A2(
-						$elm$core$Result$andThen,
-						function (ri) {
-							return $elm$core$Result$Ok(ci + (ri * radix));
-						},
-						A2($fredcy$elm_parseint$ParseInt$parseIntR, radix, rest));
-				},
-				A2($fredcy$elm_parseint$ParseInt$intFromChar, radix, c));
-		}
-	});
-var $fredcy$elm_parseint$ParseInt$parseIntRadix = F2(
-	function (radix, string) {
-		return ((2 <= radix) && (radix <= 36)) ? A2(
-			$fredcy$elm_parseint$ParseInt$parseIntR,
-			radix,
-			$elm$core$String$reverse(string)) : $elm$core$Result$Err(
-			$fredcy$elm_parseint$ParseInt$InvalidRadix(radix));
-	});
-var $fredcy$elm_parseint$ParseInt$parseIntHex = $fredcy$elm_parseint$ParseInt$parseIntRadix(16);
-var $avh4$elm_color$Color$rgb = F3(
-	function (r, g, b) {
-		return A4($avh4$elm_color$Color$RgbaSpace, r, g, b, 1.0);
-	});
-var $avh4$elm_color$Color$rgba = F4(
-	function (r, g, b, a) {
-		return A4($avh4$elm_color$Color$RgbaSpace, r, g, b, a);
-	});
-var $noahzgordon$elm_color_extra$Color$Convert$roundToPlaces = F2(
-	function (places, number) {
-		var multiplier = A2($elm$core$Basics$pow, 10, places);
-		return $elm$core$Basics$round(number * multiplier) / multiplier;
-	});
-var $noahzgordon$elm_color_extra$Color$Convert$hexToColor = function () {
-	var pattern = '' + ('^' + ('#?' + ('(?:' + ('(?:([a-f\\d]{2})([a-f\\d]{2})([a-f\\d]{2}))' + ('|' + ('(?:([a-f\\d])([a-f\\d])([a-f\\d]))' + ('|' + ('(?:([a-f\\d]{2})([a-f\\d]{2})([a-f\\d]{2})([a-f\\d]{2}))' + ('|' + ('(?:([a-f\\d])([a-f\\d])([a-f\\d])([a-f\\d]))' + (')' + '$')))))))))));
-	var extend = function (token) {
-		var _v6 = $elm$core$String$toList(token);
-		if (_v6.b && (!_v6.b.b)) {
-			var token_ = _v6.a;
-			return $elm$core$String$fromList(
-				_List_fromArray(
-					[token_, token_]));
-		} else {
-			return token;
-		}
-	};
-	return A2(
-		$elm$core$Basics$composeR,
-		$elm$core$String$toLower,
-		A2(
-			$elm$core$Basics$composeR,
-			function (str) {
-				return A2(
-					$elm$core$Maybe$map,
-					function (regex) {
-						return A3($elm$regex$Regex$findAtMost, 1, regex, str);
-					},
-					$elm$regex$Regex$fromString(pattern));
-			},
-			A2(
-				$elm$core$Basics$composeR,
-				$elm$core$Maybe$andThen($elm$core$List$head),
-				A2(
-					$elm$core$Basics$composeR,
-					$elm$core$Maybe$map(
-						function ($) {
-							return $.submatches;
-						}),
-					A2(
-						$elm$core$Basics$composeR,
-						$elm$core$Maybe$map(
-							$elm$core$List$filterMap($elm$core$Basics$identity)),
-						A2(
-							$elm$core$Basics$composeR,
-							$elm$core$Result$fromMaybe('Parsing hex regex failed'),
-							$elm$core$Result$andThen(
-								function (colors) {
-									var _v0 = A2(
-										$elm$core$List$map,
-										A2(
-											$elm$core$Basics$composeR,
-											extend,
-											A2(
-												$elm$core$Basics$composeR,
-												$fredcy$elm_parseint$ParseInt$parseIntHex,
-												$elm$core$Result$map($elm$core$Basics$toFloat))),
-										colors);
-									_v0$2:
-									while (true) {
-										if (((((_v0.b && (_v0.a.$ === 'Ok')) && _v0.b.b) && (_v0.b.a.$ === 'Ok')) && _v0.b.b.b) && (_v0.b.b.a.$ === 'Ok')) {
-											if (_v0.b.b.b.b) {
-												if ((_v0.b.b.b.a.$ === 'Ok') && (!_v0.b.b.b.b.b)) {
-													var r = _v0.a.a;
-													var _v1 = _v0.b;
-													var g = _v1.a.a;
-													var _v2 = _v1.b;
-													var b = _v2.a.a;
-													var _v3 = _v2.b;
-													var a = _v3.a.a;
-													return $elm$core$Result$Ok(
-														A4(
-															$avh4$elm_color$Color$rgba,
-															r / 255,
-															g / 255,
-															b / 255,
-															A2($noahzgordon$elm_color_extra$Color$Convert$roundToPlaces, 2, a / 255)));
-												} else {
-													break _v0$2;
-												}
-											} else {
-												var r = _v0.a.a;
-												var _v4 = _v0.b;
-												var g = _v4.a.a;
-												var _v5 = _v4.b;
-												var b = _v5.a.a;
-												return $elm$core$Result$Ok(
-													A3($avh4$elm_color$Color$rgb, r / 255, g / 255, b / 255));
-											}
-										} else {
-											break _v0$2;
-										}
-									}
-									return $elm$core$Result$Err('Parsing ints from hex failed');
-								})))))));
-}();
-var $mdgriffith$elm_ui$Element$rgb255 = F3(
-	function (red, green, blue) {
-		return A4($mdgriffith$elm_ui$Internal$Model$Rgba, red / 255, green / 255, blue / 255, 1);
-	});
-var $author$project$ItemShop$hex_to_color = function (hex_str) {
-	var _v0 = $noahzgordon$elm_color_extra$Color$Convert$hexToColor(hex_str);
-	if (_v0.$ === 'Ok') {
-		var color = _v0.a;
-		var rgba = $avh4$elm_color$Color$toRgba(color);
-		return A3($mdgriffith$elm_ui$Element$rgb, rgba.red, rgba.green, rgba.blue);
-	} else {
-		var err = _v0.a;
-		return A2(
-			_Debug_todo(
-				'ItemShop',
-				{
-					start: {line: 1036, column: 13},
-					end: {line: 1036, column: 23}
-				}),
-			'NOOO',
-			A3($mdgriffith$elm_ui$Element$rgb255, 255, 0, 0));
-	}
-};
 var $author$project$ItemShop$color_pastel_green_1 = $author$project$ItemShop$hex_to_color('#b4ecb4');
 var $author$project$ItemShop$color_pastel_green_2 = $author$project$ItemShop$hex_to_color('#a0e7a0');
 var $author$project$ItemShop$color_pastel_green_3 = $author$project$ItemShop$hex_to_color('#8be28b');
@@ -26675,14 +26743,14 @@ var $author$project$ItemShop$render_inventory_grid = F7(
 		};
 		var rendered_dislikes = A2(
 			$elm$core$List$map,
-			function (_v17) {
-				var it_id = _v17.a;
-				var trd = _v17.b;
+			function (_v18) {
+				var it_id = _v18.a;
+				var trd = _v18.b;
 				return $mdgriffith$elm_ui$Element$text(
 					'Dislikes: ' + function () {
-						var _v18 = $author$project$ItemShop$id_to_item_type(it_id);
-						if (_v18.$ === 'Just') {
-							var item_type = _v18.a;
+						var _v19 = $author$project$ItemShop$id_to_item_type(it_id);
+						if (_v19.$ === 'Just') {
+							var item_type = _v19.a;
 							return $author$project$ItemShop$item_type_to_pretty_string(item_type);
 						} else {
 							return 'Unknown';
@@ -26700,14 +26768,14 @@ var $author$project$ItemShop$render_inventory_grid = F7(
 				$elm$core$Dict$toList(character.item_types_desired)));
 		var rendered_desires = A2(
 			$elm$core$List$map,
-			function (_v15) {
-				var it_id = _v15.a;
-				var trd = _v15.b;
+			function (_v16) {
+				var it_id = _v16.a;
+				var trd = _v16.b;
 				return $mdgriffith$elm_ui$Element$text(
 					'Desires: ' + function () {
-						var _v16 = $author$project$ItemShop$id_to_item_type(it_id);
-						if (_v16.$ === 'Just') {
-							var item_type = _v16.a;
+						var _v17 = $author$project$ItemShop$id_to_item_type(it_id);
+						if (_v17.$ === 'Just') {
+							var item_type = _v17.a;
 							return $author$project$ItemShop$item_type_to_pretty_string(item_type);
 						} else {
 							return 'Unknown';
@@ -26773,9 +26841,9 @@ var $author$project$ItemShop$render_inventory_grid = F7(
 		var hide_zero_qty_inv_rows = _v1.hide_zero_qty_inv_rows;
 		var is_hovered_item = function (item) {
 			if (hovered_item.$ === 'Just') {
-				var _v14 = hovered_item.a;
-				var hovered_char_id = _v14.a;
-				var hovered_item_ = _v14.b;
+				var _v15 = hovered_item.a;
+				var hovered_char_id = _v15.a;
+				var hovered_item_ = _v15.b;
 				return _Utils_eq(char_id, hovered_char_id) && _Utils_eq(item, hovered_item_);
 			} else {
 				return false;
@@ -26830,7 +26898,15 @@ var $author$project$ItemShop$render_inventory_grid = F7(
 											[
 												$mdgriffith$elm_ui$Element$Font$italic,
 												$mdgriffith$elm_ui$Element$alignRight,
-												$author$project$ItemShop$font_grey,
+												$mdgriffith$elm_ui$Element$Font$color(
+												function () {
+													var _v13 = model.colorTheme;
+													if (_v13.$ === 'BrightTheme') {
+														return $author$project$ItemShop$color_grey;
+													} else {
+														return $author$project$ItemShop$convertColor($avh4$elm_color$Color$white);
+													}
+												}()),
 												$mdgriffith$elm_ui$Element$Font$size(12)
 											]),
 										$mdgriffith$elm_ui$Element$text('Hold Shift for more')) : $mdgriffith$elm_ui$Element$none
@@ -26842,7 +26918,9 @@ var $author$project$ItemShop$render_inventory_grid = F7(
 									_List_fromArray(
 										[
 											$mdgriffith$elm_ui$Element$text('Current Price: '),
-											$author$project$ItemShop$render_gp(
+											A2(
+											$author$project$ItemShop$render_gp,
+											model.colorTheme,
 											current_price(item))
 										]),
 									(A2($author$project$ItemShop$is_item_trending, shop_trends.item_type_sentiment, item) && (!_Utils_eq(
@@ -26850,7 +26928,7 @@ var $author$project$ItemShop$render_inventory_grid = F7(
 										current_price(item)))) ? _List_fromArray(
 										[
 											$mdgriffith$elm_ui$Element$text(' (originally '),
-											$author$project$ItemShop$render_gp(item.raw_gold_cost),
+											A2($author$project$ItemShop$render_gp, model.colorTheme, item.raw_gold_cost),
 											$mdgriffith$elm_ui$Element$text(')')
 										]) : _List_Nil)),
 								show_charts_in_hovered_item ? A2(
@@ -26957,7 +27035,9 @@ var $author$project$ItemShop$render_inventory_grid = F7(
 									_Utils_ap(
 										_List_fromArray(
 											[
-												$author$project$ItemShop$render_gp(
+												A2(
+												$author$project$ItemShop$render_gp,
+												model.colorTheme,
 												A2($author$project$ItemShop$get_single_adjusted_item_cost, shop_trends, item))
 											]),
 										_List_fromArray(
@@ -27005,7 +27085,9 @@ var $author$project$ItemShop$render_inventory_grid = F7(
 								if (context.$ === 'ShopItems') {
 									return $mdgriffith$elm_ui$Element$text('');
 								} else {
-									return (!(!$author$project$ItemShop$getQuantity(quantity))) ? $author$project$ItemShop$render_gp(
+									return (!(!$author$project$ItemShop$getQuantity(quantity))) ? A2(
+										$author$project$ItemShop$render_gp,
+										model.colorTheme,
 										$author$project$ItemShop$getPrice(avg_price)) : $mdgriffith$elm_ui$Element$none;
 								}
 							}());
@@ -27190,7 +27272,7 @@ var $author$project$ItemShop$render_inventory_grid = F7(
 												_List_fromArray(
 													[
 														$mdgriffith$elm_ui$Element$text('Held: '),
-														$author$project$ItemShop$render_gp(held_gold)
+														A2($author$project$ItemShop$render_gp, model.colorTheme, held_gold)
 													])),
 												(is_player_context && (character.held_blood > 0)) ? A2(
 												$mdgriffith$elm_ui$Element$row,
@@ -27327,7 +27409,6 @@ var $mdgriffith$elm_ui$Internal$Model$Above = {$: 'Above'};
 var $mdgriffith$elm_ui$Element$above = function (element) {
 	return A2($mdgriffith$elm_ui$Element$createNearby, $mdgriffith$elm_ui$Internal$Model$Above, element);
 };
-var $avh4$elm_color$Color$black = A4($avh4$elm_color$Color$RgbaSpace, 0 / 255, 0 / 255, 0 / 255, 1.0);
 var $mdgriffith$elm_ui$Internal$Model$MoveX = function (a) {
 	return {$: 'MoveX', a: a};
 };
@@ -27348,9 +27429,8 @@ var $K_Adam$elm_dom$DOM$offsetWidth = A2($elm$json$Json$Decode$field, 'offsetWid
 var $K_Adam$elm_dom$DOM$target = function (decoder) {
 	return A2($elm$json$Json$Decode$field, 'target', decoder);
 };
-var $avh4$elm_color$Color$white = A4($avh4$elm_color$Color$RgbaSpace, 255 / 255, 255 / 255, 255 / 255, 1.0);
-var $author$project$ItemShop$primary_button_tooltip = F5(
-	function (custom_attrs, on_press, label, _v0, hovered_tooltip) {
+var $author$project$ItemShop$primary_button_tooltip = F6(
+	function (colorTheme, custom_attrs, on_press, label, _v0, hovered_tooltip) {
 		var tooltip_id = _v0.tooltip_id;
 		var tooltip_body = _v0.tooltip_body;
 		var offset_w = $K_Adam$elm_dom$DOM$target($K_Adam$elm_dom$DOM$offsetWidth);
@@ -27373,10 +27453,8 @@ var $author$project$ItemShop$primary_button_tooltip = F5(
 			_List_fromArray(
 				[
 					$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$shrink),
-					$mdgriffith$elm_ui$Element$Font$color(
-					$author$project$ItemShop$convertColor($avh4$elm_color$Color$black)),
-					$mdgriffith$elm_ui$Element$Background$color(
-					$author$project$ItemShop$convertColor($avh4$elm_color$Color$white)),
+					$author$project$ItemShop$defaultFontColor(colorTheme),
+					$author$project$ItemShop$defaultBackgroundColor(colorTheme),
 					$mdgriffith$elm_ui$Element$Border$color(
 					$author$project$ItemShop$convertColor($avh4$elm_color$Color$charcoal)),
 					$mdgriffith$elm_ui$Element$Border$rounded(3),
@@ -27415,11 +27493,13 @@ var $author$project$ItemShop$primary_button_tooltip = F5(
 			on_press,
 			label);
 	});
-var $author$project$ItemShop$build_special_action_button = F6(
-	function (hovered_tooltip, character, special_action, title, tooltip_text, price) {
+var $author$project$ItemShop$build_special_action_button = F7(
+	function (colorTheme, hovered_tooltip, character, special_action, title, tooltip_text, price) {
 		var tooltip_config = function (t) {
 			if (!_Utils_eq(price, $author$project$ItemShop$Free)) {
-				var renderedCost = $author$project$ItemShop$render_gp(
+				var renderedCost = A2(
+					$author$project$ItemShop$render_gp,
+					colorTheme,
 					$author$project$ItemShop$getPrice(price));
 				return A2(
 					$author$project$ItemShop$buildTooltipElementConfig,
@@ -27485,36 +27565,40 @@ var $author$project$ItemShop$build_special_action_button = F6(
 							$mdgriffith$elm_ui$Element$Border$color($author$project$ItemShop$color_light_grey)
 						]))
 				]) : _List_Nil) : _List_Nil;
-		return A5($author$project$ItemShop$primary_button_tooltip, button_attrs, msg, title, tooltip_config, hovered_tooltip);
+		return A6($author$project$ItemShop$primary_button_tooltip, colorTheme, button_attrs, msg, title, tooltip_config, hovered_tooltip);
 	});
-var $author$project$ItemShop$special_actions_display = F4(
-	function (player_upgrades, hovered_tooltip, player, ai_updates_paused) {
-		var button_unlock_item = A6(
+var $author$project$ItemShop$special_actions_display = F5(
+	function (colorTheme, player_upgrades, hovered_tooltip, player, ai_updates_paused) {
+		var button_unlock_item = A7(
 			$author$project$ItemShop$build_special_action_button,
+			colorTheme,
 			hovered_tooltip,
 			player,
 			$author$project$ItemShop$UnlockItem,
 			'Item Search',
 			'Spend cash to hire a mercenary to seek out items.\n\nAllows for invited traders to have new items.',
 			$author$project$ItemShop$setPrice(25));
-		var button_toggle_ai_pause = A6(
+		var button_toggle_ai_pause = A7(
 			$author$project$ItemShop$build_special_action_button,
+			colorTheme,
 			hovered_tooltip,
 			player,
 			$author$project$ItemShop$TogglePauseAi,
 			ai_updates_paused ? 'Resume Time' : 'Pause Time',
 			'You tap your medallion, and time comes to a halt.\n\nYou take a breath, and feel a weight off your shoulders. You\'ll take your time with things.',
 			$author$project$ItemShop$Free);
-		var button_search = A6(
+		var button_search = A7(
 			$author$project$ItemShop$build_special_action_button,
+			colorTheme,
 			hovered_tooltip,
 			player,
 			$author$project$ItemShop$InviteTrader,
 			'Invite Trader',
 			'Invite a fellow Trader.\n\nThey may or may not have new wares you\'ve never seen!',
 			$author$project$ItemShop$setPrice(50));
-		var button_low_desire = A6(
+		var button_low_desire = A7(
 			$author$project$ItemShop$build_special_action_button,
+			colorTheme,
 			hovered_tooltip,
 			player,
 			$author$project$ItemShop$TriggerEvent(
@@ -27532,8 +27616,9 @@ var $author$project$ItemShop$special_actions_display = F4(
 					}),
 				1,
 				player_upgrades);
-			return A6(
+			return A7(
 				$author$project$ItemShop$build_special_action_button,
+				colorTheme,
 				hovered_tooltip,
 				player,
 				$author$project$ItemShop$IncreaseIncome,
@@ -27541,8 +27626,9 @@ var $author$project$ItemShop$special_actions_display = F4(
 				'Invest in another business, earning more income.\n\nIncreases the gold you get per second.',
 				$author$project$ItemShop$scale_increase_income_cost(income_level));
 		}();
-		var button_high_desire = A6(
+		var button_high_desire = A7(
 			$author$project$ItemShop$build_special_action_button,
+			colorTheme,
 			hovered_tooltip,
 			player,
 			$author$project$ItemShop$TriggerEvent(
@@ -27599,6 +27685,7 @@ var $author$project$ItemShop$item_type_to_pretty_string_plural = function (item_
 			return 'Food';
 	}
 };
+var $avh4$elm_color$Color$lightGrey = A4($avh4$elm_color$Color$RgbaSpace, 238 / 255, 238 / 255, 236 / 255, 1.0);
 var $author$project$ItemShop$trade_party_to_str = F2(
 	function (all_characters, party) {
 		switch (party.$) {
@@ -27626,15 +27713,15 @@ var $author$project$ItemShop$trade_party_to_str = F2(
 				}
 		}
 	});
-var $author$project$ItemShop$render_single_trade_log_entry = F3(
-	function (item_db, all_characters, trade_log) {
+var $author$project$ItemShop$render_single_trade_log_entry = F4(
+	function (colorTheme, item_db, all_characters, trade_log) {
 		var _v0 = trade_log;
 		var from_party = _v0.from_party;
 		var to_party = _v0.to_party;
 		var item_id = _v0.item_id;
 		var quantity = _v0.quantity;
 		var gold_cost = _v0.gold_cost;
-		var rendered_cost = $author$project$ItemShop$render_gp(gold_cost);
+		var rendered_cost = A2($author$project$ItemShop$render_gp, colorTheme, gold_cost);
 		var maybe_item = A2($author$project$ItemShop$lookup_item_id, item_db, item_id);
 		var item_name = function () {
 			if (maybe_item.$ === 'Just') {
@@ -27738,8 +27825,8 @@ var $author$project$ItemShop$render_single_trade_log_entry = F3(
 				]));
 	});
 var $mdgriffith$elm_ui$Element$spaceEvenly = A2($mdgriffith$elm_ui$Internal$Model$Class, $mdgriffith$elm_ui$Internal$Flag$spacing, $mdgriffith$elm_ui$Internal$Style$classes.spaceEvenly);
-var $author$project$ItemShop$trends_display = F5(
-	function (shiftIsPressed, item_db, shop_trends, all_characters, is_expanded) {
+var $author$project$ItemShop$trends_display = F6(
+	function (colorTheme, shiftIsPressed, item_db, shop_trends, all_characters, is_expanded) {
 		var rendered_item_trade_logs = _List_fromArray(
 			[
 				$mdgriffith$elm_ui$Element$text(
@@ -27747,13 +27834,13 @@ var $author$project$ItemShop$trends_display = F5(
 					$elm$core$List$length(shop_trends.item_trade_logs)) + (' trades, and ' + ($elm$core$String$fromInt(
 					$elm$core$List$length(all_characters)) + ' traders.'))))
 			]);
-		var render_single_popularity = function (_v1) {
-			var type_id = _v1.a;
-			var popularity = _v1.b;
+		var render_single_popularity = function (_v2) {
+			var type_id = _v2.a;
+			var popularity = _v2.b;
 			var pretty_type = function () {
-				var _v0 = $author$project$ItemShop$id_to_item_type(type_id);
-				if (_v0.$ === 'Just') {
-					var prettied = _v0.a;
+				var _v1 = $author$project$ItemShop$id_to_item_type(type_id);
+				if (_v1.$ === 'Just') {
+					var prettied = _v1.a;
 					return $author$project$ItemShop$item_type_to_pretty_string_plural(prettied);
 				} else {
 					return 'Unknown Type (' + ($elm$core$String$fromInt(type_id) + ')');
@@ -27824,8 +27911,7 @@ var $author$project$ItemShop$trends_display = F5(
 				_List_fromArray(
 					[
 						$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
-						$mdgriffith$elm_ui$Element$Background$color(
-						A3($mdgriffith$elm_ui$Element$rgb, 1, 1, 1)),
+						$author$project$ItemShop$defaultBackgroundColor(colorTheme),
 						$mdgriffith$elm_ui$Element$Border$color(
 						A3($mdgriffith$elm_ui$Element$rgb, 0.35, 0.35, 0.35)),
 						$mdgriffith$elm_ui$Element$Border$rounded(3),
@@ -27841,7 +27927,14 @@ var $author$project$ItemShop$trends_display = F5(
 							$mdgriffith$elm_ui$Element$row,
 							_List_fromArray(
 								[
-									$author$project$ItemShop$font_grey,
+									$mdgriffith$elm_ui$Element$Font$color(
+									function () {
+										if (colorTheme.$ === 'BrightTheme') {
+											return $author$project$ItemShop$color_grey;
+										} else {
+											return $author$project$ItemShop$convertColor($avh4$elm_color$Color$lightGrey);
+										}
+									}()),
 									$mdgriffith$elm_ui$Element$Font$size(12),
 									$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
 									$mdgriffith$elm_ui$Element$spaceEvenly
@@ -27854,7 +27947,7 @@ var $author$project$ItemShop$trends_display = F5(
 						]),
 					A2(
 						$elm$core$List$map,
-						A2($author$project$ItemShop$render_single_trade_log_entry, item_db, all_characters),
+						A3($author$project$ItemShop$render_single_trade_log_entry, colorTheme, item_db, all_characters),
 						A2(
 							$elm$core$List$take,
 							shiftIsPressed ? 50 : 5,
@@ -27898,13 +27991,22 @@ var $author$project$ItemShop$view_shop_tab_type = function (model) {
 		$mdgriffith$elm_ui$Element$text('Welcome to the Item Shop!'));
 	var unpaused_border_attrs = _List_fromArray(
 		[
-			$mdgriffith$elm_ui$Element$Border$color($author$project$ItemShop$color_white),
+			$mdgriffith$elm_ui$Element$Border$color(
+			$author$project$ItemShop$defaultSolidColor(model.colorTheme)),
 			$mdgriffith$elm_ui$Element$Border$width(10),
 			$mdgriffith$elm_ui$Element$Border$dashed
 		]);
 	var paused_border_attrs = _List_fromArray(
 		[
-			$mdgriffith$elm_ui$Element$Border$color($author$project$ItemShop$color_light_grey),
+			$mdgriffith$elm_ui$Element$Border$color(
+			function () {
+				var _v4 = model.colorTheme;
+				if (_v4.$ === 'BrightTheme') {
+					return $author$project$ItemShop$color_light_grey;
+				} else {
+					return $author$project$ItemShop$color_grey;
+				}
+			}()),
 			$mdgriffith$elm_ui$Element$Border$width(10),
 			$mdgriffith$elm_ui$Element$Border$dashed
 		]);
@@ -27986,7 +28088,19 @@ var $author$project$ItemShop$view_shop_tab_type = function (model) {
 								$author$project$ItemShop$outline_button,
 								_List_Nil,
 								$author$project$ItemShop$ToggleShowMainChart,
-								model.show_main_chart ? 'Hide Charts' : 'Charts')
+								model.show_main_chart ? 'Hide Charts' : 'Charts'),
+								A3(
+								$author$project$ItemShop$outline_button,
+								_List_Nil,
+								$author$project$ItemShop$ToggleColorTheme,
+								function () {
+									var _v0 = model.colorTheme;
+									if (_v0.$ === 'BrightTheme') {
+										return 'Darken';
+									} else {
+										return 'Brighten';
+									}
+								}())
 							])),
 						model.show_main_chart ? A2(
 						$mdgriffith$elm_ui$Element$el,
@@ -28031,17 +28145,17 @@ var $author$project$ItemShop$view_shop_tab_type = function (model) {
 										$mdgriffith$elm_ui$Element$fillPortion(7)),
 										$mdgriffith$elm_ui$Element$alignTop
 									]),
-								A2($mdgriffith$elm_ui$Element$Lazy$lazy, $author$project$ItemShop$player_upgrades_display, model.player_upgrades))
+								A3($mdgriffith$elm_ui$Element$Lazy$lazy2, $author$project$ItemShop$player_upgrades_display, model.colorTheme, model.player_upgrades))
 							])),
 						function () {
 						if (maybe_player.$ === 'Just') {
 							var player = maybe_player.a;
-							return A4($author$project$ItemShop$special_actions_display, model.player_upgrades, model.hovered_tooltip, player, model.ai_updates_paused);
+							return A5($author$project$ItemShop$special_actions_display, model.colorTheme, model.player_upgrades, model.hovered_tooltip, player, model.ai_updates_paused);
 						} else {
 							return $mdgriffith$elm_ui$Element$none;
 						}
 					}(),
-						A5($author$project$ItemShop$trends_display, model.shiftIsPressed, model.item_db, model.shop_trends, model.characters, model.shop_trends_hovered),
+						A6($author$project$ItemShop$trends_display, model.colorTheme, model.shiftIsPressed, model.item_db, model.shop_trends, model.characters, model.shop_trends_hovered),
 						A2(
 						$mdgriffith$elm_ui$Element$el,
 						_List_fromArray(
@@ -28142,14 +28256,16 @@ var $author$project$ItemShop$view = function (model) {
 					'scroll',
 					$elm$json$Json$Decode$succeed($author$project$ItemShop$ScrollViewport))),
 				$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
-				$mdgriffith$elm_ui$Element$padding(20)
+				$mdgriffith$elm_ui$Element$padding(20),
+				$author$project$ItemShop$defaultBackgroundColor(model.colorTheme),
+				$author$project$ItemShop$defaultFontColor(model.colorTheme)
 			]),
 		function () {
 			var _v0 = model.tab_type;
 			if (_v0.$ === 'ShopTabType') {
 				return A2($mdgriffith$elm_ui$Element$Lazy$lazy, $author$project$ItemShop$view_shop_tab_type, model);
 			} else {
-				return A2($mdgriffith$elm_ui$Element$Lazy$lazy, $author$project$ItemShop$view_items_unlocked_tab_type, model.item_db);
+				return A3($mdgriffith$elm_ui$Element$Lazy$lazy2, $author$project$ItemShop$view_items_unlocked_tab_type, model.colorTheme, model.item_db);
 			}
 		}());
 };
