@@ -7353,7 +7353,6 @@ var $author$project$Main$initCurrentPage = function (_v0) {
 };
 var $elm$core$Debug$log = _Debug_log;
 var $elm$core$Platform$Cmd$map = _Platform_map;
-var $author$project$Main$NotFound = {$: 'NotFound'};
 var $author$project$Main$TabRoute = F2(
 	function (a, b) {
 		return {$: 'TabRoute', a: a, b: b};
@@ -7992,10 +7991,10 @@ var $author$project$Main$parseUrl = function (url) {
 			var hash = route.b;
 			return A2($author$project$Main$TabRoute, tab_type, hash);
 		} else {
-			return $author$project$Main$NotFound;
+			return A2($author$project$Main$TabRoute, $author$project$Main$ItemShopTab, $elm$core$Maybe$Nothing);
 		}
 	} else {
-		return $author$project$Main$NotFound;
+		return A2($author$project$Main$TabRoute, $author$project$Main$ItemShopTab, $elm$core$Maybe$Nothing);
 	}
 };
 var $elm$time$Time$utc = A2($elm$time$Time$Zone, 0, _List_Nil);
