@@ -7195,8 +7195,8 @@ var $author$project$ItemShop$initial_items_for_sale = function (item_db) {
 		_Debug_todo(
 			'ItemShop',
 			{
-				start: {line: 937, column: 17},
-				end: {line: 937, column: 27}
+				start: {line: 938, column: 17},
+				end: {line: 938, column: 27}
 			}),
 		'THERE WAS AN ERROR IN INITIAL ITEM SETUP!!!!',
 		$elm$core$Result$Err(''));
@@ -9675,8 +9675,8 @@ var $author$project$ItemShop$ai_buy_item_from_shop = F5(
 						return _Debug_todo(
 							'ItemShop',
 							{
-								start: {line: 2759, column: 25},
-								end: {line: 2759, column: 35}
+								start: {line: 2760, column: 25},
+								end: {line: 2760, column: 35}
 							})('');
 					}
 				}()
@@ -9906,8 +9906,8 @@ var $author$project$ItemShop$ai_sell_item_to_shop = F5(
 							_Debug_todo(
 								'ItemShop',
 								{
-									start: {line: 2852, column: 25},
-									end: {line: 2852, column: 35}
+									start: {line: 2853, column: 25},
+									end: {line: 2853, column: 35}
 								}),
 							'',
 							_List_Nil);
@@ -11030,7 +11030,6 @@ var $author$project$Main$update = F2(
 		}
 	});
 var $elm$html$Html$div = _VirtualDom_node('div');
-var $elm$html$Html$br = _VirtualDom_node('br');
 var $mdgriffith$elm_ui$Internal$Model$FocusStyleOption = function (a) {
 	return {$: 'FocusStyleOption', a: a};
 };
@@ -16674,6 +16673,10 @@ var $mdgriffith$elm_ui$Element$none = $mdgriffith$elm_ui$Internal$Model$Empty;
 var $elm$virtual_dom$VirtualDom$style = _VirtualDom_style;
 var $elm$html$Html$Attributes$style = $elm$virtual_dom$VirtualDom$style;
 var $author$project$ItemShop$ScrollViewport = {$: 'ScrollViewport'};
+var $mdgriffith$elm_ui$Internal$Model$Fill = function (a) {
+	return {$: 'Fill', a: a};
+};
+var $mdgriffith$elm_ui$Element$fill = $mdgriffith$elm_ui$Internal$Model$Fill(1);
 var $mdgriffith$elm_ui$Internal$Model$InFront = {$: 'InFront'};
 var $mdgriffith$elm_ui$Internal$Model$Nearby = F2(
 	function (a, b) {
@@ -16743,6 +16746,24 @@ var $elm$html$Html$Events$on = F2(
 			event,
 			$elm$virtual_dom$VirtualDom$Normal(decoder));
 	});
+var $mdgriffith$elm_ui$Internal$Model$PaddingStyle = F5(
+	function (a, b, c, d, e) {
+		return {$: 'PaddingStyle', a: a, b: b, c: c, d: d, e: e};
+	});
+var $mdgriffith$elm_ui$Internal$Flag$padding = $mdgriffith$elm_ui$Internal$Flag$flag(2);
+var $mdgriffith$elm_ui$Element$padding = function (x) {
+	var f = x;
+	return A2(
+		$mdgriffith$elm_ui$Internal$Model$StyleClass,
+		$mdgriffith$elm_ui$Internal$Flag$padding,
+		A5(
+			$mdgriffith$elm_ui$Internal$Model$PaddingStyle,
+			'p-' + $elm$core$String$fromInt(x),
+			f,
+			f,
+			f,
+			f));
+};
 var $mdgriffith$elm_ui$Internal$Model$AlignY = function (a) {
 	return {$: 'AlignY', a: a};
 };
@@ -16813,30 +16834,8 @@ var $mdgriffith$elm_ui$Element$el = F2(
 				_List_fromArray(
 					[child])));
 	});
-var $mdgriffith$elm_ui$Internal$Model$Fill = function (a) {
-	return {$: 'Fill', a: a};
-};
-var $mdgriffith$elm_ui$Element$fill = $mdgriffith$elm_ui$Internal$Model$Fill(1);
 var $author$project$ItemShop$noUserSelect = $mdgriffith$elm_ui$Element$htmlAttribute(
 	A2($elm$html$Html$Attributes$style, 'userSelect', 'none'));
-var $mdgriffith$elm_ui$Internal$Model$PaddingStyle = F5(
-	function (a, b, c, d, e) {
-		return {$: 'PaddingStyle', a: a, b: b, c: c, d: d, e: e};
-	});
-var $mdgriffith$elm_ui$Internal$Flag$padding = $mdgriffith$elm_ui$Internal$Flag$flag(2);
-var $mdgriffith$elm_ui$Element$padding = function (x) {
-	var f = x;
-	return A2(
-		$mdgriffith$elm_ui$Internal$Model$StyleClass,
-		$mdgriffith$elm_ui$Internal$Flag$padding,
-		A5(
-			$mdgriffith$elm_ui$Internal$Model$PaddingStyle,
-			'p-' + $elm$core$String$fromInt(x),
-			f,
-			f,
-			f,
-			f));
-};
 var $author$project$ItemShop$pointerEventsAll = $mdgriffith$elm_ui$Element$htmlAttribute(
 	A2($elm$html$Html$Attributes$style, 'pointer-events', 'all'));
 var $author$project$ItemShop$pointerEventsNone = $mdgriffith$elm_ui$Element$htmlAttribute(
@@ -26227,8 +26226,8 @@ var $author$project$ItemShop$hex_to_color = function (hex_str) {
 			_Debug_todo(
 				'ItemShop',
 				{
-					start: {line: 1035, column: 13},
-					end: {line: 1035, column: 23}
+					start: {line: 1036, column: 13},
+					end: {line: 1036, column: 23}
 				}),
 			'NOOO',
 			A3($mdgriffith$elm_ui$Element$rgb255, 255, 0, 0));
@@ -27945,9 +27944,12 @@ var $author$project$ItemShop$view_shop_tab_type = function (model) {
 			A2($author$project$ItemShop$exclude_player_and_shop, model, model.characters)));
 	return A2(
 		$mdgriffith$elm_ui$Element$el,
-		A2(
-			$elm$core$List$cons,
-			$mdgriffith$elm_ui$Element$padding(10),
+		_Utils_ap(
+			_List_fromArray(
+				[
+					$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
+					$mdgriffith$elm_ui$Element$padding(10)
+				]),
 			model.ai_updates_paused ? paused_border_attrs : unpaused_border_attrs),
 		A2(
 			$mdgriffith$elm_ui$Element$column,
@@ -28138,7 +28140,9 @@ var $author$project$ItemShop$view = function (model) {
 				A2(
 					$elm$html$Html$Events$on,
 					'scroll',
-					$elm$json$Json$Decode$succeed($author$project$ItemShop$ScrollViewport)))
+					$elm$json$Json$Decode$succeed($author$project$ItemShop$ScrollViewport))),
+				$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
+				$mdgriffith$elm_ui$Element$padding(20)
 			]),
 		function () {
 			var _v0 = model.tab_type;
@@ -28185,15 +28189,7 @@ var $author$project$Main$homeView = function (model) {
 		$elm$html$Html$div,
 		_List_Nil,
 		_List_fromArray(
-			[
-				elm_ui_hack_layout,
-				A2($elm$html$Html$br, _List_Nil, _List_Nil),
-				A2(
-				$elm$html$Html$div,
-				_List_Nil,
-				_List_fromArray(
-					[tab_content]))
-			]));
+			[elm_ui_hack_layout, tab_content]));
 };
 var $author$project$Main$tab_type_to_str = function (tab_type) {
 	return 'Item Shop';
