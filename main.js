@@ -5540,18 +5540,21 @@ var $author$project$Main$UrlPageInfo = F4(
 		return {key: key, page: page, route: route, url: url};
 	});
 var $elm$core$Platform$Cmd$batch = _Platform_batch;
+var $author$project$ItemShop$Ascending = {$: 'Ascending'};
 var $author$project$ItemShop$AutomaticGPM = function (a) {
 	return {$: 'AutomaticGPM', a: a};
 };
-var $author$project$ItemShop$BrightTheme = {$: 'BrightTheme'};
-var $author$project$ItemShop$ItemsUnlockedTabType = {$: 'ItemsUnlockedTabType'};
+var $author$project$ItemShop$BattleTabType = {$: 'BattleTabType'};
+var $author$project$Interface$BrightTheme = {$: 'BrightTheme'};
 var $author$project$ItemShop$NoHoveredTooltip = {$: 'NoHoveredTooltip'};
 var $author$project$ItemShop$PlayerParty = {$: 'PlayerParty'};
 var $author$project$ItemShop$ShopParty = {$: 'ShopParty'};
 var $author$project$ItemShop$ShopTabType = {$: 'ShopTabType'};
+var $author$project$ItemShop$SortByName = {$: 'SortByName'};
 var $author$project$ItemShop$TickSecond = function (a) {
 	return {$: 'TickSecond', a: a};
 };
+var $author$project$ItemShop$WelcomeMessageActionLog = {$: 'WelcomeMessageActionLog'};
 var $author$project$ItemShop$CharacterParty = function (a) {
 	return {$: 'CharacterParty', a: a};
 };
@@ -5559,7 +5562,7 @@ var $elm$core$Dict$RBEmpty_elm_builtin = {$: 'RBEmpty_elm_builtin'};
 var $elm$core$Dict$empty = $elm$core$Dict$RBEmpty_elm_builtin;
 var $author$project$ItemShop$empty_item_sentiments = $elm$core$Dict$empty;
 var $author$project$ItemShop$empty_trend_tolerance = {buy: $elm$core$Dict$empty, sell: $elm$core$Dict$empty};
-var $author$project$ItemShop$create_character = F2(
+var $author$project$ItemShop$createCharacter = F2(
 	function (char_id, name) {
 		return {
 			action_log: _List_Nil,
@@ -6482,6 +6485,35 @@ var $TSFoster$elm_uuid$UUID$forName = A2(
 	$elm$core$Basics$composeL,
 	A2($elm$core$Basics$composeL, $TSFoster$elm_uuid$UUID$forBytes, $elm$bytes$Bytes$Encode$encode),
 	$elm$bytes$Bytes$Encode$string);
+var $author$project$Battle$DeliverItemToShop = {$: 'DeliverItemToShop'};
+var $author$project$Battle$Forest = {$: 'Forest'};
+var $author$project$Battle$LivingMonster = function (a) {
+	return {$: 'LivingMonster', a: a};
+};
+var $author$project$Battle$Mountains = {$: 'Mountains'};
+var $author$project$Battle$Plains = {$: 'Plains'};
+var $author$project$Battle$maxMonstersPerLocation = 10;
+var $author$project$Battle$createLocation = F3(
+	function (locationType, locationId, name) {
+		return {locationId: locationId, locationType: locationType, monstersLeft: $author$project$Battle$maxMonstersPerLocation, name: name};
+	});
+var $author$project$Battle$NoDefeatAction = {$: 'NoDefeatAction'};
+var $author$project$Battle$initStat = function (maxVal) {
+	return {curVal: maxVal, initialVal: maxVal, maxVal: maxVal};
+};
+var $author$project$Battle$createMonster = F4(
+	function (name, hpMax, pwrMax, protMax) {
+		return {
+			level: 1,
+			name: name,
+			onDefeat: $author$project$Battle$NoDefeatAction,
+			statHP: $author$project$Battle$initStat(hpMax),
+			statPower: $author$project$Battle$initStat(pwrMax),
+			statProtection: $author$project$Battle$initStat(protMax),
+			statStamina: $author$project$Battle$initStat(10),
+			xp: 0
+		};
+	});
 var $elm$random$Random$Seed = F2(
 	function (a, b) {
 		return {$: 'Seed', a: a, b: b};
@@ -6499,6 +6531,71 @@ var $elm$random$Random$initialSeed = function (x) {
 	var state2 = (state1 + x) >>> 0;
 	return $elm$random$Random$next(
 		A2($elm$random$Random$Seed, state2, incr));
+};
+var $author$project$Battle$monsterStatMap = F4(
+	function (statGetter, statSetter, statFunc, monster) {
+		var intStat = statGetter(monster);
+		var newStat = statFunc(intStat);
+		return A2(statSetter, monster, newStat);
+	});
+var $author$project$Battle$setStatHP = F2(
+	function (monster, newStatHP) {
+		return _Utils_update(
+			monster,
+			{statHP: newStatHP});
+	});
+var $author$project$Battle$monsterStatMapHP = F2(
+	function (statFunc, monster) {
+		return A4(
+			$author$project$Battle$monsterStatMap,
+			function ($) {
+				return $.statHP;
+			},
+			$author$project$Battle$setStatHP,
+			statFunc,
+			monster);
+	});
+var $author$project$Battle$setOnDefeat = F2(
+	function (defeatAction, monster) {
+		return _Utils_update(
+			monster,
+			{onDefeat: defeatAction});
+	});
+var $author$project$Battle$setStatCurVal = F2(
+	function (newCurVal, stat) {
+		return _Utils_update(
+			stat,
+			{curVal: newCurVal});
+	});
+var $author$project$Battle$init = function (_v0) {
+	var held_blood = _v0.held_blood;
+	var held_gold = _v0.held_gold;
+	var locations = {
+		forest: A3($author$project$Battle$createLocation, $author$project$Battle$Forest, 0, 'The Forest'),
+		mountains: A3($author$project$Battle$createLocation, $author$project$Battle$Mountains, 1, 'The Mountains'),
+		plains: A3($author$project$Battle$createLocation, $author$project$Battle$Plains, 2, 'The Plains')
+	};
+	return {
+		battleSeed: $elm$random$Random$initialSeed(123456),
+		currentLocationId: locations.forest.locationId,
+		enemyMonster: $elm$core$Maybe$Just(
+			$author$project$Battle$LivingMonster(
+				A2(
+					$author$project$Battle$setOnDefeat,
+					$author$project$Battle$DeliverItemToShop,
+					A2(
+						$author$project$Battle$monsterStatMapHP,
+						$author$project$Battle$setStatCurVal(4),
+						A4($author$project$Battle$createMonster, 'Slime', 10, 2, 5))))),
+		fightLogs: _List_Nil,
+		golem: $author$project$Battle$LivingMonster(
+			A4($author$project$Battle$createMonster, 'Golem', 25, 10, 0)),
+		locations: locations,
+		player: {held_blood: held_blood, held_gold: held_gold},
+		secondsWaitedSince: {lastLocationMonsterRefill: 0, lastSpRefill: 0},
+		shouldShowLocationTypeMenu: false,
+		showExpandedLogs: false
+	};
 };
 var $author$project$ItemShop$Spellbook = {$: 'Spellbook'};
 var $author$project$ItemShop$Weapon = {$: 'Weapon'};
@@ -6716,11 +6813,11 @@ var $author$project$ItemShop$setQuantity = function (qty) {
 };
 var $author$project$ItemShop$initial_characters = function (item_db) {
 	var base_character_2 = A2(
-		$author$project$ItemShop$create_character,
+		$author$project$ItemShop$createCharacter,
 		$author$project$ItemShop$generate_uuid('character 2'),
 		'Mitchell');
 	var base_character_1 = A2(
-		$author$project$ItemShop$create_character,
+		$author$project$ItemShop$createCharacter,
 		$author$project$ItemShop$generate_uuid('character 1'),
 		'Billy');
 	return _List_fromArray(
@@ -7196,8 +7293,8 @@ var $author$project$ItemShop$initial_items_for_sale = function (item_db) {
 		_Debug_todo(
 			'ItemShop',
 			{
-				start: {line: 945, column: 17},
-				end: {line: 945, column: 27}
+				start: {line: 967, column: 17},
+				end: {line: 967, column: 27}
 			}),
 		'THERE WAS AN ERROR IN INITIAL ITEM SETUP!!!!',
 		$elm$core$Result$Err(''));
@@ -7248,58 +7345,69 @@ var $elm$time$Time$Zone = F2(
 	});
 var $elm$time$Time$customZone = $elm$time$Time$Zone;
 var $elm$time$Time$now = _Time_now($elm$time$Time$millisToPosix);
-var $author$project$ItemShop$init = function (hash) {
-	var shop_base_char = A2(
-		$author$project$ItemShop$create_character,
-		A2($TSFoster$elm_uuid$UUID$forName, 'shop character', $TSFoster$elm_uuid$UUID$dnsNamespace),
-		'Shop');
-	var player_base_char = A2(
-		$author$project$ItemShop$create_character,
-		A2($TSFoster$elm_uuid$UUID$forName, 'player character', $TSFoster$elm_uuid$UUID$dnsNamespace),
-		'Player');
-	var item_db = $author$project$ItemShop$initial_item_db;
-	var player = _Utils_update(
-		player_base_char,
-		{
-			held_gold: 25,
-			held_items: $author$project$ItemShop$initial_owned_items(item_db),
-			party: $author$project$ItemShop$PlayerParty
-		});
-	var shop = _Utils_update(
-		shop_base_char,
-		{
-			held_gold: 999999999,
-			held_items: $author$project$ItemShop$initial_items_for_sale(item_db),
-			party: $author$project$ItemShop$ShopParty
-		});
-	var initial_tab_type = function () {
-		switch (hash) {
-			case 'shop':
-				return $author$project$ItemShop$ShopTabType;
-			case 'items':
-				return $author$project$ItemShop$ItemsUnlockedTabType;
-			default:
-				return $author$project$ItemShop$ShopTabType;
-		}
-	}();
-	var characters = _Utils_ap(
-		_List_fromArray(
-			[player, shop]),
-		$author$project$ItemShop$initial_characters(item_db));
-	return _Utils_Tuple2(
-		{
+var $author$project$ItemShop$ItemsUnlockedTabType = {$: 'ItemsUnlockedTabType'};
+var $author$project$ItemShop$stringToTabType = function (hash) {
+	switch (hash) {
+		case 'shop':
+			return $author$project$ItemShop$ShopTabType;
+		case 'items':
+			return $author$project$ItemShop$ItemsUnlockedTabType;
+		case 'battle':
+			return $author$project$ItemShop$BattleTabType;
+		default:
+			return $author$project$ItemShop$ShopTabType;
+	}
+};
+var $author$project$ItemShop$init = F2(
+	function (hash, key) {
+		var shop_base_char = A2(
+			$author$project$ItemShop$createCharacter,
+			A2($TSFoster$elm_uuid$UUID$forName, 'shop character', $TSFoster$elm_uuid$UUID$dnsNamespace),
+			'Shop');
+		var player_base_char = A2(
+			$author$project$ItemShop$createCharacter,
+			A2($TSFoster$elm_uuid$UUID$forName, 'player character', $TSFoster$elm_uuid$UUID$dnsNamespace),
+			'Player');
+		var item_db = $author$project$ItemShop$initial_item_db;
+		var player = _Utils_update(
+			player_base_char,
+			{
+				held_blood: 100,
+				held_gold: 25,
+				held_items: $author$project$ItemShop$initial_owned_items(item_db),
+				party: $author$project$ItemShop$PlayerParty
+			});
+		var shop = _Utils_update(
+			shop_base_char,
+			{
+				held_gold: 999999999,
+				held_items: $author$project$ItemShop$initial_items_for_sale(item_db),
+				party: $author$project$ItemShop$ShopParty
+			});
+		var initial_tab_type = $author$project$ItemShop$stringToTabType(hash);
+		var characters = _Utils_ap(
+			_List_fromArray(
+				[player, shop]),
+			$author$project$ItemShop$initial_characters(item_db));
+		var battleModel = $author$project$Battle$init(player);
+		var initModel = {
 			ai_tick_time: $elm$time$Time$millisToPosix(-1),
-			ai_updates_paused: false,
+			ai_updates_paused: (_Utils_eq(initial_tab_type, $author$project$ItemShop$ShopTabType) || _Utils_eq(initial_tab_type, $author$project$ItemShop$BattleTabType)) ? false : true,
+			battleModel: battleModel,
+			browserNavKey: key,
 			cached_tooltip_offsets: $elm$core$Dict$empty,
 			characters: characters,
-			colorTheme: $author$project$ItemShop$BrightTheme,
+			colorTheme: $author$project$Interface$BrightTheme,
 			globalViewport: $elm$core$Maybe$Nothing,
 			global_seed: $elm$random$Random$initialSeed(4),
-			historical_player_actions: _List_Nil,
+			historical_player_actions: _List_fromArray(
+				[$author$project$ItemShop$WelcomeMessageActionLog]),
 			historical_shop_trends: _List_Nil,
 			hovered_item_in_character: $elm$core$Maybe$Nothing,
 			hovered_tooltip: $author$project$ItemShop$NoHoveredTooltip,
 			hovered_trend_chart: _List_Nil,
+			inventorySortDir: $author$project$ItemShop$Ascending,
+			inventorySortType: $author$project$ItemShop$SortByName,
 			item_db: item_db,
 			player_id: player.char_id,
 			player_upgrades: _List_fromArray(
@@ -7316,8 +7424,28 @@ var $author$project$ItemShop$init = function (hash) {
 			show_debug_inventories: true,
 			show_main_chart: true,
 			tab_type: initial_tab_type
-		},
-		A2($elm$core$Task$perform, $author$project$ItemShop$TickSecond, $elm$time$Time$now));
+		};
+		return _Utils_Tuple2(
+			initModel,
+			A2($elm$core$Task$perform, $author$project$ItemShop$TickSecond, $elm$time$Time$now));
+	});
+var $author$project$Sfxr$Square = {$: 'Square'};
+var $author$project$Sfxr$initSoundConfig = {
+	arpeggiation: {mod: 0, speed: 0},
+	duty: {duty: 0, ramp: 0},
+	envelope: {attack: 0, decay: 0.4, punch: 0, sustain: 0.3},
+	flanger: {offset: 0, ramp: 0},
+	frequency: {base: 0.3, dramp: 0, limit: 0, ramp: 0.0},
+	highPassFilter: {frequency: 0, ramp: 0},
+	lowPassFilter: {frequency: 1, ramp: 0, resonance: 0},
+	misc: {sampleRate: 44100, sampleSize: 8, volume: 0.05},
+	retrigger: {repeatSpeed: 0.0},
+	shape: $author$project$Sfxr$Square,
+	vibrato: {speed: 0, strength: 0}
+};
+var $author$project$Sfxr$init = {
+	globalSeed: $elm$random$Random$initialSeed(12345),
+	soundConfig: $author$project$Sfxr$initSoundConfig
 };
 var $author$project$Main$HomePage = {$: 'HomePage'};
 var $author$project$Main$NotFoundPage = {$: 'NotFoundPage'};
@@ -7353,7 +7481,6 @@ var $author$project$Main$initCurrentPage = function (_v0) {
 			_List_fromArray(
 				[existingCmds, mappedPageCmds])));
 };
-var $elm$core$Debug$log = _Debug_log;
 var $elm$core$Platform$Cmd$map = _Platform_map;
 var $author$project$Main$TabRoute = F2(
 	function (a, b) {
@@ -7494,7 +7621,18 @@ var $author$project$Main$matchRoute = $elm$url$Url$Parser$oneOf(
 			A2(
 				$elm$url$Url$Parser$slash,
 				$elm$url$Url$Parser$s('item_shop_tab'),
-				$elm$url$Url$Parser$fragment($elm$core$Basics$identity)))
+				$elm$url$Url$Parser$fragment($elm$core$Basics$identity))),
+			A2(
+			$elm$url$Url$Parser$map,
+			$author$project$Main$TabRoute($author$project$Main$ItemShopTab),
+			A2(
+				$elm$url$Url$Parser$slash,
+				$elm$url$Url$Parser$s(''),
+				$elm$url$Url$Parser$fragment($elm$core$Basics$identity))),
+			A2(
+			$elm$url$Url$Parser$map,
+			$author$project$Main$TabRoute($author$project$Main$ItemShopTab),
+			$elm$url$Url$Parser$fragment($elm$core$Basics$identity))
 		]));
 var $elm$url$Url$Parser$getFirstMatch = function (states) {
 	getFirstMatch:
@@ -8002,10 +8140,7 @@ var $author$project$Main$parseUrl = function (url) {
 var $elm$time$Time$utc = A2($elm$time$Time$Zone, 0, _List_Nil);
 var $author$project$Main$init = F3(
 	function (_v0, url, navKey) {
-		var parsedRoute = A2(
-			$elm$core$Debug$log,
-			'parsedURL in init',
-			$author$project$Main$parseUrl(url));
+		var parsedRoute = $author$project$Main$parseUrl(url);
 		var page_info = A4($author$project$Main$UrlPageInfo, navKey, url, parsedRoute, $author$project$Main$UnsetPage);
 		var initial_tab = function () {
 			if (parsedRoute.$ === 'TabRoute') {
@@ -8025,7 +8160,10 @@ var $author$project$Main$init = F3(
 				return '';
 			}
 		}();
-		var _v1 = $author$project$ItemShop$init(hash);
+		var _v1 = A2(
+			$author$project$ItemShop$init,
+			hash,
+			$elm$core$Maybe$Just(navKey));
 		var item_shop_model = _v1.a;
 		var item_shop_cmds = _v1.b;
 		var existingCmds = $elm$core$Platform$Cmd$batch(
@@ -8039,17 +8177,24 @@ var $author$project$Main$init = F3(
 			current_tab: initial_tab,
 			item_shop_model: item_shop_model,
 			page_info: page_info,
+			sfxrModel: $author$project$Sfxr$init,
 			time: $elm$time$Time$millisToPosix(0),
 			zone: $elm$time$Time$utc
 		};
 		return $author$project$Main$initCurrentPage(
 			_Utils_Tuple2(initial_model, existingCmds));
 	});
+var $author$project$Main$GotSfxrMsg = function (a) {
+	return {$: 'GotSfxrMsg', a: a};
+};
 var $author$project$Main$RecvFromPort = function (a) {
 	return {$: 'RecvFromPort', a: a};
 };
 var $elm$core$Platform$Sub$batch = _Platform_batch;
 var $elm$core$Platform$Sub$map = _Platform_map;
+var $author$project$ItemShop$GotBattleMsg = function (a) {
+	return {$: 'GotBattleMsg', a: a};
+};
 var $elm$time$Time$Every = F2(
 	function (a, b) {
 		return {$: 'Every', a: a, b: b};
@@ -8530,13 +8675,34 @@ var $elm$browser$Browser$Events$on = F3(
 	});
 var $elm$browser$Browser$Events$onKeyDown = A2($elm$browser$Browser$Events$on, $elm$browser$Browser$Events$Document, 'keydown');
 var $elm$browser$Browser$Events$onKeyUp = A2($elm$browser$Browser$Events$on, $elm$browser$Browser$Events$Document, 'keyup');
+var $author$project$Battle$TickSecond = function (a) {
+	return {$: 'TickSecond', a: a};
+};
+var $author$project$Battle$subscriptions = function (model) {
+	return A2($elm$time$Time$every, 1000, $author$project$Battle$TickSecond);
+};
 var $author$project$ItemShop$subscriptions = function (model) {
 	return $elm$core$Platform$Sub$batch(
 		_List_fromArray(
 			[
 				(!model.ai_updates_paused) ? A2($elm$time$Time$every, 1000, $author$project$ItemShop$TickSecond) : $elm$core$Platform$Sub$none,
 				$elm$browser$Browser$Events$onKeyDown($author$project$ItemShop$keyPressedDecoder),
-				$elm$browser$Browser$Events$onKeyUp($author$project$ItemShop$keyReleasedDecoder)
+				$elm$browser$Browser$Events$onKeyUp($author$project$ItemShop$keyReleasedDecoder),
+				A2(
+				$elm$core$Platform$Sub$map,
+				$author$project$ItemShop$GotBattleMsg,
+				$author$project$Battle$subscriptions(model.battleModel))
+			]));
+};
+var $author$project$Sfxr$FromPort = function (a) {
+	return {$: 'FromPort', a: a};
+};
+var $author$project$Sfxr$sfxrIn = _Platform_incomingPort('sfxrIn', $elm$json$Json$Decode$string);
+var $author$project$Sfxr$subscriptions = function (model) {
+	return $elm$core$Platform$Sub$batch(
+		_List_fromArray(
+			[
+				$author$project$Sfxr$sfxrIn($author$project$Sfxr$FromPort)
 			]));
 };
 var $author$project$Main$test_port_receiving = _Platform_incomingPort('test_port_receiving', $elm$json$Json$Decode$string);
@@ -8548,12 +8714,17 @@ var $author$project$Main$subscriptions = function (model) {
 				A2(
 				$elm$core$Platform$Sub$map,
 				$author$project$Main$GotItemShopMsg,
-				$author$project$ItemShop$subscriptions(model.item_shop_model))
+				$author$project$ItemShop$subscriptions(model.item_shop_model)),
+				A2(
+				$elm$core$Platform$Sub$map,
+				$author$project$Main$GotSfxrMsg,
+				$author$project$Sfxr$subscriptions(model.sfxrModel))
 			]));
 };
 var $elm$json$Json$Encode$string = _Json_wrap;
 var $author$project$Main$exec_jsonp = _Platform_outgoingPort('exec_jsonp', $elm$json$Json$Encode$string);
 var $elm$browser$Browser$Navigation$load = _Browser_load;
+var $elm$core$Debug$log = _Debug_log;
 var $elm$browser$Browser$Navigation$pushUrl = _Browser_pushUrl;
 var $author$project$Main$test_port_sending = _Platform_outgoingPort('test_port_sending', $elm$json$Json$Encode$string);
 var $elm$url$Url$addPort = F2(
@@ -8600,7 +8771,7 @@ var $elm$url$Url$toString = function (url) {
 					_Utils_ap(http, url.host)),
 				url.path)));
 };
-var $author$project$ItemShop$DarkTheme = {$: 'DarkTheme'};
+var $author$project$Interface$DarkTheme = {$: 'DarkTheme'};
 var $author$project$ItemShop$GotShowDebugElement = function (a) {
 	return {$: 'GotShowDebugElement', a: a};
 };
@@ -8792,6 +8963,31 @@ var $elm$core$Maybe$map = F2(
 				f(value));
 		} else {
 			return $elm$core$Maybe$Nothing;
+		}
+	});
+var $author$project$ItemShop$withCharacter = F2(
+	function (new_char, model) {
+		var new_characters = A2(
+			$elm$core$List$map,
+			function (_char) {
+				return _Utils_eq(_char.char_id, new_char.char_id) ? new_char : _char;
+			},
+			model.characters);
+		return _Utils_update(
+			model,
+			{characters: new_characters});
+	});
+var $author$project$ItemShop$mapPlayer = F2(
+	function (callback, model) {
+		var _v0 = $author$project$ItemShop$getPlayer(model);
+		if (_v0.$ === 'Just') {
+			var player = _v0.a;
+			return A2(
+				$author$project$ItemShop$withCharacter,
+				callback(player),
+				model);
+		} else {
+			return model;
 		}
 	});
 var $elm$core$Basics$ge = _Utils_ge;
@@ -9181,6 +9377,896 @@ var $author$project$ItemShop$sell_items_from_party_to_other = F2(
 			return $author$project$ItemShop$IncompleteTradeRecord(orig_trade_context);
 		}
 	});
+var $author$project$ItemShop$tabTypeToString = function (tabType) {
+	switch (tabType.$) {
+		case 'ShopTabType':
+			return 'shop';
+		case 'ItemsUnlockedTabType':
+			return 'items';
+		default:
+			return 'battle';
+	}
+};
+var $author$project$ItemShop$transferFromBattleModel = F2(
+	function (model, newBattleModel) {
+		return A2(
+			$author$project$ItemShop$mapPlayer,
+			function (player) {
+				return _Utils_update(
+					player,
+					{held_blood: newBattleModel.player.held_blood, held_gold: newBattleModel.player.held_gold});
+			},
+			_Utils_update(
+				model,
+				{battleModel: newBattleModel}));
+	});
+var $author$project$ItemShop$transferToBattleModel = function (model) {
+	return A2(
+		$elm$core$Maybe$withDefault,
+		model.battleModel,
+		A2(
+			$elm$core$Maybe$map,
+			function (p) {
+				var _v0 = model;
+				var battleModel = _v0.battleModel;
+				var battlePlayer = battleModel.player;
+				var newPlayer = _Utils_update(
+					battlePlayer,
+					{held_blood: p.held_blood, held_gold: p.held_gold});
+				return _Utils_update(
+					battleModel,
+					{player: newPlayer});
+			},
+			$author$project$ItemShop$getPlayer(model)));
+};
+var $author$project$Battle$FoundNewMonster = function (a) {
+	return {$: 'FoundNewMonster', a: a};
+};
+var $author$project$Battle$NoOutMsg = {$: 'NoOutMsg'};
+var $author$project$Battle$PlayerHealedGolem = function (a) {
+	return {$: 'PlayerHealedGolem', a: a};
+};
+var $author$project$Battle$PlayerRevivedGolem = {$: 'PlayerRevivedGolem'};
+var $author$project$Battle$addMonsterXp = F2(
+	function (toAdd, monster) {
+		return _Utils_update(
+			monster,
+			{xp: monster.xp + toAdd});
+	});
+var $author$project$Battle$levelUpXpCost = 100;
+var $author$project$Battle$addMonsterLevel = F2(
+	function (toAdd, monster) {
+		var xp = monster.xp;
+		var level = monster.level;
+		return A2(
+			$author$project$Battle$addMonsterXp,
+			-($author$project$Battle$levelUpXpCost * toAdd),
+			_Utils_update(
+				monster,
+				{level: level + toAdd}));
+	});
+var $elm$core$Basics$min = F2(
+	function (x, y) {
+		return (_Utils_cmp(x, y) < 0) ? x : y;
+	});
+var $author$project$Battle$addToStatCurVal = F2(
+	function (addedCurVal, stat) {
+		return _Utils_update(
+			stat,
+			{
+				curVal: A2($elm$core$Basics$min, stat.maxVal, stat.curVal + addedCurVal)
+			});
+	});
+var $author$project$Battle$addToStatMaxVal = F2(
+	function (addedMaxVal, stat) {
+		return _Utils_update(
+			stat,
+			{maxVal: stat.maxVal + addedMaxVal});
+	});
+var $author$project$Battle$getLocationsList = function (locations) {
+	return _List_fromArray(
+		[locations.forest, locations.mountains, locations.plains]);
+};
+var $author$project$Battle$getCurrentLocation = function (_v0) {
+	var currentLocationId = _v0.currentLocationId;
+	var locations = _v0.locations;
+	var potentialLocations = $author$project$Battle$getLocationsList(locations);
+	return A2(
+		$elm$core$Maybe$withDefault,
+		locations.forest,
+		A3(
+			$elm$core$List$foldl,
+			F2(
+				function (pl, acc) {
+					return _Utils_eq(pl.locationId, currentLocationId) ? $elm$core$Maybe$Just(pl) : acc;
+				}),
+			$elm$core$Maybe$Nothing,
+			potentialLocations));
+};
+var $author$project$Battle$healGolemBloodCost = 5;
+var $author$project$Battle$DeadMonster = function (a) {
+	return {$: 'DeadMonster', a: a};
+};
+var $author$project$Battle$monsterIdentityMap = F2(
+	function (callback, damagedMonster) {
+		if (damagedMonster.$ === 'LivingMonster') {
+			var monster = damagedMonster.a;
+			return $author$project$Battle$LivingMonster(
+				callback(monster));
+		} else {
+			var monster = damagedMonster.a;
+			return $author$project$Battle$DeadMonster(
+				callback(monster));
+		}
+	});
+var $elm$random$Random$Generator = function (a) {
+	return {$: 'Generator', a: a};
+};
+var $elm$random$Random$constant = function (value) {
+	return $elm$random$Random$Generator(
+		function (seed) {
+			return _Utils_Tuple2(value, seed);
+		});
+};
+var $elm_community$random_extra$Random$List$get = F2(
+	function (index, list) {
+		return $elm$core$List$head(
+			A2($elm$core$List$drop, index, list));
+	});
+var $elm$random$Random$peel = function (_v0) {
+	var state = _v0.a;
+	var word = (state ^ (state >>> ((state >>> 28) + 4))) * 277803737;
+	return ((word >>> 22) ^ word) >>> 0;
+};
+var $elm$random$Random$int = F2(
+	function (a, b) {
+		return $elm$random$Random$Generator(
+			function (seed0) {
+				var _v0 = (_Utils_cmp(a, b) < 0) ? _Utils_Tuple2(a, b) : _Utils_Tuple2(b, a);
+				var lo = _v0.a;
+				var hi = _v0.b;
+				var range = (hi - lo) + 1;
+				if (!((range - 1) & range)) {
+					return _Utils_Tuple2(
+						(((range - 1) & $elm$random$Random$peel(seed0)) >>> 0) + lo,
+						$elm$random$Random$next(seed0));
+				} else {
+					var threshhold = (((-range) >>> 0) % range) >>> 0;
+					var accountForBias = function (seed) {
+						accountForBias:
+						while (true) {
+							var x = $elm$random$Random$peel(seed);
+							var seedN = $elm$random$Random$next(seed);
+							if (_Utils_cmp(x, threshhold) < 0) {
+								var $temp$seed = seedN;
+								seed = $temp$seed;
+								continue accountForBias;
+							} else {
+								return _Utils_Tuple2((x % range) + lo, seedN);
+							}
+						}
+					};
+					return accountForBias(seed0);
+				}
+			});
+	});
+var $elm$core$List$isEmpty = function (xs) {
+	if (!xs.b) {
+		return true;
+	} else {
+		return false;
+	}
+};
+var $elm$random$Random$map = F2(
+	function (func, _v0) {
+		var genA = _v0.a;
+		return $elm$random$Random$Generator(
+			function (seed0) {
+				var _v1 = genA(seed0);
+				var a = _v1.a;
+				var seed1 = _v1.b;
+				return _Utils_Tuple2(
+					func(a),
+					seed1);
+			});
+	});
+var $elm_community$random_extra$Random$List$choose = function (list) {
+	if ($elm$core$List$isEmpty(list)) {
+		return $elm$random$Random$constant(
+			_Utils_Tuple2($elm$core$Maybe$Nothing, list));
+	} else {
+		var lastIndex = $elm$core$List$length(list) - 1;
+		var gen = A2($elm$random$Random$int, 0, lastIndex);
+		var front = function (i) {
+			return A2($elm$core$List$take, i, list);
+		};
+		var back = function (i) {
+			return A2($elm$core$List$drop, i + 1, list);
+		};
+		return A2(
+			$elm$random$Random$map,
+			function (index) {
+				return _Utils_Tuple2(
+					A2($elm_community$random_extra$Random$List$get, index, list),
+					A2(
+						$elm$core$List$append,
+						front(index),
+						back(index)));
+			},
+			gen);
+	}
+};
+var $elm$random$Random$step = F2(
+	function (_v0, seed) {
+		var generator = _v0.a;
+		return generator(seed);
+	});
+var $author$project$Battle$pickMonsterToSpawn = F2(
+	function (seed, _v0) {
+		var locationType = _v0.locationType;
+		var skeleton = A4($author$project$Battle$createMonster, 'Skeleton', 15, 5, 5);
+		var monsters = _Utils_ap(
+			_List_fromArray(
+				[
+					skeleton,
+					A4($author$project$Battle$createMonster, 'Ogre', 15, 8, 2),
+					A4($author$project$Battle$createMonster, 'Goblin', 10, 2, 0),
+					A4($author$project$Battle$createMonster, 'Mimic', 20, 3, 0),
+					A4($author$project$Battle$createMonster, 'Titan', 50, 5, 3),
+					A4($author$project$Battle$createMonster, 'Fae', 10, 2, 0),
+					A4($author$project$Battle$createMonster, 'Rat', 12, 3, 0),
+					A4($author$project$Battle$createMonster, 'Water Elemental', 12, 0, 2),
+					A4($author$project$Battle$createMonster, 'Fire Elemental', 11, 4, 2),
+					A4($author$project$Battle$createMonster, 'Earth Elemental', 9, 6, 2)
+				]),
+			function () {
+				switch (locationType.$) {
+					case 'Forest':
+						return _List_fromArray(
+							[
+								A4($author$project$Battle$createMonster, 'Forest Elf', 10, 3, 1),
+								A4($author$project$Battle$createMonster, 'Dire Wolf', 15, 5, 0),
+								A4($author$project$Battle$createMonster, 'Ursa', 20, 4, 3)
+							]);
+					case 'Mountains':
+						return _List_fromArray(
+							[
+								A4($author$project$Battle$createMonster, 'Hillock', 30, 1, 3),
+								A4($author$project$Battle$createMonster, 'Valley Goat', 15, 2, 0),
+								A4($author$project$Battle$createMonster, 'Elephant', 40, 4, 4)
+							]);
+					default:
+						return _List_fromArray(
+							[
+								A4($author$project$Battle$createMonster, 'Mole', 10, 2, 1),
+								A4($author$project$Battle$createMonster, 'Ferret', 20, 3, 1),
+								A4($author$project$Battle$createMonster, 'Plainshawk', 30, 2, 3)
+							]);
+				}
+			}());
+		var _v1 = A2(
+			$elm$random$Random$step,
+			$elm_community$random_extra$Random$List$choose(monsters),
+			seed);
+		var _v2 = _v1.a;
+		var maybeChosen = _v2.a;
+		var unChosen = _v2.b;
+		var newSeed = _v1.b;
+		return _Utils_Tuple2(
+			A2($elm$core$Maybe$withDefault, skeleton, maybeChosen),
+			newSeed);
+	});
+var $author$project$Battle$reviveGolemBloodCost = 25;
+var $author$project$Battle$setStatToMax = function (intStat) {
+	return _Utils_update(
+		intStat,
+		{curVal: intStat.maxVal});
+};
+var $author$project$Battle$MonsterKilledGolem = F2(
+	function (a, b) {
+		return {$: 'MonsterKilledGolem', a: a, b: b};
+	});
+var $author$project$Battle$enemyKillsGolem = F4(
+	function (model, golem, enemy, existingFightLogs) {
+		return _Utils_Tuple2(
+			_Utils_update(
+				model,
+				{
+					enemyMonster: $elm$core$Maybe$Just(
+						$author$project$Battle$LivingMonster(enemy)),
+					fightLogs: _Utils_ap(
+						model.fightLogs,
+						_Utils_ap(
+							existingFightLogs,
+							_List_fromArray(
+								[
+									A2($author$project$Battle$MonsterKilledGolem, golem, enemy)
+								]))),
+					golem: $author$project$Battle$DeadMonster(golem)
+				}),
+			$author$project$Battle$NoOutMsg);
+	});
+var $author$project$Battle$GolemKilledMonster = F3(
+	function (a, b, c) {
+		return {$: 'GolemKilledMonster', a: a, b: b, c: c};
+	});
+var $author$project$Battle$OnMonsterDefeat = function (a) {
+	return {$: 'OnMonsterDefeat', a: a};
+};
+var $author$project$Battle$calculateXpValue = function (monster) {
+	return A2(
+		$elm$core$Basics$max,
+		1,
+		$elm$core$Basics$round(
+			function (val) {
+				return val / 10;
+			}(monster.statPower.maxVal * monster.statHP.maxVal)));
+};
+var $author$project$Battle$addMonsterXpByMonster = F2(
+	function (monster, otherMonster) {
+		var gainedXp = $author$project$Battle$calculateXpValue(otherMonster);
+		return _Utils_Tuple2(
+			A2($author$project$Battle$addMonsterXp, gainedXp, monster),
+			gainedXp);
+	});
+var $author$project$Battle$mapCurrentLocation = F2(
+	function (model, locationUpdater) {
+		var currentLocation = $author$project$Battle$getCurrentLocation(model);
+		var _v0 = model;
+		var currentLocationId = _v0.currentLocationId;
+		var locations = _v0.locations;
+		return _Utils_eq(currentLocationId, locations.forest.locationId) ? _Utils_update(
+			locations,
+			{
+				forest: locationUpdater(locations.forest)
+			}) : (_Utils_eq(currentLocationId, locations.mountains.locationId) ? _Utils_update(
+			locations,
+			{
+				mountains: locationUpdater(locations.mountains)
+			}) : (_Utils_eq(currentLocationId, locations.plains.locationId) ? _Utils_update(
+			locations,
+			{
+				plains: locationUpdater(locations.plains)
+			}) : locations));
+	});
+var $author$project$Battle$golemKillsEnemy = F4(
+	function (model, golem, deadEnemy, fightLogs) {
+		var decrementMonstersLeft = function (curLocation) {
+			return _Utils_update(
+				curLocation,
+				{monstersLeft: curLocation.monstersLeft - 1});
+		};
+		var _v0 = A2($author$project$Battle$addMonsterXpByMonster, golem, deadEnemy);
+		var victorGolem = _v0.a;
+		var gainedXp = _v0.b;
+		return _Utils_Tuple2(
+			_Utils_update(
+				model,
+				{
+					enemyMonster: $elm$core$Maybe$Just(
+						$author$project$Battle$DeadMonster(deadEnemy)),
+					fightLogs: _Utils_ap(
+						model.fightLogs,
+						_Utils_ap(
+							fightLogs,
+							_List_fromArray(
+								[
+									A3($author$project$Battle$GolemKilledMonster, golem, deadEnemy, gainedXp)
+								]))),
+					golem: $author$project$Battle$LivingMonster(victorGolem),
+					locations: A2($author$project$Battle$mapCurrentLocation, model, decrementMonstersLeft)
+				}),
+			$author$project$Battle$OnMonsterDefeat(deadEnemy.onDefeat));
+	});
+var $author$project$Battle$MonsterAttackedMonster = function (a) {
+	return {$: 'MonsterAttackedMonster', a: a};
+};
+var $author$project$Battle$setStatStamina = F2(
+	function (monster, newStatStamina) {
+		return _Utils_update(
+			monster,
+			{statStamina: newStatStamina});
+	});
+var $author$project$Battle$monsterStatMapStamina = F2(
+	function (statFunc, monster) {
+		return A4(
+			$author$project$Battle$monsterStatMap,
+			function ($) {
+				return $.statStamina;
+			},
+			$author$project$Battle$setStatStamina,
+			statFunc,
+			monster);
+	});
+var $author$project$Battle$monsterTakeDamage = F2(
+	function (damageToTake, monster) {
+		var newMonster = A2(
+			$author$project$Battle$monsterStatMapHP,
+			$author$project$Battle$addToStatCurVal(-damageToTake),
+			monster);
+		return (newMonster.statHP.curVal > 0) ? $author$project$Battle$LivingMonster(newMonster) : $author$project$Battle$DeadMonster(newMonster);
+	});
+var $author$project$Battle$monsterFightsMonster = F2(
+	function (attacker, defender) {
+		var staminaCostToAttack = -1;
+		var newAttacker = $author$project$Battle$LivingMonster(
+			A2(
+				$author$project$Battle$monsterStatMapStamina,
+				$author$project$Battle$addToStatCurVal(staminaCostToAttack),
+				attacker));
+		var defenderProtection = defender.statProtection.curVal;
+		var attackerPower = attacker.statPower.curVal;
+		var damageToTake = A2($elm$core$Basics$max, 1, attackerPower - defenderProtection);
+		var newDefender = A2($author$project$Battle$monsterTakeDamage, damageToTake, defender);
+		var fightLog = $author$project$Battle$MonsterAttackedMonster(
+			{attacker: attacker, attackerPower: attackerPower, damageTaken: damageToTake, defender: defender, defenderProtection: defenderProtection});
+		return _Utils_Tuple3(
+			newAttacker,
+			newDefender,
+			_List_fromArray(
+				[fightLog]));
+	});
+var $author$project$Battle$monsterCounterAttacks = F4(
+	function (model, golem, enemy, existingFightLogs) {
+		var _v0 = A2($author$project$Battle$monsterFightsMonster, enemy, golem);
+		if ((_v0.a.$ === 'LivingMonster') && (_v0.b.$ === 'DeadMonster')) {
+			var killingEnemy = _v0.a.a;
+			var deadGolem = _v0.b.a;
+			var secondFightLogs_ = _v0.c;
+			return A4(
+				$author$project$Battle$enemyKillsGolem,
+				model,
+				deadGolem,
+				killingEnemy,
+				_Utils_ap(existingFightLogs, secondFightLogs_));
+		} else {
+			var e = _v0.a;
+			var g = _v0.b;
+			var secondFightLogs_ = _v0.c;
+			return _Utils_Tuple2(
+				_Utils_update(
+					model,
+					{
+						enemyMonster: $elm$core$Maybe$Just(e),
+						fightLogs: _Utils_ap(
+							model.fightLogs,
+							_Utils_ap(existingFightLogs, secondFightLogs_)),
+						golem: g
+					}),
+				$author$project$Battle$NoOutMsg);
+		}
+	});
+var $author$project$Battle$updateFightWithLivingGolemAndEnemy = F2(
+	function (model, _v0) {
+		var golem = _v0.a;
+		var livingMonster = _v0.b;
+		if (golem.statStamina.curVal > 0) {
+			var currentLocation = $author$project$Battle$getCurrentLocation(model);
+			var _v1 = function () {
+				var _v2 = A2($author$project$Battle$monsterFightsMonster, golem, livingMonster);
+				if (_v2.a.$ === 'LivingMonster') {
+					if (_v2.b.$ === 'DeadMonster') {
+						var newGolem_ = _v2.a.a;
+						var deadEnemy = _v2.b.a;
+						var firstFightLogs_ = _v2.c;
+						return A4($author$project$Battle$golemKillsEnemy, model, newGolem_, deadEnemy, firstFightLogs_);
+					} else {
+						var newGolem_ = _v2.a.a;
+						var survivingEnemy = _v2.b.a;
+						var firstFightLogs_ = _v2.c;
+						return A4($author$project$Battle$monsterCounterAttacks, model, newGolem_, survivingEnemy, firstFightLogs_);
+					}
+				} else {
+					if (_v2.b.$ === 'LivingMonster') {
+						var newGolem_ = _v2.a.a;
+						var killingEnemy = _v2.b.a;
+						var firstFightLogs_ = _v2.c;
+						return A4($author$project$Battle$enemyKillsGolem, model, newGolem_, killingEnemy, firstFightLogs_);
+					} else {
+						var g = _v2.a;
+						var e = _v2.b;
+						var firstFightLogs_ = _v2.c;
+						return _Utils_Tuple2(
+							_Utils_update(
+								model,
+								{
+									enemyMonster: $elm$core$Maybe$Just(e),
+									fightLogs: _Utils_ap(model.fightLogs, firstFightLogs_),
+									golem: g
+								}),
+							$author$project$Battle$NoOutMsg);
+					}
+				}
+			}();
+			var newModel = _v1.a;
+			var newOutMsg = _v1.b;
+			return _Utils_Tuple3(newModel, $elm$core$Platform$Cmd$none, newOutMsg);
+		} else {
+			return _Utils_Tuple3(model, $elm$core$Platform$Cmd$none, $author$project$Battle$NoOutMsg);
+		}
+	});
+var $author$project$Battle$updateFight = function (model) {
+	return A2(
+		$elm$core$Maybe$withDefault,
+		_Utils_Tuple3(model, $elm$core$Platform$Cmd$none, $author$project$Battle$NoOutMsg),
+		A2(
+			$elm$core$Maybe$map,
+			function (enemyMonster) {
+				var _v0 = _Utils_Tuple2(model.golem, enemyMonster);
+				if ((_v0.a.$ === 'LivingMonster') && (_v0.b.$ === 'LivingMonster')) {
+					var golem = _v0.a.a;
+					var livingMonster = _v0.b.a;
+					return A2(
+						$author$project$Battle$updateFightWithLivingGolemAndEnemy,
+						model,
+						_Utils_Tuple2(golem, livingMonster));
+				} else {
+					return A2(
+						$elm$core$Debug$log,
+						'dead something',
+						_Utils_Tuple3(model, $elm$core$Platform$Cmd$none, $author$project$Battle$NoOutMsg));
+				}
+			},
+			model.enemyMonster));
+};
+var $author$project$Battle$monsterLivingMap = F2(
+	function (callback, damagedMonster) {
+		if (damagedMonster.$ === 'LivingMonster') {
+			var monster = damagedMonster.a;
+			return $author$project$Battle$LivingMonster(
+				callback(monster));
+		} else {
+			var monster = damagedMonster.a;
+			return damagedMonster;
+		}
+	});
+var $author$project$Battle$secondsRequiredForLocationMonsterRefill = 60;
+var $author$project$Battle$secondsRequiredForSpRefill = 5;
+var $author$project$Battle$updateTick = F2(
+	function (model, time) {
+		var origSecondsWaitedSince = model.secondsWaitedSince;
+		var incrSecondsWaitedSince = _Utils_update(
+			origSecondsWaitedSince,
+			{lastLocationMonsterRefill: origSecondsWaitedSince.lastLocationMonsterRefill + 1, lastSpRefill: origSecondsWaitedSince.lastSpRefill + 1});
+		var newModel = function (m) {
+			var secondsWaitedSince = m.secondsWaitedSince;
+			var locations = m.locations;
+			if (_Utils_cmp(m.secondsWaitedSince.lastLocationMonsterRefill, $author$project$Battle$secondsRequiredForLocationMonsterRefill) > -1) {
+				var newSecondsWaitedSince = _Utils_update(
+					secondsWaitedSince,
+					{lastLocationMonsterRefill: 0});
+				var locationsList = $author$project$Battle$getLocationsList(m.locations);
+				var locationRefiller = function (location) {
+					return (_Utils_cmp(location.monstersLeft, $author$project$Battle$maxMonstersPerLocation) < 0) ? _Utils_update(
+						location,
+						{monstersLeft: location.monstersLeft + 1}) : location;
+				};
+				var newLocations = _Utils_update(
+					locations,
+					{
+						forest: locationRefiller(locations.forest),
+						mountains: locationRefiller(locations.mountains),
+						plains: locationRefiller(locations.plains)
+					});
+				return _Utils_update(
+					m,
+					{locations: newLocations, secondsWaitedSince: newSecondsWaitedSince});
+			} else {
+				return m;
+			}
+		}(
+			function (m) {
+				var secondsWaitedSince = m.secondsWaitedSince;
+				if (_Utils_cmp(secondsWaitedSince.lastSpRefill, $author$project$Battle$secondsRequiredForSpRefill) > -1) {
+					var newSecondsWaitedSince = _Utils_update(
+						secondsWaitedSince,
+						{lastSpRefill: 0});
+					var newGolem = A2(
+						$author$project$Battle$monsterLivingMap,
+						$author$project$Battle$monsterStatMapStamina(
+							$author$project$Battle$addToStatCurVal(1)),
+						m.golem);
+					return _Utils_update(
+						m,
+						{golem: newGolem, secondsWaitedSince: newSecondsWaitedSince});
+				} else {
+					return m;
+				}
+			}(
+				function (m) {
+					var secondsWaitedSince = m.secondsWaitedSince;
+					return _Utils_update(
+						m,
+						{secondsWaitedSince: incrSecondsWaitedSince});
+				}(model)));
+		return _Utils_Tuple3(newModel, $elm$core$Platform$Cmd$none, $author$project$Battle$NoOutMsg);
+	});
+var $author$project$Battle$update = F2(
+	function (model, battleMsg) {
+		switch (battleMsg.$) {
+			case 'Noop':
+				return _Utils_Tuple3(model, $elm$core$Platform$Cmd$none, $author$project$Battle$NoOutMsg);
+			case 'Fight':
+				return $author$project$Battle$updateFight(model);
+			case 'FindNewEnemy':
+				var _v1 = A2(
+					$author$project$Battle$pickMonsterToSpawn,
+					model.battleSeed,
+					$author$project$Battle$getCurrentLocation(model));
+				var newMonster = _v1.a;
+				var newSeed = _v1.b;
+				return _Utils_Tuple3(
+					_Utils_update(
+						model,
+						{
+							battleSeed: newSeed,
+							enemyMonster: $elm$core$Maybe$Just(
+								$author$project$Battle$LivingMonster(newMonster)),
+							fightLogs: _Utils_ap(
+								model.fightLogs,
+								_List_fromArray(
+									[
+										$author$project$Battle$FoundNewMonster(newMonster)
+									]))
+						}),
+					$elm$core$Platform$Cmd$none,
+					$author$project$Battle$NoOutMsg);
+			case 'ToggleShowExpandedLogs':
+				return _Utils_Tuple3(
+					_Utils_update(
+						model,
+						{showExpandedLogs: !model.showExpandedLogs}),
+					$elm$core$Platform$Cmd$none,
+					$author$project$Battle$NoOutMsg);
+			case 'HealGolem':
+				if (_Utils_cmp(model.player.held_blood, $author$project$Battle$healGolemBloodCost) > -1) {
+					var _v2 = model.golem;
+					if (_v2.$ === 'LivingMonster') {
+						var golem = _v2.a;
+						if (!_Utils_eq(golem.statHP.curVal, golem.statHP.maxVal)) {
+							var maxHP = golem.statHP.maxVal;
+							var currentHP = golem.statHP.curVal;
+							return _Utils_Tuple3(
+								_Utils_update(
+									model,
+									{
+										fightLogs: _Utils_ap(
+											model.fightLogs,
+											_List_fromArray(
+												[
+													$author$project$Battle$PlayerHealedGolem(maxHP - currentHP)
+												])),
+										golem: $author$project$Battle$LivingMonster(
+											A2($author$project$Battle$monsterStatMapHP, $author$project$Battle$setStatToMax, golem)),
+										player: function (p) {
+											return _Utils_update(
+												p,
+												{held_blood: p.held_blood - $author$project$Battle$healGolemBloodCost});
+										}(model.player)
+									}),
+								$elm$core$Platform$Cmd$none,
+								$author$project$Battle$NoOutMsg);
+						} else {
+							return _Utils_Tuple3(model, $elm$core$Platform$Cmd$none, $author$project$Battle$NoOutMsg);
+						}
+					} else {
+						var golem = _v2.a;
+						return _Utils_Tuple3(model, $elm$core$Platform$Cmd$none, $author$project$Battle$NoOutMsg);
+					}
+				} else {
+					return _Utils_Tuple3(model, $elm$core$Platform$Cmd$none, $author$project$Battle$NoOutMsg);
+				}
+			case 'ReviveGolem':
+				if (_Utils_cmp(model.player.held_blood, $author$project$Battle$reviveGolemBloodCost) > -1) {
+					var _v3 = model.golem;
+					if (_v3.$ === 'DeadMonster') {
+						var golem = _v3.a;
+						var newPlayer = function (p) {
+							return _Utils_update(
+								p,
+								{held_blood: p.held_blood - $author$project$Battle$reviveGolemBloodCost});
+						}(model.player);
+						var newGolem = $author$project$Battle$LivingMonster(
+							A2(
+								$author$project$Battle$monsterStatMapHP,
+								$author$project$Battle$setStatCurVal(1),
+								golem));
+						return _Utils_Tuple3(
+							_Utils_update(
+								model,
+								{
+									fightLogs: _Utils_ap(
+										model.fightLogs,
+										_List_fromArray(
+											[$author$project$Battle$PlayerRevivedGolem])),
+									golem: newGolem,
+									player: newPlayer
+								}),
+							$elm$core$Platform$Cmd$none,
+							$author$project$Battle$NoOutMsg);
+					} else {
+						return _Utils_Tuple3(model, $elm$core$Platform$Cmd$none, $author$project$Battle$NoOutMsg);
+					}
+				} else {
+					return _Utils_Tuple3(model, $elm$core$Platform$Cmd$none, $author$project$Battle$NoOutMsg);
+				}
+			case 'SendOutMsg':
+				var out_msg = battleMsg.a;
+				return _Utils_Tuple3(model, $elm$core$Platform$Cmd$none, out_msg);
+			case 'TickSecond':
+				var time = battleMsg.a;
+				return A2($author$project$Battle$updateTick, model, time);
+			case 'ToggleShowLocationTypeMenu':
+				return _Utils_Tuple3(
+					_Utils_update(
+						model,
+						{shouldShowLocationTypeMenu: !model.shouldShowLocationTypeMenu}),
+					$elm$core$Platform$Cmd$none,
+					$author$project$Battle$NoOutMsg);
+			case 'ChangeLocation':
+				var newLocationId = battleMsg.a;
+				return _Utils_Tuple3(
+					_Utils_update(
+						model,
+						{currentLocationId: newLocationId, enemyMonster: $elm$core$Maybe$Nothing, shouldShowLocationTypeMenu: false}),
+					$elm$core$Platform$Cmd$none,
+					$author$project$Battle$NoOutMsg);
+			default:
+				var newGolem = A2(
+					$author$project$Battle$monsterIdentityMap,
+					A2(
+						$elm$core$Basics$composeR,
+						$author$project$Battle$addMonsterLevel(1),
+						A2(
+							$elm$core$Basics$composeR,
+							$author$project$Battle$monsterStatMapHP(
+								$author$project$Battle$addToStatMaxVal(3)),
+							$author$project$Battle$monsterStatMapHP(
+								$author$project$Battle$addToStatCurVal(3)))),
+					model.golem);
+				return _Utils_Tuple3(
+					_Utils_update(
+						model,
+						{golem: newGolem}),
+					$elm$core$Platform$Cmd$none,
+					$author$project$Battle$NoOutMsg);
+		}
+	});
+var $author$project$ItemShop$MonsterDeliveredItemToShop = function (a) {
+	return {$: 'MonsterDeliveredItemToShop', a: a};
+};
+var $author$project$ItemShop$add_inventory_record_to_character = F2(
+	function (_v0, character) {
+		var item = _v0.item;
+		var quantity = _v0.quantity;
+		var avg_price = _v0.avg_price;
+		return _Utils_update(
+			character,
+			{
+				held_items: A4($author$project$ItemShop$add_item_to_inventory_records, character.held_items, item, quantity, item.raw_gold_cost)
+			});
+	});
+var $author$project$ItemShop$append_player_action_log = F2(
+	function (new_player_action_log, model) {
+		return _Utils_update(
+			model,
+			{
+				historical_player_actions: A2(
+					$elm$core$List$append,
+					model.historical_player_actions,
+					_List_fromArray(
+						[new_player_action_log]))
+			});
+	});
+var $elm$core$Maybe$map2 = F3(
+	function (func, ma, mb) {
+		if (ma.$ === 'Nothing') {
+			return $elm$core$Maybe$Nothing;
+		} else {
+			var a = ma.a;
+			if (mb.$ === 'Nothing') {
+				return $elm$core$Maybe$Nothing;
+			} else {
+				var b = mb.a;
+				return $elm$core$Maybe$Just(
+					A2(func, a, b));
+			}
+		}
+	});
+var $elm$core$Dict$values = function (dict) {
+	return A3(
+		$elm$core$Dict$foldr,
+		F3(
+			function (key, value, valueList) {
+				return A2($elm$core$List$cons, value, valueList);
+			}),
+		_List_Nil,
+		dict);
+};
+var $author$project$ItemShop$pick_random_unlocked_item_from_db = F2(
+	function (item_db, seed) {
+		var _v0 = function (gen) {
+			return A2($elm$random$Random$step, gen, seed);
+		}(
+			$elm_community$random_extra$Random$List$choose(
+				A2(
+					$elm$core$List$filter,
+					function ($) {
+						return $.is_unlocked;
+					},
+					$elm$core$Dict$values(item_db))));
+		var _v1 = _v0.a;
+		var maybe_item = _v1.a;
+		var new_seed = _v0.b;
+		return _Utils_Tuple2(
+			A2(
+				$elm$core$Maybe$map,
+				function ($) {
+					return $.item;
+				},
+				maybe_item),
+			new_seed);
+	});
+var $author$project$ItemShop$updateBattleOutMsg = F2(
+	function (battleOutMsg, model) {
+		switch (battleOutMsg.$) {
+			case 'OnMonsterDefeat':
+				var defeatAction = battleOutMsg.a;
+				if (defeatAction.$ === 'NoDefeatAction') {
+					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
+				} else {
+					var _v2 = A2($author$project$ItemShop$pick_random_unlocked_item_from_db, model.item_db, model.global_seed);
+					var mbNewItem = _v2.a;
+					var newSeed = _v2.b;
+					return function (m) {
+						return _Utils_Tuple2(m, $elm$core$Platform$Cmd$none);
+					}(
+						A2(
+							$elm$core$Maybe$withDefault,
+							model,
+							A3(
+								$elm$core$Maybe$map2,
+								F2(
+									function (shop, newItem) {
+										return A2(
+											$author$project$ItemShop$append_player_action_log,
+											$author$project$ItemShop$MonsterDeliveredItemToShop(newItem.id),
+											A2(
+												$author$project$ItemShop$withCharacter,
+												A2(
+													$author$project$ItemShop$add_inventory_record_to_character,
+													{
+														avg_price: $author$project$ItemShop$setPrice(newItem.raw_gold_cost),
+														item: newItem,
+														quantity: $author$project$ItemShop$setQuantity(1)
+													},
+													shop),
+												_Utils_update(
+													model,
+													{global_seed: newSeed})));
+									}),
+								$author$project$ItemShop$getShop(model),
+								mbNewItem)));
+				}
+			case 'ReturnToShop':
+				var _v3 = model.browserNavKey;
+				if (_v3.$ === 'Just') {
+					var key = _v3.a;
+					return _Utils_Tuple2(
+						_Utils_update(
+							model,
+							{tab_type: $author$project$ItemShop$ShopTabType}),
+						A2(
+							$elm$browser$Browser$Navigation$pushUrl,
+							key,
+							'#' + $author$project$ItemShop$tabTypeToString($author$project$ItemShop$ShopTabType)));
+				} else {
+					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
+				}
+			default:
+				return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
+		}
+	});
 var $author$project$ItemShop$updateTradeStats = F2(
 	function (item_db_record, new_trade_stats) {
 		return _Utils_update(
@@ -9372,46 +10458,6 @@ var $elm$core$Tuple$second = function (_v0) {
 	var y = _v0.b;
 	return y;
 };
-var $elm$random$Random$Generator = function (a) {
-	return {$: 'Generator', a: a};
-};
-var $elm$random$Random$peel = function (_v0) {
-	var state = _v0.a;
-	var word = (state ^ (state >>> ((state >>> 28) + 4))) * 277803737;
-	return ((word >>> 22) ^ word) >>> 0;
-};
-var $elm$random$Random$int = F2(
-	function (a, b) {
-		return $elm$random$Random$Generator(
-			function (seed0) {
-				var _v0 = (_Utils_cmp(a, b) < 0) ? _Utils_Tuple2(a, b) : _Utils_Tuple2(b, a);
-				var lo = _v0.a;
-				var hi = _v0.b;
-				var range = (hi - lo) + 1;
-				if (!((range - 1) & range)) {
-					return _Utils_Tuple2(
-						(((range - 1) & $elm$random$Random$peel(seed0)) >>> 0) + lo,
-						$elm$random$Random$next(seed0));
-				} else {
-					var threshhold = (((-range) >>> 0) % range) >>> 0;
-					var accountForBias = function (seed) {
-						accountForBias:
-						while (true) {
-							var x = $elm$random$Random$peel(seed);
-							var seedN = $elm$random$Random$next(seed);
-							if (_Utils_cmp(x, threshhold) < 0) {
-								var $temp$seed = seedN;
-								seed = $temp$seed;
-								continue accountForBias;
-							} else {
-								return _Utils_Tuple2((x % range) + lo, seedN);
-							}
-						}
-					};
-					return accountForBias(seed0);
-				}
-			});
-	});
 var $elm$random$Random$maxInt = 2147483647;
 var $elm$random$Random$minInt = -2147483648;
 var $elm_community$random_extra$Random$List$anyInt = A2($elm$random$Random$int, $elm$random$Random$minInt, $elm$random$Random$maxInt);
@@ -9436,11 +10482,6 @@ var $elm$random$Random$map3 = F4(
 					seed3);
 			});
 	});
-var $elm$random$Random$step = F2(
-	function (_v0, seed) {
-		var generator = _v0.a;
-		return generator(seed);
-	});
 var $elm$random$Random$independentSeed = $elm$random$Random$Generator(
 	function (seed0) {
 		var makeIndependentSeed = F3(
@@ -9453,19 +10494,6 @@ var $elm$random$Random$independentSeed = $elm$random$Random$Generator(
 			$elm$random$Random$step,
 			A4($elm$random$Random$map3, makeIndependentSeed, gen, gen, gen),
 			seed0);
-	});
-var $elm$random$Random$map = F2(
-	function (func, _v0) {
-		var genA = _v0.a;
-		return $elm$random$Random$Generator(
-			function (seed0) {
-				var _v1 = genA(seed0);
-				var a = _v1.a;
-				var seed1 = _v1.b;
-				return _Utils_Tuple2(
-					func(a),
-					seed1);
-			});
 	});
 var $elm$core$List$sortBy = _List_sortBy;
 var $elm_community$random_extra$Random$List$shuffle = function (list) {
@@ -9678,8 +10706,8 @@ var $author$project$ItemShop$ai_buy_item_from_shop = F5(
 						return _Debug_todo(
 							'ItemShop',
 							{
-								start: {line: 2780, column: 25},
-								end: {line: 2780, column: 35}
+								start: {line: 2689, column: 25},
+								end: {line: 2689, column: 35}
 							})('');
 					}
 				}()
@@ -9689,84 +10717,6 @@ var $author$project$ItemShop$ai_buy_item_from_shop = F5(
 var $author$project$ItemShop$FetchedItem = function (a) {
 	return {$: 'FetchedItem', a: a};
 };
-var $elm$random$Random$constant = function (value) {
-	return $elm$random$Random$Generator(
-		function (seed) {
-			return _Utils_Tuple2(value, seed);
-		});
-};
-var $elm_community$random_extra$Random$List$get = F2(
-	function (index, list) {
-		return $elm$core$List$head(
-			A2($elm$core$List$drop, index, list));
-	});
-var $elm$core$List$isEmpty = function (xs) {
-	if (!xs.b) {
-		return true;
-	} else {
-		return false;
-	}
-};
-var $elm_community$random_extra$Random$List$choose = function (list) {
-	if ($elm$core$List$isEmpty(list)) {
-		return $elm$random$Random$constant(
-			_Utils_Tuple2($elm$core$Maybe$Nothing, list));
-	} else {
-		var lastIndex = $elm$core$List$length(list) - 1;
-		var gen = A2($elm$random$Random$int, 0, lastIndex);
-		var front = function (i) {
-			return A2($elm$core$List$take, i, list);
-		};
-		var back = function (i) {
-			return A2($elm$core$List$drop, i + 1, list);
-		};
-		return A2(
-			$elm$random$Random$map,
-			function (index) {
-				return _Utils_Tuple2(
-					A2($elm_community$random_extra$Random$List$get, index, list),
-					A2(
-						$elm$core$List$append,
-						front(index),
-						back(index)));
-			},
-			gen);
-	}
-};
-var $elm$core$Dict$values = function (dict) {
-	return A3(
-		$elm$core$Dict$foldr,
-		F3(
-			function (key, value, valueList) {
-				return A2($elm$core$List$cons, value, valueList);
-			}),
-		_List_Nil,
-		dict);
-};
-var $author$project$ItemShop$pick_random_unlocked_item_from_db = F2(
-	function (item_db, seed) {
-		var _v0 = function (gen) {
-			return A2($elm$random$Random$step, gen, seed);
-		}(
-			$elm_community$random_extra$Random$List$choose(
-				A2(
-					$elm$core$List$filter,
-					function ($) {
-						return $.is_unlocked;
-					},
-					$elm$core$Dict$values(item_db))));
-		var _v1 = _v0.a;
-		var maybe_item = _v1.a;
-		var new_seed = _v0.b;
-		return _Utils_Tuple2(
-			A2(
-				$elm$core$Maybe$map,
-				function ($) {
-					return $.item;
-				},
-				maybe_item),
-			new_seed);
-	});
 var $author$project$ItemShop$ai_fetch_item = F5(
 	function (ai_tick_time, item_db, shop_trends, character, shop) {
 		var held_items = character.held_items;
@@ -9909,8 +10859,8 @@ var $author$project$ItemShop$ai_sell_item_to_shop = F5(
 							_Debug_todo(
 								'ItemShop',
 								{
-									start: {line: 2873, column: 25},
-									end: {line: 2873, column: 35}
+									start: {line: 2782, column: 25},
+									end: {line: 2782, column: 35}
 								}),
 							'',
 							_List_Nil);
@@ -10047,10 +10997,6 @@ var $author$project$ItemShop$update_ai_chars = function (model) {
 		model,
 		{characters: new_ai_data.characters, historical_shop_trends: new_ai_data.historical_shop_trends, item_db: new_ai_data.item_db, shop_trends: new_ai_data.shop_trends});
 };
-var $elm$core$Basics$min = F2(
-	function (x, y) {
-		return (_Utils_cmp(x, y) < 0) ? x : y;
-	});
 var $author$project$ItemShop$add_player_gpm = F2(
 	function (player, to_add) {
 		var max_gold = 50;
@@ -10061,18 +11007,6 @@ var $author$project$ItemShop$add_player_gpm = F2(
 			{
 				held_gold: A2($elm$core$Basics$min, max_gold, held_gold + to_add)
 			}) : player;
-	});
-var $author$project$ItemShop$withCharacter = F2(
-	function (new_char, model) {
-		var new_characters = A2(
-			$elm$core$List$map,
-			function (_char) {
-				return _Utils_eq(_char.char_id, new_char.char_id) ? new_char : _char;
-			},
-			model.characters);
-		return _Utils_update(
-			model,
-			{characters: new_characters});
 	});
 var $author$project$ItemShop$apply_upgrade = F2(
 	function (upgrade, _v0) {
@@ -10107,18 +11041,6 @@ var $author$project$ItemShop$update_player = function (model) {
 	}
 };
 var $author$project$ItemShop$TookSpecialActionTogglePauseAi = {$: 'TookSpecialActionTogglePauseAi'};
-var $author$project$ItemShop$append_player_action_log = F2(
-	function (new_player_action_log, model) {
-		return _Utils_update(
-			model,
-			{
-				historical_player_actions: A2(
-					$elm$core$List$append,
-					model.historical_player_actions,
-					_List_fromArray(
-						[new_player_action_log]))
-			});
-	});
 var $author$project$ItemShop$TookSpecialActionInviteTrader = {$: 'TookSpecialActionInviteTrader'};
 var $author$project$ItemShop$addQuantityInt = F2(
 	function (qty, val) {
@@ -10171,7 +11093,7 @@ var $author$project$ItemShop$handle_invite_trader = function (model) {
 	var name = 'Character ' + $elm$core$String$fromInt(
 		$elm$core$List$length(model.characters) + 1);
 	var invited_character = A2(
-		$author$project$ItemShop$create_character,
+		$author$project$ItemShop$createCharacter,
 		$author$project$ItemShop$generate_uuid(name),
 		name);
 	var incr_if_matches = F2(
@@ -10555,79 +11477,73 @@ var $author$project$ItemShop$update = F2(
 			case 'PlayerBuyItemFromShop':
 				var item = msg.a;
 				var qty = msg.b;
-				var _v1 = $author$project$ItemShop$getShop(model);
-				if (_v1.$ === 'Just') {
-					var shop = _v1.a;
-					var _v2 = $author$project$ItemShop$getPlayer(model);
-					if (_v2.$ === 'Just') {
-						var player = _v2.a;
-						var trade_record = A2(
-							$author$project$ItemShop$sell_items_from_party_to_other,
-							{from_party: shop, shop_trends: model.shop_trends, to_party: player},
-							{item: item, qty: qty});
-						var new_trade_context = $author$project$ItemShop$getTradeContext(trade_record);
-						var new_item_db = A3($author$project$ItemShop$updateItemDbFromTradeRecord, model.item_db, $author$project$ItemShop$updateTimesYouBought, trade_record);
-						return _Utils_Tuple2(
+				var _v1 = _Utils_Tuple2(
+					$author$project$ItemShop$getShop(model),
+					$author$project$ItemShop$getPlayer(model));
+				if ((_v1.a.$ === 'Just') && (_v1.b.$ === 'Just')) {
+					var shop = _v1.a.a;
+					var player = _v1.b.a;
+					var trade_record = A2(
+						$author$project$ItemShop$sell_items_from_party_to_other,
+						{from_party: shop, shop_trends: model.shop_trends, to_party: player},
+						{item: item, qty: qty});
+					var new_trade_context = $author$project$ItemShop$getTradeContext(trade_record);
+					var new_item_db = A3($author$project$ItemShop$updateItemDbFromTradeRecord, model.item_db, $author$project$ItemShop$updateTimesYouBought, trade_record);
+					return _Utils_Tuple2(
+						A2(
+							$author$project$ItemShop$withCharacter,
+							new_trade_context.from_party,
 							A2(
 								$author$project$ItemShop$withCharacter,
-								new_trade_context.from_party,
-								A2(
-									$author$project$ItemShop$withCharacter,
-									new_trade_context.to_party,
-									_Utils_update(
-										model,
-										{
-											historical_shop_trends: A2(
-												$elm$core$List$append,
-												model.historical_shop_trends,
-												_List_fromArray(
-													[model.shop_trends])),
-											item_db: new_item_db,
-											shop_trends: new_trade_context.shop_trends
-										}))),
-							$elm$core$Platform$Cmd$none);
-					} else {
-						return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
-					}
+								new_trade_context.to_party,
+								_Utils_update(
+									model,
+									{
+										historical_shop_trends: A2(
+											$elm$core$List$append,
+											model.historical_shop_trends,
+											_List_fromArray(
+												[model.shop_trends])),
+										item_db: new_item_db,
+										shop_trends: new_trade_context.shop_trends
+									}))),
+						$elm$core$Platform$Cmd$none);
 				} else {
 					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 				}
 			case 'PlayerSellItemToShop':
 				var item = msg.a;
 				var qty = msg.b;
-				var _v3 = $author$project$ItemShop$getShop(model);
-				if (_v3.$ === 'Just') {
-					var shop = _v3.a;
-					var _v4 = $author$project$ItemShop$getPlayer(model);
-					if (_v4.$ === 'Just') {
-						var player = _v4.a;
-						var trade_order = {item: item, qty: qty};
-						var orig_trade_context = {from_party: player, shop_trends: model.shop_trends, to_party: shop};
-						var trade_record = A2($author$project$ItemShop$sell_items_from_party_to_other, orig_trade_context, trade_order);
-						var new_trade_context = $author$project$ItemShop$getTradeContext(trade_record);
-						var new_item_db = A3($author$project$ItemShop$updateItemDbFromTradeRecord, model.item_db, $author$project$ItemShop$updateTimesYouSold, trade_record);
-						return _Utils_Tuple2(
+				var _v2 = _Utils_Tuple2(
+					$author$project$ItemShop$getShop(model),
+					$author$project$ItemShop$getPlayer(model));
+				if ((_v2.a.$ === 'Just') && (_v2.b.$ === 'Just')) {
+					var shop = _v2.a.a;
+					var player = _v2.b.a;
+					var trade_order = {item: item, qty: qty};
+					var orig_trade_context = {from_party: player, shop_trends: model.shop_trends, to_party: shop};
+					var trade_record = A2($author$project$ItemShop$sell_items_from_party_to_other, orig_trade_context, trade_order);
+					var new_trade_context = $author$project$ItemShop$getTradeContext(trade_record);
+					var new_item_db = A3($author$project$ItemShop$updateItemDbFromTradeRecord, model.item_db, $author$project$ItemShop$updateTimesYouSold, trade_record);
+					return _Utils_Tuple2(
+						A2(
+							$author$project$ItemShop$withCharacter,
+							new_trade_context.to_party,
 							A2(
 								$author$project$ItemShop$withCharacter,
-								new_trade_context.to_party,
-								A2(
-									$author$project$ItemShop$withCharacter,
-									new_trade_context.from_party,
-									_Utils_update(
-										model,
-										{
-											historical_shop_trends: A2(
-												$elm$core$List$append,
-												model.historical_shop_trends,
-												_List_fromArray(
-													[model.shop_trends])),
-											item_db: new_item_db,
-											shop_trends: new_trade_context.shop_trends
-										}))),
-							$elm$core$Platform$Cmd$none);
-					} else {
-						return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
-					}
+								new_trade_context.from_party,
+								_Utils_update(
+									model,
+									{
+										historical_shop_trends: A2(
+											$elm$core$List$append,
+											model.historical_shop_trends,
+											_List_fromArray(
+												[model.shop_trends])),
+										item_db: new_item_db,
+										shop_trends: new_trade_context.shop_trends
+									}))),
+						$elm$core$Platform$Cmd$none);
 				} else {
 					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 				}
@@ -10722,21 +11638,21 @@ var $author$project$ItemShop$update = F2(
 					var sizes = tooltip_size_result.a;
 					var viewport_width = sizes.viewport.width;
 					var viewport_height = sizes.viewport.height;
-					var _v8 = sizes.element;
-					var x = _v8.x;
-					var y = _v8.y;
-					var width = _v8.width;
-					var height = _v8.height;
+					var _v6 = sizes.element;
+					var x = _v6.x;
+					var y = _v6.y;
+					var width = _v6.width;
+					var height = _v6.height;
 					var offset_x = (x < 0) ? $elm$core$Basics$floor(
 						$elm$core$Basics$abs(x) + 10) : ((_Utils_cmp(x + width, viewport_width) > 0) ? $elm$core$Basics$floor((viewport_width - (x + width)) - 10) : $elm$core$Basics$floor(0));
 					var offset_y = (y < 0) ? $elm$core$Basics$floor(
 						$elm$core$Basics$abs(y) + 10) : ((_Utils_cmp(y + height, viewport_height) > 0) ? $elm$core$Basics$floor((viewport_height - (y + height)) - 10) : $elm$core$Basics$floor(0));
-					var _v9 = model.hovered_tooltip;
-					switch (_v9.$) {
+					var _v7 = model.hovered_tooltip;
+					switch (_v7.$) {
 						case 'NoHoveredTooltip':
 							return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 						case 'HoveredTooltipWithoutOffset':
-							var old_tooltip_data = _v9.a;
+							var old_tooltip_data = _v7.a;
 							var new_tooltip_data = {hovered_tooltip_id: old_tooltip_data.hovered_tooltip_id, offset_x: offset_x + old_tooltip_data.offset_x, offset_y: offset_y + old_tooltip_data.offset_y};
 							return _Utils_Tuple2(
 								_Utils_update(
@@ -10747,7 +11663,7 @@ var $author$project$ItemShop$update = F2(
 									}),
 								$elm$core$Platform$Cmd$none);
 						default:
-							var old_tooltip_data = _v9.a;
+							var old_tooltip_data = _v7.a;
 							var new_tooltip_data = _Utils_update(
 								old_tooltip_data,
 								{offset_x: offset_x, offset_y: offset_y});
@@ -10788,7 +11704,18 @@ var $author$project$ItemShop$update = F2(
 					_Utils_update(
 						model,
 						{tab_type: tab_type}),
-					$elm$core$Platform$Cmd$none);
+					function () {
+						var _v8 = model.browserNavKey;
+						if (_v8.$ === 'Just') {
+							var key = _v8.a;
+							return A2(
+								$elm$browser$Browser$Navigation$pushUrl,
+								key,
+								'#' + $author$project$ItemShop$tabTypeToString(tab_type));
+						} else {
+							return $elm$core$Platform$Cmd$none;
+						}
+					}());
 			case 'CycleFilterDisplayedItemsForward':
 				var character_id = msg.a;
 				var mb_item_type = msg.b;
@@ -10882,7 +11809,7 @@ var $author$project$ItemShop$update = F2(
 						$elm$browser$Browser$Dom$getElement('show_debug_inventories')));
 			case 'GotShowDebugElement':
 				var attemptedElement = msg.a;
-				var _v14 = function () {
+				var _v13 = function () {
 					if (attemptedElement.$ === 'Ok') {
 						var element = attemptedElement.a;
 						var shouldDisplay = A2(
@@ -10901,8 +11828,8 @@ var $author$project$ItemShop$update = F2(
 						return _Utils_Tuple2($elm$core$Maybe$Nothing, false);
 					}
 				}();
-				var modelElement = _v14.a;
-				var shouldDisplayShowDebugInventoriesOverlay = _v14.b;
+				var modelElement = _v13.a;
+				var shouldDisplayShowDebugInventoriesOverlay = _v13.b;
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
@@ -10912,38 +11839,32 @@ var $author$project$ItemShop$update = F2(
 				var item = msg.a;
 				return _Utils_Tuple2(
 					A2(
-						$elm$core$Maybe$withDefault,
-						model,
-						A2(
-							$elm$core$Maybe$map,
-							function (player) {
-								var itemGoldCost = A3(
-									$author$project$ItemShop$get_adjusted_item_cost,
-									model.shop_trends,
-									item,
-									$author$project$ItemShop$setQuantity(1));
-								var newItems = A4(
-									$author$project$ItemShop$remove_item_from_inventory_records,
-									player.held_items,
-									item,
-									$author$project$ItemShop$setQuantity(1),
-									itemGoldCost);
-								return A2(
-									$author$project$ItemShop$withCharacter,
-									_Utils_update(
-										player,
-										{held_blood: player.held_blood + itemGoldCost, held_items: newItems}),
-									model);
-							},
-							$author$project$ItemShop$getPlayer(model))),
+						$author$project$ItemShop$mapPlayer,
+						function (player) {
+							var itemGoldCost = A3(
+								$author$project$ItemShop$get_adjusted_item_cost,
+								model.shop_trends,
+								item,
+								$author$project$ItemShop$setQuantity(1));
+							var newItems = A4(
+								$author$project$ItemShop$remove_item_from_inventory_records,
+								player.held_items,
+								item,
+								$author$project$ItemShop$setQuantity(1),
+								itemGoldCost);
+							return _Utils_update(
+								player,
+								{held_blood: player.held_blood + itemGoldCost, held_items: newItems});
+						},
+						model),
 					$elm$core$Platform$Cmd$none);
-			default:
+			case 'ToggleColorTheme':
 				var newColorTheme = function () {
-					var _v16 = model.colorTheme;
-					if (_v16.$ === 'BrightTheme') {
-						return $author$project$ItemShop$DarkTheme;
+					var _v15 = model.colorTheme;
+					if (_v15.$ === 'BrightTheme') {
+						return $author$project$Interface$DarkTheme;
 					} else {
-						return $author$project$ItemShop$BrightTheme;
+						return $author$project$Interface$BrightTheme;
 					}
 				}();
 				return _Utils_Tuple2(
@@ -10951,6 +11872,373 @@ var $author$project$ItemShop$update = F2(
 						model,
 						{colorTheme: newColorTheme}),
 					$elm$core$Platform$Cmd$none);
+			case 'GotBattleMsg':
+				var battleMsg = msg.a;
+				var _v16 = A2(
+					$author$project$Battle$update,
+					$author$project$ItemShop$transferToBattleModel(model),
+					battleMsg);
+				var newBattleModel = _v16.a;
+				var newBattleCmds = _v16.b;
+				var battleOutMsg = _v16.c;
+				var mappedCmds = A2($elm$core$Platform$Cmd$map, $author$project$ItemShop$GotBattleMsg, newBattleCmds);
+				var _v17 = A2(
+					$author$project$ItemShop$updateBattleOutMsg,
+					battleOutMsg,
+					A2($author$project$ItemShop$transferFromBattleModel, model, newBattleModel));
+				var newModel = _v17.a;
+				var newOutCmds = _v17.b;
+				var newCmds = $elm$core$Platform$Cmd$batch(
+					A2(
+						$elm$core$List$cons,
+						mappedCmds,
+						_List_fromArray(
+							[newOutCmds])));
+				return _Utils_Tuple2(newModel, newCmds);
+			default:
+				var inventorySortType = msg.a;
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{inventorySortType: inventorySortType}),
+					$elm$core$Platform$Cmd$none);
+		}
+	});
+var $elm$json$Json$Encode$bool = _Json_wrap;
+var $elm$json$Json$Encode$float = _Json_wrap;
+var $author$project$Sfxr$encodeArpeggiation = function (arpeggiation) {
+	return _List_fromArray(
+		[
+			_Utils_Tuple2(
+			'p_arp_mod',
+			$elm$json$Json$Encode$float(arpeggiation.mod)),
+			_Utils_Tuple2(
+			'p_arp_speed',
+			$elm$json$Json$Encode$float(arpeggiation.speed))
+		]);
+};
+var $author$project$Sfxr$encodeDuty = function (duty) {
+	return _List_fromArray(
+		[
+			_Utils_Tuple2(
+			'p_duty',
+			$elm$json$Json$Encode$float(duty.duty)),
+			_Utils_Tuple2(
+			'p_duty_ramp',
+			$elm$json$Json$Encode$float(duty.ramp))
+		]);
+};
+var $author$project$Sfxr$encodeEnvelope = function (envelope) {
+	return _List_fromArray(
+		[
+			_Utils_Tuple2(
+			'p_env_attack',
+			$elm$json$Json$Encode$float(envelope.attack)),
+			_Utils_Tuple2(
+			'p_env_sustain',
+			$elm$json$Json$Encode$float(envelope.sustain)),
+			_Utils_Tuple2(
+			'p_env_punch',
+			$elm$json$Json$Encode$float(envelope.punch)),
+			_Utils_Tuple2(
+			'p_env_decay',
+			$elm$json$Json$Encode$float(envelope.decay))
+		]);
+};
+var $author$project$Sfxr$encodeFlanger = function (flanger) {
+	return _List_fromArray(
+		[
+			_Utils_Tuple2(
+			'p_pha_offset',
+			$elm$json$Json$Encode$float(flanger.offset)),
+			_Utils_Tuple2(
+			'p_pha_ramp',
+			$elm$json$Json$Encode$float(flanger.ramp))
+		]);
+};
+var $author$project$Sfxr$encodeFrequency = function (frequency) {
+	return _List_fromArray(
+		[
+			_Utils_Tuple2(
+			'p_base_freq',
+			$elm$json$Json$Encode$float(frequency.base)),
+			_Utils_Tuple2(
+			'p_freq_limit',
+			$elm$json$Json$Encode$float(frequency.limit)),
+			_Utils_Tuple2(
+			'p_freq_ramp',
+			$elm$json$Json$Encode$float(frequency.ramp)),
+			_Utils_Tuple2(
+			'p_freq_dramp',
+			$elm$json$Json$Encode$float(frequency.dramp))
+		]);
+};
+var $author$project$Sfxr$encodeHighPassFilter = function (highPassFilter) {
+	return _List_fromArray(
+		[
+			_Utils_Tuple2(
+			'p_hpf_freq',
+			$elm$json$Json$Encode$float(highPassFilter.frequency)),
+			_Utils_Tuple2(
+			'p_hpf_ramp',
+			$elm$json$Json$Encode$float(highPassFilter.ramp))
+		]);
+};
+var $author$project$Sfxr$encodeLowPassFilter = function (lowPassFilter) {
+	return _List_fromArray(
+		[
+			_Utils_Tuple2(
+			'p_lpf_freq',
+			$elm$json$Json$Encode$float(lowPassFilter.frequency)),
+			_Utils_Tuple2(
+			'p_lpf_ramp',
+			$elm$json$Json$Encode$float(lowPassFilter.ramp)),
+			_Utils_Tuple2(
+			'p_lpf_resonance',
+			$elm$json$Json$Encode$float(lowPassFilter.resonance))
+		]);
+};
+var $elm$json$Json$Encode$int = _Json_wrap;
+var $author$project$Sfxr$encodeMisc = function (misc) {
+	return _List_fromArray(
+		[
+			_Utils_Tuple2(
+			'sound_vol',
+			$elm$json$Json$Encode$float(misc.volume)),
+			_Utils_Tuple2(
+			'sample_rate',
+			$elm$json$Json$Encode$int(misc.sampleRate)),
+			_Utils_Tuple2(
+			'sample_size',
+			$elm$json$Json$Encode$int(misc.sampleSize))
+		]);
+};
+var $author$project$Sfxr$encodeRetrigger = function (retrigger) {
+	return _List_fromArray(
+		[
+			_Utils_Tuple2(
+			'p_repeat_speed',
+			$elm$json$Json$Encode$float(retrigger.repeatSpeed))
+		]);
+};
+var $author$project$Sfxr$encodeShape = function (shape) {
+	return _Utils_Tuple2(
+		'wave_type',
+		$elm$json$Json$Encode$int(
+			function () {
+				switch (shape.$) {
+					case 'Square':
+						return 0;
+					case 'Sawtooth':
+						return 1;
+					case 'Sine':
+						return 2;
+					default:
+						return 3;
+				}
+			}()));
+};
+var $author$project$Sfxr$encodeVibrato = function (vibrato) {
+	return _List_fromArray(
+		[
+			_Utils_Tuple2(
+			'p_vib_strength',
+			$elm$json$Json$Encode$float(vibrato.strength)),
+			_Utils_Tuple2(
+			'p_vib_speed',
+			$elm$json$Json$Encode$float(vibrato.speed))
+		]);
+};
+var $elm$json$Json$Encode$object = function (pairs) {
+	return _Json_wrap(
+		A3(
+			$elm$core$List$foldl,
+			F2(
+				function (_v0, obj) {
+					var k = _v0.a;
+					var v = _v0.b;
+					return A3(_Json_addField, k, v, obj);
+				}),
+			_Json_emptyObject(_Utils_Tuple0),
+			pairs));
+};
+var $author$project$Sfxr$encodeSoundConfig = function (soundConfig) {
+	return $elm$json$Json$Encode$object(
+		_Utils_ap(
+			_List_fromArray(
+				[
+					_Utils_Tuple2(
+					'oldParams',
+					$elm$json$Json$Encode$bool(true))
+				]),
+			_Utils_ap(
+				_List_fromArray(
+					[
+						$author$project$Sfxr$encodeShape(soundConfig.shape)
+					]),
+				_Utils_ap(
+					$author$project$Sfxr$encodeEnvelope(soundConfig.envelope),
+					_Utils_ap(
+						$author$project$Sfxr$encodeFrequency(soundConfig.frequency),
+						_Utils_ap(
+							$author$project$Sfxr$encodeVibrato(soundConfig.vibrato),
+							_Utils_ap(
+								$author$project$Sfxr$encodeArpeggiation(soundConfig.arpeggiation),
+								_Utils_ap(
+									$author$project$Sfxr$encodeDuty(soundConfig.duty),
+									_Utils_ap(
+										$author$project$Sfxr$encodeRetrigger(soundConfig.retrigger),
+										_Utils_ap(
+											$author$project$Sfxr$encodeFlanger(soundConfig.flanger),
+											_Utils_ap(
+												$author$project$Sfxr$encodeLowPassFilter(soundConfig.lowPassFilter),
+												_Utils_ap(
+													$author$project$Sfxr$encodeHighPassFilter(soundConfig.highPassFilter),
+													$author$project$Sfxr$encodeMisc(soundConfig.misc)))))))))))));
+};
+var $author$project$Sfxr$flipCoin = A2(
+	$elm$random$Random$map,
+	function (n) {
+		return n < 50;
+	},
+	A2($elm$random$Random$int, 1, 100));
+var $elm$random$Random$float = F2(
+	function (a, b) {
+		return $elm$random$Random$Generator(
+			function (seed0) {
+				var seed1 = $elm$random$Random$next(seed0);
+				var range = $elm$core$Basics$abs(b - a);
+				var n1 = $elm$random$Random$peel(seed1);
+				var n0 = $elm$random$Random$peel(seed0);
+				var lo = (134217727 & n1) * 1.0;
+				var hi = (67108863 & n0) * 1.0;
+				var val = ((hi * 134217728.0) + lo) / 9007199254740992.0;
+				var scaled = (val * range) + a;
+				return _Utils_Tuple2(
+					scaled,
+					$elm$random$Random$next(seed1));
+			});
+	});
+var $author$project$Sfxr$getFloat = function (max) {
+	return A2($elm$random$Random$float, 0, max);
+};
+var $elm$random$Random$map2 = F3(
+	function (func, _v0, _v1) {
+		var genA = _v0.a;
+		var genB = _v1.a;
+		return $elm$random$Random$Generator(
+			function (seed0) {
+				var _v2 = genA(seed0);
+				var a = _v2.a;
+				var seed1 = _v2.b;
+				var _v3 = genB(seed1);
+				var b = _v3.a;
+				var seed2 = _v3.b;
+				return _Utils_Tuple2(
+					A2(func, a, b),
+					seed2);
+			});
+	});
+var $author$project$Sfxr$getRandomHitHurt = function (seed_) {
+	return $elm$core$Basics$identity(
+		function (_v4) {
+			var sc = _v4.a;
+			var highPassFilter = sc.highPassFilter;
+			var seed = _v4.b;
+			var _v5 = A2(
+				$elm$random$Random$step,
+				A3(
+					$elm$random$Random$map2,
+					F2(
+						function (shouldFilter, frequency) {
+							return shouldFilter ? _Utils_update(
+								highPassFilter,
+								{frequency: frequency}) : highPassFilter;
+						}),
+					$author$project$Sfxr$flipCoin,
+					$author$project$Sfxr$getFloat(0.3)),
+				seed);
+			var newHighPassFilter = _v5.a;
+			var newSeed = _v5.b;
+			return _Utils_Tuple2(
+				_Utils_update(
+					sc,
+					{highPassFilter: newHighPassFilter}),
+				newSeed);
+		}(
+			function (_v2) {
+				var sc = _v2.a;
+				var envelope = sc.envelope;
+				var seed = _v2.b;
+				var _v3 = A2(
+					$elm$random$Random$step,
+					A3(
+						$elm$random$Random$map2,
+						F2(
+							function (sustain, decay) {
+								return _Utils_update(
+									envelope,
+									{attack: 0, decay: 0.1 + decay, sustain: sustain});
+							}),
+						$author$project$Sfxr$getFloat(0.1),
+						$author$project$Sfxr$getFloat(0.2)),
+					seed);
+				var newEnvelope = _v3.a;
+				var newSeed = _v3.b;
+				return _Utils_Tuple2(
+					_Utils_update(
+						sc,
+						{envelope: newEnvelope}),
+					newSeed);
+			}(
+				function (_v0) {
+					var sc = _v0.a;
+					var frequency = sc.frequency;
+					var seed = _v0.b;
+					var _v1 = A2(
+						$elm$random$Random$step,
+						A3(
+							$elm$random$Random$map2,
+							F2(
+								function (base, ramp) {
+									return _Utils_update(
+										frequency,
+										{base: 0.2 + base, ramp: (-0.3) - ramp});
+								}),
+							$author$project$Sfxr$getFloat(0.6),
+							$author$project$Sfxr$getFloat(0.4)),
+						seed);
+					var newFrequency = _v1.a;
+					var newSeed = _v1.b;
+					return _Utils_Tuple2(
+						_Utils_update(
+							sc,
+							{frequency: newFrequency}),
+						newSeed);
+				}(
+					_Utils_Tuple2($author$project$Sfxr$initSoundConfig, seed_)))));
+};
+var $author$project$Sfxr$sfxrOut = _Platform_outgoingPort('sfxrOut', $elm$core$Basics$identity);
+var $author$project$Sfxr$update = F2(
+	function (msg, model) {
+		var noop = _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
+		switch (msg.$) {
+			case 'Noop':
+				return noop;
+			case 'PlaySound':
+				var _v1 = $author$project$Sfxr$getRandomHitHurt(model.globalSeed);
+				var soundConfig = _v1.a;
+				var newSeed = _v1.b;
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{globalSeed: newSeed}),
+					$author$project$Sfxr$sfxrOut(
+						$author$project$Sfxr$encodeSoundConfig(soundConfig)));
+			default:
+				var str = msg.a;
+				var _v2 = A2($elm$core$Debug$log, 'from port', str);
+				return noop;
 		}
 	});
 var $author$project$Main$update = F2(
@@ -11001,7 +12289,8 @@ var $author$project$Main$update = F2(
 					if ((newRoute.$ === 'TabRoute') && (newRoute.b.$ === 'Just')) {
 						var tab_type = newRoute.a;
 						var hash = newRoute.b.a;
-						return A2($elm$core$Debug$log, 'url changed', hash);
+						var _v4 = A2($elm$core$Debug$log, 'Main.tab_type changed to ', tab_type);
+						return hash;
 					} else {
 						return A2($elm$core$Debug$log, 'empty hash on UrlChanged', '');
 					}
@@ -11034,16 +12323,26 @@ var $author$project$Main$update = F2(
 				return _Utils_Tuple2(
 					A2($elm$core$Debug$log, 'Received from port: ' + str, model),
 					$elm$core$Platform$Cmd$none);
-			default:
+			case 'GotItemShopMsg':
 				var item_shop_msg = msg.a;
-				var _v3 = A2($author$project$ItemShop$update, item_shop_msg, model.item_shop_model);
-				var sub_model = _v3.a;
-				var sub_cmd = _v3.b;
+				var _v5 = A2($author$project$ItemShop$update, item_shop_msg, model.item_shop_model);
+				var sub_model = _v5.a;
+				var sub_cmd = _v5.b;
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
 						{item_shop_model: sub_model}),
 					A2($elm$core$Platform$Cmd$map, $author$project$Main$GotItemShopMsg, sub_cmd));
+			default:
+				var sfxrMsg = msg.a;
+				var _v6 = A2($author$project$Sfxr$update, sfxrMsg, model.sfxrModel);
+				var sub_model = _v6.a;
+				var sub_cmd = _v6.b;
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{sfxrModel: sub_model}),
+					A2($elm$core$Platform$Cmd$map, $author$project$Main$GotSfxrMsg, sub_cmd));
 		}
 	});
 var $elm$html$Html$div = _VirtualDom_node('div');
@@ -13600,19 +14899,6 @@ var $elm$json$Json$Encode$list = F2(
 				_Json_emptyArray(_Utils_Tuple0),
 				entries));
 	});
-var $elm$json$Json$Encode$object = function (pairs) {
-	return _Json_wrap(
-		A3(
-			$elm$core$List$foldl,
-			F2(
-				function (_v0, obj) {
-					var k = _v0.a;
-					var v = _v0.b;
-					return A3(_Json_addField, k, v, obj);
-				}),
-			_Json_emptyObject(_Utils_Tuple0),
-			pairs));
-};
 var $mdgriffith$elm_ui$Internal$Model$fontName = function (font) {
 	switch (font.$) {
 		case 'Serif':
@@ -16690,15 +17976,15 @@ var $mdgriffith$elm_ui$Element$none = $mdgriffith$elm_ui$Internal$Model$Empty;
 var $elm$virtual_dom$VirtualDom$style = _VirtualDom_style;
 var $elm$html$Html$Attributes$style = $elm$virtual_dom$VirtualDom$style;
 var $author$project$ItemShop$ScrollViewport = {$: 'ScrollViewport'};
-var $mdgriffith$elm_ui$Element$Background$color = function (clr) {
+var $mdgriffith$elm_ui$Element$Font$color = function (fontColor) {
 	return A2(
 		$mdgriffith$elm_ui$Internal$Model$StyleClass,
-		$mdgriffith$elm_ui$Internal$Flag$bgColor,
+		$mdgriffith$elm_ui$Internal$Flag$fontColor,
 		A3(
 			$mdgriffith$elm_ui$Internal$Model$Colored,
-			'bg-' + $mdgriffith$elm_ui$Internal$Model$formatColorClass(clr),
-			'background-color',
-			clr));
+			'fc-' + $mdgriffith$elm_ui$Internal$Model$formatColorClass(fontColor),
+			'color',
+			fontColor));
 };
 var $mdgriffith$elm_ui$Element$fromRgb = function (clr) {
 	return A4($mdgriffith$elm_ui$Internal$Model$Rgba, clr.red, clr.green, clr.blue, clr.alpha);
@@ -16710,7 +17996,7 @@ var $avh4$elm_color$Color$toRgba = function (_v0) {
 	var a = _v0.d;
 	return {alpha: a, blue: b, green: g, red: r};
 };
-var $author$project$ItemShop$convertColor = function (color) {
+var $author$project$Interface$convertColor = function (color) {
 	return $mdgriffith$elm_ui$Element$fromRgb(
 		$avh4$elm_color$Color$toRgba(color));
 };
@@ -16718,28 +18004,30 @@ var $avh4$elm_color$Color$RgbaSpace = F4(
 	function (a, b, c, d) {
 		return {$: 'RgbaSpace', a: a, b: b, c: c, d: d};
 	});
+var $avh4$elm_color$Color$red = A4($avh4$elm_color$Color$RgbaSpace, 204 / 255, 0 / 255, 0 / 255, 1.0);
+var $author$project$Interface$color_danger = $author$project$Interface$convertColor($avh4$elm_color$Color$red);
+var $mdgriffith$elm_ui$Element$Background$color = function (clr) {
+	return A2(
+		$mdgriffith$elm_ui$Internal$Model$StyleClass,
+		$mdgriffith$elm_ui$Internal$Flag$bgColor,
+		A3(
+			$mdgriffith$elm_ui$Internal$Model$Colored,
+			'bg-' + $mdgriffith$elm_ui$Internal$Model$formatColorClass(clr),
+			'background-color',
+			clr));
+};
 var $avh4$elm_color$Color$darkCharcoal = A4($avh4$elm_color$Color$RgbaSpace, 46 / 255, 52 / 255, 54 / 255, 1.0);
 var $avh4$elm_color$Color$white = A4($avh4$elm_color$Color$RgbaSpace, 255 / 255, 255 / 255, 255 / 255, 1.0);
 var $author$project$ItemShop$defaultSolidColor = function (colorTheme) {
 	if (colorTheme.$ === 'BrightTheme') {
-		return $author$project$ItemShop$convertColor($avh4$elm_color$Color$white);
+		return $author$project$Interface$convertColor($avh4$elm_color$Color$white);
 	} else {
-		return $author$project$ItemShop$convertColor($avh4$elm_color$Color$darkCharcoal);
+		return $author$project$Interface$convertColor($avh4$elm_color$Color$darkCharcoal);
 	}
 };
 var $author$project$ItemShop$defaultBackgroundColor = function (colorTheme) {
 	return $mdgriffith$elm_ui$Element$Background$color(
 		$author$project$ItemShop$defaultSolidColor(colorTheme));
-};
-var $mdgriffith$elm_ui$Element$Font$color = function (fontColor) {
-	return A2(
-		$mdgriffith$elm_ui$Internal$Model$StyleClass,
-		$mdgriffith$elm_ui$Internal$Flag$fontColor,
-		A3(
-			$mdgriffith$elm_ui$Internal$Model$Colored,
-			'fc-' + $mdgriffith$elm_ui$Internal$Model$formatColorClass(fontColor),
-			'color',
-			fontColor));
 };
 var $avh4$elm_color$Color$black = A4($avh4$elm_color$Color$RgbaSpace, 0 / 255, 0 / 255, 0 / 255, 1.0);
 var $elm$core$Result$andThen = F2(
@@ -16990,7 +18278,7 @@ var $mdgriffith$elm_ui$Element$rgb255 = F3(
 	function (red, green, blue) {
 		return A4($mdgriffith$elm_ui$Internal$Model$Rgba, red / 255, green / 255, blue / 255, 1);
 	});
-var $author$project$ItemShop$hex_to_color = function (hex_str) {
+var $author$project$Interface$hex_to_color = function (hex_str) {
 	var _v0 = $noahzgordon$elm_color_extra$Color$Convert$hexToColor(hex_str);
 	if (_v0.$ === 'Ok') {
 		var color = _v0.a;
@@ -17000,10 +18288,10 @@ var $author$project$ItemShop$hex_to_color = function (hex_str) {
 		var err = _v0.a;
 		return A2(
 			_Debug_todo(
-				'ItemShop',
+				'Interface',
 				{
-					start: {line: 1043, column: 13},
-					end: {line: 1043, column: 23}
+					start: {line: 95, column: 13},
+					end: {line: 95, column: 23}
 				}),
 			'NOOO',
 			A3($mdgriffith$elm_ui$Element$rgb255, 255, 0, 0));
@@ -17011,15 +18299,42 @@ var $author$project$ItemShop$hex_to_color = function (hex_str) {
 };
 var $author$project$ItemShop$defaultTextColor = function (colorTheme) {
 	if (colorTheme.$ === 'BrightTheme') {
-		return $author$project$ItemShop$convertColor($avh4$elm_color$Color$black);
+		return $author$project$Interface$convertColor($avh4$elm_color$Color$black);
 	} else {
-		return $author$project$ItemShop$hex_to_color('#ccc');
+		return $author$project$Interface$hex_to_color('#ccc');
 	}
 };
 var $author$project$ItemShop$defaultFontColor = function (colorTheme) {
 	return $mdgriffith$elm_ui$Element$Font$color(
 		$author$project$ItemShop$defaultTextColor(colorTheme));
 };
+var $mdgriffith$elm_ui$Internal$Model$Height = function (a) {
+	return {$: 'Height', a: a};
+};
+var $mdgriffith$elm_ui$Element$height = $mdgriffith$elm_ui$Internal$Model$Height;
+var $mdgriffith$elm_ui$Internal$Model$Content = {$: 'Content'};
+var $mdgriffith$elm_ui$Element$shrink = $mdgriffith$elm_ui$Internal$Model$Content;
+var $mdgriffith$elm_ui$Internal$Model$Width = function (a) {
+	return {$: 'Width', a: a};
+};
+var $mdgriffith$elm_ui$Element$width = $mdgriffith$elm_ui$Internal$Model$Width;
+var $mdgriffith$elm_ui$Element$el = F2(
+	function (attrs, child) {
+		return A4(
+			$mdgriffith$elm_ui$Internal$Model$element,
+			$mdgriffith$elm_ui$Internal$Model$asEl,
+			$mdgriffith$elm_ui$Internal$Model$div,
+			A2(
+				$elm$core$List$cons,
+				$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$shrink),
+				A2(
+					$elm$core$List$cons,
+					$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$shrink),
+					attrs)),
+			$mdgriffith$elm_ui$Internal$Model$Unkeyed(
+				_List_fromArray(
+					[child])));
+	});
 var $mdgriffith$elm_ui$Internal$Model$Fill = function (a) {
 	return {$: 'Fill', a: a};
 };
@@ -17088,6 +18403,40 @@ var $mdgriffith$elm_ui$Element$Lazy$lazy2 = F3(
 		return $mdgriffith$elm_ui$Internal$Model$Unstyled(
 			A4($elm$virtual_dom$VirtualDom$lazy4, $mdgriffith$elm_ui$Element$Lazy$apply2, fn, a, b));
 	});
+var $mdgriffith$elm_ui$Internal$Model$Text = function (a) {
+	return {$: 'Text', a: a};
+};
+var $mdgriffith$elm_ui$Internal$Model$map = F2(
+	function (fn, el) {
+		switch (el.$) {
+			case 'Styled':
+				var styled = el.a;
+				return $mdgriffith$elm_ui$Internal$Model$Styled(
+					{
+						html: F2(
+							function (add, context) {
+								return A2(
+									$elm$virtual_dom$VirtualDom$map,
+									fn,
+									A2(styled.html, add, context));
+							}),
+						styles: styled.styles
+					});
+			case 'Unstyled':
+				var html = el.a;
+				return $mdgriffith$elm_ui$Internal$Model$Unstyled(
+					A2(
+						$elm$core$Basics$composeL,
+						$elm$virtual_dom$VirtualDom$map(fn),
+						html));
+			case 'Text':
+				var str = el.a;
+				return $mdgriffith$elm_ui$Internal$Model$Text(str);
+			default:
+				return $mdgriffith$elm_ui$Internal$Model$Empty;
+		}
+	});
+var $mdgriffith$elm_ui$Element$map = $mdgriffith$elm_ui$Internal$Model$map;
 var $mdgriffith$elm_ui$Internal$Model$NoStaticStyleSheet = {$: 'NoStaticStyleSheet'};
 var $mdgriffith$elm_ui$Internal$Model$RenderModeOption = function (a) {
 	return {$: 'RenderModeOption', a: a};
@@ -17122,187 +18471,57 @@ var $mdgriffith$elm_ui$Element$padding = function (x) {
 			f,
 			f));
 };
-var $mdgriffith$elm_ui$Internal$Model$AlignY = function (a) {
-	return {$: 'AlignY', a: a};
-};
-var $mdgriffith$elm_ui$Internal$Model$Bottom = {$: 'Bottom'};
-var $mdgriffith$elm_ui$Element$alignBottom = $mdgriffith$elm_ui$Internal$Model$AlignY($mdgriffith$elm_ui$Internal$Model$Bottom);
-var $mdgriffith$elm_ui$Internal$Model$AlignX = function (a) {
-	return {$: 'AlignX', a: a};
-};
-var $mdgriffith$elm_ui$Internal$Model$Right = {$: 'Right'};
-var $mdgriffith$elm_ui$Element$alignRight = $mdgriffith$elm_ui$Internal$Model$AlignX($mdgriffith$elm_ui$Internal$Model$Right);
-var $mdgriffith$elm_ui$Internal$Model$Class = F2(
-	function (a, b) {
-		return {$: 'Class', a: a, b: b};
-	});
-var $mdgriffith$elm_ui$Internal$Flag$fontAlignment = $mdgriffith$elm_ui$Internal$Flag$flag(12);
-var $mdgriffith$elm_ui$Element$Font$alignRight = A2($mdgriffith$elm_ui$Internal$Model$Class, $mdgriffith$elm_ui$Internal$Flag$fontAlignment, $mdgriffith$elm_ui$Internal$Style$classes.textRight);
-var $mdgriffith$elm_ui$Internal$Flag$borderColor = $mdgriffith$elm_ui$Internal$Flag$flag(28);
-var $mdgriffith$elm_ui$Element$Border$color = function (clr) {
-	return A2(
-		$mdgriffith$elm_ui$Internal$Model$StyleClass,
-		$mdgriffith$elm_ui$Internal$Flag$borderColor,
-		A3(
-			$mdgriffith$elm_ui$Internal$Model$Colored,
-			'bc-' + $mdgriffith$elm_ui$Internal$Model$formatColorClass(clr),
-			'border-color',
-			clr));
-};
-var $author$project$ItemShop$color_ultra_light_grey = A3($mdgriffith$elm_ui$Element$rgb, 0.95, 0.95, 0.95);
-var $mdgriffith$elm_ui$Internal$Model$Height = function (a) {
-	return {$: 'Height', a: a};
-};
-var $mdgriffith$elm_ui$Element$height = $mdgriffith$elm_ui$Internal$Model$Height;
-var $mdgriffith$elm_ui$Internal$Model$Content = {$: 'Content'};
-var $mdgriffith$elm_ui$Element$shrink = $mdgriffith$elm_ui$Internal$Model$Content;
-var $mdgriffith$elm_ui$Internal$Model$Width = function (a) {
-	return {$: 'Width', a: a};
-};
-var $mdgriffith$elm_ui$Element$width = $mdgriffith$elm_ui$Internal$Model$Width;
-var $mdgriffith$elm_ui$Element$el = F2(
-	function (attrs, child) {
-		return A4(
-			$mdgriffith$elm_ui$Internal$Model$element,
-			$mdgriffith$elm_ui$Internal$Model$asEl,
-			$mdgriffith$elm_ui$Internal$Model$div,
-			A2(
-				$elm$core$List$cons,
-				$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$shrink),
-				A2(
-					$elm$core$List$cons,
-					$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$shrink),
-					attrs)),
-			$mdgriffith$elm_ui$Internal$Model$Unkeyed(
-				_List_fromArray(
-					[child])));
-	});
-var $avh4$elm_color$Color$lightCharcoal = A4($avh4$elm_color$Color$RgbaSpace, 136 / 255, 138 / 255, 133 / 255, 1.0);
-var $author$project$ItemShop$noUserSelect = $mdgriffith$elm_ui$Element$htmlAttribute(
-	A2($elm$html$Html$Attributes$style, 'userSelect', 'none'));
-var $author$project$ItemShop$pointerEventsAll = $mdgriffith$elm_ui$Element$htmlAttribute(
-	A2($elm$html$Html$Attributes$style, 'pointer-events', 'all'));
-var $author$project$ItemShop$pointerEventsNone = $mdgriffith$elm_ui$Element$htmlAttribute(
-	A2($elm$html$Html$Attributes$style, 'pointer-events', 'none'));
-var $author$project$ItemShop$color_grey = A3($mdgriffith$elm_ui$Element$rgb, 0.35, 0.35, 0.35);
-var $author$project$ItemShop$font_grey = $mdgriffith$elm_ui$Element$Font$color($author$project$ItemShop$color_grey);
-var $mdgriffith$elm_ui$Internal$Model$Describe = function (a) {
-	return {$: 'Describe', a: a};
-};
-var $mdgriffith$elm_ui$Internal$Model$Paragraph = {$: 'Paragraph'};
-var $mdgriffith$elm_ui$Internal$Model$SpacingStyle = F3(
-	function (a, b, c) {
-		return {$: 'SpacingStyle', a: a, b: b, c: c};
-	});
-var $mdgriffith$elm_ui$Internal$Flag$spacing = $mdgriffith$elm_ui$Internal$Flag$flag(3);
-var $mdgriffith$elm_ui$Internal$Model$spacingName = F2(
-	function (x, y) {
-		return 'spacing-' + ($elm$core$String$fromInt(x) + ('-' + $elm$core$String$fromInt(y)));
-	});
-var $mdgriffith$elm_ui$Element$spacing = function (x) {
-	return A2(
-		$mdgriffith$elm_ui$Internal$Model$StyleClass,
-		$mdgriffith$elm_ui$Internal$Flag$spacing,
-		A3(
-			$mdgriffith$elm_ui$Internal$Model$SpacingStyle,
-			A2($mdgriffith$elm_ui$Internal$Model$spacingName, x, x),
-			x,
-			x));
-};
-var $mdgriffith$elm_ui$Element$paragraph = F2(
-	function (attrs, children) {
-		return A4(
-			$mdgriffith$elm_ui$Internal$Model$element,
-			$mdgriffith$elm_ui$Internal$Model$asParagraph,
-			$mdgriffith$elm_ui$Internal$Model$div,
-			A2(
-				$elm$core$List$cons,
-				$mdgriffith$elm_ui$Internal$Model$Describe($mdgriffith$elm_ui$Internal$Model$Paragraph),
-				A2(
-					$elm$core$List$cons,
-					$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
-					A2(
-						$elm$core$List$cons,
-						$mdgriffith$elm_ui$Element$spacing(5),
-						attrs))),
-			$mdgriffith$elm_ui$Internal$Model$Unkeyed(children));
-	});
-var $mdgriffith$elm_ui$Element$Font$size = function (i) {
-	return A2(
-		$mdgriffith$elm_ui$Internal$Model$StyleClass,
-		$mdgriffith$elm_ui$Internal$Flag$fontSize,
-		$mdgriffith$elm_ui$Internal$Model$FontSize(i));
-};
-var $mdgriffith$elm_ui$Internal$Model$Text = function (a) {
-	return {$: 'Text', a: a};
-};
 var $mdgriffith$elm_ui$Element$text = function (content) {
 	return $mdgriffith$elm_ui$Internal$Model$Text(content);
 };
-var $author$project$ItemShop$render_gp_sized = F3(
-	function (colorTheme, count, font_size) {
-		return A2(
-			$mdgriffith$elm_ui$Element$paragraph,
-			_List_Nil,
-			_List_fromArray(
-				[
-					$mdgriffith$elm_ui$Element$text(
-					$elm$core$String$fromInt(count)),
-					A2(
-					$mdgriffith$elm_ui$Element$el,
-					_List_fromArray(
-						[
-							$mdgriffith$elm_ui$Element$Font$size(font_size),
-							function () {
-							if (colorTheme.$ === 'BrightTheme') {
-								return $author$project$ItemShop$font_grey;
-							} else {
-								return $mdgriffith$elm_ui$Element$Font$color(
-									$author$project$ItemShop$hex_to_color('#777439'));
-							}
-						}()
-						]),
-					$mdgriffith$elm_ui$Element$text('gp'))
-				]));
-	});
-var $author$project$ItemShop$render_gp = F2(
-	function (colorTheme, count) {
-		return A3($author$project$ItemShop$render_gp_sized, colorTheme, count, 12);
-	});
-var $mdgriffith$elm_ui$Internal$Flag$borderRound = $mdgriffith$elm_ui$Internal$Flag$flag(17);
-var $mdgriffith$elm_ui$Element$Border$rounded = function (radius) {
-	return A2(
-		$mdgriffith$elm_ui$Internal$Model$StyleClass,
-		$mdgriffith$elm_ui$Internal$Flag$borderRound,
-		A3(
-			$mdgriffith$elm_ui$Internal$Model$Single,
-			'br-' + $elm$core$String$fromInt(radius),
-			'border-radius',
-			$elm$core$String$fromInt(radius) + 'px'));
+var $author$project$Battle$ChangeLocation = function (a) {
+	return {$: 'ChangeLocation', a: a};
 };
-var $mdgriffith$elm_ui$Internal$Model$AsRow = {$: 'AsRow'};
-var $mdgriffith$elm_ui$Internal$Model$asRow = $mdgriffith$elm_ui$Internal$Model$AsRow;
-var $mdgriffith$elm_ui$Element$row = F2(
+var $author$project$Battle$Fight = {$: 'Fight'};
+var $author$project$Battle$FindNewEnemy = {$: 'FindNewEnemy'};
+var $author$project$Battle$Noop = {$: 'Noop'};
+var $mdgriffith$elm_ui$Internal$Model$AlignX = function (a) {
+	return {$: 'AlignX', a: a};
+};
+var $mdgriffith$elm_ui$Internal$Model$Left = {$: 'Left'};
+var $mdgriffith$elm_ui$Element$alignLeft = $mdgriffith$elm_ui$Internal$Model$AlignX($mdgriffith$elm_ui$Internal$Model$Left);
+var $mdgriffith$elm_ui$Internal$Model$Right = {$: 'Right'};
+var $mdgriffith$elm_ui$Element$alignRight = $mdgriffith$elm_ui$Internal$Model$AlignX($mdgriffith$elm_ui$Internal$Model$Right);
+var $mdgriffith$elm_ui$Internal$Model$AlignY = function (a) {
+	return {$: 'AlignY', a: a};
+};
+var $mdgriffith$elm_ui$Internal$Model$Top = {$: 'Top'};
+var $mdgriffith$elm_ui$Element$alignTop = $mdgriffith$elm_ui$Internal$Model$AlignY($mdgriffith$elm_ui$Internal$Model$Top);
+var $author$project$Battle$attrNone = $mdgriffith$elm_ui$Element$htmlAttribute(
+	$elm$html$Html$Attributes$class(''));
+var $mdgriffith$elm_ui$Internal$Model$CenterX = {$: 'CenterX'};
+var $mdgriffith$elm_ui$Element$centerX = $mdgriffith$elm_ui$Internal$Model$AlignX($mdgriffith$elm_ui$Internal$Model$CenterX);
+var $mdgriffith$elm_ui$Internal$Model$CenterY = {$: 'CenterY'};
+var $mdgriffith$elm_ui$Element$centerY = $mdgriffith$elm_ui$Internal$Model$AlignY($mdgriffith$elm_ui$Internal$Model$CenterY);
+var $mdgriffith$elm_ui$Internal$Model$AsColumn = {$: 'AsColumn'};
+var $mdgriffith$elm_ui$Internal$Model$asColumn = $mdgriffith$elm_ui$Internal$Model$AsColumn;
+var $mdgriffith$elm_ui$Element$column = F2(
 	function (attrs, children) {
 		return A4(
 			$mdgriffith$elm_ui$Internal$Model$element,
-			$mdgriffith$elm_ui$Internal$Model$asRow,
+			$mdgriffith$elm_ui$Internal$Model$asColumn,
 			$mdgriffith$elm_ui$Internal$Model$div,
 			A2(
 				$elm$core$List$cons,
-				$mdgriffith$elm_ui$Internal$Model$htmlClass($mdgriffith$elm_ui$Internal$Style$classes.contentLeft + (' ' + $mdgriffith$elm_ui$Internal$Style$classes.contentCenterY)),
+				$mdgriffith$elm_ui$Internal$Model$htmlClass($mdgriffith$elm_ui$Internal$Style$classes.contentTop + (' ' + $mdgriffith$elm_ui$Internal$Style$classes.contentLeft)),
 				A2(
 					$elm$core$List$cons,
-					$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$shrink),
+					$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$shrink),
 					A2(
 						$elm$core$List$cons,
-						$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$shrink),
+						$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$shrink),
 						attrs))),
 			$mdgriffith$elm_ui$Internal$Model$Unkeyed(children));
 	});
-var $author$project$ItemShop$ToggleShowDebugInventories = {$: 'ToggleShowDebugInventories'};
 var $mdgriffith$elm_ui$Internal$Model$Button = {$: 'Button'};
-var $elm$json$Json$Encode$bool = _Json_wrap;
+var $mdgriffith$elm_ui$Internal$Model$Describe = function (a) {
+	return {$: 'Describe', a: a};
+};
 var $elm$html$Html$Attributes$boolProperty = F2(
 	function (key, bool) {
 		return A2(
@@ -17368,6 +18587,10 @@ var $mdgriffith$elm_ui$Element$Input$onKeyLookup = function (lookup) {
 				},
 				isKey)));
 };
+var $mdgriffith$elm_ui$Internal$Model$Class = F2(
+	function (a, b) {
+		return {$: 'Class', a: a, b: b};
+	});
 var $mdgriffith$elm_ui$Internal$Flag$cursor = $mdgriffith$elm_ui$Internal$Flag$flag(21);
 var $mdgriffith$elm_ui$Element$pointer = A2($mdgriffith$elm_ui$Internal$Model$Class, $mdgriffith$elm_ui$Internal$Flag$cursor, $mdgriffith$elm_ui$Internal$Style$classes.cursorPointer);
 var $mdgriffith$elm_ui$Element$Input$space = ' ';
@@ -17432,13 +18655,23 @@ var $mdgriffith$elm_ui$Element$Input$button = F2(
 				_List_fromArray(
 					[label])));
 	});
-var $author$project$ItemShop$color_black = A3($mdgriffith$elm_ui$Element$rgb, 0, 0, 0);
-var $avh4$elm_color$Color$red = A4($avh4$elm_color$Color$RgbaSpace, 204 / 255, 0 / 255, 0 / 255, 1.0);
-var $author$project$ItemShop$color_danger = $author$project$ItemShop$convertColor($avh4$elm_color$Color$red);
+var $author$project$Interface$color_black = A3($mdgriffith$elm_ui$Element$rgb, 0, 0, 0);
 var $avh4$elm_color$Color$lightRed = A4($avh4$elm_color$Color$RgbaSpace, 239 / 255, 41 / 255, 41 / 255, 1.0);
-var $author$project$ItemShop$color_danger_bright = $author$project$ItemShop$convertColor($avh4$elm_color$Color$lightRed);
-var $author$project$ItemShop$color_white = A3($mdgriffith$elm_ui$Element$rgb, 1, 1, 1);
+var $author$project$Interface$color_danger_bright = $author$project$Interface$convertColor($avh4$elm_color$Color$lightRed);
+var $author$project$Interface$color_white = A3($mdgriffith$elm_ui$Element$rgb, 1, 1, 1);
+var $mdgriffith$elm_ui$Internal$Flag$fontAlignment = $mdgriffith$elm_ui$Internal$Flag$flag(12);
 var $mdgriffith$elm_ui$Element$Font$center = A2($mdgriffith$elm_ui$Internal$Model$Class, $mdgriffith$elm_ui$Internal$Flag$fontAlignment, $mdgriffith$elm_ui$Internal$Style$classes.textCenter);
+var $mdgriffith$elm_ui$Internal$Flag$borderColor = $mdgriffith$elm_ui$Internal$Flag$flag(28);
+var $mdgriffith$elm_ui$Element$Border$color = function (clr) {
+	return A2(
+		$mdgriffith$elm_ui$Internal$Model$StyleClass,
+		$mdgriffith$elm_ui$Internal$Flag$borderColor,
+		A3(
+			$mdgriffith$elm_ui$Internal$Model$Colored,
+			'bc-' + $mdgriffith$elm_ui$Internal$Model$formatColorClass(clr),
+			'border-color',
+			clr));
+};
 var $mdgriffith$elm_ui$Internal$Model$Hover = {$: 'Hover'};
 var $mdgriffith$elm_ui$Internal$Model$PseudoSelector = F2(
 	function (a, b) {
@@ -17448,36 +18681,6 @@ var $mdgriffith$elm_ui$Internal$Flag$hover = $mdgriffith$elm_ui$Internal$Flag$fl
 var $mdgriffith$elm_ui$Internal$Model$TransformComponent = F2(
 	function (a, b) {
 		return {$: 'TransformComponent', a: a, b: b};
-	});
-var $mdgriffith$elm_ui$Internal$Model$map = F2(
-	function (fn, el) {
-		switch (el.$) {
-			case 'Styled':
-				var styled = el.a;
-				return $mdgriffith$elm_ui$Internal$Model$Styled(
-					{
-						html: F2(
-							function (add, context) {
-								return A2(
-									$elm$virtual_dom$VirtualDom$map,
-									fn,
-									A2(styled.html, add, context));
-							}),
-						styles: styled.styles
-					});
-			case 'Unstyled':
-				var html = el.a;
-				return $mdgriffith$elm_ui$Internal$Model$Unstyled(
-					A2(
-						$elm$core$Basics$composeL,
-						$elm$virtual_dom$VirtualDom$map(fn),
-						html));
-			case 'Text':
-				var str = el.a;
-				return $mdgriffith$elm_ui$Internal$Model$Text(str);
-			default:
-				return $mdgriffith$elm_ui$Internal$Model$Empty;
-		}
 	});
 var $elm$virtual_dom$VirtualDom$mapAttribute = _VirtualDom_mapAttribute;
 var $mdgriffith$elm_ui$Internal$Model$mapAttrFromStyle = F2(
@@ -17571,6 +18774,23 @@ var $mdgriffith$elm_ui$Element$mouseOver = function (decs) {
 			$mdgriffith$elm_ui$Internal$Model$Hover,
 			$mdgriffith$elm_ui$Internal$Model$unwrapDecorations(decs)));
 };
+var $mdgriffith$elm_ui$Internal$Flag$borderRound = $mdgriffith$elm_ui$Internal$Flag$flag(17);
+var $mdgriffith$elm_ui$Element$Border$rounded = function (radius) {
+	return A2(
+		$mdgriffith$elm_ui$Internal$Model$StyleClass,
+		$mdgriffith$elm_ui$Internal$Flag$borderRound,
+		A3(
+			$mdgriffith$elm_ui$Internal$Model$Single,
+			'br-' + $elm$core$String$fromInt(radius),
+			'border-radius',
+			$elm$core$String$fromInt(radius) + 'px'));
+};
+var $mdgriffith$elm_ui$Element$Font$size = function (i) {
+	return A2(
+		$mdgriffith$elm_ui$Internal$Model$StyleClass,
+		$mdgriffith$elm_ui$Internal$Flag$fontSize,
+		$mdgriffith$elm_ui$Internal$Model$FontSize(i));
+};
 var $mdgriffith$elm_ui$Internal$Model$BorderWidth = F5(
 	function (a, b, c, d, e) {
 		return {$: 'BorderWidth', a: a, b: b, c: c, d: d, e: e};
@@ -17587,7 +18807,7 @@ var $mdgriffith$elm_ui$Element$Border$width = function (v) {
 			v,
 			v));
 };
-var $author$project$ItemShop$common_button_attrs = function (_v0) {
+var $author$project$Interface$common_button_attrs = function (_v0) {
 	var font_color = _v0.font_color;
 	var button_color = _v0.button_color;
 	var hovered_button_color = _v0.hovered_button_color;
@@ -17612,27 +18832,1178 @@ var $author$project$ItemShop$common_button_attrs = function (_v0) {
 				]))
 		]);
 };
-var $author$project$ItemShop$danger_button_custom = F3(
+var $author$project$Interface$danger_button_custom = F3(
 	function (custom_attrs, on_press, label) {
 		return A2(
 			$mdgriffith$elm_ui$Element$Input$button,
 			_Utils_ap(
-				$author$project$ItemShop$common_button_attrs(
-					{button_color: $author$project$ItemShop$color_danger, font_color: $author$project$ItemShop$color_white, hovered_button_color: $author$project$ItemShop$color_danger_bright, hovered_font_color: $author$project$ItemShop$color_black}),
+				$author$project$Interface$common_button_attrs(
+					{button_color: $author$project$Interface$color_danger, font_color: $author$project$Interface$color_white, hovered_button_color: $author$project$Interface$color_danger_bright, hovered_font_color: $author$project$Interface$color_black}),
 				custom_attrs),
 			{
 				label: label,
 				onPress: $elm$core$Maybe$Just(on_press)
 			});
 	});
-var $author$project$ItemShop$danger_button = F3(
+var $author$project$Interface$danger_button = F3(
 	function (custom_attrs, on_press, label_str) {
 		return A3(
-			$author$project$ItemShop$danger_button_custom,
+			$author$project$Interface$danger_button_custom,
 			custom_attrs,
 			on_press,
 			$mdgriffith$elm_ui$Element$text(label_str));
 	});
+var $author$project$Battle$debugMode = true;
+var $mdgriffith$elm_ui$Element$fillPortion = $mdgriffith$elm_ui$Internal$Model$Fill;
+var $mdgriffith$elm_ui$Element$paddingXY = F2(
+	function (x, y) {
+		if (_Utils_eq(x, y)) {
+			var f = x;
+			return A2(
+				$mdgriffith$elm_ui$Internal$Model$StyleClass,
+				$mdgriffith$elm_ui$Internal$Flag$padding,
+				A5(
+					$mdgriffith$elm_ui$Internal$Model$PaddingStyle,
+					'p-' + $elm$core$String$fromInt(x),
+					f,
+					f,
+					f,
+					f));
+		} else {
+			var yFloat = y;
+			var xFloat = x;
+			return A2(
+				$mdgriffith$elm_ui$Internal$Model$StyleClass,
+				$mdgriffith$elm_ui$Internal$Flag$padding,
+				A5(
+					$mdgriffith$elm_ui$Internal$Model$PaddingStyle,
+					'p-' + ($elm$core$String$fromInt(x) + ('-' + $elm$core$String$fromInt(y))),
+					yFloat,
+					xFloat,
+					yFloat,
+					xFloat));
+		}
+	});
+var $mdgriffith$elm_ui$Internal$Model$AsRow = {$: 'AsRow'};
+var $mdgriffith$elm_ui$Internal$Model$asRow = $mdgriffith$elm_ui$Internal$Model$AsRow;
+var $mdgriffith$elm_ui$Element$row = F2(
+	function (attrs, children) {
+		return A4(
+			$mdgriffith$elm_ui$Internal$Model$element,
+			$mdgriffith$elm_ui$Internal$Model$asRow,
+			$mdgriffith$elm_ui$Internal$Model$div,
+			A2(
+				$elm$core$List$cons,
+				$mdgriffith$elm_ui$Internal$Model$htmlClass($mdgriffith$elm_ui$Internal$Style$classes.contentLeft + (' ' + $mdgriffith$elm_ui$Internal$Style$classes.contentCenterY)),
+				A2(
+					$elm$core$List$cons,
+					$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$shrink),
+					A2(
+						$elm$core$List$cons,
+						$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$shrink),
+						attrs))),
+			$mdgriffith$elm_ui$Internal$Model$Unkeyed(children));
+	});
+var $mdgriffith$elm_ui$Element$Border$widthXY = F2(
+	function (x, y) {
+		return A2(
+			$mdgriffith$elm_ui$Internal$Model$StyleClass,
+			$mdgriffith$elm_ui$Internal$Flag$borderWidth,
+			A5(
+				$mdgriffith$elm_ui$Internal$Model$BorderWidth,
+				'b-' + ($elm$core$String$fromInt(x) + ('-' + $elm$core$String$fromInt(y))),
+				y,
+				x,
+				y,
+				x));
+	});
+var $mdgriffith$elm_ui$Element$Border$widthEach = function (_v0) {
+	var bottom = _v0.bottom;
+	var top = _v0.top;
+	var left = _v0.left;
+	var right = _v0.right;
+	return (_Utils_eq(top, bottom) && _Utils_eq(left, right)) ? (_Utils_eq(top, right) ? $mdgriffith$elm_ui$Element$Border$width(top) : A2($mdgriffith$elm_ui$Element$Border$widthXY, left, top)) : A2(
+		$mdgriffith$elm_ui$Internal$Model$StyleClass,
+		$mdgriffith$elm_ui$Internal$Flag$borderWidth,
+		A5(
+			$mdgriffith$elm_ui$Internal$Model$BorderWidth,
+			'b-' + ($elm$core$String$fromInt(top) + ('-' + ($elm$core$String$fromInt(right) + ('-' + ($elm$core$String$fromInt(bottom) + ('-' + $elm$core$String$fromInt(left))))))),
+			top,
+			right,
+			bottom,
+			left));
+};
+var $author$project$Battle$dividingLine = A2(
+	$mdgriffith$elm_ui$Element$column,
+	_List_fromArray(
+		[
+			$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
+			A2($mdgriffith$elm_ui$Element$paddingXY, 0, 20)
+		]),
+	_List_fromArray(
+		[
+			A2(
+			$mdgriffith$elm_ui$Element$row,
+			_List_fromArray(
+				[
+					$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
+					$mdgriffith$elm_ui$Element$centerX
+				]),
+			_List_fromArray(
+				[
+					A2(
+					$mdgriffith$elm_ui$Element$row,
+					_List_fromArray(
+						[
+							$mdgriffith$elm_ui$Element$width(
+							$mdgriffith$elm_ui$Element$fillPortion(1))
+						]),
+					_List_Nil),
+					A2(
+					$mdgriffith$elm_ui$Element$row,
+					_List_fromArray(
+						[
+							$mdgriffith$elm_ui$Element$width(
+							$mdgriffith$elm_ui$Element$fillPortion(3)),
+							$mdgriffith$elm_ui$Element$Border$widthEach(
+							{bottom: 0, left: 0, right: 0, top: 1})
+						]),
+					_List_Nil),
+					A2(
+					$mdgriffith$elm_ui$Element$row,
+					_List_fromArray(
+						[
+							$mdgriffith$elm_ui$Element$width(
+							$mdgriffith$elm_ui$Element$fillPortion(1))
+						]),
+					_List_Nil)
+				]))
+		]));
+var $mdgriffith$elm_ui$Internal$Model$Min = F2(
+	function (a, b) {
+		return {$: 'Min', a: a, b: b};
+	});
+var $mdgriffith$elm_ui$Element$minimum = F2(
+	function (i, l) {
+		return A2($mdgriffith$elm_ui$Internal$Model$Min, i, l);
+	});
+var $author$project$Battle$fillMin = function (pxWidth) {
+	return A2($mdgriffith$elm_ui$Element$minimum, pxWidth, $mdgriffith$elm_ui$Element$fill);
+};
+var $mdgriffith$elm_ui$Internal$Model$paddingName = F4(
+	function (top, right, bottom, left) {
+		return 'pad-' + ($elm$core$String$fromInt(top) + ('-' + ($elm$core$String$fromInt(right) + ('-' + ($elm$core$String$fromInt(bottom) + ('-' + $elm$core$String$fromInt(left)))))));
+	});
+var $mdgriffith$elm_ui$Element$paddingEach = function (_v0) {
+	var top = _v0.top;
+	var right = _v0.right;
+	var bottom = _v0.bottom;
+	var left = _v0.left;
+	if (_Utils_eq(top, right) && (_Utils_eq(top, bottom) && _Utils_eq(top, left))) {
+		var topFloat = top;
+		return A2(
+			$mdgriffith$elm_ui$Internal$Model$StyleClass,
+			$mdgriffith$elm_ui$Internal$Flag$padding,
+			A5(
+				$mdgriffith$elm_ui$Internal$Model$PaddingStyle,
+				'p-' + $elm$core$String$fromInt(top),
+				topFloat,
+				topFloat,
+				topFloat,
+				topFloat));
+	} else {
+		return A2(
+			$mdgriffith$elm_ui$Internal$Model$StyleClass,
+			$mdgriffith$elm_ui$Internal$Flag$padding,
+			A5(
+				$mdgriffith$elm_ui$Internal$Model$PaddingStyle,
+				A4($mdgriffith$elm_ui$Internal$Model$paddingName, top, right, bottom, left),
+				top,
+				right,
+				bottom,
+				left));
+	}
+};
+var $mdgriffith$elm_ui$Internal$Model$Paragraph = {$: 'Paragraph'};
+var $mdgriffith$elm_ui$Internal$Model$SpacingStyle = F3(
+	function (a, b, c) {
+		return {$: 'SpacingStyle', a: a, b: b, c: c};
+	});
+var $mdgriffith$elm_ui$Internal$Flag$spacing = $mdgriffith$elm_ui$Internal$Flag$flag(3);
+var $mdgriffith$elm_ui$Internal$Model$spacingName = F2(
+	function (x, y) {
+		return 'spacing-' + ($elm$core$String$fromInt(x) + ('-' + $elm$core$String$fromInt(y)));
+	});
+var $mdgriffith$elm_ui$Element$spacing = function (x) {
+	return A2(
+		$mdgriffith$elm_ui$Internal$Model$StyleClass,
+		$mdgriffith$elm_ui$Internal$Flag$spacing,
+		A3(
+			$mdgriffith$elm_ui$Internal$Model$SpacingStyle,
+			A2($mdgriffith$elm_ui$Internal$Model$spacingName, x, x),
+			x,
+			x));
+};
+var $mdgriffith$elm_ui$Element$paragraph = F2(
+	function (attrs, children) {
+		return A4(
+			$mdgriffith$elm_ui$Internal$Model$element,
+			$mdgriffith$elm_ui$Internal$Model$asParagraph,
+			$mdgriffith$elm_ui$Internal$Model$div,
+			A2(
+				$elm$core$List$cons,
+				$mdgriffith$elm_ui$Internal$Model$Describe($mdgriffith$elm_ui$Internal$Model$Paragraph),
+				A2(
+					$elm$core$List$cons,
+					$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
+					A2(
+						$elm$core$List$cons,
+						$mdgriffith$elm_ui$Element$spacing(5),
+						attrs))),
+			$mdgriffith$elm_ui$Internal$Model$Unkeyed(children));
+	});
+var $avh4$elm_color$Color$blue = A4($avh4$elm_color$Color$RgbaSpace, 52 / 255, 101 / 255, 164 / 255, 1.0);
+var $author$project$Interface$color_primary = $author$project$Interface$convertColor($avh4$elm_color$Color$blue);
+var $avh4$elm_color$Color$lightBlue = A4($avh4$elm_color$Color$RgbaSpace, 114 / 255, 159 / 255, 207 / 255, 1.0);
+var $author$project$Interface$primary_color_bright = $author$project$Interface$convertColor($avh4$elm_color$Color$lightBlue);
+var $author$project$Interface$primary_button_custom = F3(
+	function (custom_attrs, on_press, label) {
+		return A2(
+			$mdgriffith$elm_ui$Element$Input$button,
+			_Utils_ap(
+				$author$project$Interface$common_button_attrs(
+					{button_color: $author$project$Interface$color_primary, font_color: $author$project$Interface$color_white, hovered_button_color: $author$project$Interface$primary_color_bright, hovered_font_color: $author$project$Interface$color_black}),
+				custom_attrs),
+			{
+				label: label,
+				onPress: $elm$core$Maybe$Just(on_press)
+			});
+	});
+var $author$project$Interface$primary_button = F3(
+	function (custom_attrs, on_press, label) {
+		return A3(
+			$author$project$Interface$primary_button_custom,
+			custom_attrs,
+			on_press,
+			$mdgriffith$elm_ui$Element$text(label));
+	});
+var $mdgriffith$elm_ui$Internal$Model$Px = function (a) {
+	return {$: 'Px', a: a};
+};
+var $mdgriffith$elm_ui$Element$px = $mdgriffith$elm_ui$Internal$Model$Px;
+var $avh4$elm_color$Color$charcoal = A4($avh4$elm_color$Color$RgbaSpace, 85 / 255, 87 / 255, 83 / 255, 1.0);
+var $author$project$Interface$color_secondary = $author$project$Interface$convertColor($avh4$elm_color$Color$charcoal);
+var $author$project$Interface$secondary_button_custom = F3(
+	function (custom_attrs, on_press, label) {
+		return A2(
+			$mdgriffith$elm_ui$Element$Input$button,
+			_Utils_ap(
+				$author$project$Interface$common_button_attrs(
+					{button_color: $author$project$Interface$color_secondary, font_color: $author$project$Interface$color_white, hovered_button_color: $author$project$Interface$color_secondary, hovered_font_color: $author$project$Interface$color_black}),
+				custom_attrs),
+			{
+				label: label,
+				onPress: $elm$core$Maybe$Just(on_press)
+			});
+	});
+var $author$project$Interface$secondary_button = F3(
+	function (custom_attrs, on_press, label) {
+		return A3(
+			$author$project$Interface$secondary_button_custom,
+			custom_attrs,
+			on_press,
+			$mdgriffith$elm_ui$Element$text(label));
+	});
+var $mdgriffith$elm_ui$Element$Font$underline = $mdgriffith$elm_ui$Internal$Model$htmlClass($mdgriffith$elm_ui$Internal$Style$classes.underline);
+var $author$project$Battle$HealGolem = {$: 'HealGolem'};
+var $author$project$Battle$LevelUpGolem = {$: 'LevelUpGolem'};
+var $author$project$Battle$ReturnToShop = {$: 'ReturnToShop'};
+var $author$project$Battle$ReviveGolem = {$: 'ReviveGolem'};
+var $author$project$Battle$SendOutMsg = function (a) {
+	return {$: 'SendOutMsg', a: a};
+};
+var $author$project$Battle$ToggleShowExpandedLogs = {$: 'ToggleShowExpandedLogs'};
+var $author$project$Battle$ToggleShowLocationTypeMenu = {$: 'ToggleShowLocationTypeMenu'};
+var $mdgriffith$elm_ui$Internal$Model$Transparency = F2(
+	function (a, b) {
+		return {$: 'Transparency', a: a, b: b};
+	});
+var $mdgriffith$elm_ui$Internal$Flag$transparency = $mdgriffith$elm_ui$Internal$Flag$flag(0);
+var $mdgriffith$elm_ui$Element$alpha = function (o) {
+	var transparency = function (x) {
+		return 1 - x;
+	}(
+		A2(
+			$elm$core$Basics$min,
+			1.0,
+			A2($elm$core$Basics$max, 0.0, o)));
+	return A2(
+		$mdgriffith$elm_ui$Internal$Model$StyleClass,
+		$mdgriffith$elm_ui$Internal$Flag$transparency,
+		A2(
+			$mdgriffith$elm_ui$Internal$Model$Transparency,
+			'transparency-' + $mdgriffith$elm_ui$Internal$Model$floatClass(transparency),
+			transparency));
+};
+var $author$project$Battle$canChangeLocation = F2(
+	function (golem, enemyMonster) {
+		var _v0 = _Utils_Tuple2(golem, enemyMonster);
+		_v0$2:
+		while (true) {
+			if (_v0.a.$ === 'LivingMonster') {
+				if (_v0.b.$ === 'Just') {
+					if (_v0.b.a.$ === 'DeadMonster') {
+						var livingGolem = _v0.a.a;
+						var deadEnemy = _v0.b.a.a;
+						return true;
+					} else {
+						break _v0$2;
+					}
+				} else {
+					var livingGolem = _v0.a.a;
+					var _v1 = _v0.b;
+					return true;
+				}
+			} else {
+				break _v0$2;
+			}
+		}
+		return false;
+	});
+var $author$project$Battle$conditionalAlpha = F2(
+	function (invisCondition, semiCondition) {
+		return invisCondition ? 0.0 : (semiCondition ? 0.5 : 1.0);
+	});
+var $author$project$Battle$conditionalMsg = F2(
+	function (condition, msg) {
+		return condition ? msg : $author$project$Battle$Noop;
+	});
+var $mdgriffith$elm_ui$Internal$Model$Max = F2(
+	function (a, b) {
+		return {$: 'Max', a: a, b: b};
+	});
+var $mdgriffith$elm_ui$Element$maximum = F2(
+	function (i, l) {
+		return A2($mdgriffith$elm_ui$Internal$Model$Max, i, l);
+	});
+var $author$project$Battle$fillMax = function (pxWidth) {
+	return A2($mdgriffith$elm_ui$Element$maximum, pxWidth, $mdgriffith$elm_ui$Element$fill);
+};
+var $author$project$Battle$monsterHasXpToLevelUp = function (monster) {
+	return _Utils_cmp(monster.xp, $author$project$Battle$levelUpXpCost) > -1;
+};
+var $author$project$Battle$monsterMap = F2(
+	function (callback, damagedMonster) {
+		if (damagedMonster.$ === 'LivingMonster') {
+			var monster = damagedMonster.a;
+			return callback(monster);
+		} else {
+			var monster = damagedMonster.a;
+			return callback(monster);
+		}
+	});
+var $author$project$Interface$outline_button_custom = F3(
+	function (custom_attrs, on_press, label) {
+		return A2(
+			$mdgriffith$elm_ui$Element$Input$button,
+			_Utils_ap(
+				_List_fromArray(
+					[
+						$mdgriffith$elm_ui$Element$Font$color($author$project$Interface$color_secondary),
+						$mdgriffith$elm_ui$Element$Font$size(16),
+						$mdgriffith$elm_ui$Element$Font$center,
+						$mdgriffith$elm_ui$Element$padding(9),
+						$mdgriffith$elm_ui$Element$Background$color($author$project$Interface$color_white),
+						$mdgriffith$elm_ui$Element$Border$rounded(5),
+						$mdgriffith$elm_ui$Element$Border$width(2),
+						$mdgriffith$elm_ui$Element$Border$color($author$project$Interface$color_secondary),
+						$mdgriffith$elm_ui$Element$mouseOver(
+						_List_fromArray(
+							[
+								$mdgriffith$elm_ui$Element$Background$color($author$project$Interface$color_secondary),
+								$mdgriffith$elm_ui$Element$Font$color($author$project$Interface$color_white)
+							]))
+					]),
+				custom_attrs),
+			{
+				label: label,
+				onPress: $elm$core$Maybe$Just(on_press)
+			});
+	});
+var $author$project$Interface$outline_button = F3(
+	function (custom_attrs, on_press, label) {
+		return A3(
+			$author$project$Interface$outline_button_custom,
+			custom_attrs,
+			on_press,
+			$mdgriffith$elm_ui$Element$text(label));
+	});
+var $mdgriffith$elm_ui$Element$transparent = function (on) {
+	return on ? A2(
+		$mdgriffith$elm_ui$Internal$Model$StyleClass,
+		$mdgriffith$elm_ui$Internal$Flag$transparency,
+		A2($mdgriffith$elm_ui$Internal$Model$Transparency, 'transparent', 1.0)) : A2(
+		$mdgriffith$elm_ui$Internal$Model$StyleClass,
+		$mdgriffith$elm_ui$Internal$Flag$transparency,
+		A2($mdgriffith$elm_ui$Internal$Model$Transparency, 'visible', 0.0));
+};
+var $author$project$Battle$viewBattleControls = function (_v0) {
+	var golem = _v0.golem;
+	var player = _v0.player;
+	var enemyMonster = _v0.enemyMonster;
+	var golemRevivable = function () {
+		if (golem.$ === 'LivingMonster') {
+			return false;
+		} else {
+			return true;
+		}
+	}();
+	var golemLevelupable = function () {
+		if (golem.$ === 'LivingMonster') {
+			return true;
+		} else {
+			return false;
+		}
+	}();
+	var golemHealable = function () {
+		if (golem.$ === 'LivingMonster') {
+			var livingGolem = golem.a;
+			return function (statHP) {
+				return (statHP.curVal > 0) && (_Utils_cmp(statHP.curVal, statHP.maxVal) < 0);
+			}(livingGolem.statHP);
+		} else {
+			return false;
+		}
+	}();
+	var controlButton = F3(
+		function (attrs, msg, txt) {
+			return A3(
+				$author$project$Interface$outline_button,
+				_Utils_ap(
+					_List_fromArray(
+						[
+							$mdgriffith$elm_ui$Element$centerX,
+							$mdgriffith$elm_ui$Element$width(
+							$author$project$Battle$fillMax(150))
+						]),
+					attrs),
+				msg,
+				txt);
+		});
+	var canChangeLocationNow = A2($author$project$Battle$canChangeLocation, golem, enemyMonster);
+	var canAffordReviveGolem = _Utils_cmp(player.held_blood, $author$project$Battle$reviveGolemBloodCost) > -1;
+	var canAffordHealGolem = _Utils_cmp(player.held_blood, $author$project$Battle$healGolemBloodCost) > -1;
+	var canAffordGolemLevelUp = A2($author$project$Battle$monsterMap, $author$project$Battle$monsterHasXpToLevelUp, golem);
+	return _List_fromArray(
+		[
+			A2(
+			$mdgriffith$elm_ui$Element$el,
+			_List_fromArray(
+				[
+					$mdgriffith$elm_ui$Element$centerX,
+					$mdgriffith$elm_ui$Element$width(
+					$author$project$Battle$fillMax(150))
+				]),
+			A3(controlButton, _List_Nil, $author$project$Battle$ToggleShowExpandedLogs, 'Details')),
+			A2(
+			$mdgriffith$elm_ui$Element$el,
+			_List_fromArray(
+				[
+					$mdgriffith$elm_ui$Element$centerX,
+					$mdgriffith$elm_ui$Element$width(
+					$author$project$Battle$fillMax(150)),
+					$mdgriffith$elm_ui$Element$paddingEach(
+					{bottom: 0, left: 0, right: 0, top: 10})
+				]),
+			A3(
+				controlButton,
+				_List_fromArray(
+					[
+						$mdgriffith$elm_ui$Element$transparent(!canChangeLocationNow)
+					]),
+				A2($author$project$Battle$conditionalMsg, canChangeLocationNow, $author$project$Battle$ToggleShowLocationTypeMenu),
+				'Change Location')),
+			A2(
+			$mdgriffith$elm_ui$Element$column,
+			_List_fromArray(
+				[
+					$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
+					$mdgriffith$elm_ui$Element$spacing(1),
+					$mdgriffith$elm_ui$Element$padding(10)
+				]),
+			_List_fromArray(
+				[
+					A3(
+					controlButton,
+					_List_fromArray(
+						[
+							$mdgriffith$elm_ui$Element$alpha(
+							A2($author$project$Battle$conditionalAlpha, !golemHealable, !canAffordHealGolem))
+						]),
+					A2($author$project$Battle$conditionalMsg, golemHealable && canAffordReviveGolem, $author$project$Battle$HealGolem),
+					'Heal'),
+					A3(
+					controlButton,
+					_List_fromArray(
+						[
+							$mdgriffith$elm_ui$Element$alpha(
+							A2($author$project$Battle$conditionalAlpha, !golemRevivable, !canAffordReviveGolem))
+						]),
+					A2($author$project$Battle$conditionalMsg, golemRevivable && canAffordReviveGolem, $author$project$Battle$ReviveGolem),
+					'Revive'),
+					A3(
+					controlButton,
+					_List_fromArray(
+						[
+							$mdgriffith$elm_ui$Element$alpha(
+							A2($author$project$Battle$conditionalAlpha, !golemLevelupable, !canAffordGolemLevelUp))
+						]),
+					A2($author$project$Battle$conditionalMsg, golemLevelupable && canAffordGolemLevelUp, $author$project$Battle$LevelUpGolem),
+					'Strengthen'),
+					A3(controlButton, _List_Nil, $author$project$Battle$Noop, 'Harden (No-op)')
+				])),
+			A3(
+			$author$project$Interface$outline_button,
+			_List_fromArray(
+				[
+					$mdgriffith$elm_ui$Element$centerX,
+					$mdgriffith$elm_ui$Element$width(
+					$author$project$Battle$fillMax(150))
+				]),
+			$author$project$Battle$SendOutMsg($author$project$Battle$ReturnToShop),
+			'Back')
+		]);
+};
+var $author$project$Battle$viewSingleFightLog = F2(
+	function (expandedLog, fightLog) {
+		switch (fightLog.$) {
+			case 'MonsterAttackedMonster':
+				var attacker = fightLog.a.attacker;
+				var defender = fightLog.a.defender;
+				var attackerPower = fightLog.a.attackerPower;
+				var defenderProtection = fightLog.a.defenderProtection;
+				var damageTaken = fightLog.a.damageTaken;
+				return expandedLog ? A2(
+					$mdgriffith$elm_ui$Element$paragraph,
+					_List_Nil,
+					_List_fromArray(
+						[
+							$mdgriffith$elm_ui$Element$text(
+							attacker.name + (' attacked ' + (defender.name + (' for ' + ($elm$core$String$fromInt(damageTaken) + (' total damage. ' + ('(Power of ' + ($elm$core$String$fromInt(attackerPower) + (' - Protection of ' + ($elm$core$String$fromInt(defenderProtection) + ')'))))))))))
+						])) : A2(
+					$mdgriffith$elm_ui$Element$paragraph,
+					_List_Nil,
+					_List_fromArray(
+						[
+							$mdgriffith$elm_ui$Element$text(
+							attacker.name + (' attacked ' + (defender.name + (' for ' + ($elm$core$String$fromInt(damageTaken) + ' total damage.')))))
+						]));
+			case 'FoundNewMonster':
+				var newMonster = fightLog.a;
+				return A2(
+					$mdgriffith$elm_ui$Element$paragraph,
+					_List_Nil,
+					_List_fromArray(
+						[
+							$mdgriffith$elm_ui$Element$text('Found new monster: ' + newMonster.name)
+						]));
+			case 'GolemKilledMonster':
+				var attacker = fightLog.a;
+				var deadMonster = fightLog.b;
+				var xp_gained = fightLog.c;
+				return A2(
+					$mdgriffith$elm_ui$Element$paragraph,
+					_List_Nil,
+					_List_fromArray(
+						[
+							$mdgriffith$elm_ui$Element$text(
+							attacker.name + (' killed ' + (deadMonster.name + (', gaining ' + ($elm$core$String$fromInt(xp_gained) + (' XP' + (_Utils_eq(deadMonster.onDefeat, $author$project$Battle$DeliverItemToShop) ? ', and an item was put up for sale.' : '')))))))
+						]));
+			case 'MonsterKilledGolem':
+				var golem = fightLog.a;
+				var monster = fightLog.b;
+				return A2(
+					$mdgriffith$elm_ui$Element$paragraph,
+					_List_Nil,
+					_List_fromArray(
+						[
+							$mdgriffith$elm_ui$Element$text(monster.name + (' killed ' + (golem.name + '. You must now Revive your Golem.')))
+						]));
+			case 'PlayerHealedGolem':
+				var amount = fightLog.a;
+				return A2(
+					$mdgriffith$elm_ui$Element$paragraph,
+					_List_Nil,
+					_List_fromArray(
+						[
+							$mdgriffith$elm_ui$Element$text(
+							'You healed your creature by ' + ($elm$core$String$fromInt(amount) + ' HP.'))
+						]));
+			default:
+				return A2(
+					$mdgriffith$elm_ui$Element$paragraph,
+					_List_Nil,
+					_List_fromArray(
+						[
+							$mdgriffith$elm_ui$Element$text('You revived your creature.')
+						]));
+		}
+	});
+var $author$project$Battle$viewFightLog = F2(
+	function (expandedLog, fightLogs) {
+		return A2(
+			$mdgriffith$elm_ui$Element$column,
+			_List_fromArray(
+				[
+					$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
+					$mdgriffith$elm_ui$Element$spacing(5)
+				]),
+			A2(
+				$elm$core$List$map,
+				$author$project$Battle$viewSingleFightLog(expandedLog),
+				A2(
+					$elm$core$List$take,
+					10,
+					$elm$core$List$reverse(fightLogs))));
+	});
+var $mdgriffith$elm_ui$Element$Font$family = function (families) {
+	return A2(
+		$mdgriffith$elm_ui$Internal$Model$StyleClass,
+		$mdgriffith$elm_ui$Internal$Flag$fontFamily,
+		A2(
+			$mdgriffith$elm_ui$Internal$Model$FontFamily,
+			A3($elm$core$List$foldl, $mdgriffith$elm_ui$Internal$Model$renderFontClassName, 'ff-', families),
+			families));
+};
+var $mdgriffith$elm_ui$Internal$Model$Monospace = {$: 'Monospace'};
+var $mdgriffith$elm_ui$Element$Font$monospace = $mdgriffith$elm_ui$Internal$Model$Monospace;
+var $author$project$Interface$monospace = F2(
+	function (attrs, el) {
+		return A2(
+			$mdgriffith$elm_ui$Element$el,
+			A2(
+				$elm$core$List$cons,
+				$mdgriffith$elm_ui$Element$Font$family(
+					_List_fromArray(
+						[$mdgriffith$elm_ui$Element$Font$monospace])),
+				attrs),
+			el);
+	});
+var $author$project$Battle$padLeft = F2(
+	function (str, num) {
+		return A3(
+			$elm$core$String$padLeft,
+			num,
+			_Utils_chr('\u2003'),
+			str);
+	});
+var $elm$core$String$padRight = F3(
+	function (n, _char, string) {
+		return _Utils_ap(
+			string,
+			A2(
+				$elm$core$String$repeat,
+				n - $elm$core$String$length(string),
+				$elm$core$String$fromChar(_char)));
+	});
+var $author$project$Battle$padRight = F2(
+	function (str, num) {
+		return A3(
+			$elm$core$String$padRight,
+			num,
+			_Utils_chr('\u2003'),
+			str);
+	});
+var $author$project$Battle$padStatStrBar = F2(
+	function (leftNum, rightNum) {
+		return A2($author$project$Battle$padLeft, leftNum, 3) + ('/' + A2($author$project$Battle$padRight, rightNum, 3));
+	});
+var $author$project$Battle$padStatBar = function (stat) {
+	return A2(
+		$author$project$Battle$padStatStrBar,
+		$elm$core$String$fromInt(stat.curVal),
+		$elm$core$String$fromInt(stat.maxVal));
+};
+var $author$project$Battle$viewMonsterInBattle = F2(
+	function (damagedMonster, showExtra) {
+		var viewMonster_ = F2(
+			function (monster, isDead) {
+				return A2(
+					$mdgriffith$elm_ui$Element$column,
+					_List_Nil,
+					_Utils_ap(
+						_List_fromArray(
+							[
+								A2(
+								$mdgriffith$elm_ui$Element$paragraph,
+								_List_fromArray(
+									[
+										$mdgriffith$elm_ui$Element$Font$size(20)
+									]),
+								_List_fromArray(
+									[
+										A2(
+										$mdgriffith$elm_ui$Element$el,
+										_List_Nil,
+										$mdgriffith$elm_ui$Element$text(monster.name)),
+										showExtra ? A2(
+										$mdgriffith$elm_ui$Element$el,
+										_List_fromArray(
+											[
+												$mdgriffith$elm_ui$Element$Font$size(12)
+											]),
+										$mdgriffith$elm_ui$Element$text(
+											' Lv. ' + $elm$core$String$fromInt(monster.level))) : $mdgriffith$elm_ui$Element$none
+									])),
+								isDead ? A2(
+								$author$project$Interface$monospace,
+								_List_fromArray(
+									[$mdgriffith$elm_ui$Element$alignRight, $mdgriffith$elm_ui$Element$centerX]),
+								$mdgriffith$elm_ui$Element$text('DEAD!')) : A2(
+								$author$project$Interface$monospace,
+								_List_Nil,
+								$mdgriffith$elm_ui$Element$text(
+									'HP: ' + $author$project$Battle$padStatBar(monster.statHP))),
+								A2(
+								$author$project$Interface$monospace,
+								_List_Nil,
+								$mdgriffith$elm_ui$Element$text(
+									'SP: ' + $author$project$Battle$padStatBar(monster.statStamina))),
+								A2(
+								$author$project$Interface$monospace,
+								_List_Nil,
+								$mdgriffith$elm_ui$Element$text(
+									'Pwr: ' + A2(
+										$author$project$Battle$padLeft,
+										$elm$core$String$fromInt(monster.statPower.curVal),
+										5))),
+								A2(
+								$author$project$Interface$monospace,
+								_List_Nil,
+								$mdgriffith$elm_ui$Element$text(
+									'Prt: ' + A2(
+										$author$project$Battle$padLeft,
+										$elm$core$String$fromInt(monster.statProtection.curVal),
+										5)))
+							]),
+						showExtra ? _List_fromArray(
+							[
+								A2(
+								$author$project$Interface$monospace,
+								_List_fromArray(
+									[
+										$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill)
+									]),
+								$mdgriffith$elm_ui$Element$text(
+									'XP: ' + A2(
+										$author$project$Battle$padLeft,
+										$elm$core$String$fromInt(monster.xp),
+										6)))
+							]) : _List_Nil));
+			});
+		if (damagedMonster.$ === 'LivingMonster') {
+			var monster = damagedMonster.a;
+			return A2(viewMonster_, monster, false);
+		} else {
+			var monster = damagedMonster.a;
+			return A2(viewMonster_, monster, true);
+		}
+	});
+var $author$project$Battle$view = function (model) {
+	return (!model.shouldShowLocationTypeMenu) ? A2(
+		$mdgriffith$elm_ui$Element$column,
+		_List_fromArray(
+			[
+				$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
+				$mdgriffith$elm_ui$Element$Font$size(16)
+			]),
+		_List_fromArray(
+			[
+				A2(
+				$mdgriffith$elm_ui$Element$el,
+				_List_fromArray(
+					[
+						$mdgriffith$elm_ui$Element$Font$size(24),
+						$mdgriffith$elm_ui$Element$paddingEach(
+						{bottom: 20, left: 0, right: 0, top: 0})
+					]),
+				$mdgriffith$elm_ui$Element$text('Battle!')),
+				A2(
+				$mdgriffith$elm_ui$Element$row,
+				_List_fromArray(
+					[
+						$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill)
+					]),
+				_List_fromArray(
+					[
+						A2(
+						$mdgriffith$elm_ui$Element$column,
+						_List_fromArray(
+							[
+								$mdgriffith$elm_ui$Element$alignLeft,
+								$mdgriffith$elm_ui$Element$width(
+								$mdgriffith$elm_ui$Element$px(200))
+							]),
+						_List_fromArray(
+							[
+								A2(
+								$mdgriffith$elm_ui$Element$el,
+								_List_fromArray(
+									[$mdgriffith$elm_ui$Element$alignLeft]),
+								A2($author$project$Battle$viewMonsterInBattle, model.golem, true))
+							])),
+						A2(
+						$mdgriffith$elm_ui$Element$column,
+						_List_fromArray(
+							[
+								$mdgriffith$elm_ui$Element$centerX,
+								$mdgriffith$elm_ui$Element$spacing(10)
+							]),
+						_List_fromArray(
+							[
+								function () {
+								var _v0 = function () {
+									var _v1 = _Utils_Tuple2(model.golem, model.enemyMonster);
+									if (_v1.a.$ === 'LivingMonster') {
+										if (_v1.b.$ === 'Just') {
+											if (_v1.b.a.$ === 'LivingMonster') {
+												return _Utils_Tuple3($author$project$Interface$primary_button, $author$project$Battle$Fight, 'Continue Fight');
+											} else {
+												return _Utils_Tuple3($author$project$Interface$secondary_button, $author$project$Battle$FindNewEnemy, 'Find New Enemy');
+											}
+										} else {
+											var _v2 = _v1.b;
+											return _Utils_Tuple3($author$project$Interface$secondary_button, $author$project$Battle$FindNewEnemy, 'Find New Enemy');
+										}
+									} else {
+										return _Utils_Tuple3($author$project$Interface$danger_button, $author$project$Battle$Noop, 'You\'re dead');
+									}
+								}();
+								var buttonType = _v0.a;
+								var msg = _v0.b;
+								var txt = _v0.c;
+								return A3(
+									buttonType,
+									_List_fromArray(
+										[
+											$mdgriffith$elm_ui$Element$width(
+											$author$project$Battle$fillMin(125)),
+											_Utils_eq(msg, $author$project$Battle$Noop) ? $mdgriffith$elm_ui$Element$mouseOver(_List_Nil) : $author$project$Battle$attrNone
+										]),
+									msg,
+									txt);
+							}(),
+								function () {
+								var currentLocation = $author$project$Battle$getCurrentLocation(model);
+								return A2(
+									$mdgriffith$elm_ui$Element$column,
+									_List_fromArray(
+										[
+											$mdgriffith$elm_ui$Element$centerX,
+											$mdgriffith$elm_ui$Element$spacing(2)
+										]),
+									_List_fromArray(
+										[
+											A2(
+											$mdgriffith$elm_ui$Element$el,
+											_List_fromArray(
+												[
+													$mdgriffith$elm_ui$Element$Font$underline,
+													$mdgriffith$elm_ui$Element$Font$size(10),
+													$mdgriffith$elm_ui$Element$centerX
+												]),
+											$mdgriffith$elm_ui$Element$text('Current Location')),
+											A2(
+											$mdgriffith$elm_ui$Element$el,
+											_List_fromArray(
+												[$mdgriffith$elm_ui$Element$centerX]),
+											$mdgriffith$elm_ui$Element$text(currentLocation.name)),
+											A2(
+											$mdgriffith$elm_ui$Element$el,
+											_List_fromArray(
+												[
+													$mdgriffith$elm_ui$Element$Font$underline,
+													$mdgriffith$elm_ui$Element$Font$size(10),
+													$mdgriffith$elm_ui$Element$centerX
+												]),
+											$mdgriffith$elm_ui$Element$text('Enemies Remaining')),
+											A2(
+											$mdgriffith$elm_ui$Element$el,
+											_List_fromArray(
+												[$mdgriffith$elm_ui$Element$centerX]),
+											$mdgriffith$elm_ui$Element$text(
+												$elm$core$String$fromInt(currentLocation.monstersLeft)))
+										]));
+							}()
+							])),
+						A2(
+						$mdgriffith$elm_ui$Element$column,
+						_List_fromArray(
+							[
+								$mdgriffith$elm_ui$Element$alignRight,
+								$mdgriffith$elm_ui$Element$width(
+								$mdgriffith$elm_ui$Element$px(200)),
+								$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$fill)
+							]),
+						_List_fromArray(
+							[
+								A2(
+								$mdgriffith$elm_ui$Element$el,
+								_List_fromArray(
+									[
+										$mdgriffith$elm_ui$Element$alignRight,
+										$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$fill)
+									]),
+								function () {
+									var _v3 = model.enemyMonster;
+									if (_v3.$ === 'Just') {
+										var enemyMonster = _v3.a;
+										return A2($author$project$Battle$viewMonsterInBattle, enemyMonster, false);
+									} else {
+										return A2(
+											$mdgriffith$elm_ui$Element$paragraph,
+											_List_fromArray(
+												[$mdgriffith$elm_ui$Element$centerY]),
+											_List_fromArray(
+												[
+													$mdgriffith$elm_ui$Element$text('Find an enemy to fight')
+												]));
+									}
+								}())
+							]))
+					])),
+				$author$project$Battle$dividingLine,
+				A2(
+				$mdgriffith$elm_ui$Element$row,
+				_List_fromArray(
+					[
+						$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill)
+					]),
+				_List_fromArray(
+					[
+						A2(
+						$mdgriffith$elm_ui$Element$el,
+						_List_fromArray(
+							[
+								$mdgriffith$elm_ui$Element$width(
+								$mdgriffith$elm_ui$Element$fillPortion(4)),
+								$mdgriffith$elm_ui$Element$alignTop
+							]),
+						A2($author$project$Battle$viewFightLog, model.showExpandedLogs, model.fightLogs)),
+						A2(
+						$mdgriffith$elm_ui$Element$column,
+						_List_fromArray(
+							[
+								$mdgriffith$elm_ui$Element$width(
+								$mdgriffith$elm_ui$Element$fillPortion(2)),
+								$mdgriffith$elm_ui$Element$alignTop
+							]),
+						$author$project$Battle$viewBattleControls(model))
+					])),
+				$author$project$Battle$debugMode ? A2(
+				$mdgriffith$elm_ui$Element$column,
+				_List_fromArray(
+					[
+						$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill)
+					]),
+				_List_fromArray(
+					[
+						$author$project$Battle$dividingLine,
+						A2(
+						$mdgriffith$elm_ui$Element$column,
+						_List_fromArray(
+							[
+								$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
+								A2($mdgriffith$elm_ui$Element$paddingXY, 0, 20)
+							]),
+						_List_fromArray(
+							[
+								A2(
+								$mdgriffith$elm_ui$Element$el,
+								_List_fromArray(
+									[$mdgriffith$elm_ui$Element$Font$underline]),
+								$mdgriffith$elm_ui$Element$text('Debug')),
+								$mdgriffith$elm_ui$Element$text(
+								'Time Until SP Recharge: ' + $elm$core$String$fromInt($author$project$Battle$secondsRequiredForSpRefill - model.secondsWaitedSince.lastSpRefill)),
+								$mdgriffith$elm_ui$Element$text(
+								'Time Until Location Monster Refill: ' + $elm$core$String$fromInt($author$project$Battle$secondsRequiredForLocationMonsterRefill - model.secondsWaitedSince.lastLocationMonsterRefill))
+							])),
+						$author$project$Battle$dividingLine
+					])) : $mdgriffith$elm_ui$Element$none
+			])) : A2(
+		$mdgriffith$elm_ui$Element$column,
+		_List_fromArray(
+			[
+				$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
+				$mdgriffith$elm_ui$Element$Font$size(16)
+			]),
+		_List_fromArray(
+			[
+				A2(
+				$mdgriffith$elm_ui$Element$el,
+				_List_fromArray(
+					[
+						$mdgriffith$elm_ui$Element$Font$size(24),
+						$mdgriffith$elm_ui$Element$paddingEach(
+						{bottom: 20, left: 0, right: 0, top: 0})
+					]),
+				$mdgriffith$elm_ui$Element$text('Choose LocationType')),
+				A2(
+				$mdgriffith$elm_ui$Element$paragraph,
+				_List_fromArray(
+					[
+						$mdgriffith$elm_ui$Element$padding(10)
+					]),
+				_List_fromArray(
+					[
+						$mdgriffith$elm_ui$Element$text('You may choose a new LocationType to visit.')
+					])),
+				A2(
+				$mdgriffith$elm_ui$Element$paragraph,
+				_List_fromArray(
+					[
+						$mdgriffith$elm_ui$Element$padding(10)
+					]),
+				_List_fromArray(
+					[
+						$mdgriffith$elm_ui$Element$text('A new LocationType contains new monsters to fight, which may bring new rewards!')
+					])),
+				A2(
+				$mdgriffith$elm_ui$Element$column,
+				_List_fromArray(
+					[
+						$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
+						$mdgriffith$elm_ui$Element$spacing(10),
+						$mdgriffith$elm_ui$Element$padding(10)
+					]),
+				A2(
+					$elm$core$List$map,
+					function (location) {
+						return A3(
+							$author$project$Interface$secondary_button_custom,
+							_List_fromArray(
+								[
+									$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill)
+								]),
+							$author$project$Battle$ChangeLocation(location.locationId),
+							A2(
+								$mdgriffith$elm_ui$Element$column,
+								_List_fromArray(
+									[
+										$mdgriffith$elm_ui$Element$centerX,
+										$mdgriffith$elm_ui$Element$spacing(5)
+									]),
+								_List_fromArray(
+									[
+										A2(
+										$mdgriffith$elm_ui$Element$el,
+										_List_fromArray(
+											[$mdgriffith$elm_ui$Element$centerX]),
+										$mdgriffith$elm_ui$Element$text(location.name)),
+										A2(
+										$mdgriffith$elm_ui$Element$el,
+										_List_fromArray(
+											[
+												$mdgriffith$elm_ui$Element$centerX,
+												$mdgriffith$elm_ui$Element$Font$size(12)
+											]),
+										A2(
+											$mdgriffith$elm_ui$Element$column,
+											_List_fromArray(
+												[
+													$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill)
+												]),
+											_List_fromArray(
+												[
+													A2(
+													$mdgriffith$elm_ui$Element$el,
+													_List_fromArray(
+														[
+															$mdgriffith$elm_ui$Element$Font$underline,
+															$mdgriffith$elm_ui$Element$centerX,
+															$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill)
+														]),
+													$mdgriffith$elm_ui$Element$text('Monsters Remain')),
+													A2(
+													$mdgriffith$elm_ui$Element$el,
+													_List_fromArray(
+														[$mdgriffith$elm_ui$Element$centerX]),
+													$mdgriffith$elm_ui$Element$text(
+														$elm$core$String$fromInt(location.monstersLeft)))
+												])))
+									])));
+					},
+					$author$project$Battle$getLocationsList(model.locations)))
+			]));
+};
+var $mdgriffith$elm_ui$Internal$Model$Bottom = {$: 'Bottom'};
+var $mdgriffith$elm_ui$Element$alignBottom = $mdgriffith$elm_ui$Internal$Model$AlignY($mdgriffith$elm_ui$Internal$Model$Bottom);
+var $mdgriffith$elm_ui$Element$Font$alignRight = A2($mdgriffith$elm_ui$Internal$Model$Class, $mdgriffith$elm_ui$Internal$Flag$fontAlignment, $mdgriffith$elm_ui$Internal$Style$classes.textRight);
+var $author$project$Interface$color_ultra_light_grey = A3($mdgriffith$elm_ui$Element$rgb, 0.95, 0.95, 0.95);
+var $avh4$elm_color$Color$lightCharcoal = A4($avh4$elm_color$Color$RgbaSpace, 136 / 255, 138 / 255, 133 / 255, 1.0);
+var $author$project$ItemShop$noUserSelect = $mdgriffith$elm_ui$Element$htmlAttribute(
+	A2($elm$html$Html$Attributes$style, 'userSelect', 'none'));
+var $author$project$ItemShop$pointerEventsAll = $mdgriffith$elm_ui$Element$htmlAttribute(
+	A2($elm$html$Html$Attributes$style, 'pointer-events', 'all'));
+var $author$project$ItemShop$pointerEventsNone = $mdgriffith$elm_ui$Element$htmlAttribute(
+	A2($elm$html$Html$Attributes$style, 'pointer-events', 'none'));
+var $author$project$Interface$font_blood = $mdgriffith$elm_ui$Element$Font$color($author$project$Interface$color_danger);
+var $author$project$Interface$renderBlood_sized = F3(
+	function (colorTheme, count, font_size) {
+		return A2(
+			$mdgriffith$elm_ui$Element$paragraph,
+			_List_Nil,
+			_List_fromArray(
+				[
+					$mdgriffith$elm_ui$Element$text(
+					$elm$core$String$fromInt(count)),
+					A2(
+					$mdgriffith$elm_ui$Element$el,
+					_List_fromArray(
+						[
+							$mdgriffith$elm_ui$Element$Font$size(font_size),
+							$author$project$Interface$font_blood
+						]),
+					$mdgriffith$elm_ui$Element$text('blood'))
+				]));
+	});
+var $author$project$Interface$renderBlood = F2(
+	function (colorTheme, count) {
+		return A3($author$project$Interface$renderBlood_sized, colorTheme, count, 12);
+	});
+var $author$project$Interface$color_grey = A3($mdgriffith$elm_ui$Element$rgb, 0.35, 0.35, 0.35);
+var $author$project$Interface$font_grey = $mdgriffith$elm_ui$Element$Font$color($author$project$Interface$color_grey);
+var $author$project$Interface$render_gp_sized = F3(
+	function (colorTheme, count, font_size) {
+		return A2(
+			$mdgriffith$elm_ui$Element$paragraph,
+			_List_Nil,
+			_List_fromArray(
+				[
+					$mdgriffith$elm_ui$Element$text(
+					$elm$core$String$fromInt(count)),
+					A2(
+					$mdgriffith$elm_ui$Element$el,
+					_List_fromArray(
+						[
+							$mdgriffith$elm_ui$Element$Font$size(font_size),
+							function () {
+							if (colorTheme.$ === 'BrightTheme') {
+								return $author$project$Interface$font_grey;
+							} else {
+								return $mdgriffith$elm_ui$Element$Font$color(
+									$author$project$Interface$hex_to_color('#777439'));
+							}
+						}()
+						]),
+					$mdgriffith$elm_ui$Element$text('gp'))
+				]));
+	});
+var $author$project$Interface$render_gp = F2(
+	function (colorTheme, count) {
+		return A3($author$project$Interface$render_gp_sized, colorTheme, count, 12);
+	});
+var $author$project$ItemShop$ToggleShowDebugInventories = {$: 'ToggleShowDebugInventories'};
 var $author$project$ItemShop$defineHtmlId = function (name) {
 	return $mdgriffith$elm_ui$Element$htmlAttribute(
 		$elm$html$Html$Attributes$id(name));
@@ -17641,7 +20012,7 @@ var $author$project$ItemShop$showHideDebugInventoriesButton = F2(
 	function (attrs, show_debug_inventories) {
 		var buttonText = show_debug_inventories ? 'Hide Debug' : 'Show Debug';
 		return A3(
-			$author$project$ItemShop$danger_button,
+			$author$project$Interface$danger_button,
 			A2(
 				$elm$core$List$cons,
 				$author$project$ItemShop$defineHtmlId('show_debug_inventories'),
@@ -17693,9 +20064,9 @@ var $author$project$ItemShop$viewOverlay = function (model) {
 								function () {
 									var _v0 = model.colorTheme;
 									if (_v0.$ === 'BrightTheme') {
-										return $author$project$ItemShop$color_ultra_light_grey;
+										return $author$project$Interface$color_ultra_light_grey;
 									} else {
-										return $author$project$ItemShop$convertColor($avh4$elm_color$Color$lightCharcoal);
+										return $author$project$Interface$convertColor($avh4$elm_color$Color$lightCharcoal);
 									}
 								}()),
 								$mdgriffith$elm_ui$Element$Border$width(1),
@@ -17709,8 +20080,10 @@ var $author$project$ItemShop$viewOverlay = function (model) {
 								[$author$project$ItemShop$noUserSelect]),
 							_List_fromArray(
 								[
-									$mdgriffith$elm_ui$Element$text('Gold: '),
-									A2($author$project$ItemShop$render_gp, model.colorTheme, player.held_gold)
+									$mdgriffith$elm_ui$Element$text('Held: '),
+									A2($author$project$Interface$render_gp, model.colorTheme, player.held_gold),
+									$mdgriffith$elm_ui$Element$text(' '),
+									A2($author$project$Interface$renderBlood, model.colorTheme, player.held_blood)
 								]))));
 			},
 			$author$project$ItemShop$getPlayer(model)));
@@ -17718,26 +20091,6 @@ var $author$project$ItemShop$viewOverlay = function (model) {
 var $author$project$ItemShop$ChangeTabType = function (a) {
 	return {$: 'ChangeTabType', a: a};
 };
-var $mdgriffith$elm_ui$Internal$Model$AsColumn = {$: 'AsColumn'};
-var $mdgriffith$elm_ui$Internal$Model$asColumn = $mdgriffith$elm_ui$Internal$Model$AsColumn;
-var $mdgriffith$elm_ui$Element$column = F2(
-	function (attrs, children) {
-		return A4(
-			$mdgriffith$elm_ui$Internal$Model$element,
-			$mdgriffith$elm_ui$Internal$Model$asColumn,
-			$mdgriffith$elm_ui$Internal$Model$div,
-			A2(
-				$elm$core$List$cons,
-				$mdgriffith$elm_ui$Internal$Model$htmlClass($mdgriffith$elm_ui$Internal$Style$classes.contentTop + (' ' + $mdgriffith$elm_ui$Internal$Style$classes.contentLeft)),
-				A2(
-					$elm$core$List$cons,
-					$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$shrink),
-					A2(
-						$elm$core$List$cons,
-						$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$shrink),
-						attrs))),
-			$mdgriffith$elm_ui$Internal$Model$Unkeyed(children));
-	});
 var $elm$html$Html$Attributes$href = function (url) {
 	return A2(
 		$elm$html$Html$Attributes$stringProperty,
@@ -17775,8 +20128,6 @@ var $mdgriffith$elm_ui$Element$link = F2(
 				_List_fromArray(
 					[label])));
 	});
-var $avh4$elm_color$Color$blue = A4($avh4$elm_color$Color$RgbaSpace, 52 / 255, 101 / 255, 164 / 255, 1.0);
-var $author$project$ItemShop$color_primary = $author$project$ItemShop$convertColor($avh4$elm_color$Color$blue);
 var $author$project$ItemShop$item_type_to_pretty_string = function (item_type) {
 	switch (item_type.$) {
 		case 'Weapon':
@@ -17791,37 +20142,6 @@ var $author$project$ItemShop$item_type_to_pretty_string = function (item_type) {
 			return 'Food';
 	}
 };
-var $mdgriffith$elm_ui$Internal$Model$Max = F2(
-	function (a, b) {
-		return {$: 'Max', a: a, b: b};
-	});
-var $mdgriffith$elm_ui$Element$maximum = F2(
-	function (i, l) {
-		return A2($mdgriffith$elm_ui$Internal$Model$Max, i, l);
-	});
-var $mdgriffith$elm_ui$Element$Font$family = function (families) {
-	return A2(
-		$mdgriffith$elm_ui$Internal$Model$StyleClass,
-		$mdgriffith$elm_ui$Internal$Flag$fontFamily,
-		A2(
-			$mdgriffith$elm_ui$Internal$Model$FontFamily,
-			A3($elm$core$List$foldl, $mdgriffith$elm_ui$Internal$Model$renderFontClassName, 'ff-', families),
-			families));
-};
-var $mdgriffith$elm_ui$Internal$Model$Monospace = {$: 'Monospace'};
-var $mdgriffith$elm_ui$Element$Font$monospace = $mdgriffith$elm_ui$Internal$Model$Monospace;
-var $author$project$ItemShop$monospace = F2(
-	function (attrs, el) {
-		return A2(
-			$mdgriffith$elm_ui$Element$el,
-			A2(
-				$elm$core$List$cons,
-				$mdgriffith$elm_ui$Element$Font$family(
-					_List_fromArray(
-						[$mdgriffith$elm_ui$Element$Font$monospace])),
-				attrs),
-			el);
-	});
 var $mdgriffith$elm_ui$Element$spacingXY = F2(
 	function (x, y) {
 		return A2(
@@ -17861,7 +20181,7 @@ var $author$project$ItemShop$render_item_db_item = F2(
 							$mdgriffith$elm_ui$Element$el,
 							_List_fromArray(
 								[
-									$mdgriffith$elm_ui$Element$Font$color($author$project$ItemShop$color_primary)
+									$mdgriffith$elm_ui$Element$Font$color($author$project$Interface$color_primary)
 								]),
 							$mdgriffith$elm_ui$Element$text('LOCKED'))
 						])),
@@ -17881,7 +20201,7 @@ var $author$project$ItemShop$render_item_db_item = F2(
 							$mdgriffith$elm_ui$Element$el,
 							_List_fromArray(
 								[$mdgriffith$elm_ui$Element$alignRight]),
-							A2($author$project$ItemShop$render_gp, colorTheme, item.raw_gold_cost))
+							A2($author$project$Interface$render_gp, colorTheme, item.raw_gold_cost))
 						])),
 					A2(
 					$mdgriffith$elm_ui$Element$row,
@@ -17894,7 +20214,7 @@ var $author$project$ItemShop$render_item_db_item = F2(
 						[
 							$mdgriffith$elm_ui$Element$text('Num Bought: '),
 							A2(
-							$author$project$ItemShop$monospace,
+							$author$project$Interface$monospace,
 							_List_fromArray(
 								[$mdgriffith$elm_ui$Element$alignRight]),
 							$mdgriffith$elm_ui$Element$text(
@@ -17915,7 +20235,7 @@ var $author$project$ItemShop$render_item_db_item = F2(
 						[
 							$mdgriffith$elm_ui$Element$text('Num Sold: '),
 							A2(
-							$author$project$ItemShop$monospace,
+							$author$project$Interface$monospace,
 							_List_fromArray(
 								[$mdgriffith$elm_ui$Element$alignRight]),
 							$mdgriffith$elm_ui$Element$text(
@@ -17936,7 +20256,7 @@ var $author$project$ItemShop$render_item_db_item = F2(
 						[
 							$mdgriffith$elm_ui$Element$text('Others\' Trades: '),
 							A2(
-							$author$project$ItemShop$monospace,
+							$author$project$Interface$monospace,
 							_List_fromArray(
 								[$mdgriffith$elm_ui$Element$alignRight]),
 							$mdgriffith$elm_ui$Element$text(
@@ -18159,7 +20479,7 @@ var $author$project$ItemShop$view_items_unlocked_tab_type = F2(
 			_List_Nil,
 			{
 				label: A3(
-					$author$project$ItemShop$danger_button,
+					$author$project$Interface$danger_button,
 					_List_Nil,
 					$author$project$ItemShop$ChangeTabType($author$project$ItemShop$ShopTabType),
 					'Back to Shop'),
@@ -18196,8 +20516,6 @@ var $author$project$ItemShop$InventoryItems = {$: 'InventoryItems'};
 var $author$project$ItemShop$ShopItems = {$: 'ShopItems'};
 var $author$project$ItemShop$ToggleColorTheme = {$: 'ToggleColorTheme'};
 var $author$project$ItemShop$ToggleShowMainChart = {$: 'ToggleShowMainChart'};
-var $mdgriffith$elm_ui$Internal$Model$Top = {$: 'Top'};
-var $mdgriffith$elm_ui$Element$alignTop = $mdgriffith$elm_ui$Internal$Model$AlignY($mdgriffith$elm_ui$Internal$Model$Top);
 var $author$project$ItemShop$OnTrendChartHover = function (a) {
 	return {$: 'OnTrendChartHover', a: a};
 };
@@ -22087,43 +24405,10 @@ var $terezka$elm_charts$Chart$Attributes$padding = F2(
 			config,
 			{padding: value});
 	});
-var $mdgriffith$elm_ui$Element$paddingXY = F2(
-	function (x, y) {
-		if (_Utils_eq(x, y)) {
-			var f = x;
-			return A2(
-				$mdgriffith$elm_ui$Internal$Model$StyleClass,
-				$mdgriffith$elm_ui$Internal$Flag$padding,
-				A5(
-					$mdgriffith$elm_ui$Internal$Model$PaddingStyle,
-					'p-' + $elm$core$String$fromInt(x),
-					f,
-					f,
-					f,
-					f));
-		} else {
-			var yFloat = y;
-			var xFloat = x;
-			return A2(
-				$mdgriffith$elm_ui$Internal$Model$StyleClass,
-				$mdgriffith$elm_ui$Internal$Flag$padding,
-				A5(
-					$mdgriffith$elm_ui$Internal$Model$PaddingStyle,
-					'p-' + ($elm$core$String$fromInt(x) + ('-' + $elm$core$String$fromInt(y))),
-					yFloat,
-					xFloat,
-					yFloat,
-					xFloat));
-		}
-	});
 var $elm$core$Tuple$pair = F2(
 	function (a, b) {
 		return _Utils_Tuple2(a, b);
 	});
-var $mdgriffith$elm_ui$Internal$Model$Px = function (a) {
-	return {$: 'Px', a: a};
-};
-var $mdgriffith$elm_ui$Element$px = $mdgriffith$elm_ui$Internal$Model$Px;
 var $terezka$elm_charts$Chart$Indexed = function (a) {
 	return {$: 'Indexed', a: a};
 };
@@ -22349,21 +24634,6 @@ var $terezka$elm_charts$Internal$Legend$toDotLegends = F2(
 						ps);
 				},
 				A2($elm$core$List$map, $terezka$elm_charts$Internal$Property$toConfigs, properties)));
-	});
-var $elm$core$Maybe$map2 = F3(
-	function (func, ma, mb) {
-		if (ma.$ === 'Nothing') {
-			return $elm$core$Maybe$Nothing;
-		} else {
-			var a = ma.a;
-			if (mb.$ === 'Nothing') {
-				return $elm$core$Maybe$Nothing;
-			} else {
-				var b = mb.a;
-				return $elm$core$Maybe$Just(
-					A2(func, a, b));
-			}
-		}
 	});
 var $elm$html$Html$table = _VirtualDom_node('table');
 var $terezka$elm_charts$Internal$Produce$toDefaultName = F2(
@@ -22969,15 +25239,6 @@ var $myrho$elm_round$Round$increaseNum = function (_v0) {
 	}
 };
 var $elm$core$Basics$isInfinite = _Basics_isInfinite;
-var $elm$core$String$padRight = F3(
-	function (n, _char, string) {
-		return _Utils_ap(
-			string,
-			A2(
-				$elm$core$String$repeat,
-				n - $elm$core$String$length(string),
-				$elm$core$String$fromChar(_char)));
-	});
 var $myrho$elm_round$Round$splitComma = function (str) {
 	var _v0 = A2($elm$core$String$split, '.', str);
 	if (_v0.b) {
@@ -25729,7 +27990,7 @@ var $author$project$ItemShop$charts_display = F2(
 			$mdgriffith$elm_ui$Element$html(
 				A2($terezka$elm_charts$Chart$chart, chart_attributes, chart_elements)));
 	});
-var $author$project$ItemShop$color_light_grey = A3($mdgriffith$elm_ui$Element$rgb, 0.55, 0.55, 0.55);
+var $author$project$Interface$color_light_grey = A3($mdgriffith$elm_ui$Element$rgb, 0.55, 0.55, 0.55);
 var $mdgriffith$elm_ui$Internal$Flag$borderStyle = $mdgriffith$elm_ui$Internal$Flag$flag(11);
 var $mdgriffith$elm_ui$Element$Border$dashed = A2($mdgriffith$elm_ui$Internal$Model$Class, $mdgriffith$elm_ui$Internal$Flag$borderStyle, $mdgriffith$elm_ui$Internal$Style$classes.borderDashed);
 var $mdgriffith$elm_ui$Element$Keyed$el = F2(
@@ -25749,7 +28010,6 @@ var $mdgriffith$elm_ui$Element$Keyed$el = F2(
 				_List_fromArray(
 					[child])));
 	});
-var $mdgriffith$elm_ui$Element$fillPortion = $mdgriffith$elm_ui$Internal$Model$Fill;
 var $mdgriffith$elm_ui$Element$modular = F3(
 	function (normal, ratio, rescale) {
 		return (!rescale) ? normal : ((rescale < 0) ? (normal * A2($elm$core$Basics$pow, ratio, rescale)) : (normal * A2($elm$core$Basics$pow, ratio, rescale - 1)));
@@ -25762,78 +28022,6 @@ var $author$project$ItemShop$font_scaled = function (scale) {
 	return $mdgriffith$elm_ui$Element$Font$size(
 		$author$project$ItemShop$scaled(scale));
 };
-var $avh4$elm_color$Color$charcoal = A4($avh4$elm_color$Color$RgbaSpace, 85 / 255, 87 / 255, 83 / 255, 1.0);
-var $author$project$ItemShop$color_secondary = $author$project$ItemShop$convertColor($avh4$elm_color$Color$charcoal);
-var $author$project$ItemShop$outline_button_custom = F3(
-	function (custom_attrs, on_press, label) {
-		return A2(
-			$mdgriffith$elm_ui$Element$Input$button,
-			_Utils_ap(
-				_List_fromArray(
-					[
-						$mdgriffith$elm_ui$Element$Font$color($author$project$ItemShop$color_secondary),
-						$mdgriffith$elm_ui$Element$Font$size(16),
-						$mdgriffith$elm_ui$Element$Font$center,
-						$mdgriffith$elm_ui$Element$padding(9),
-						$mdgriffith$elm_ui$Element$Background$color($author$project$ItemShop$color_white),
-						$mdgriffith$elm_ui$Element$Border$rounded(5),
-						$mdgriffith$elm_ui$Element$Border$width(2),
-						$mdgriffith$elm_ui$Element$Border$color($author$project$ItemShop$color_secondary),
-						$mdgriffith$elm_ui$Element$mouseOver(
-						_List_fromArray(
-							[
-								$mdgriffith$elm_ui$Element$Background$color($author$project$ItemShop$color_secondary),
-								$mdgriffith$elm_ui$Element$Font$color($author$project$ItemShop$color_white)
-							]))
-					]),
-				custom_attrs),
-			{
-				label: label,
-				onPress: $elm$core$Maybe$Just(on_press)
-			});
-	});
-var $author$project$ItemShop$outline_button = F3(
-	function (custom_attrs, on_press, label) {
-		return A3(
-			$author$project$ItemShop$outline_button_custom,
-			custom_attrs,
-			on_press,
-			$mdgriffith$elm_ui$Element$text(label));
-	});
-var $mdgriffith$elm_ui$Internal$Model$paddingName = F4(
-	function (top, right, bottom, left) {
-		return 'pad-' + ($elm$core$String$fromInt(top) + ('-' + ($elm$core$String$fromInt(right) + ('-' + ($elm$core$String$fromInt(bottom) + ('-' + $elm$core$String$fromInt(left)))))));
-	});
-var $mdgriffith$elm_ui$Element$paddingEach = function (_v0) {
-	var top = _v0.top;
-	var right = _v0.right;
-	var bottom = _v0.bottom;
-	var left = _v0.left;
-	if (_Utils_eq(top, right) && (_Utils_eq(top, bottom) && _Utils_eq(top, left))) {
-		var topFloat = top;
-		return A2(
-			$mdgriffith$elm_ui$Internal$Model$StyleClass,
-			$mdgriffith$elm_ui$Internal$Flag$padding,
-			A5(
-				$mdgriffith$elm_ui$Internal$Model$PaddingStyle,
-				'p-' + $elm$core$String$fromInt(top),
-				topFloat,
-				topFloat,
-				topFloat,
-				topFloat));
-	} else {
-		return A2(
-			$mdgriffith$elm_ui$Internal$Model$StyleClass,
-			$mdgriffith$elm_ui$Internal$Flag$padding,
-			A5(
-				$mdgriffith$elm_ui$Internal$Model$PaddingStyle,
-				A4($mdgriffith$elm_ui$Internal$Model$paddingName, top, right, bottom, left),
-				top,
-				right,
-				bottom,
-				left));
-	}
-};
 var $author$project$ItemShop$padding_bottom = function (pad) {
 	return $mdgriffith$elm_ui$Element$paddingEach(
 		{bottom: pad, left: 0, right: 0, top: 0});
@@ -25841,80 +28029,14 @@ var $author$project$ItemShop$padding_bottom = function (pad) {
 var $author$project$ItemShop$SacrificeItem = function (a) {
 	return {$: 'SacrificeItem', a: a};
 };
-var $mdgriffith$elm_ui$Internal$Model$Min = F2(
-	function (a, b) {
-		return {$: 'Min', a: a, b: b};
-	});
-var $mdgriffith$elm_ui$Element$minimum = F2(
-	function (i, l) {
-		return A2($mdgriffith$elm_ui$Internal$Model$Min, i, l);
-	});
 var $author$project$ItemShop$PlayerSellItemToShop = F2(
 	function (a, b) {
 		return {$: 'PlayerSellItemToShop', a: a, b: b};
 	});
-var $avh4$elm_color$Color$lightBlue = A4($avh4$elm_color$Color$RgbaSpace, 114 / 255, 159 / 255, 207 / 255, 1.0);
-var $author$project$ItemShop$primary_color_bright = $author$project$ItemShop$convertColor($avh4$elm_color$Color$lightBlue);
-var $author$project$ItemShop$primary_button_custom = F3(
-	function (custom_attrs, on_press, label) {
-		return A2(
-			$mdgriffith$elm_ui$Element$Input$button,
-			_Utils_ap(
-				$author$project$ItemShop$common_button_attrs(
-					{button_color: $author$project$ItemShop$color_primary, font_color: $author$project$ItemShop$color_white, hovered_button_color: $author$project$ItemShop$primary_color_bright, hovered_font_color: $author$project$ItemShop$color_black}),
-				custom_attrs),
-			{
-				label: label,
-				onPress: $elm$core$Maybe$Just(on_press)
-			});
-	});
-var $author$project$ItemShop$primary_button = F3(
-	function (custom_attrs, on_press, label) {
-		return A3(
-			$author$project$ItemShop$primary_button_custom,
-			custom_attrs,
-			on_press,
-			$mdgriffith$elm_ui$Element$text(label));
-	});
-var $author$project$ItemShop$secondary_button_custom = F3(
-	function (custom_attrs, on_press, label) {
-		return A2(
-			$mdgriffith$elm_ui$Element$Input$button,
-			_Utils_ap(
-				$author$project$ItemShop$common_button_attrs(
-					{button_color: $author$project$ItemShop$color_secondary, font_color: $author$project$ItemShop$color_white, hovered_button_color: $author$project$ItemShop$color_secondary, hovered_font_color: $author$project$ItemShop$color_black}),
-				custom_attrs),
-			{
-				label: label,
-				onPress: $elm$core$Maybe$Just(on_press)
-			});
-	});
-var $author$project$ItemShop$secondary_button = F3(
-	function (custom_attrs, on_press, label) {
-		return A3(
-			$author$project$ItemShop$secondary_button_custom,
-			custom_attrs,
-			on_press,
-			$mdgriffith$elm_ui$Element$text(label));
-	});
-var $mdgriffith$elm_ui$Internal$Model$Transparency = F2(
-	function (a, b) {
-		return {$: 'Transparency', a: a, b: b};
-	});
-var $mdgriffith$elm_ui$Internal$Flag$transparency = $mdgriffith$elm_ui$Internal$Flag$flag(0);
-var $mdgriffith$elm_ui$Element$transparent = function (on) {
-	return on ? A2(
-		$mdgriffith$elm_ui$Internal$Model$StyleClass,
-		$mdgriffith$elm_ui$Internal$Flag$transparency,
-		A2($mdgriffith$elm_ui$Internal$Model$Transparency, 'transparent', 1.0)) : A2(
-		$mdgriffith$elm_ui$Internal$Model$StyleClass,
-		$mdgriffith$elm_ui$Internal$Flag$transparency,
-		A2($mdgriffith$elm_ui$Internal$Model$Transparency, 'visible', 0.0));
-};
 var $author$project$ItemShop$shop_sell_button = F2(
 	function (has_items_to_sell_, _v0) {
 		var item = _v0.item;
-		var button_type = has_items_to_sell_ ? $author$project$ItemShop$primary_button : $author$project$ItemShop$secondary_button;
+		var button_type = has_items_to_sell_ ? $author$project$Interface$primary_button : $author$project$Interface$secondary_button;
 		var buttonText = has_items_to_sell_ ? 'SELL' : 'Need GP';
 		return A3(
 			button_type,
@@ -25946,7 +28068,7 @@ var $author$project$ItemShop$playerInventoryControls = F3(
 				item: item,
 				quantity: $author$project$ItemShop$setQuantity(1)
 			}) : A3(
-			$author$project$ItemShop$danger_button,
+			$author$project$Interface$danger_button,
 			_List_fromArray(
 				[
 					$mdgriffith$elm_ui$Element$transparent(!hasItemsToSell),
@@ -25956,35 +28078,7 @@ var $author$project$ItemShop$playerInventoryControls = F3(
 			$author$project$ItemShop$SacrificeItem(item),
 			'Sacrifice');
 	});
-var $mdgriffith$elm_ui$Element$Border$widthXY = F2(
-	function (x, y) {
-		return A2(
-			$mdgriffith$elm_ui$Internal$Model$StyleClass,
-			$mdgriffith$elm_ui$Internal$Flag$borderWidth,
-			A5(
-				$mdgriffith$elm_ui$Internal$Model$BorderWidth,
-				'b-' + ($elm$core$String$fromInt(x) + ('-' + $elm$core$String$fromInt(y))),
-				y,
-				x,
-				y,
-				x));
-	});
-var $mdgriffith$elm_ui$Element$Border$widthEach = function (_v0) {
-	var bottom = _v0.bottom;
-	var top = _v0.top;
-	var left = _v0.left;
-	var right = _v0.right;
-	return (_Utils_eq(top, bottom) && _Utils_eq(left, right)) ? (_Utils_eq(top, right) ? $mdgriffith$elm_ui$Element$Border$width(top) : A2($mdgriffith$elm_ui$Element$Border$widthXY, left, top)) : A2(
-		$mdgriffith$elm_ui$Internal$Model$StyleClass,
-		$mdgriffith$elm_ui$Internal$Flag$borderWidth,
-		A5(
-			$mdgriffith$elm_ui$Internal$Model$BorderWidth,
-			'b-' + ($elm$core$String$fromInt(top) + ('-' + ($elm$core$String$fromInt(right) + ('-' + ($elm$core$String$fromInt(bottom) + ('-' + $elm$core$String$fromInt(left))))))),
-			top,
-			right,
-			bottom,
-			left));
-};
+var $author$project$Interface$blankChar = '\u2003';
 var $author$project$ItemShop$border_bottom = function (bord) {
 	return $mdgriffith$elm_ui$Element$Border$widthEach(
 		{bottom: bord, left: 0, right: 0, top: 0});
@@ -25998,6 +28092,8 @@ var $author$project$ItemShop$render_single_player_action_log = F2(
 				[
 					function () {
 					switch (player_action_log.$) {
+						case 'WelcomeMessageActionLog':
+							return $mdgriffith$elm_ui$Element$text('Welcome to ItemShop!');
 						case 'TookSpecialActionInviteTrader':
 							return $mdgriffith$elm_ui$Element$text('Invited Trader');
 						case 'TookSpecialActionTriggerEvent':
@@ -26020,17 +28116,20 @@ var $author$project$ItemShop$render_single_player_action_log = F2(
 							}
 						case 'TookSpecialActionTogglePauseAi':
 							return $mdgriffith$elm_ui$Element$text('Toggle Play/Pause');
-						default:
+						case 'TookSpecialActionUnlockItem':
 							var item_id = player_action_log.a;
 							return $mdgriffith$elm_ui$Element$text(
 								'Found an item: ' + A2($author$project$ItemShop$lookup_item_id_default, item_db, item_id).name);
+						default:
+							var itemId = player_action_log.a;
+							return $mdgriffith$elm_ui$Element$text('A monster died, and left an item to the shop');
 					}
 				}()
 				]));
 	});
 var $author$project$ItemShop$player_action_log_display = F2(
 	function (item_db, player_action_logs) {
-		return ($elm$core$List$length(player_action_logs) > 0) ? A2(
+		return A2(
 			$mdgriffith$elm_ui$Element$column,
 			_List_fromArray(
 				[
@@ -26058,35 +28157,27 @@ var $author$project$ItemShop$player_action_log_display = F2(
 								A2($mdgriffith$elm_ui$Element$paddingXY, 0, 10),
 								$mdgriffith$elm_ui$Element$spacing(4)
 							]),
-						A2(
-							$elm$core$List$map,
-							$author$project$ItemShop$render_single_player_action_log(item_db),
+						function (logs) {
+							return ($elm$core$List$length(logs) < 5) ? _Utils_ap(
+								logs,
+								A2(
+									$elm$core$List$repeat,
+									5 - $elm$core$List$length(logs),
+									A2(
+										$mdgriffith$elm_ui$Element$paragraph,
+										_List_Nil,
+										_List_fromArray(
+											[
+												$mdgriffith$elm_ui$Element$text($author$project$Interface$blankChar)
+											])))) : logs;
+						}(
 							A2(
-								$elm$core$List$take,
-								5,
-								$elm$core$List$reverse(player_action_logs))))
-					]))) : A2(
-			$mdgriffith$elm_ui$Element$column,
-			_List_fromArray(
-				[
-					A2($mdgriffith$elm_ui$Element$paddingXY, 0, 10),
-					$mdgriffith$elm_ui$Element$spacing(5)
-				]),
-			_Utils_ap(
-				_List_fromArray(
-					[
-						A2(
-						$mdgriffith$elm_ui$Element$el,
-						_List_fromArray(
-							[
-								$author$project$ItemShop$font_scaled(2),
-								$author$project$ItemShop$border_bottom(2)
-							]),
-						$mdgriffith$elm_ui$Element$text('Action Log'))
-					]),
-				_List_fromArray(
-					[
-						$mdgriffith$elm_ui$Element$text('Welcome!')
+								$elm$core$List$map,
+								$author$project$ItemShop$render_single_player_action_log(item_db),
+								A2(
+									$elm$core$List$take,
+									5,
+									$elm$core$List$reverse(player_action_logs)))))
 					])));
 	});
 var $author$project$ItemShop$render_single_player_upgrade = F2(
@@ -26098,7 +28189,7 @@ var $author$project$ItemShop$render_single_player_upgrade = F2(
 			_List_fromArray(
 				[
 					$mdgriffith$elm_ui$Element$text('Income: '),
-					A2($author$project$ItemShop$render_gp, colorTheme, gpm),
+					A2($author$project$Interface$render_gp, colorTheme, gpm),
 					$mdgriffith$elm_ui$Element$text('/sec')
 				]));
 	});
@@ -26137,6 +28228,9 @@ var $author$project$ItemShop$player_upgrades_display = F2(
 							player_upgrades))
 					])));
 	});
+var $author$project$ItemShop$ChangeInventorySortType = function (a) {
+	return {$: 'ChangeInventorySortType', a: a};
+};
 var $author$project$ItemShop$CycleFilterDisplayedItemsBackward = F2(
 	function (a, b) {
 		return {$: 'CycleFilterDisplayedItemsBackward', a: a, b: b};
@@ -26153,6 +28247,11 @@ var $author$project$ItemShop$MouseLeaveShopItem = F2(
 	function (a, b) {
 		return {$: 'MouseLeaveShopItem', a: a, b: b};
 	});
+var $author$project$ItemShop$SortByAvgPrice = {$: 'SortByAvgPrice'};
+var $author$project$ItemShop$SortByItemDesc = {$: 'SortByItemDesc'};
+var $author$project$ItemShop$SortByItemType = {$: 'SortByItemType'};
+var $author$project$ItemShop$SortByPrice = {$: 'SortByPrice'};
+var $author$project$ItemShop$SortByQuantity = {$: 'SortByQuantity'};
 var $author$project$ItemShop$ToggleHideNonZeroRows = function (a) {
 	return {$: 'ToggleHideNonZeroRows', a: a};
 };
@@ -26191,26 +28290,22 @@ var $author$project$ItemShop$action_log_to_str = F2(
 				return 'Did nothing';
 		}
 	});
-var $mdgriffith$elm_ui$Internal$Model$CenterX = {$: 'CenterX'};
-var $mdgriffith$elm_ui$Element$centerX = $mdgriffith$elm_ui$Internal$Model$AlignX($mdgriffith$elm_ui$Internal$Model$CenterX);
-var $mdgriffith$elm_ui$Internal$Model$CenterY = {$: 'CenterY'};
-var $mdgriffith$elm_ui$Element$centerY = $mdgriffith$elm_ui$Internal$Model$AlignY($mdgriffith$elm_ui$Internal$Model$CenterY);
-var $author$project$ItemShop$clipText = F2(
+var $author$project$Interface$clipText = F2(
 	function (str, length) {
 		return (_Utils_cmp(
 			$elm$core$String$length(str),
 			length) > 0) ? (A2($elm$core$String$left, length, str) + '...') : str;
 	});
-var $author$project$ItemShop$colorFromInt = F4(
+var $author$project$Interface$colorFromInt = F4(
 	function (_int, positiveColor, neutralColor, negativeColor) {
 		return (_int > 0) ? positiveColor : ((!_int) ? neutralColor : negativeColor);
 	});
+var $author$project$Interface$color_very_light_grey = A3($mdgriffith$elm_ui$Element$rgb, 0.75, 0.75, 0.75);
 var $author$project$ItemShop$cssRule = F2(
 	function (name, value) {
 		return $mdgriffith$elm_ui$Element$htmlAttribute(
 			A2($elm$html$Html$Attributes$style, name, value));
 	});
-var $author$project$ItemShop$color_very_light_grey = A3($mdgriffith$elm_ui$Element$rgb, 0.75, 0.75, 0.75);
 var $author$project$ItemShop$divider = _List_fromArray(
 	[
 		A2(
@@ -26226,7 +28321,7 @@ var $author$project$ItemShop$divider = _List_fromArray(
 				[
 					$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
 					$author$project$ItemShop$border_bottom(1),
-					$mdgriffith$elm_ui$Element$Border$color($author$project$ItemShop$color_very_light_grey)
+					$mdgriffith$elm_ui$Element$Border$color($author$project$Interface$color_very_light_grey)
 				]),
 			$mdgriffith$elm_ui$Element$none))
 	]);
@@ -26277,46 +28372,23 @@ var $elm$html$Html$Events$onMouseLeave = function (msg) {
 };
 var $mdgriffith$elm_ui$Element$Events$onMouseLeave = A2($elm$core$Basics$composeL, $mdgriffith$elm_ui$Internal$Model$Attr, $elm$html$Html$Events$onMouseLeave);
 var $author$project$ItemShop$portion = A2($elm$core$Basics$composeL, $mdgriffith$elm_ui$Element$width, $mdgriffith$elm_ui$Element$fillPortion);
-var $author$project$ItemShop$font_blood = $mdgriffith$elm_ui$Element$Font$color($author$project$ItemShop$color_danger);
-var $author$project$ItemShop$renderBlood_sized = F2(
-	function (count, font_size) {
-		return A2(
-			$mdgriffith$elm_ui$Element$paragraph,
-			_List_Nil,
-			_List_fromArray(
-				[
-					$mdgriffith$elm_ui$Element$text(
-					$elm$core$String$fromInt(count)),
-					A2(
-					$mdgriffith$elm_ui$Element$el,
-					_List_fromArray(
-						[
-							$mdgriffith$elm_ui$Element$Font$size(font_size),
-							$author$project$ItemShop$font_blood
-						]),
-					$mdgriffith$elm_ui$Element$text('blood'))
-				]));
-	});
-var $author$project$ItemShop$renderBlood = function (count) {
-	return A2($author$project$ItemShop$renderBlood_sized, count, 12);
-};
 var $mdgriffith$elm_ui$Element$Font$alignLeft = A2($mdgriffith$elm_ui$Internal$Model$Class, $mdgriffith$elm_ui$Internal$Flag$fontAlignment, $mdgriffith$elm_ui$Internal$Style$classes.textLeft);
-var $author$project$ItemShop$color_pastel_green_1 = $author$project$ItemShop$hex_to_color('#b4ecb4');
-var $author$project$ItemShop$color_pastel_green_2 = $author$project$ItemShop$hex_to_color('#a0e7a0');
-var $author$project$ItemShop$color_pastel_green_3 = $author$project$ItemShop$hex_to_color('#8be28b');
-var $author$project$ItemShop$color_pastel_green_4 = $author$project$ItemShop$hex_to_color('#77dd77');
-var $author$project$ItemShop$color_pastel_green_5 = $author$project$ItemShop$hex_to_color('#63d863');
-var $author$project$ItemShop$color_pastel_green_6 = $author$project$ItemShop$hex_to_color('#4ed34e');
-var $author$project$ItemShop$color_pastel_green_7 = $author$project$ItemShop$hex_to_color('#3ace3a');
-var $author$project$ItemShop$color_pastel_red_1 = $author$project$ItemShop$hex_to_color('#ecb4b4');
-var $author$project$ItemShop$color_pastel_red_2 = $author$project$ItemShop$hex_to_color('#e7a0a0');
-var $author$project$ItemShop$color_pastel_red_3 = $author$project$ItemShop$hex_to_color('#e28b8b');
-var $author$project$ItemShop$color_pastel_red_4 = $author$project$ItemShop$hex_to_color('#dd7777');
-var $author$project$ItemShop$color_pastel_red_5 = $author$project$ItemShop$hex_to_color('#d86363');
-var $author$project$ItemShop$color_pastel_red_6 = $author$project$ItemShop$hex_to_color('#d34e4e');
-var $author$project$ItemShop$color_pastel_red_7 = $author$project$ItemShop$hex_to_color('#ce3a3a');
+var $author$project$Interface$color_pastel_green_1 = $author$project$Interface$hex_to_color('#b4ecb4');
+var $author$project$Interface$color_pastel_green_2 = $author$project$Interface$hex_to_color('#a0e7a0');
+var $author$project$Interface$color_pastel_green_3 = $author$project$Interface$hex_to_color('#8be28b');
+var $author$project$Interface$color_pastel_green_4 = $author$project$Interface$hex_to_color('#77dd77');
+var $author$project$Interface$color_pastel_green_5 = $author$project$Interface$hex_to_color('#63d863');
+var $author$project$Interface$color_pastel_green_6 = $author$project$Interface$hex_to_color('#4ed34e');
+var $author$project$Interface$color_pastel_green_7 = $author$project$Interface$hex_to_color('#3ace3a');
+var $author$project$Interface$color_pastel_red_1 = $author$project$Interface$hex_to_color('#ecb4b4');
+var $author$project$Interface$color_pastel_red_2 = $author$project$Interface$hex_to_color('#e7a0a0');
+var $author$project$Interface$color_pastel_red_3 = $author$project$Interface$hex_to_color('#e28b8b');
+var $author$project$Interface$color_pastel_red_4 = $author$project$Interface$hex_to_color('#dd7777');
+var $author$project$Interface$color_pastel_red_5 = $author$project$Interface$hex_to_color('#d86363');
+var $author$project$Interface$color_pastel_red_6 = $author$project$Interface$hex_to_color('#d34e4e');
+var $author$project$Interface$color_pastel_red_7 = $author$project$Interface$hex_to_color('#ce3a3a');
 var $author$project$ItemShop$get_trend_color = function (trend) {
-	return (trend > 1.65) ? $author$project$ItemShop$color_pastel_red_7 : ((trend > 1.55) ? $author$project$ItemShop$color_pastel_red_6 : ((trend > 1.45) ? $author$project$ItemShop$color_pastel_red_5 : ((trend > 1.35) ? $author$project$ItemShop$color_pastel_red_4 : ((trend > 1.25) ? $author$project$ItemShop$color_pastel_red_3 : ((trend > 1.15) ? $author$project$ItemShop$color_pastel_red_2 : ((trend > 1.0) ? $author$project$ItemShop$color_pastel_red_1 : ((trend < 0.45) ? $author$project$ItemShop$color_pastel_green_7 : ((trend < 0.55) ? $author$project$ItemShop$color_pastel_green_6 : ((trend < 0.65) ? $author$project$ItemShop$color_pastel_green_5 : ((trend < 0.75) ? $author$project$ItemShop$color_pastel_green_4 : ((trend < 0.85) ? $author$project$ItemShop$color_pastel_green_3 : ((trend < 0.95) ? $author$project$ItemShop$color_pastel_green_2 : ((trend < 1.0) ? $author$project$ItemShop$color_pastel_green_1 : A3($mdgriffith$elm_ui$Element$rgb, 0, 0, 0))))))))))))));
+	return (trend > 1.65) ? $author$project$Interface$color_pastel_red_7 : ((trend > 1.55) ? $author$project$Interface$color_pastel_red_6 : ((trend > 1.45) ? $author$project$Interface$color_pastel_red_5 : ((trend > 1.35) ? $author$project$Interface$color_pastel_red_4 : ((trend > 1.25) ? $author$project$Interface$color_pastel_red_3 : ((trend > 1.15) ? $author$project$Interface$color_pastel_red_2 : ((trend > 1.0) ? $author$project$Interface$color_pastel_red_1 : ((trend < 0.45) ? $author$project$Interface$color_pastel_green_7 : ((trend < 0.55) ? $author$project$Interface$color_pastel_green_6 : ((trend < 0.65) ? $author$project$Interface$color_pastel_green_5 : ((trend < 0.75) ? $author$project$Interface$color_pastel_green_4 : ((trend < 0.85) ? $author$project$Interface$color_pastel_green_3 : ((trend < 0.95) ? $author$project$Interface$color_pastel_green_2 : ((trend < 1.0) ? $author$project$Interface$color_pastel_green_1 : A3($mdgriffith$elm_ui$Element$rgb, 0, 0, 0))))))))))))));
 };
 var $mdgriffith$elm_ui$Internal$Model$formatTextShadow = function (shadow) {
 	return A2(
@@ -26526,14 +28598,7 @@ var $author$project$ItemShop$small_charts_display = F2(
 			$mdgriffith$elm_ui$Element$html(
 				A2($terezka$elm_charts$Chart$chart, chart_attributes, chart_elements)));
 	});
-var $author$project$ItemShop$sort_func = A2(
-	$elm$core$Basics$composeR,
-	function ($) {
-		return $.item;
-	},
-	function ($) {
-		return $.name;
-	});
+var $elm$core$List$sortWith = _List_sortWith;
 var $mdgriffith$elm_ui$Element$InternalColumn = function (a) {
 	return {$: 'InternalColumn', a: a};
 };
@@ -26732,25 +28797,51 @@ var $mdgriffith$elm_ui$Element$table = F2(
 	});
 var $author$project$ItemShop$render_inventory_grid = F7(
 	function (model, header, character, shop_trends, hovered_item, context, controls_column) {
-		var small_header = function (str) {
-			return A2(
-				$mdgriffith$elm_ui$Element$el,
-				_List_fromArray(
-					[
-						$mdgriffith$elm_ui$Element$Font$size(10)
-					]),
-				$mdgriffith$elm_ui$Element$text(str));
-		};
+		var small_header = F2(
+			function (str, sortType) {
+				return A2(
+					$mdgriffith$elm_ui$Element$el,
+					_List_fromArray(
+						[
+							$mdgriffith$elm_ui$Element$Font$size(10),
+							$mdgriffith$elm_ui$Element$Events$onClick(
+							$author$project$ItemShop$ChangeInventorySortType(sortType)),
+							$author$project$ItemShop$noUserSelect,
+							$mdgriffith$elm_ui$Element$Border$rounded(2),
+							$mdgriffith$elm_ui$Element$mouseOver(
+							_List_fromArray(
+								[
+									$mdgriffith$elm_ui$Element$Background$color($author$project$Interface$color_very_light_grey)
+								])),
+							$mdgriffith$elm_ui$Element$padding(2),
+							$mdgriffith$elm_ui$Element$pointer
+						]),
+					$mdgriffith$elm_ui$Element$text(
+						_Utils_ap(
+							str,
+							function () {
+								if (_Utils_eq(model.inventorySortType, sortType)) {
+									var _v21 = model.inventorySortDir;
+									if (_v21.$ === 'Descending') {
+										return '▲';
+									} else {
+										return '▼';
+									}
+								} else {
+									return '';
+								}
+							}())));
+			});
 		var rendered_dislikes = A2(
 			$elm$core$List$map,
-			function (_v18) {
-				var it_id = _v18.a;
-				var trd = _v18.b;
+			function (_v19) {
+				var it_id = _v19.a;
+				var trd = _v19.b;
 				return $mdgriffith$elm_ui$Element$text(
 					'Dislikes: ' + function () {
-						var _v19 = $author$project$ItemShop$id_to_item_type(it_id);
-						if (_v19.$ === 'Just') {
-							var item_type = _v19.a;
+						var _v20 = $author$project$ItemShop$id_to_item_type(it_id);
+						if (_v20.$ === 'Just') {
+							var item_type = _v20.a;
 							return $author$project$ItemShop$item_type_to_pretty_string(item_type);
 						} else {
 							return 'Unknown';
@@ -26768,14 +28859,14 @@ var $author$project$ItemShop$render_inventory_grid = F7(
 				$elm$core$Dict$toList(character.item_types_desired)));
 		var rendered_desires = A2(
 			$elm$core$List$map,
-			function (_v16) {
-				var it_id = _v16.a;
-				var trd = _v16.b;
+			function (_v17) {
+				var it_id = _v17.a;
+				var trd = _v17.b;
 				return $mdgriffith$elm_ui$Element$text(
 					'Desires: ' + function () {
-						var _v17 = $author$project$ItemShop$id_to_item_type(it_id);
-						if (_v17.$ === 'Just') {
-							var item_type = _v17.a;
+						var _v18 = $author$project$ItemShop$id_to_item_type(it_id);
+						if (_v18.$ === 'Just') {
+							var item_type = _v18.a;
 							return $author$project$ItemShop$item_type_to_pretty_string(item_type);
 						} else {
 							return 'Unknown';
@@ -26796,6 +28887,77 @@ var $author$project$ItemShop$render_inventory_grid = F7(
 		var current_price = function (item) {
 			return A2($author$project$ItemShop$get_single_adjusted_item_cost, shop_trends, item);
 		};
+		var buildCompare = function (getter) {
+			return F2(
+				function (left, right) {
+					return A2(
+						$elm$core$Basics$compare,
+						getter(left),
+						getter(right));
+				});
+		};
+		var sortFunc = function () {
+			var _v16 = model.inventorySortType;
+			switch (_v16.$) {
+				case 'SortByName':
+					return buildCompare(
+						A2(
+							$elm$core$Basics$composeR,
+							function ($) {
+								return $.item;
+							},
+							function ($) {
+								return $.name;
+							}));
+				case 'SortByPrice':
+					return buildCompare(
+						A2(
+							$elm$core$Basics$composeR,
+							function ($) {
+								return $.item;
+							},
+							$author$project$ItemShop$get_single_adjusted_item_cost(shop_trends)));
+				case 'SortByAvgPrice':
+					return buildCompare(
+						A2(
+							$elm$core$Basics$composeR,
+							function ($) {
+								return $.avg_price;
+							},
+							$author$project$ItemShop$getPrice));
+				case 'SortByQuantity':
+					return buildCompare(
+						A2(
+							$elm$core$Basics$composeR,
+							function ($) {
+								return $.quantity;
+							},
+							$author$project$ItemShop$getQuantity));
+				case 'SortByItemType':
+					return buildCompare(
+						A2(
+							$elm$core$Basics$composeR,
+							function ($) {
+								return $.item;
+							},
+							A2(
+								$elm$core$Basics$composeR,
+								function ($) {
+									return $.item_type;
+								},
+								$author$project$ItemShop$item_type_to_pretty_string)));
+				default:
+					return buildCompare(
+						A2(
+							$elm$core$Basics$composeR,
+							function ($) {
+								return $.item;
+							},
+							function ($) {
+								return $.description;
+							}));
+			}
+		}();
 		var _v0 = model;
 		var historical_shop_trends = _v0.historical_shop_trends;
 		var item_db = _v0.item_db;
@@ -26902,9 +29064,9 @@ var $author$project$ItemShop$render_inventory_grid = F7(
 												function () {
 													var _v13 = model.colorTheme;
 													if (_v13.$ === 'BrightTheme') {
-														return $author$project$ItemShop$color_grey;
+														return $author$project$Interface$color_grey;
 													} else {
-														return $author$project$ItemShop$convertColor($avh4$elm_color$Color$white);
+														return $author$project$Interface$convertColor($avh4$elm_color$Color$white);
 													}
 												}()),
 												$mdgriffith$elm_ui$Element$Font$size(12)
@@ -26919,7 +29081,7 @@ var $author$project$ItemShop$render_inventory_grid = F7(
 										[
 											$mdgriffith$elm_ui$Element$text('Current Price: '),
 											A2(
-											$author$project$ItemShop$render_gp,
+											$author$project$Interface$render_gp,
 											model.colorTheme,
 											current_price(item))
 										]),
@@ -26928,7 +29090,7 @@ var $author$project$ItemShop$render_inventory_grid = F7(
 										current_price(item)))) ? _List_fromArray(
 										[
 											$mdgriffith$elm_ui$Element$text(' (originally '),
-											A2($author$project$ItemShop$render_gp, model.colorTheme, item.raw_gold_cost),
+											A2($author$project$Interface$render_gp, model.colorTheme, item.raw_gold_cost),
 											$mdgriffith$elm_ui$Element$text(')')
 										]) : _List_Nil)),
 								show_charts_in_hovered_item ? A2(
@@ -26987,7 +29149,7 @@ var $author$project$ItemShop$render_inventory_grid = F7(
 			_List_fromArray(
 				[
 					{
-					header: small_header('Name:'),
+					header: A2(small_header, 'Name', $author$project$ItemShop$SortByName),
 					view: function (_v5) {
 						var item = _v5.item;
 						var quantity = _v5.quantity;
@@ -27008,12 +29170,12 @@ var $author$project$ItemShop$render_inventory_grid = F7(
 										$mdgriffith$elm_ui$Element$centerY
 									])),
 							$mdgriffith$elm_ui$Element$text(
-								A2($author$project$ItemShop$clipText, item.name, 25)));
+								A2($author$project$Interface$clipText, item.name, 25)));
 					},
 					width: $mdgriffith$elm_ui$Element$fillPortion(2)
 				},
 					{
-					header: small_header('Price'),
+					header: A2(small_header, 'Price', $author$project$ItemShop$SortByPrice),
 					view: function (_v6) {
 						var item = _v6.item;
 						var quantity = _v6.quantity;
@@ -27036,7 +29198,7 @@ var $author$project$ItemShop$render_inventory_grid = F7(
 										_List_fromArray(
 											[
 												A2(
-												$author$project$ItemShop$render_gp,
+												$author$project$Interface$render_gp,
 												model.colorTheme,
 												A2($author$project$ItemShop$get_single_adjusted_item_cost, shop_trends, item))
 											]),
@@ -27045,11 +29207,11 @@ var $author$project$ItemShop$render_inventory_grid = F7(
 												function () {
 												if ((!_Utils_eq(context, $author$project$ItemShop$ShopItems)) && ((!(!priceDiff)) && (!(!$author$project$ItemShop$getQuantity(quantity))))) {
 													var diffColor = A4(
-														$author$project$ItemShop$colorFromInt,
+														$author$project$Interface$colorFromInt,
 														priceDiff,
-														$author$project$ItemShop$convertColor($avh4$elm_color$Color$green),
-														$author$project$ItemShop$color_black,
-														$author$project$ItemShop$color_danger);
+														$author$project$Interface$convertColor($avh4$elm_color$Color$green),
+														$author$project$Interface$color_black,
+														$author$project$Interface$color_danger);
 													return A2(
 														$mdgriffith$elm_ui$Element$el,
 														_List_fromArray(
@@ -27069,7 +29231,7 @@ var $author$project$ItemShop$render_inventory_grid = F7(
 					width: $mdgriffith$elm_ui$Element$fillPortion(1)
 				},
 					{
-					header: small_header('Avg Px'),
+					header: A2(small_header, 'Avg Px', $author$project$ItemShop$SortByAvgPrice),
 					view: function (_v7) {
 						var quantity = _v7.quantity;
 						var avg_price = _v7.avg_price;
@@ -27086,7 +29248,7 @@ var $author$project$ItemShop$render_inventory_grid = F7(
 									return $mdgriffith$elm_ui$Element$text('');
 								} else {
 									return (!(!$author$project$ItemShop$getQuantity(quantity))) ? A2(
-										$author$project$ItemShop$render_gp,
+										$author$project$Interface$render_gp,
 										model.colorTheme,
 										$author$project$ItemShop$getPrice(avg_price)) : $mdgriffith$elm_ui$Element$none;
 								}
@@ -27095,7 +29257,7 @@ var $author$project$ItemShop$render_inventory_grid = F7(
 					width: $mdgriffith$elm_ui$Element$fillPortion(1)
 				},
 					{
-					header: small_header('Qty.'),
+					header: A2(small_header, 'Qty.', $author$project$ItemShop$SortByQuantity),
 					view: function (_v9) {
 						var quantity = _v9.quantity;
 						return A2(
@@ -27122,7 +29284,7 @@ var $author$project$ItemShop$render_inventory_grid = F7(
 					width: $mdgriffith$elm_ui$Element$fillPortion(1)
 				},
 					{
-					header: small_header('Item Type'),
+					header: A2(small_header, 'Item Type', $author$project$ItemShop$SortByItemType),
 					view: function (_v11) {
 						var item = _v11.item;
 						return A2(
@@ -27134,7 +29296,7 @@ var $author$project$ItemShop$render_inventory_grid = F7(
 					width: $mdgriffith$elm_ui$Element$fillPortion(2)
 				},
 					{
-					header: small_header('Item Desc.'),
+					header: A2(small_header, 'Item Desc.', $author$project$ItemShop$SortByItemDesc),
 					view: function (_v12) {
 						var item = _v12.item;
 						return A2(
@@ -27142,12 +29304,12 @@ var $author$project$ItemShop$render_inventory_grid = F7(
 							_List_fromArray(
 								[$mdgriffith$elm_ui$Element$centerY]),
 							$mdgriffith$elm_ui$Element$text(
-								A2($author$project$ItemShop$clipText, item.description, 24)));
+								A2($author$project$Interface$clipText, item.description, 24)));
 					},
 					width: $mdgriffith$elm_ui$Element$fillPortion(3)
 				},
 					{
-					header: small_header('Controls'),
+					header: A2(small_header, 'Controls', $author$project$ItemShop$SortByName),
 					view: controls_column,
 					width: $mdgriffith$elm_ui$Element$fillPortion(1)
 				}
@@ -27167,8 +29329,8 @@ var $author$project$ItemShop$render_inventory_grid = F7(
 			}
 		}(
 			A2(
-				$elm$core$List$sortBy,
-				$author$project$ItemShop$sort_func,
+				$elm$core$List$sortWith,
+				sortFunc,
 				hide_zero_qty_inv_rows ? A2(
 					$elm$core$List$filter,
 					function (_v3) {
@@ -27187,12 +29349,12 @@ var $author$project$ItemShop$render_inventory_grid = F7(
 				_List_fromArray(
 					[
 						A3(
-						$author$project$ItemShop$primary_button,
+						$author$project$Interface$primary_button,
 						_List_Nil,
 						$author$project$ItemShop$ToggleHideNonZeroRows(character.char_id),
 						hide_zero_qty_inv_rows ? 'Show Nonzero' : 'Hide Nonzero'),
 						A3(
-						$author$project$ItemShop$secondary_button,
+						$author$project$Interface$secondary_button,
 						_List_fromArray(
 							[
 								$mdgriffith$elm_ui$Element$htmlAttribute(
@@ -27272,7 +29434,7 @@ var $author$project$ItemShop$render_inventory_grid = F7(
 												_List_fromArray(
 													[
 														$mdgriffith$elm_ui$Element$text('Held: '),
-														A2($author$project$ItemShop$render_gp, model.colorTheme, held_gold)
+														A2($author$project$Interface$render_gp, model.colorTheme, held_gold)
 													])),
 												(is_player_context && (character.held_blood > 0)) ? A2(
 												$mdgriffith$elm_ui$Element$row,
@@ -27282,7 +29444,7 @@ var $author$project$ItemShop$render_inventory_grid = F7(
 													]),
 												_List_fromArray(
 													[
-														$author$project$ItemShop$renderBlood(character.held_blood)
+														A2($author$project$Interface$renderBlood, model.colorTheme, character.held_blood)
 													])) : $mdgriffith$elm_ui$Element$none
 											]))
 									])) : $mdgriffith$elm_ui$Element$none
@@ -27319,7 +29481,7 @@ var $author$project$ItemShop$shop_buy_button = F3(
 		var quantity = _v0.quantity;
 		var avg_price = _v0.avg_price;
 		var can_afford = _Utils_cmp(gold_in_pocket, gold_cost) > -1;
-		var button_type = can_afford ? $author$project$ItemShop$primary_button : $author$project$ItemShop$secondary_button;
+		var button_type = can_afford ? $author$project$Interface$primary_button : $author$project$Interface$secondary_button;
 		return A3(
 			button_type,
 			_List_fromArray(
@@ -27456,7 +29618,7 @@ var $author$project$ItemShop$primary_button_tooltip = F6(
 					$author$project$ItemShop$defaultFontColor(colorTheme),
 					$author$project$ItemShop$defaultBackgroundColor(colorTheme),
 					$mdgriffith$elm_ui$Element$Border$color(
-					$author$project$ItemShop$convertColor($avh4$elm_color$Color$charcoal)),
+					$author$project$Interface$convertColor($avh4$elm_color$Color$charcoal)),
 					$mdgriffith$elm_ui$Element$Border$rounded(3),
 					$mdgriffith$elm_ui$Element$Border$width(2),
 					$mdgriffith$elm_ui$Element$padding(10),
@@ -27480,7 +29642,7 @@ var $author$project$ItemShop$primary_button_tooltip = F6(
 				$mdgriffith$elm_ui$Element$above(tooltip_el)
 			]) : _List_Nil;
 		return A3(
-			$author$project$ItemShop$primary_button,
+			$author$project$Interface$primary_button,
 			_Utils_ap(
 				_List_fromArray(
 					[
@@ -27498,7 +29660,7 @@ var $author$project$ItemShop$build_special_action_button = F7(
 		var tooltip_config = function (t) {
 			if (!_Utils_eq(price, $author$project$ItemShop$Free)) {
 				var renderedCost = A2(
-					$author$project$ItemShop$render_gp,
+					$author$project$Interface$render_gp,
 					colorTheme,
 					$author$project$ItemShop$getPrice(price));
 				return A2(
@@ -27516,7 +29678,7 @@ var $author$project$ItemShop$build_special_action_button = F7(
 									[
 										$mdgriffith$elm_ui$Element$centerX,
 										$mdgriffith$elm_ui$Element$padding(1),
-										$mdgriffith$elm_ui$Element$Font$color($author$project$ItemShop$color_grey)
+										$mdgriffith$elm_ui$Element$Font$color($author$project$Interface$color_grey)
 									]),
 								$mdgriffith$elm_ui$Element$text('___')),
 								A2(
@@ -27549,8 +29711,8 @@ var $author$project$ItemShop$build_special_action_button = F7(
 		var button_attrs = is_disabled ? _Utils_ap(
 			_List_fromArray(
 				[
-					$mdgriffith$elm_ui$Element$Background$color($author$project$ItemShop$color_grey),
-					$mdgriffith$elm_ui$Element$Border$color($author$project$ItemShop$color_grey)
+					$mdgriffith$elm_ui$Element$Background$color($author$project$Interface$color_grey),
+					$mdgriffith$elm_ui$Element$Border$color($author$project$Interface$color_grey)
 				]),
 			A2($author$project$ItemShop$hoveredTooltipMatchesId, hovered_tooltip, tooltip_config.tooltip_id) ? _List_fromArray(
 				[
@@ -27561,8 +29723,8 @@ var $author$project$ItemShop$build_special_action_button = F7(
 					$mdgriffith$elm_ui$Element$mouseOver(
 					_List_fromArray(
 						[
-							$mdgriffith$elm_ui$Element$Background$color($author$project$ItemShop$color_light_grey),
-							$mdgriffith$elm_ui$Element$Border$color($author$project$ItemShop$color_light_grey)
+							$mdgriffith$elm_ui$Element$Background$color($author$project$Interface$color_light_grey),
+							$mdgriffith$elm_ui$Element$Border$color($author$project$Interface$color_light_grey)
 						]))
 				]) : _List_Nil) : _List_Nil;
 		return A6($author$project$ItemShop$primary_button_tooltip, colorTheme, button_attrs, msg, title, tooltip_config, hovered_tooltip);
@@ -27584,7 +29746,7 @@ var $author$project$ItemShop$special_actions_display = F5(
 			hovered_tooltip,
 			player,
 			$author$project$ItemShop$TogglePauseAi,
-			ai_updates_paused ? 'Resume Time' : 'Pause Time',
+			ai_updates_paused ? 'Resume' : 'Pause',
 			'You tap your medallion, and time comes to a halt.\n\nYou take a breath, and feel a weight off your shoulders. You\'ll take your time with things.',
 			$author$project$ItemShop$Free);
 		var button_search = A7(
@@ -27636,6 +29798,11 @@ var $author$project$ItemShop$special_actions_display = F5(
 			'Spread Good Rumour',
 			'Sets a random Item Type to high value.\n\nSpreads a rumour that a given Item Type was the talk of the next town over.',
 			$author$project$ItemShop$setPrice(45));
+		var button_battle = A3(
+			$author$project$Interface$primary_button,
+			_List_Nil,
+			$author$project$ItemShop$ChangeTabType($author$project$ItemShop$BattleTabType),
+			'To Battle!');
 		return A2(
 			$mdgriffith$elm_ui$Element$column,
 			_List_fromArray(
@@ -27655,14 +29822,14 @@ var $author$project$ItemShop$special_actions_display = F5(
 						]),
 					$mdgriffith$elm_ui$Element$text('Special Actions')),
 					A2(
-					$mdgriffith$elm_ui$Element$row,
+					$mdgriffith$elm_ui$Element$wrappedRow,
 					_List_fromArray(
 						[
 							$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
-							A2($mdgriffith$elm_ui$Element$spacingXY, 10, 0)
+							A2($mdgriffith$elm_ui$Element$spacingXY, 10, 10)
 						]),
 					_List_fromArray(
-						[button_toggle_ai_pause, button_increase_income, button_search, button_unlock_item, button_high_desire, button_low_desire]))
+						[button_toggle_ai_pause, button_battle, button_increase_income, button_search, button_unlock_item, button_high_desire, button_low_desire]))
 				]));
 	});
 var $author$project$ItemShop$EndTrendsHover = {$: 'EndTrendsHover'};
@@ -27721,7 +29888,7 @@ var $author$project$ItemShop$render_single_trade_log_entry = F4(
 		var item_id = _v0.item_id;
 		var quantity = _v0.quantity;
 		var gold_cost = _v0.gold_cost;
-		var rendered_cost = A2($author$project$ItemShop$render_gp, colorTheme, gold_cost);
+		var rendered_cost = A2($author$project$Interface$render_gp, colorTheme, gold_cost);
 		var maybe_item = A2($author$project$ItemShop$lookup_item_id, item_db, item_id);
 		var item_name = function () {
 			if (maybe_item.$ === 'Just') {
@@ -27854,7 +30021,7 @@ var $author$project$ItemShop$trends_display = F6(
 						$mdgriffith$elm_ui$Element$text(pretty_type),
 						$mdgriffith$elm_ui$Element$text(': '),
 						A2(
-						$author$project$ItemShop$monospace,
+						$author$project$Interface$monospace,
 						_List_Nil,
 						$mdgriffith$elm_ui$Element$text(
 							function (pct) {
@@ -27930,9 +30097,9 @@ var $author$project$ItemShop$trends_display = F6(
 									$mdgriffith$elm_ui$Element$Font$color(
 									function () {
 										if (colorTheme.$ === 'BrightTheme') {
-											return $author$project$ItemShop$color_grey;
+											return $author$project$Interface$color_grey;
 										} else {
-											return $author$project$ItemShop$convertColor($avh4$elm_color$Color$lightGrey);
+											return $author$project$Interface$convertColor($avh4$elm_color$Color$lightGrey);
 										}
 									}()),
 									$mdgriffith$elm_ui$Element$Font$size(12),
@@ -28002,9 +30169,9 @@ var $author$project$ItemShop$view_shop_tab_type = function (model) {
 			function () {
 				var _v4 = model.colorTheme;
 				if (_v4.$ === 'BrightTheme') {
-					return $author$project$ItemShop$color_light_grey;
+					return $author$project$Interface$color_light_grey;
 				} else {
-					return $author$project$ItemShop$color_grey;
+					return $author$project$Interface$color_grey;
 				}
 			}()),
 			$mdgriffith$elm_ui$Element$Border$width(10),
@@ -28069,7 +30236,8 @@ var $author$project$ItemShop$view_shop_tab_type = function (model) {
 						$mdgriffith$elm_ui$Element$row,
 						_List_fromArray(
 							[
-								$mdgriffith$elm_ui$Element$spacing(5)
+								$mdgriffith$elm_ui$Element$spacing(5),
+								$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill)
 							]),
 						_List_fromArray(
 							[
@@ -28078,20 +30246,21 @@ var $author$project$ItemShop$view_shop_tab_type = function (model) {
 								_List_Nil,
 								{
 									label: A3(
-										$author$project$ItemShop$secondary_button,
+										$author$project$Interface$secondary_button,
 										_List_Nil,
 										$author$project$ItemShop$ChangeTabType($author$project$ItemShop$ItemsUnlockedTabType),
 										'View Items'),
 									url: '#items'
 								}),
 								A3(
-								$author$project$ItemShop$outline_button,
+								$author$project$Interface$outline_button,
 								_List_Nil,
 								$author$project$ItemShop$ToggleShowMainChart,
 								model.show_main_chart ? 'Hide Charts' : 'Charts'),
 								A3(
-								$author$project$ItemShop$outline_button,
-								_List_Nil,
+								$author$project$Interface$outline_button,
+								_List_fromArray(
+									[$mdgriffith$elm_ui$Element$alignRight]),
 								$author$project$ItemShop$ToggleColorTheme,
 								function () {
 									var _v0 = model.colorTheme;
@@ -28262,10 +30431,30 @@ var $author$project$ItemShop$view = function (model) {
 			]),
 		function () {
 			var _v0 = model.tab_type;
-			if (_v0.$ === 'ShopTabType') {
-				return A2($mdgriffith$elm_ui$Element$Lazy$lazy, $author$project$ItemShop$view_shop_tab_type, model);
-			} else {
-				return A3($mdgriffith$elm_ui$Element$Lazy$lazy2, $author$project$ItemShop$view_items_unlocked_tab_type, model.colorTheme, model.item_db);
+			switch (_v0.$) {
+				case 'ShopTabType':
+					return A2($mdgriffith$elm_ui$Element$Lazy$lazy, $author$project$ItemShop$view_shop_tab_type, model);
+				case 'ItemsUnlockedTabType':
+					return A3($mdgriffith$elm_ui$Element$Lazy$lazy2, $author$project$ItemShop$view_items_unlocked_tab_type, model.colorTheme, model.item_db);
+				default:
+					return A2(
+						$mdgriffith$elm_ui$Element$map,
+						$author$project$ItemShop$GotBattleMsg,
+						A2(
+							$elm$core$Maybe$withDefault,
+							A2(
+								$mdgriffith$elm_ui$Element$el,
+								_List_fromArray(
+									[
+										$mdgriffith$elm_ui$Element$Font$color($author$project$Interface$color_danger)
+									]),
+								$mdgriffith$elm_ui$Element$text('ERR: NO PLAYER')),
+							A2(
+								$elm$core$Maybe$map,
+								function (player) {
+									return $author$project$Battle$view(model.battleModel);
+								},
+								$author$project$ItemShop$getPlayer(model))));
 			}
 		}());
 };
@@ -28310,10 +30499,51 @@ var $author$project$Main$homeView = function (model) {
 var $author$project$Main$tab_type_to_str = function (tab_type) {
 	return 'Item Shop';
 };
+var $author$project$Sfxr$PlaySound = {$: 'PlaySound'};
+var $author$project$Sfxr$view = function (model) {
+	return A3(
+		$mdgriffith$elm_ui$Element$layoutWith,
+		{
+			options: _List_fromArray(
+				[
+					$mdgriffith$elm_ui$Element$noStaticStyleSheet,
+					$mdgriffith$elm_ui$Element$focusStyle(
+					{backgroundColor: $elm$core$Maybe$Nothing, borderColor: $elm$core$Maybe$Nothing, shadow: $elm$core$Maybe$Nothing})
+				])
+		},
+		_List_fromArray(
+			[
+				$mdgriffith$elm_ui$Element$padding(20)
+			]),
+		A2(
+			$mdgriffith$elm_ui$Element$column,
+			_List_Nil,
+			_List_fromArray(
+				[
+					$mdgriffith$elm_ui$Element$text('TEMP SFXR'),
+					A3($author$project$Interface$primary_button, _List_Nil, $author$project$Sfxr$PlaySound, 'Play')
+				])));
+};
+var $author$project$Main$viewSfxr = function (model) {
+	return true ? A2(
+		$elm$html$Html$div,
+		_List_fromArray(
+			[
+				A2($elm$html$Html$Attributes$style, 'height', '350px')
+			]),
+		_List_fromArray(
+			[
+				A2(
+				$elm$html$Html$map,
+				$author$project$Main$GotSfxrMsg,
+				$author$project$Sfxr$view(model.sfxrModel))
+			])) : A2($elm$html$Html$div, _List_Nil, _List_Nil);
+};
 var $author$project$Main$view = function (model) {
 	return {
 		body: _List_fromArray(
 			[
+				$author$project$Main$viewSfxr(model),
 				function () {
 				var _v0 = model.page_info.page;
 				switch (_v0.$) {
