@@ -12603,17 +12603,23 @@ var $author$project$Sfxr$updateRetriggerConfigType = F2(
 						};
 					}())));
 	});
+var $author$project$Sfxr$withShape = F2(
+	function (soundConfig, newShape) {
+		return _Utils_update(
+			soundConfig,
+			{shape: newShape});
+	});
 var $author$project$Sfxr$updateShapeConfigType = F2(
-	function (model, updateType) {
-		return A2(
-			_Debug_todo(
-				'Sfxr',
-				{
-					start: {line: 609, column: 5},
-					end: {line: 609, column: 15}
-				}),
-			'SHAPE NEEDS IMPLEMENTING',
-			_Utils_Tuple2(model, $elm$core$Platform$Cmd$none));
+	function (model, _v0) {
+		var soundConfig = model.soundConfig;
+		var shape = _v0.a;
+		return function (m) {
+			return _Utils_Tuple2(m, $elm$core$Platform$Cmd$none);
+		}(
+			A2(
+				$author$project$Sfxr$setSoundConfig,
+				model,
+				A2($author$project$Sfxr$withShape, soundConfig, shape)));
 	});
 var $author$project$Sfxr$withVibrato = F2(
 	function (soundConfig, updater) {
@@ -18450,6 +18456,8 @@ var $mdgriffith$elm_ui$Element$layoutWith = F3(
 				_Utils_ap($mdgriffith$elm_ui$Internal$Model$rootStyle, attrs)),
 			child);
 	});
+var $elm$virtual_dom$VirtualDom$lazy = _VirtualDom_lazy;
+var $elm$html$Html$Lazy$lazy = $elm$virtual_dom$VirtualDom$lazy;
 var $elm$virtual_dom$VirtualDom$map = _VirtualDom_map;
 var $elm$html$Html$map = $elm$virtual_dom$VirtualDom$map;
 var $mdgriffith$elm_ui$Internal$Model$Empty = {$: 'Empty'};
@@ -18771,8 +18779,8 @@ var $author$project$Interface$hex_to_color = function (hex_str) {
 			_Debug_todo(
 				'Interface',
 				{
-					start: {line: 95, column: 13},
-					end: {line: 95, column: 23}
+					start: {line: 99, column: 13},
+					end: {line: 99, column: 23}
 				}),
 			'NOOO',
 			A3($mdgriffith$elm_ui$Element$rgb255, 255, 0, 0));
@@ -20422,11 +20430,11 @@ var $mdgriffith$elm_ui$Element$alignBottom = $mdgriffith$elm_ui$Internal$Model$A
 var $mdgriffith$elm_ui$Element$Font$alignRight = A2($mdgriffith$elm_ui$Internal$Model$Class, $mdgriffith$elm_ui$Internal$Flag$fontAlignment, $mdgriffith$elm_ui$Internal$Style$classes.textRight);
 var $author$project$Interface$color_ultra_light_grey = A3($mdgriffith$elm_ui$Element$rgb, 0.95, 0.95, 0.95);
 var $avh4$elm_color$Color$lightCharcoal = A4($avh4$elm_color$Color$RgbaSpace, 136 / 255, 138 / 255, 133 / 255, 1.0);
-var $author$project$ItemShop$noUserSelect = $mdgriffith$elm_ui$Element$htmlAttribute(
+var $author$project$Interface$noUserSelect = $mdgriffith$elm_ui$Element$htmlAttribute(
 	A2($elm$html$Html$Attributes$style, 'userSelect', 'none'));
-var $author$project$ItemShop$pointerEventsAll = $mdgriffith$elm_ui$Element$htmlAttribute(
+var $author$project$Interface$pointerEventsAll = $mdgriffith$elm_ui$Element$htmlAttribute(
 	A2($elm$html$Html$Attributes$style, 'pointer-events', 'all'));
-var $author$project$ItemShop$pointerEventsNone = $mdgriffith$elm_ui$Element$htmlAttribute(
+var $author$project$Interface$pointerEventsNone = $mdgriffith$elm_ui$Element$htmlAttribute(
 	A2($elm$html$Html$Attributes$style, 'pointer-events', 'none'));
 var $author$project$Interface$font_blood = $mdgriffith$elm_ui$Element$Font$color($author$project$Interface$color_danger);
 var $author$project$Interface$renderBlood_sized = F3(
@@ -20485,7 +20493,7 @@ var $author$project$Interface$render_gp = F2(
 		return A3($author$project$Interface$render_gp_sized, colorTheme, count, 12);
 	});
 var $author$project$ItemShop$ToggleShowDebugInventories = {$: 'ToggleShowDebugInventories'};
-var $author$project$ItemShop$defineHtmlId = function (name) {
+var $author$project$Interface$defineHtmlId = function (name) {
 	return $mdgriffith$elm_ui$Element$htmlAttribute(
 		$elm$html$Html$Attributes$id(name));
 };
@@ -20496,7 +20504,7 @@ var $author$project$ItemShop$showHideDebugInventoriesButton = F2(
 			$author$project$Interface$danger_button,
 			A2(
 				$elm$core$List$cons,
-				$author$project$ItemShop$defineHtmlId('show_debug_inventories'),
+				$author$project$Interface$defineHtmlId('show_debug_inventories'),
 				attrs),
 			$author$project$ItemShop$ToggleShowDebugInventories,
 			buttonText);
@@ -20515,7 +20523,7 @@ var $author$project$ItemShop$viewOverlay = function (model) {
 							$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
 							$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$fill),
 							$mdgriffith$elm_ui$Element$Font$size(12),
-							$author$project$ItemShop$pointerEventsNone,
+							$author$project$Interface$pointerEventsNone,
 							$mdgriffith$elm_ui$Element$padding(1),
 							$mdgriffith$elm_ui$Element$inFront(
 							model.shouldDisplayShowDebugInventoriesOverlay ? A2(
@@ -20552,13 +20560,13 @@ var $author$project$ItemShop$viewOverlay = function (model) {
 								}()),
 								$mdgriffith$elm_ui$Element$Border$width(1),
 								$mdgriffith$elm_ui$Element$Border$rounded(3),
-								$author$project$ItemShop$pointerEventsAll,
+								$author$project$Interface$pointerEventsAll,
 								$mdgriffith$elm_ui$Element$padding(10)
 							]),
 						A2(
 							$mdgriffith$elm_ui$Element$row,
 							_List_fromArray(
-								[$author$project$ItemShop$noUserSelect]),
+								[$author$project$Interface$noUserSelect]),
 							_List_fromArray(
 								[
 									$mdgriffith$elm_ui$Element$text('Held: '),
@@ -28782,7 +28790,7 @@ var $author$project$Interface$colorFromInt = F4(
 		return (_int > 0) ? positiveColor : ((!_int) ? neutralColor : negativeColor);
 	});
 var $author$project$Interface$color_very_light_grey = A3($mdgriffith$elm_ui$Element$rgb, 0.75, 0.75, 0.75);
-var $author$project$ItemShop$cssRule = F2(
+var $author$project$Interface$cssRule = F2(
 	function (name, value) {
 		return $mdgriffith$elm_ui$Element$htmlAttribute(
 			A2($elm$html$Html$Attributes$style, name, value));
@@ -29287,7 +29295,7 @@ var $author$project$ItemShop$render_inventory_grid = F7(
 							$mdgriffith$elm_ui$Element$Font$size(10),
 							$mdgriffith$elm_ui$Element$Events$onClick(
 							$author$project$ItemShop$ChangeInventorySortType(sortType)),
-							$author$project$ItemShop$noUserSelect,
+							$author$project$Interface$noUserSelect,
 							$mdgriffith$elm_ui$Element$Border$rounded(2),
 							$mdgriffith$elm_ui$Element$mouseOver(
 							_List_fromArray(
@@ -29609,11 +29617,11 @@ var $author$project$ItemShop$render_inventory_grid = F7(
 								$mdgriffith$elm_ui$Element$el,
 								(!$author$project$ItemShop$getQuantity(item.quantity)) ? _List_fromArray(
 									[
-										A2($author$project$ItemShop$cssRule, 'opacity', '0.5'),
+										A2($author$project$Interface$cssRule, 'opacity', '0.5'),
 										$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$fill)
 									]) : _List_fromArray(
 									[
-										A2($author$project$ItemShop$cssRule, 'opacity', '1.0'),
+										A2($author$project$Interface$cssRule, 'opacity', '1.0'),
 										$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$fill)
 									]),
 								A2(
@@ -30933,7 +30941,7 @@ var $author$project$ItemShop$view = function (model) {
 							A2(
 								$elm$core$Maybe$map,
 								function (player) {
-									return $author$project$Battle$view(model.battleModel);
+									return A2($mdgriffith$elm_ui$Element$Lazy$lazy, $author$project$Battle$view, model.battleModel);
 								},
 								$author$project$ItemShop$getPlayer(model))));
 			}
@@ -30945,7 +30953,7 @@ var $author$project$Main$homeView = function (model) {
 		return A2(
 			$elm$html$Html$map,
 			$author$project$Main$GotItemShopMsg,
-			$author$project$ItemShop$view(model.item_shop_model));
+			A2($elm$html$Html$Lazy$lazy, $author$project$ItemShop$view, model.item_shop_model));
 	}();
 	var elm_ui_hack_layout = A2(
 		$elm$html$Html$div,
@@ -30980,1067 +30988,10 @@ var $author$project$Main$homeView = function (model) {
 var $author$project$Main$tab_type_to_str = function (tab_type) {
 	return 'Item Shop';
 };
-var $author$project$Sfxr$PlaySound = {$: 'PlaySound'};
-var $author$project$Sfxr$SetHitHurt = {$: 'SetHitHurt'};
-var $author$project$Sfxr$ArpMod = function (a) {
-	return {$: 'ArpMod', a: a};
-};
-var $author$project$Sfxr$ArpSpeed = function (a) {
-	return {$: 'ArpSpeed', a: a};
-};
-var $author$project$Sfxr$ArpeggiationConfigType = function (a) {
-	return {$: 'ArpeggiationConfigType', a: a};
-};
-var $author$project$Sfxr$OnSliderChanged = function (a) {
-	return {$: 'OnSliderChanged', a: a};
-};
-var $mdgriffith$elm_ui$Element$Input$Thumb = function (a) {
-	return {$: 'Thumb', a: a};
-};
-var $mdgriffith$elm_ui$Element$Input$defaultThumb = $mdgriffith$elm_ui$Element$Input$Thumb(
-	_List_fromArray(
-		[
-			$mdgriffith$elm_ui$Element$width(
-			$mdgriffith$elm_ui$Element$px(16)),
-			$mdgriffith$elm_ui$Element$height(
-			$mdgriffith$elm_ui$Element$px(16)),
-			$mdgriffith$elm_ui$Element$Border$rounded(8),
-			$mdgriffith$elm_ui$Element$Border$width(1),
-			$mdgriffith$elm_ui$Element$Border$color(
-			A3($mdgriffith$elm_ui$Element$rgb, 0.5, 0.5, 0.5)),
-			$mdgriffith$elm_ui$Element$Background$color(
-			A3($mdgriffith$elm_ui$Element$rgb, 1, 1, 1))
-		]));
-var $mdgriffith$elm_ui$Element$Input$Label = F3(
-	function (a, b, c) {
-		return {$: 'Label', a: a, b: b, c: c};
-	});
-var $mdgriffith$elm_ui$Element$Input$OnRight = {$: 'OnRight'};
-var $mdgriffith$elm_ui$Element$Input$labelRight = $mdgriffith$elm_ui$Element$Input$Label($mdgriffith$elm_ui$Element$Input$OnRight);
-var $mdgriffith$elm_ui$Internal$Flag$active = $mdgriffith$elm_ui$Internal$Flag$flag(32);
-var $mdgriffith$elm_ui$Internal$Model$LivePolite = {$: 'LivePolite'};
-var $mdgriffith$elm_ui$Element$Region$announce = $mdgriffith$elm_ui$Internal$Model$Describe($mdgriffith$elm_ui$Internal$Model$LivePolite);
-var $mdgriffith$elm_ui$Element$Input$applyLabel = F3(
-	function (attrs, label, input) {
-		if (label.$ === 'HiddenLabel') {
-			var labelText = label.a;
-			return A4(
-				$mdgriffith$elm_ui$Internal$Model$element,
-				$mdgriffith$elm_ui$Internal$Model$asColumn,
-				$mdgriffith$elm_ui$Internal$Model$NodeName('label'),
-				attrs,
-				$mdgriffith$elm_ui$Internal$Model$Unkeyed(
-					_List_fromArray(
-						[input])));
-		} else {
-			var position = label.a;
-			var labelAttrs = label.b;
-			var labelChild = label.c;
-			var labelElement = A4(
-				$mdgriffith$elm_ui$Internal$Model$element,
-				$mdgriffith$elm_ui$Internal$Model$asEl,
-				$mdgriffith$elm_ui$Internal$Model$div,
-				labelAttrs,
-				$mdgriffith$elm_ui$Internal$Model$Unkeyed(
-					_List_fromArray(
-						[labelChild])));
-			switch (position.$) {
-				case 'Above':
-					return A4(
-						$mdgriffith$elm_ui$Internal$Model$element,
-						$mdgriffith$elm_ui$Internal$Model$asColumn,
-						$mdgriffith$elm_ui$Internal$Model$NodeName('label'),
-						A2(
-							$elm$core$List$cons,
-							$mdgriffith$elm_ui$Internal$Model$htmlClass($mdgriffith$elm_ui$Internal$Style$classes.inputLabel),
-							attrs),
-						$mdgriffith$elm_ui$Internal$Model$Unkeyed(
-							_List_fromArray(
-								[labelElement, input])));
-				case 'Below':
-					return A4(
-						$mdgriffith$elm_ui$Internal$Model$element,
-						$mdgriffith$elm_ui$Internal$Model$asColumn,
-						$mdgriffith$elm_ui$Internal$Model$NodeName('label'),
-						A2(
-							$elm$core$List$cons,
-							$mdgriffith$elm_ui$Internal$Model$htmlClass($mdgriffith$elm_ui$Internal$Style$classes.inputLabel),
-							attrs),
-						$mdgriffith$elm_ui$Internal$Model$Unkeyed(
-							_List_fromArray(
-								[input, labelElement])));
-				case 'OnRight':
-					return A4(
-						$mdgriffith$elm_ui$Internal$Model$element,
-						$mdgriffith$elm_ui$Internal$Model$asRow,
-						$mdgriffith$elm_ui$Internal$Model$NodeName('label'),
-						A2(
-							$elm$core$List$cons,
-							$mdgriffith$elm_ui$Internal$Model$htmlClass($mdgriffith$elm_ui$Internal$Style$classes.inputLabel),
-							attrs),
-						$mdgriffith$elm_ui$Internal$Model$Unkeyed(
-							_List_fromArray(
-								[input, labelElement])));
-				default:
-					return A4(
-						$mdgriffith$elm_ui$Internal$Model$element,
-						$mdgriffith$elm_ui$Internal$Model$asRow,
-						$mdgriffith$elm_ui$Internal$Model$NodeName('label'),
-						A2(
-							$elm$core$List$cons,
-							$mdgriffith$elm_ui$Internal$Model$htmlClass($mdgriffith$elm_ui$Internal$Style$classes.inputLabel),
-							attrs),
-						$mdgriffith$elm_ui$Internal$Model$Unkeyed(
-							_List_fromArray(
-								[labelElement, input])));
-			}
-		}
-	});
-var $mdgriffith$elm_ui$Internal$Flag$focus = $mdgriffith$elm_ui$Internal$Flag$flag(31);
-var $mdgriffith$elm_ui$Internal$Model$getHeight = function (attrs) {
-	return A3(
-		$elm$core$List$foldr,
-		F2(
-			function (attr, acc) {
-				if (acc.$ === 'Just') {
-					var x = acc.a;
-					return $elm$core$Maybe$Just(x);
-				} else {
-					if (attr.$ === 'Height') {
-						var len = attr.a;
-						return $elm$core$Maybe$Just(len);
-					} else {
-						return $elm$core$Maybe$Nothing;
-					}
-				}
-			}),
-		$elm$core$Maybe$Nothing,
-		attrs);
-};
-var $mdgriffith$elm_ui$Internal$Model$getWidth = function (attrs) {
-	return A3(
-		$elm$core$List$foldr,
-		F2(
-			function (attr, acc) {
-				if (acc.$ === 'Just') {
-					var x = acc.a;
-					return $elm$core$Maybe$Just(x);
-				} else {
-					if (attr.$ === 'Width') {
-						var len = attr.a;
-						return $elm$core$Maybe$Just(len);
-					} else {
-						return $elm$core$Maybe$Nothing;
-					}
-				}
-			}),
-		$elm$core$Maybe$Nothing,
-		attrs);
-};
-var $mdgriffith$elm_ui$Internal$Model$Label = function (a) {
-	return {$: 'Label', a: a};
-};
-var $mdgriffith$elm_ui$Element$Input$hiddenLabelAttribute = function (label) {
-	if (label.$ === 'HiddenLabel') {
-		var textLabel = label.a;
-		return $mdgriffith$elm_ui$Internal$Model$Describe(
-			$mdgriffith$elm_ui$Internal$Model$Label(textLabel));
-	} else {
-		return $mdgriffith$elm_ui$Internal$Model$NoAttribute;
-	}
-};
-var $mdgriffith$elm_ui$Element$Input$isHiddenLabel = function (label) {
-	if (label.$ === 'HiddenLabel') {
-		return true;
-	} else {
-		return false;
-	}
-};
-var $elm$html$Html$Attributes$max = $elm$html$Html$Attributes$stringProperty('max');
-var $elm$html$Html$Attributes$min = $elm$html$Html$Attributes$stringProperty('min');
-var $elm$html$Html$Events$alwaysStop = function (x) {
-	return _Utils_Tuple2(x, true);
-};
-var $elm$virtual_dom$VirtualDom$MayStopPropagation = function (a) {
-	return {$: 'MayStopPropagation', a: a};
-};
-var $elm$html$Html$Events$stopPropagationOn = F2(
-	function (event, decoder) {
-		return A2(
-			$elm$virtual_dom$VirtualDom$on,
-			event,
-			$elm$virtual_dom$VirtualDom$MayStopPropagation(decoder));
-	});
-var $elm$json$Json$Decode$at = F2(
-	function (fields, decoder) {
-		return A3($elm$core$List$foldr, $elm$json$Json$Decode$field, decoder, fields);
-	});
-var $elm$html$Html$Events$targetValue = A2(
-	$elm$json$Json$Decode$at,
-	_List_fromArray(
-		['target', 'value']),
-	$elm$json$Json$Decode$string);
-var $elm$html$Html$Events$onInput = function (tagger) {
-	return A2(
-		$elm$html$Html$Events$stopPropagationOn,
-		'input',
-		A2(
-			$elm$json$Json$Decode$map,
-			$elm$html$Html$Events$alwaysStop,
-			A2($elm$json$Json$Decode$map, tagger, $elm$html$Html$Events$targetValue)));
-};
-var $elm$html$Html$Attributes$step = function (n) {
-	return A2($elm$html$Html$Attributes$stringProperty, 'step', n);
-};
-var $elm$html$Html$Attributes$type_ = $elm$html$Html$Attributes$stringProperty('type');
-var $elm$html$Html$Attributes$value = $elm$html$Html$Attributes$stringProperty('value');
-var $mdgriffith$elm_ui$Internal$Model$mapAttr = F2(
-	function (fn, attr) {
-		switch (attr.$) {
-			case 'NoAttribute':
-				return $mdgriffith$elm_ui$Internal$Model$NoAttribute;
-			case 'Describe':
-				var description = attr.a;
-				return $mdgriffith$elm_ui$Internal$Model$Describe(description);
-			case 'AlignX':
-				var x = attr.a;
-				return $mdgriffith$elm_ui$Internal$Model$AlignX(x);
-			case 'AlignY':
-				var y = attr.a;
-				return $mdgriffith$elm_ui$Internal$Model$AlignY(y);
-			case 'Width':
-				var x = attr.a;
-				return $mdgriffith$elm_ui$Internal$Model$Width(x);
-			case 'Height':
-				var x = attr.a;
-				return $mdgriffith$elm_ui$Internal$Model$Height(x);
-			case 'Class':
-				var x = attr.a;
-				var y = attr.b;
-				return A2($mdgriffith$elm_ui$Internal$Model$Class, x, y);
-			case 'StyleClass':
-				var flag = attr.a;
-				var style = attr.b;
-				return A2($mdgriffith$elm_ui$Internal$Model$StyleClass, flag, style);
-			case 'Nearby':
-				var location = attr.a;
-				var elem = attr.b;
-				return A2(
-					$mdgriffith$elm_ui$Internal$Model$Nearby,
-					location,
-					A2($mdgriffith$elm_ui$Internal$Model$map, fn, elem));
-			case 'Attr':
-				var htmlAttr = attr.a;
-				return $mdgriffith$elm_ui$Internal$Model$Attr(
-					A2($elm$virtual_dom$VirtualDom$mapAttribute, fn, htmlAttr));
-			default:
-				var fl = attr.a;
-				var trans = attr.b;
-				return A2($mdgriffith$elm_ui$Internal$Model$TransformComponent, fl, trans);
-		}
-	});
-var $mdgriffith$elm_ui$Element$Input$viewHorizontalThumb = F3(
-	function (factor, thumbAttributes, trackHeight) {
-		return A2(
-			$mdgriffith$elm_ui$Element$row,
-			_List_fromArray(
-				[
-					$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
-					$mdgriffith$elm_ui$Element$height(
-					A2($elm$core$Maybe$withDefault, $mdgriffith$elm_ui$Element$fill, trackHeight)),
-					$mdgriffith$elm_ui$Element$centerY
-				]),
-			_List_fromArray(
-				[
-					A2(
-					$mdgriffith$elm_ui$Element$el,
-					_List_fromArray(
-						[
-							$mdgriffith$elm_ui$Element$width(
-							$mdgriffith$elm_ui$Element$fillPortion(
-								$elm$core$Basics$round(factor * 10000)))
-						]),
-					$mdgriffith$elm_ui$Element$none),
-					A2(
-					$mdgriffith$elm_ui$Element$el,
-					A2(
-						$elm$core$List$cons,
-						$mdgriffith$elm_ui$Element$centerY,
-						A2(
-							$elm$core$List$map,
-							$mdgriffith$elm_ui$Internal$Model$mapAttr($elm$core$Basics$never),
-							thumbAttributes)),
-					$mdgriffith$elm_ui$Element$none),
-					A2(
-					$mdgriffith$elm_ui$Element$el,
-					_List_fromArray(
-						[
-							$mdgriffith$elm_ui$Element$width(
-							$mdgriffith$elm_ui$Element$fillPortion(
-								$elm$core$Basics$round(
-									$elm$core$Basics$abs(1 - factor) * 10000)))
-						]),
-					$mdgriffith$elm_ui$Element$none)
-				]));
-	});
-var $mdgriffith$elm_ui$Element$Input$viewVerticalThumb = F3(
-	function (factor, thumbAttributes, trackWidth) {
-		return A2(
-			$mdgriffith$elm_ui$Element$column,
-			_List_fromArray(
-				[
-					$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$fill),
-					$mdgriffith$elm_ui$Element$width(
-					A2($elm$core$Maybe$withDefault, $mdgriffith$elm_ui$Element$fill, trackWidth)),
-					$mdgriffith$elm_ui$Element$centerX
-				]),
-			_List_fromArray(
-				[
-					A2(
-					$mdgriffith$elm_ui$Element$el,
-					_List_fromArray(
-						[
-							$mdgriffith$elm_ui$Element$height(
-							$mdgriffith$elm_ui$Element$fillPortion(
-								$elm$core$Basics$round(
-									$elm$core$Basics$abs(1 - factor) * 10000)))
-						]),
-					$mdgriffith$elm_ui$Element$none),
-					A2(
-					$mdgriffith$elm_ui$Element$el,
-					A2(
-						$elm$core$List$cons,
-						$mdgriffith$elm_ui$Element$centerX,
-						A2(
-							$elm$core$List$map,
-							$mdgriffith$elm_ui$Internal$Model$mapAttr($elm$core$Basics$never),
-							thumbAttributes)),
-					$mdgriffith$elm_ui$Element$none),
-					A2(
-					$mdgriffith$elm_ui$Element$el,
-					_List_fromArray(
-						[
-							$mdgriffith$elm_ui$Element$height(
-							$mdgriffith$elm_ui$Element$fillPortion(
-								$elm$core$Basics$round(factor * 10000)))
-						]),
-					$mdgriffith$elm_ui$Element$none)
-				]));
-	});
-var $mdgriffith$elm_ui$Element$Input$slider = F2(
-	function (attributes, input) {
-		var trackWidth = $mdgriffith$elm_ui$Internal$Model$getWidth(attributes);
-		var trackHeight = $mdgriffith$elm_ui$Internal$Model$getHeight(attributes);
-		var vertical = function () {
-			var _v8 = _Utils_Tuple2(trackWidth, trackHeight);
-			_v8$3:
-			while (true) {
-				if (_v8.a.$ === 'Nothing') {
-					if (_v8.b.$ === 'Nothing') {
-						var _v9 = _v8.a;
-						var _v10 = _v8.b;
-						return false;
-					} else {
-						break _v8$3;
-					}
-				} else {
-					if ((_v8.a.a.$ === 'Px') && (_v8.b.$ === 'Just')) {
-						switch (_v8.b.a.$) {
-							case 'Px':
-								var w = _v8.a.a.a;
-								var h = _v8.b.a.a;
-								return _Utils_cmp(h, w) > 0;
-							case 'Fill':
-								return true;
-							default:
-								break _v8$3;
-						}
-					} else {
-						break _v8$3;
-					}
-				}
-			}
-			return false;
-		}();
-		var factor = (input.value - input.min) / (input.max - input.min);
-		var _v0 = input.thumb;
-		var thumbAttributes = _v0.a;
-		var height = $mdgriffith$elm_ui$Internal$Model$getHeight(thumbAttributes);
-		var thumbHeightString = function () {
-			if (height.$ === 'Nothing') {
-				return '20px';
-			} else {
-				if (height.a.$ === 'Px') {
-					var px = height.a.a;
-					return $elm$core$String$fromInt(px) + 'px';
-				} else {
-					return '100%';
-				}
-			}
-		}();
-		var width = $mdgriffith$elm_ui$Internal$Model$getWidth(thumbAttributes);
-		var thumbWidthString = function () {
-			if (width.$ === 'Nothing') {
-				return '20px';
-			} else {
-				if (width.a.$ === 'Px') {
-					var px = width.a.a;
-					return $elm$core$String$fromInt(px) + 'px';
-				} else {
-					return '100%';
-				}
-			}
-		}();
-		var className = 'thmb-' + (thumbWidthString + ('-' + thumbHeightString));
-		var thumbShadowStyle = _List_fromArray(
-			[
-				A2($mdgriffith$elm_ui$Internal$Model$Property, 'width', thumbWidthString),
-				A2($mdgriffith$elm_ui$Internal$Model$Property, 'height', thumbHeightString)
-			]);
-		var _v1 = A2(
-			$mdgriffith$elm_ui$Internal$Model$getSpacing,
-			attributes,
-			_Utils_Tuple2(5, 5));
-		var spacingX = _v1.a;
-		var spacingY = _v1.b;
-		return A3(
-			$mdgriffith$elm_ui$Element$Input$applyLabel,
-			_List_fromArray(
-				[
-					$mdgriffith$elm_ui$Element$Input$isHiddenLabel(input.label) ? $mdgriffith$elm_ui$Internal$Model$NoAttribute : A2($mdgriffith$elm_ui$Element$spacingXY, spacingX, spacingY),
-					$mdgriffith$elm_ui$Element$Region$announce,
-					$mdgriffith$elm_ui$Element$width(
-					function () {
-						if (trackWidth.$ === 'Nothing') {
-							return $mdgriffith$elm_ui$Element$fill;
-						} else {
-							if (trackWidth.a.$ === 'Px') {
-								return $mdgriffith$elm_ui$Element$shrink;
-							} else {
-								var x = trackWidth.a;
-								return x;
-							}
-						}
-					}()),
-					$mdgriffith$elm_ui$Element$height(
-					function () {
-						if (trackHeight.$ === 'Nothing') {
-							return $mdgriffith$elm_ui$Element$shrink;
-						} else {
-							if (trackHeight.a.$ === 'Px') {
-								return $mdgriffith$elm_ui$Element$shrink;
-							} else {
-								var x = trackHeight.a;
-								return x;
-							}
-						}
-					}())
-				]),
-			input.label,
-			A2(
-				$mdgriffith$elm_ui$Element$row,
-				_List_fromArray(
-					[
-						$mdgriffith$elm_ui$Element$width(
-						A2($elm$core$Maybe$withDefault, $mdgriffith$elm_ui$Element$fill, trackWidth)),
-						$mdgriffith$elm_ui$Element$height(
-						A2(
-							$elm$core$Maybe$withDefault,
-							$mdgriffith$elm_ui$Element$px(20),
-							trackHeight))
-					]),
-				_List_fromArray(
-					[
-						A4(
-						$mdgriffith$elm_ui$Internal$Model$element,
-						$mdgriffith$elm_ui$Internal$Model$asEl,
-						$mdgriffith$elm_ui$Internal$Model$NodeName('input'),
-						_List_fromArray(
-							[
-								$mdgriffith$elm_ui$Element$Input$hiddenLabelAttribute(input.label),
-								A2(
-								$mdgriffith$elm_ui$Internal$Model$StyleClass,
-								$mdgriffith$elm_ui$Internal$Flag$active,
-								A2($mdgriffith$elm_ui$Internal$Model$Style, 'input[type=\"range\"].' + (className + '::-moz-range-thumb'), thumbShadowStyle)),
-								A2(
-								$mdgriffith$elm_ui$Internal$Model$StyleClass,
-								$mdgriffith$elm_ui$Internal$Flag$hover,
-								A2($mdgriffith$elm_ui$Internal$Model$Style, 'input[type=\"range\"].' + (className + '::-webkit-slider-thumb'), thumbShadowStyle)),
-								A2(
-								$mdgriffith$elm_ui$Internal$Model$StyleClass,
-								$mdgriffith$elm_ui$Internal$Flag$focus,
-								A2($mdgriffith$elm_ui$Internal$Model$Style, 'input[type=\"range\"].' + (className + '::-ms-thumb'), thumbShadowStyle)),
-								$mdgriffith$elm_ui$Internal$Model$Attr(
-								$elm$html$Html$Attributes$class(className + ' ui-slide-bar focusable-parent')),
-								$mdgriffith$elm_ui$Internal$Model$Attr(
-								$elm$html$Html$Events$onInput(
-									function (str) {
-										var _v4 = $elm$core$String$toFloat(str);
-										if (_v4.$ === 'Nothing') {
-											return input.onChange(0);
-										} else {
-											var val = _v4.a;
-											return input.onChange(val);
-										}
-									})),
-								$mdgriffith$elm_ui$Internal$Model$Attr(
-								$elm$html$Html$Attributes$type_('range')),
-								$mdgriffith$elm_ui$Internal$Model$Attr(
-								$elm$html$Html$Attributes$step(
-									function () {
-										var _v5 = input.step;
-										if (_v5.$ === 'Nothing') {
-											return 'any';
-										} else {
-											var step = _v5.a;
-											return $elm$core$String$fromFloat(step);
-										}
-									}())),
-								$mdgriffith$elm_ui$Internal$Model$Attr(
-								$elm$html$Html$Attributes$min(
-									$elm$core$String$fromFloat(input.min))),
-								$mdgriffith$elm_ui$Internal$Model$Attr(
-								$elm$html$Html$Attributes$max(
-									$elm$core$String$fromFloat(input.max))),
-								$mdgriffith$elm_ui$Internal$Model$Attr(
-								$elm$html$Html$Attributes$value(
-									$elm$core$String$fromFloat(input.value))),
-								vertical ? $mdgriffith$elm_ui$Internal$Model$Attr(
-								A2($elm$html$Html$Attributes$attribute, 'orient', 'vertical')) : $mdgriffith$elm_ui$Internal$Model$NoAttribute,
-								$mdgriffith$elm_ui$Element$width(
-								vertical ? A2(
-									$elm$core$Maybe$withDefault,
-									$mdgriffith$elm_ui$Element$px(20),
-									trackHeight) : A2($elm$core$Maybe$withDefault, $mdgriffith$elm_ui$Element$fill, trackWidth)),
-								$mdgriffith$elm_ui$Element$height(
-								vertical ? A2($elm$core$Maybe$withDefault, $mdgriffith$elm_ui$Element$fill, trackWidth) : A2(
-									$elm$core$Maybe$withDefault,
-									$mdgriffith$elm_ui$Element$px(20),
-									trackHeight))
-							]),
-						$mdgriffith$elm_ui$Internal$Model$Unkeyed(_List_Nil)),
-						A2(
-						$mdgriffith$elm_ui$Element$el,
-						A2(
-							$elm$core$List$cons,
-							$mdgriffith$elm_ui$Element$width(
-								A2($elm$core$Maybe$withDefault, $mdgriffith$elm_ui$Element$fill, trackWidth)),
-							A2(
-								$elm$core$List$cons,
-								$mdgriffith$elm_ui$Element$height(
-									A2(
-										$elm$core$Maybe$withDefault,
-										$mdgriffith$elm_ui$Element$px(20),
-										trackHeight)),
-								_Utils_ap(
-									attributes,
-									_List_fromArray(
-										[
-											$mdgriffith$elm_ui$Element$behindContent(
-											vertical ? A3(
-												$mdgriffith$elm_ui$Element$Input$viewVerticalThumb,
-												factor,
-												A2(
-													$elm$core$List$cons,
-													$mdgriffith$elm_ui$Internal$Model$htmlClass('focusable-thumb'),
-													thumbAttributes),
-												trackWidth) : A3(
-												$mdgriffith$elm_ui$Element$Input$viewHorizontalThumb,
-												factor,
-												A2(
-													$elm$core$List$cons,
-													$mdgriffith$elm_ui$Internal$Model$htmlClass('focusable-thumb'),
-													thumbAttributes),
-												trackHeight))
-										])))),
-						$mdgriffith$elm_ui$Element$none)
-					])));
-	});
-var $author$project$Sfxr$paramSlider = F3(
-	function (attrs, onChange, value) {
-		return A2(
-			$mdgriffith$elm_ui$Element$Input$slider,
-			_Utils_ap(
-				_List_fromArray(
-					[
-						$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill)
-					]),
-				attrs),
-			{
-				label: A2(
-					$mdgriffith$elm_ui$Element$Input$labelRight,
-					_List_fromArray(
-						[
-							$mdgriffith$elm_ui$Element$width(
-							$mdgriffith$elm_ui$Element$px(100))
-						]),
-					$mdgriffith$elm_ui$Element$text(
-						$elm$core$String$fromFloat(value))),
-				max: 1.0,
-				min: 0.0,
-				onChange: onChange,
-				step: $elm$core$Maybe$Just(0.00001),
-				thumb: $mdgriffith$elm_ui$Element$Input$defaultThumb,
-				value: value
-			});
-	});
-var $author$project$Sfxr$viewArpeggiation = function (arpeggiation) {
-	var onChange = A2($elm$core$Basics$composeL, $author$project$Sfxr$OnSliderChanged, $author$project$Sfxr$ArpeggiationConfigType);
-	return A2(
-		$mdgriffith$elm_ui$Element$column,
-		_List_fromArray(
-			[
-				$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill)
-			]),
-		_List_fromArray(
-			[
-				$mdgriffith$elm_ui$Element$text('Arpeggiation'),
-				A3(
-				$author$project$Sfxr$paramSlider,
-				_List_Nil,
-				A2($elm$core$Basics$composeR, $author$project$Sfxr$ArpMod, onChange),
-				arpeggiation.mod),
-				A3(
-				$author$project$Sfxr$paramSlider,
-				_List_Nil,
-				A2($elm$core$Basics$composeR, $author$project$Sfxr$ArpSpeed, onChange),
-				arpeggiation.speed)
-			]));
-};
-var $author$project$Sfxr$DtyDuty = function (a) {
-	return {$: 'DtyDuty', a: a};
-};
-var $author$project$Sfxr$DtyRamp = function (a) {
-	return {$: 'DtyRamp', a: a};
-};
-var $author$project$Sfxr$DutyConfigType = function (a) {
-	return {$: 'DutyConfigType', a: a};
-};
-var $author$project$Sfxr$viewDuty = function (duty) {
-	var onChange = A2($elm$core$Basics$composeL, $author$project$Sfxr$OnSliderChanged, $author$project$Sfxr$DutyConfigType);
-	return A2(
-		$mdgriffith$elm_ui$Element$column,
-		_List_fromArray(
-			[
-				$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill)
-			]),
-		_List_fromArray(
-			[
-				$mdgriffith$elm_ui$Element$text('Duty'),
-				A3(
-				$author$project$Sfxr$paramSlider,
-				_List_Nil,
-				A2($elm$core$Basics$composeR, $author$project$Sfxr$DtyDuty, onChange),
-				duty.duty),
-				A3(
-				$author$project$Sfxr$paramSlider,
-				_List_Nil,
-				A2($elm$core$Basics$composeR, $author$project$Sfxr$DtyRamp, onChange),
-				duty.ramp)
-			]));
-};
-var $author$project$Sfxr$EnvAttack = function (a) {
-	return {$: 'EnvAttack', a: a};
-};
-var $author$project$Sfxr$EnvDecay = function (a) {
-	return {$: 'EnvDecay', a: a};
-};
-var $author$project$Sfxr$EnvPunch = function (a) {
-	return {$: 'EnvPunch', a: a};
-};
-var $author$project$Sfxr$EnvSustain = function (a) {
-	return {$: 'EnvSustain', a: a};
-};
-var $author$project$Sfxr$EnvelopeConfigType = function (a) {
-	return {$: 'EnvelopeConfigType', a: a};
-};
-var $author$project$Sfxr$viewEnvelope = function (envelope) {
-	var onChange = A2($elm$core$Basics$composeL, $author$project$Sfxr$OnSliderChanged, $author$project$Sfxr$EnvelopeConfigType);
-	return A2(
-		$mdgriffith$elm_ui$Element$column,
-		_List_fromArray(
-			[
-				$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill)
-			]),
-		_List_fromArray(
-			[
-				$mdgriffith$elm_ui$Element$text('Envelope'),
-				A3(
-				$author$project$Sfxr$paramSlider,
-				_List_Nil,
-				A2($elm$core$Basics$composeR, $author$project$Sfxr$EnvAttack, onChange),
-				envelope.attack),
-				A3(
-				$author$project$Sfxr$paramSlider,
-				_List_Nil,
-				A2($elm$core$Basics$composeR, $author$project$Sfxr$EnvSustain, onChange),
-				envelope.sustain),
-				A3(
-				$author$project$Sfxr$paramSlider,
-				_List_Nil,
-				A2($elm$core$Basics$composeR, $author$project$Sfxr$EnvPunch, onChange),
-				envelope.punch),
-				A3(
-				$author$project$Sfxr$paramSlider,
-				_List_Nil,
-				A2($elm$core$Basics$composeR, $author$project$Sfxr$EnvDecay, onChange),
-				envelope.decay)
-			]));
-};
-var $author$project$Sfxr$FlaOffset = function (a) {
-	return {$: 'FlaOffset', a: a};
-};
-var $author$project$Sfxr$FlaRamp = function (a) {
-	return {$: 'FlaRamp', a: a};
-};
-var $author$project$Sfxr$FlangerConfigType = function (a) {
-	return {$: 'FlangerConfigType', a: a};
-};
-var $author$project$Sfxr$viewFlanger = function (flanger) {
-	var onChange = A2($elm$core$Basics$composeL, $author$project$Sfxr$OnSliderChanged, $author$project$Sfxr$FlangerConfigType);
-	return A2(
-		$mdgriffith$elm_ui$Element$column,
-		_List_fromArray(
-			[
-				$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill)
-			]),
-		_List_fromArray(
-			[
-				$mdgriffith$elm_ui$Element$text('Flanger'),
-				A3(
-				$author$project$Sfxr$paramSlider,
-				_List_Nil,
-				A2($elm$core$Basics$composeR, $author$project$Sfxr$FlaOffset, onChange),
-				flanger.offset),
-				A3(
-				$author$project$Sfxr$paramSlider,
-				_List_Nil,
-				A2($elm$core$Basics$composeR, $author$project$Sfxr$FlaRamp, onChange),
-				flanger.ramp)
-			]));
-};
-var $author$project$Sfxr$FrequencyConfigType = function (a) {
-	return {$: 'FrequencyConfigType', a: a};
-};
-var $author$project$Sfxr$FrqBase = function (a) {
-	return {$: 'FrqBase', a: a};
-};
-var $author$project$Sfxr$FrqDramp = function (a) {
-	return {$: 'FrqDramp', a: a};
-};
-var $author$project$Sfxr$FrqLimit = function (a) {
-	return {$: 'FrqLimit', a: a};
-};
-var $author$project$Sfxr$FrqRamp = function (a) {
-	return {$: 'FrqRamp', a: a};
-};
-var $author$project$Sfxr$viewFrequency = function (frequency) {
-	var onChange = A2($elm$core$Basics$composeL, $author$project$Sfxr$OnSliderChanged, $author$project$Sfxr$FrequencyConfigType);
-	return A2(
-		$mdgriffith$elm_ui$Element$column,
-		_List_fromArray(
-			[
-				$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill)
-			]),
-		_List_fromArray(
-			[
-				$mdgriffith$elm_ui$Element$text('Frequency'),
-				A3(
-				$author$project$Sfxr$paramSlider,
-				_List_Nil,
-				A2($elm$core$Basics$composeR, $author$project$Sfxr$FrqBase, onChange),
-				frequency.base),
-				A3(
-				$author$project$Sfxr$paramSlider,
-				_List_Nil,
-				A2($elm$core$Basics$composeR, $author$project$Sfxr$FrqLimit, onChange),
-				frequency.limit),
-				A3(
-				$author$project$Sfxr$paramSlider,
-				_List_Nil,
-				A2($elm$core$Basics$composeR, $author$project$Sfxr$FrqRamp, onChange),
-				frequency.ramp),
-				A3(
-				$author$project$Sfxr$paramSlider,
-				_List_Nil,
-				A2($elm$core$Basics$composeR, $author$project$Sfxr$FrqDramp, onChange),
-				frequency.dramp)
-			]));
-};
-var $author$project$Sfxr$HighPassFilterConfigType = function (a) {
-	return {$: 'HighPassFilterConfigType', a: a};
-};
-var $author$project$Sfxr$HpfFrequency = function (a) {
-	return {$: 'HpfFrequency', a: a};
-};
-var $author$project$Sfxr$HpfRamp = function (a) {
-	return {$: 'HpfRamp', a: a};
-};
-var $author$project$Sfxr$viewHighPassFilter = function (highPassFilter) {
-	var onChange = A2($elm$core$Basics$composeL, $author$project$Sfxr$OnSliderChanged, $author$project$Sfxr$HighPassFilterConfigType);
-	return A2(
-		$mdgriffith$elm_ui$Element$column,
-		_List_fromArray(
-			[
-				$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill)
-			]),
-		_List_fromArray(
-			[
-				$mdgriffith$elm_ui$Element$text('HighPassFilter'),
-				A3(
-				$author$project$Sfxr$paramSlider,
-				_List_Nil,
-				A2($elm$core$Basics$composeR, $author$project$Sfxr$HpfFrequency, onChange),
-				highPassFilter.frequency),
-				A3(
-				$author$project$Sfxr$paramSlider,
-				_List_Nil,
-				A2($elm$core$Basics$composeR, $author$project$Sfxr$HpfRamp, onChange),
-				highPassFilter.ramp)
-			]));
-};
-var $author$project$Sfxr$LowPassFilterConfigType = function (a) {
-	return {$: 'LowPassFilterConfigType', a: a};
-};
-var $author$project$Sfxr$LpfFrequency = function (a) {
-	return {$: 'LpfFrequency', a: a};
-};
-var $author$project$Sfxr$LpfRamp = function (a) {
-	return {$: 'LpfRamp', a: a};
-};
-var $author$project$Sfxr$LpfResonance = function (a) {
-	return {$: 'LpfResonance', a: a};
-};
-var $author$project$Sfxr$viewLowPassFilter = function (lowPassFilter) {
-	var onChange = A2($elm$core$Basics$composeL, $author$project$Sfxr$OnSliderChanged, $author$project$Sfxr$LowPassFilterConfigType);
-	return A2(
-		$mdgriffith$elm_ui$Element$column,
-		_List_fromArray(
-			[
-				$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill)
-			]),
-		_List_fromArray(
-			[
-				$mdgriffith$elm_ui$Element$text('LowPassFilter'),
-				A3(
-				$author$project$Sfxr$paramSlider,
-				_List_Nil,
-				A2($elm$core$Basics$composeR, $author$project$Sfxr$LpfFrequency, onChange),
-				lowPassFilter.frequency),
-				A3(
-				$author$project$Sfxr$paramSlider,
-				_List_Nil,
-				A2($elm$core$Basics$composeR, $author$project$Sfxr$LpfRamp, onChange),
-				lowPassFilter.ramp),
-				A3(
-				$author$project$Sfxr$paramSlider,
-				_List_Nil,
-				A2($elm$core$Basics$composeR, $author$project$Sfxr$LpfResonance, onChange),
-				lowPassFilter.resonance)
-			]));
-};
-var $author$project$Sfxr$MiscConfigType = function (a) {
-	return {$: 'MiscConfigType', a: a};
-};
-var $author$project$Sfxr$MscSampleRate = function (a) {
-	return {$: 'MscSampleRate', a: a};
-};
-var $author$project$Sfxr$MscSampleSize = function (a) {
-	return {$: 'MscSampleSize', a: a};
-};
-var $author$project$Sfxr$MscVolume = function (a) {
-	return {$: 'MscVolume', a: a};
-};
-var $author$project$Sfxr$viewMisc = function (misc) {
-	var onChange = A2($elm$core$Basics$composeL, $author$project$Sfxr$OnSliderChanged, $author$project$Sfxr$MiscConfigType);
-	return A2(
-		$mdgriffith$elm_ui$Element$column,
-		_List_fromArray(
-			[
-				$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill)
-			]),
-		_List_fromArray(
-			[
-				$mdgriffith$elm_ui$Element$text('Misc'),
-				A3(
-				$author$project$Sfxr$paramSlider,
-				_List_Nil,
-				A2($elm$core$Basics$composeR, $author$project$Sfxr$MscVolume, onChange),
-				misc.volume),
-				A3(
-				$author$project$Sfxr$paramSlider,
-				_List_Nil,
-				A2(
-					$elm$core$Basics$composeR,
-					$elm$core$Basics$round,
-					A2($elm$core$Basics$composeR, $author$project$Sfxr$MscSampleRate, onChange)),
-				misc.sampleRate),
-				A3(
-				$author$project$Sfxr$paramSlider,
-				_List_Nil,
-				A2(
-					$elm$core$Basics$composeR,
-					$elm$core$Basics$round,
-					A2($elm$core$Basics$composeR, $author$project$Sfxr$MscSampleSize, onChange)),
-				misc.sampleSize)
-			]));
-};
-var $author$project$Sfxr$RetRepeatSpeed = function (a) {
-	return {$: 'RetRepeatSpeed', a: a};
-};
-var $author$project$Sfxr$RetriggerConfigType = function (a) {
-	return {$: 'RetriggerConfigType', a: a};
-};
-var $author$project$Sfxr$viewRetrigger = function (retrigger) {
-	var onChange = A2($elm$core$Basics$composeL, $author$project$Sfxr$OnSliderChanged, $author$project$Sfxr$RetriggerConfigType);
-	return A2(
-		$mdgriffith$elm_ui$Element$column,
-		_List_fromArray(
-			[
-				$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill)
-			]),
-		_List_fromArray(
-			[
-				$mdgriffith$elm_ui$Element$text('Retrigger'),
-				A3(
-				$author$project$Sfxr$paramSlider,
-				_List_Nil,
-				A2($elm$core$Basics$composeR, $author$project$Sfxr$RetRepeatSpeed, onChange),
-				retrigger.repeatSpeed)
-			]));
-};
-var $author$project$Sfxr$Noop = {$: 'Noop'};
-var $author$project$Sfxr$viewShape = function (shape) {
-	return A2(
-		$mdgriffith$elm_ui$Element$row,
-		_List_fromArray(
-			[
-				$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill)
-			]),
-		_List_fromArray(
-			[
-				A3($author$project$Interface$secondary_button, _List_Nil, $author$project$Sfxr$Noop, 'Square'),
-				A3($author$project$Interface$secondary_button, _List_Nil, $author$project$Sfxr$Noop, 'Sawtooth'),
-				A3($author$project$Interface$secondary_button, _List_Nil, $author$project$Sfxr$Noop, 'Sine'),
-				A3($author$project$Interface$secondary_button, _List_Nil, $author$project$Sfxr$Noop, 'Noise')
-			]));
-};
-var $author$project$Sfxr$VibSpeed = function (a) {
-	return {$: 'VibSpeed', a: a};
-};
-var $author$project$Sfxr$VibStrength = function (a) {
-	return {$: 'VibStrength', a: a};
-};
-var $author$project$Sfxr$VibratoConfigType = function (a) {
-	return {$: 'VibratoConfigType', a: a};
-};
-var $author$project$Sfxr$viewVibrato = function (vibrato) {
-	var onChange = A2($elm$core$Basics$composeL, $author$project$Sfxr$OnSliderChanged, $author$project$Sfxr$VibratoConfigType);
-	return A2(
-		$mdgriffith$elm_ui$Element$column,
-		_List_fromArray(
-			[
-				$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill)
-			]),
-		_List_fromArray(
-			[
-				$mdgriffith$elm_ui$Element$text('Vibrato'),
-				A3(
-				$author$project$Sfxr$paramSlider,
-				_List_Nil,
-				A2($elm$core$Basics$composeR, $author$project$Sfxr$VibStrength, onChange),
-				vibrato.strength),
-				A3(
-				$author$project$Sfxr$paramSlider,
-				_List_Nil,
-				A2($elm$core$Basics$composeR, $author$project$Sfxr$VibSpeed, onChange),
-				vibrato.speed)
-			]));
-};
-var $author$project$Sfxr$viewSliders = function (model) {
-	var soundConfig = model.soundConfig;
-	return A2(
-		$mdgriffith$elm_ui$Element$column,
-		_List_fromArray(
-			[
-				$mdgriffith$elm_ui$Element$padding(10),
-				$mdgriffith$elm_ui$Element$width(
-				A2($mdgriffith$elm_ui$Element$maximum, 1000, $mdgriffith$elm_ui$Element$fill)),
-				$mdgriffith$elm_ui$Element$spacing(10),
-				$mdgriffith$elm_ui$Element$centerX
-			]),
-		_List_fromArray(
-			[
-				$author$project$Sfxr$viewShape(soundConfig.shape),
-				$author$project$Sfxr$viewEnvelope(soundConfig.envelope),
-				$author$project$Sfxr$viewFrequency(soundConfig.frequency),
-				$author$project$Sfxr$viewVibrato(soundConfig.vibrato),
-				$author$project$Sfxr$viewArpeggiation(soundConfig.arpeggiation),
-				$author$project$Sfxr$viewDuty(soundConfig.duty),
-				$author$project$Sfxr$viewRetrigger(soundConfig.retrigger),
-				$author$project$Sfxr$viewFlanger(soundConfig.flanger),
-				$author$project$Sfxr$viewLowPassFilter(soundConfig.lowPassFilter),
-				$author$project$Sfxr$viewHighPassFilter(soundConfig.highPassFilter),
-				$author$project$Sfxr$viewMisc(soundConfig.misc)
-			]));
-};
-var $author$project$Sfxr$view = function (model) {
-	return A3(
-		$mdgriffith$elm_ui$Element$layoutWith,
-		{
-			options: _List_fromArray(
-				[
-					$mdgriffith$elm_ui$Element$noStaticStyleSheet,
-					$mdgriffith$elm_ui$Element$focusStyle(
-					{backgroundColor: $elm$core$Maybe$Nothing, borderColor: $elm$core$Maybe$Nothing, shadow: $elm$core$Maybe$Nothing})
-				])
-		},
-		_List_fromArray(
-			[
-				$mdgriffith$elm_ui$Element$padding(20)
-			]),
-		A2(
-			$mdgriffith$elm_ui$Element$column,
-			_List_fromArray(
-				[
-					$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill)
-				]),
-			_List_fromArray(
-				[
-					$mdgriffith$elm_ui$Element$text('TEMP SFXR'),
-					A2(
-					$mdgriffith$elm_ui$Element$row,
-					_List_fromArray(
-						[
-							$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
-							$mdgriffith$elm_ui$Element$spacing(10),
-							$mdgriffith$elm_ui$Element$padding(10)
-						]),
-					_List_fromArray(
-						[
-							A3($author$project$Interface$primary_button, _List_Nil, $author$project$Sfxr$PlaySound, 'Play'),
-							A3($author$project$Interface$primary_button, _List_Nil, $author$project$Sfxr$SetHitHurt, 'RNG Hit/Hurt')
-						])),
-					$author$project$Sfxr$viewSliders(model)
-				])));
-};
-var $author$project$Main$viewSfxr = function (model) {
-	return true ? A2(
-		$elm$html$Html$div,
-		_List_Nil,
-		_List_fromArray(
-			[
-				A2(
-				$elm$html$Html$map,
-				$author$project$Main$GotSfxrMsg,
-				$author$project$Sfxr$view(model.sfxrModel))
-			])) : A2($elm$html$Html$div, _List_Nil, _List_Nil);
-};
 var $author$project$Main$view = function (model) {
 	return {
 		body: _List_fromArray(
 			[
-				$author$project$Main$viewSfxr(model),
 				function () {
 				var _v0 = model.page_info.page;
 				switch (_v0.$) {
