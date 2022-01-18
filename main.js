@@ -20156,7 +20156,7 @@ var $author$project$Battle$view = function (model) {
 									if (_v1.a.$ === 'LivingMonster') {
 										if (_v1.b.$ === 'Just') {
 											if (_v1.b.a.$ === 'LivingMonster') {
-												return _Utils_Tuple3($author$project$Interface$primary_button, $author$project$Battle$Fight, 'Continue Fight!!!!');
+												return _Utils_Tuple3($author$project$Interface$primary_button, $author$project$Battle$Fight, 'Continue Fight');
 											} else {
 												return _Utils_Tuple3($author$project$Interface$secondary_button, $author$project$Battle$FindNewEnemy, 'Find New Enemy');
 											}
