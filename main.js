@@ -9462,6 +9462,10 @@ var $author$project$Battle$addToStatMaxVal = F2(
 			stat,
 			{maxVal: stat.maxVal + addedMaxVal});
 	});
+var $author$project$Battle$refillGolemSpCost = 5;
+var $author$project$Battle$canAffordRefillSp = function (player) {
+	return _Utils_cmp(player.held_blood, $author$project$Battle$refillGolemSpCost) > -1;
+};
 var $author$project$Battle$getLocationsList = function (locations) {
 	return _List_fromArray(
 		[locations.forest, locations.mountains, locations.plains]);
@@ -9497,6 +9501,23 @@ var $author$project$Battle$monsterIdentityMap = F2(
 			return $author$project$Battle$DeadMonster(
 				callback(monster));
 		}
+	});
+var $author$project$Battle$setStatStamina = F2(
+	function (monster, newStatStamina) {
+		return _Utils_update(
+			monster,
+			{statStamina: newStatStamina});
+	});
+var $author$project$Battle$monsterStatMapStamina = F2(
+	function (statFunc, monster) {
+		return A4(
+			$author$project$Battle$monsterStatMap,
+			function ($) {
+				return $.statStamina;
+			},
+			$author$project$Battle$setStatStamina,
+			statFunc,
+			monster);
 	});
 var $elm$random$Random$Generator = function (a) {
 	return {$: 'Generator', a: a};
@@ -9760,23 +9781,6 @@ var $author$project$Battle$golemKillsEnemy = F4(
 var $author$project$Battle$MonsterAttackedMonster = function (a) {
 	return {$: 'MonsterAttackedMonster', a: a};
 };
-var $author$project$Battle$setStatStamina = F2(
-	function (monster, newStatStamina) {
-		return _Utils_update(
-			monster,
-			{statStamina: newStatStamina});
-	});
-var $author$project$Battle$monsterStatMapStamina = F2(
-	function (statFunc, monster) {
-		return A4(
-			$author$project$Battle$monsterStatMap,
-			function ($) {
-				return $.statStamina;
-			},
-			$author$project$Battle$setStatStamina,
-			statFunc,
-			monster);
-	});
 var $author$project$Battle$monsterTakeDamage = F2(
 	function (damageToTake, monster) {
 		var newMonster = A2(
@@ -10110,7 +10114,7 @@ var $author$project$Battle$update = F2(
 						{currentLocationId: newLocationId, enemyMonster: $elm$core$Maybe$Nothing, shouldShowLocationTypeMenu: false}),
 					$elm$core$Platform$Cmd$none,
 					$author$project$Battle$NoOutMsg);
-			default:
+			case 'LevelUpGolem':
 				var newGolem = A2(
 					$author$project$Battle$monsterIdentityMap,
 					A2(
@@ -10129,6 +10133,27 @@ var $author$project$Battle$update = F2(
 						{golem: newGolem}),
 					$elm$core$Platform$Cmd$none,
 					$author$project$Battle$NoOutMsg);
+			default:
+				if ($author$project$Battle$canAffordRefillSp(model.player)) {
+					var newPlayer = function (p) {
+						return _Utils_update(
+							p,
+							{held_blood: p.held_blood - $author$project$Battle$refillGolemSpCost});
+					}(model.player);
+					var newGolem = A2(
+						$author$project$Battle$monsterIdentityMap,
+						$author$project$Battle$monsterStatMapStamina(
+							$author$project$Battle$addToStatCurVal(1)),
+						model.golem);
+					return _Utils_Tuple3(
+						_Utils_update(
+							model,
+							{golem: newGolem, player: newPlayer}),
+						$elm$core$Platform$Cmd$none,
+						$author$project$Battle$NoOutMsg);
+				} else {
+					return _Utils_Tuple3(model, $elm$core$Platform$Cmd$none, $author$project$Battle$NoOutMsg);
+				}
 		}
 	});
 var $author$project$ItemShop$MonsterDeliveredItemToShop = function (a) {
@@ -19606,6 +19631,7 @@ var $author$project$Interface$secondary_button = F3(
 var $mdgriffith$elm_ui$Element$Font$underline = $mdgriffith$elm_ui$Internal$Model$htmlClass($mdgriffith$elm_ui$Internal$Style$classes.underline);
 var $author$project$Battle$HealGolem = {$: 'HealGolem'};
 var $author$project$Battle$LevelUpGolem = {$: 'LevelUpGolem'};
+var $author$project$Battle$RefillGolemSp = {$: 'RefillGolemSp'};
 var $author$project$Battle$ReturnToShop = {$: 'ReturnToShop'};
 var $author$project$Battle$ReviveGolem = {$: 'ReviveGolem'};
 var $author$project$Battle$SendOutMsg = function (a) {
@@ -19740,6 +19766,10 @@ var $author$project$Battle$viewBattleControls = function (_v0) {
 	var golem = _v0.golem;
 	var player = _v0.player;
 	var enemyMonster = _v0.enemyMonster;
+	var golemSpRefillable = $author$project$Battle$monsterMap(
+		function (g) {
+			return _Utils_cmp(g.statStamina.curVal, g.statStamina.maxVal) < 0;
+		});
 	var golemRevivable = function () {
 		if (golem.$ === 'LivingMonster') {
 			return false;
@@ -19849,7 +19879,21 @@ var $author$project$Battle$viewBattleControls = function (_v0) {
 						]),
 					A2($author$project$Battle$conditionalMsg, golemLevelupable && canAffordGolemLevelUp, $author$project$Battle$LevelUpGolem),
 					'Strengthen'),
-					A3(controlButton, _List_Nil, $author$project$Battle$Noop, 'Harden (No-op)')
+					A3(
+					controlButton,
+					_List_fromArray(
+						[
+							$mdgriffith$elm_ui$Element$alpha(
+							A2(
+								$author$project$Battle$conditionalAlpha,
+								!golemSpRefillable(golem),
+								!$author$project$Battle$canAffordRefillSp(player)))
+						]),
+					A2(
+						$author$project$Battle$conditionalMsg,
+						golemSpRefillable(golem) && $author$project$Battle$canAffordRefillSp(player),
+						$author$project$Battle$RefillGolemSp),
+					'Envigorate')
 				])),
 			A3(
 			$author$project$Interface$outline_button,
