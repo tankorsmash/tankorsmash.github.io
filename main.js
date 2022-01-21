@@ -5540,13 +5540,25 @@ var $author$project$Main$UrlPageInfo = F4(
 	});
 var $elm$core$Platform$Cmd$batch = _Platform_batch;
 var $author$project$ItemShop$Ascending = {$: 'Ascending'};
+var $author$project$ItemShop$AutomaticBPtoSP = function (a) {
+	return {$: 'AutomaticBPtoSP', a: a};
+};
 var $author$project$ItemShop$AutomaticGPM = function (a) {
 	return {$: 'AutomaticGPM', a: a};
 };
 var $author$project$ItemShop$BattleTabType = {$: 'BattleTabType'};
 var $author$project$Interface$BrightTheme = {$: 'BrightTheme'};
+var $author$project$ItemShop$Characters = function (a) {
+	return {$: 'Characters', a: a};
+};
 var $author$project$ItemShop$NoHoveredTooltip = {$: 'NoHoveredTooltip'};
+var $author$project$ItemShop$Player = function (a) {
+	return {$: 'Player', a: a};
+};
 var $author$project$ItemShop$PlayerParty = {$: 'PlayerParty'};
+var $author$project$ItemShop$Shop = function (a) {
+	return {$: 'Shop', a: a};
+};
 var $author$project$ItemShop$ShopParty = {$: 'ShopParty'};
 var $author$project$ItemShop$ShopTabType = {$: 'ShopTabType'};
 var $author$project$ItemShop$SortByName = {$: 'SortByName'};
@@ -6484,6 +6496,14 @@ var $TSFoster$elm_uuid$UUID$forName = A2(
 	$elm$core$Basics$composeL,
 	A2($elm$core$Basics$composeL, $TSFoster$elm_uuid$UUID$forBytes, $elm$bytes$Bytes$Encode$encode),
 	$elm$bytes$Bytes$Encode$string);
+var $author$project$ItemShop$getInnerPlayer = function (_v0) {
+	var player = _v0.a;
+	return player;
+};
+var $author$project$ItemShop$getInnerShop = function (_v0) {
+	var shop = _v0.a;
+	return shop;
+};
 var $author$project$Battle$DeliverItemToShop = {$: 'DeliverItemToShop'};
 var $author$project$Battle$Forest = {$: 'Forest'};
 var $author$project$Battle$LivingMonster = function (a) {
@@ -6566,36 +6586,38 @@ var $author$project$Battle$setStatCurVal = F2(
 			stat,
 			{curVal: newCurVal});
 	});
-var $author$project$Battle$init = function (_v0) {
-	var held_blood = _v0.held_blood;
-	var held_gold = _v0.held_gold;
-	var locations = {
-		forest: A3($author$project$Battle$createLocation, $author$project$Battle$Forest, 0, 'The Forest'),
-		mountains: A3($author$project$Battle$createLocation, $author$project$Battle$Mountains, 1, 'The Mountains'),
-		plains: A3($author$project$Battle$createLocation, $author$project$Battle$Plains, 2, 'The Plains')
-	};
-	return {
-		battleSeed: $elm$random$Random$initialSeed(123456),
-		currentLocationId: locations.forest.locationId,
-		enemyMonster: $elm$core$Maybe$Just(
-			$author$project$Battle$LivingMonster(
-				A2(
-					$author$project$Battle$setOnDefeat,
-					$author$project$Battle$DeliverItemToShop,
+var $author$project$Battle$init = F2(
+	function (_v0, spRefillAmount) {
+		var held_blood = _v0.held_blood;
+		var held_gold = _v0.held_gold;
+		var locations = {
+			forest: A3($author$project$Battle$createLocation, $author$project$Battle$Forest, 0, 'The Forest'),
+			mountains: A3($author$project$Battle$createLocation, $author$project$Battle$Mountains, 1, 'The Mountains'),
+			plains: A3($author$project$Battle$createLocation, $author$project$Battle$Plains, 2, 'The Plains')
+		};
+		return {
+			battleSeed: $elm$random$Random$initialSeed(123456),
+			currentLocationId: locations.forest.locationId,
+			enemyMonster: $elm$core$Maybe$Just(
+				$author$project$Battle$LivingMonster(
 					A2(
-						$author$project$Battle$monsterStatMapHP,
-						$author$project$Battle$setStatCurVal(4),
-						A4($author$project$Battle$createMonster, 'Slime', 10, 2, 5))))),
-		fightLogs: _List_Nil,
-		golem: $author$project$Battle$LivingMonster(
-			A4($author$project$Battle$createMonster, 'Golem', 25, 10, 0)),
-		locations: locations,
-		player: {held_blood: held_blood, held_gold: held_gold},
-		secondsWaitedSince: {lastLocationMonsterRefill: 0, lastSpRefill: 0},
-		shouldShowLocationTypeMenu: false,
-		showExpandedLogs: false
-	};
-};
+						$author$project$Battle$setOnDefeat,
+						$author$project$Battle$DeliverItemToShop,
+						A2(
+							$author$project$Battle$monsterStatMapHP,
+							$author$project$Battle$setStatCurVal(4),
+							A4($author$project$Battle$createMonster, 'Slime', 10, 2, 5))))),
+			fightLogs: _List_Nil,
+			golem: $author$project$Battle$LivingMonster(
+				A4($author$project$Battle$createMonster, 'Golem', 25, 10, 0)),
+			locations: locations,
+			player: {held_blood: held_blood, held_gold: held_gold},
+			secondsWaitedSince: {lastLocationMonsterRefill: 0, lastSpRefill: 0},
+			shouldShowLocationTypeMenu: false,
+			showExpandedLogs: false,
+			spRefillAmount: spRefillAmount
+		};
+	});
 var $author$project$ItemShop$Spellbook = {$: 'Spellbook'};
 var $author$project$ItemShop$Weapon = {$: 'Weapon'};
 var $elm$core$Dict$Black = {$: 'Black'};
@@ -7292,8 +7314,8 @@ var $author$project$ItemShop$initial_items_for_sale = function (item_db) {
 		_Debug_todo(
 			'ItemShop',
 			{
-				start: {line: 967, column: 17},
-				end: {line: 967, column: 27}
+				start: {line: 1474, column: 17},
+				end: {line: 1474, column: 27}
 			}),
 		'THERE WAS AN ERROR IN INITIAL ITEM SETUP!!!!',
 		$elm$core$Result$Err(''));
@@ -7359,6 +7381,8 @@ var $author$project$ItemShop$stringToTabType = function (hash) {
 };
 var $author$project$ItemShop$init = F2(
 	function (hash, key) {
+		var spRefillUpgradeLvl = 1;
+		var spRefillUpgrade = $author$project$ItemShop$AutomaticBPtoSP(spRefillUpgradeLvl);
 		var shop_base_char = A2(
 			$author$project$ItemShop$createCharacter,
 			A2($TSFoster$elm_uuid$UUID$forName, 'shop character', $TSFoster$elm_uuid$UUID$dnsNamespace),
@@ -7367,62 +7391,61 @@ var $author$project$ItemShop$init = F2(
 			$author$project$ItemShop$createCharacter,
 			A2($TSFoster$elm_uuid$UUID$forName, 'player character', $TSFoster$elm_uuid$UUID$dnsNamespace),
 			'Player');
+		var playerUpgrades = _List_fromArray(
+			[
+				$author$project$ItemShop$AutomaticGPM(1),
+				spRefillUpgrade
+			]);
 		var item_db = $author$project$ItemShop$initial_item_db;
-		var player = _Utils_update(
-			player_base_char,
-			{
-				held_blood: 100,
-				held_gold: 25,
-				held_items: $author$project$ItemShop$initial_owned_items(item_db),
-				party: $author$project$ItemShop$PlayerParty
-			});
-		var shop = _Utils_update(
-			shop_base_char,
-			{
-				held_gold: 999999999,
-				held_items: $author$project$ItemShop$initial_items_for_sale(item_db),
-				party: $author$project$ItemShop$ShopParty
-			});
+		var player = $author$project$ItemShop$Player(
+			_Utils_update(
+				player_base_char,
+				{
+					held_blood: 100,
+					held_gold: 25,
+					held_items: $author$project$ItemShop$initial_owned_items(item_db),
+					party: $author$project$ItemShop$PlayerParty
+				}));
+		var shop = $author$project$ItemShop$Shop(
+			_Utils_update(
+				shop_base_char,
+				{
+					held_gold: 999999999,
+					held_items: $author$project$ItemShop$initial_items_for_sale(item_db),
+					party: $author$project$ItemShop$ShopParty
+				}));
 		var initial_tab_type = $author$project$ItemShop$stringToTabType(hash);
-		var characters = _Utils_ap(
-			_List_fromArray(
-				[player, shop]),
-			$author$project$ItemShop$initial_characters(item_db));
-		var battleModel = $author$project$Battle$init(player);
+		var initUiOptions = {cached_tooltip_offsets: $elm$core$Dict$empty, globalViewport: $elm$core$Maybe$Nothing, hovered_item_in_character: $elm$core$Maybe$Nothing, hovered_tooltip: $author$project$ItemShop$NoHoveredTooltip, hovered_trend_chart: _List_Nil, inventorySortDir: $author$project$ItemShop$Ascending, inventorySortType: $author$project$ItemShop$SortByName, shiftIsPressed: false, shop_trends_hovered: false, shouldDisplayShowDebugInventoriesOverlay: false, showDebugInventoriesElement: $elm$core$Maybe$Nothing, show_charts_in_hovered_item: false, show_debug_inventories: true, show_main_chart: true};
+		var characters = $author$project$ItemShop$Characters(
+			{
+				others: $author$project$ItemShop$initial_characters(item_db),
+				player: player,
+				shop: shop
+			});
+		var battleModel = A2(
+			$author$project$Battle$init,
+			$author$project$ItemShop$getInnerPlayer(player),
+			spRefillUpgradeLvl);
 		var initModel = {
 			ai_tick_time: $elm$time$Time$millisToPosix(-1),
 			ai_updates_paused: (_Utils_eq(initial_tab_type, $author$project$ItemShop$ShopTabType) || _Utils_eq(initial_tab_type, $author$project$ItemShop$BattleTabType)) ? false : true,
 			battleModel: battleModel,
 			browserNavKey: key,
-			cached_tooltip_offsets: $elm$core$Dict$empty,
 			characters: characters,
 			colorTheme: $author$project$Interface$BrightTheme,
-			globalViewport: $elm$core$Maybe$Nothing,
 			global_seed: $elm$random$Random$initialSeed(4),
 			historical_player_actions: _List_fromArray(
 				[$author$project$ItemShop$WelcomeMessageActionLog]),
 			historical_shop_trends: _List_Nil,
-			hovered_item_in_character: $elm$core$Maybe$Nothing,
-			hovered_tooltip: $author$project$ItemShop$NoHoveredTooltip,
-			hovered_trend_chart: _List_Nil,
-			inventorySortDir: $author$project$ItemShop$Ascending,
-			inventorySortType: $author$project$ItemShop$SortByName,
 			item_db: item_db,
-			player_id: player.char_id,
-			player_upgrades: _List_fromArray(
-				[
-					$author$project$ItemShop$AutomaticGPM(1)
-				]),
-			shiftIsPressed: false,
-			shop_id: shop.char_id,
+			player_upgrades: playerUpgrades,
+			shop_id: function ($) {
+				return $.char_id;
+			}(
+				$author$project$ItemShop$getInnerShop(shop)),
 			shop_trends: $author$project$ItemShop$initial_shop_trends,
-			shop_trends_hovered: false,
-			shouldDisplayShowDebugInventoriesOverlay: false,
-			showDebugInventoriesElement: $elm$core$Maybe$Nothing,
-			show_charts_in_hovered_item: false,
-			show_debug_inventories: true,
-			show_main_chart: true,
-			tab_type: initial_tab_type
+			tab_type: initial_tab_type,
+			uiOptions: initUiOptions
 		};
 		return _Utils_Tuple2(
 			initModel,
@@ -8771,151 +8794,17 @@ var $elm$url$Url$toString = function (url) {
 				url.path)));
 };
 var $author$project$Interface$DarkTheme = {$: 'DarkTheme'};
-var $author$project$ItemShop$GotShowDebugElement = function (a) {
-	return {$: 'GotShowDebugElement', a: a};
-};
-var $author$project$ItemShop$GotTooltipSize = function (a) {
-	return {$: 'GotTooltipSize', a: a};
-};
-var $author$project$ItemShop$GotViewport = function (a) {
-	return {$: 'GotViewport', a: a};
-};
-var $author$project$ItemShop$HoveredTooltipWithOffset = function (a) {
-	return {$: 'HoveredTooltipWithOffset', a: a};
-};
-var $author$project$ItemShop$HoveredTooltipWithoutOffset = function (a) {
-	return {$: 'HoveredTooltipWithoutOffset', a: a};
-};
-var $elm$core$Basics$abs = function (n) {
-	return (n < 0) ? (-n) : n;
-};
-var $author$project$ItemShop$allItemTypes = _List_fromArray(
-	[$author$project$ItemShop$Weapon, $author$project$ItemShop$Armor, $author$project$ItemShop$Spellbook, $author$project$ItemShop$Furniture, $author$project$ItemShop$Food]);
-var $elm$core$Maybe$andThen = F2(
-	function (callback, maybeValue) {
-		if (maybeValue.$ === 'Just') {
-			var value = maybeValue.a;
-			return callback(value);
-		} else {
-			return $elm$core$Maybe$Nothing;
-		}
-	});
-var $elm$core$Task$onError = _Scheduler_onError;
-var $elm$core$Task$attempt = F2(
-	function (resultToMessage, task) {
-		return $elm$core$Task$command(
-			$elm$core$Task$Perform(
-				A2(
-					$elm$core$Task$onError,
-					A2(
-						$elm$core$Basics$composeL,
-						A2($elm$core$Basics$composeL, $elm$core$Task$succeed, resultToMessage),
-						$elm$core$Result$Err),
-					A2(
-						$elm$core$Task$andThen,
-						A2(
-							$elm$core$Basics$composeL,
-							A2($elm$core$Basics$composeL, $elm$core$Task$succeed, resultToMessage),
-							$elm$core$Result$Ok),
-						task))));
-	});
-var $elm_community$list_extra$List$Extra$findIndexHelp = F3(
-	function (index, predicate, list) {
-		findIndexHelp:
-		while (true) {
-			if (!list.b) {
-				return $elm$core$Maybe$Nothing;
-			} else {
-				var x = list.a;
-				var xs = list.b;
-				if (predicate(x)) {
-					return $elm$core$Maybe$Just(index);
-				} else {
-					var $temp$index = index + 1,
-						$temp$predicate = predicate,
-						$temp$list = xs;
-					index = $temp$index;
-					predicate = $temp$predicate;
-					list = $temp$list;
-					continue findIndexHelp;
-				}
-			}
-		}
-	});
-var $elm_community$list_extra$List$Extra$findIndex = $elm_community$list_extra$List$Extra$findIndexHelp(0);
-var $elm_community$list_extra$List$Extra$elemIndex = function (x) {
-	return $elm_community$list_extra$List$Extra$findIndex(
-		$elm$core$Basics$eq(x));
-};
-var $elm$core$List$drop = F2(
-	function (n, list) {
-		drop:
-		while (true) {
-			if (n <= 0) {
-				return list;
-			} else {
-				if (!list.b) {
-					return list;
-				} else {
-					var x = list.a;
-					var xs = list.b;
-					var $temp$n = n - 1,
-						$temp$list = xs;
-					n = $temp$n;
-					list = $temp$list;
-					continue drop;
-				}
-			}
-		}
-	});
-var $elm$core$List$head = function (list) {
-	if (list.b) {
-		var x = list.a;
-		var xs = list.b;
-		return $elm$core$Maybe$Just(x);
-	} else {
-		return $elm$core$Maybe$Nothing;
-	}
-};
-var $elm_community$list_extra$List$Extra$getAt = F2(
-	function (idx, xs) {
-		return (idx < 0) ? $elm$core$Maybe$Nothing : $elm$core$List$head(
-			A2($elm$core$List$drop, idx, xs));
-	});
-var $elm$core$List$filter = F2(
-	function (isGood, list) {
-		return A3(
-			$elm$core$List$foldr,
-			F2(
-				function (x, xs) {
-					return isGood(x) ? A2($elm$core$List$cons, x, xs) : xs;
-				}),
-			_List_Nil,
-			list);
-	});
-var $author$project$ItemShop$getCharacter = F2(
-	function (characters, char_id) {
-		return $elm$core$List$head(
-			A2(
-				$elm$core$List$filter,
-				A2(
-					$elm$core$Basics$composeR,
-					function ($) {
-						return $.char_id;
-					},
-					$elm$core$Basics$eq(char_id)),
-				characters));
-	});
-var $elm$browser$Browser$Dom$getElement = _Browser_getElement;
 var $author$project$ItemShop$getPlayer = function (_v0) {
-	var characters = _v0.characters;
-	var player_id = _v0.player_id;
-	return A2($author$project$ItemShop$getCharacter, characters, player_id);
+	var player = _v0.a.player;
+	var shop = _v0.a.shop;
+	var others = _v0.a.others;
+	return player;
 };
 var $author$project$ItemShop$getShop = function (_v0) {
-	var characters = _v0.characters;
-	var shop_id = _v0.shop_id;
-	return A2($author$project$ItemShop$getCharacter, characters, shop_id);
+	var player = _v0.a.player;
+	var shop = _v0.a.shop;
+	var others = _v0.a.others;
+	return shop;
 };
 var $author$project$ItemShop$getTradeContext = function (trade_record) {
 	if (trade_record.$ === 'IncompleteTradeRecord') {
@@ -8926,7 +8815,6 @@ var $author$project$ItemShop$getTradeContext = function (trade_record) {
 		return context;
 	}
 };
-var $elm$browser$Browser$Dom$getViewport = _Browser_withWindow(_Browser_getViewport);
 var $author$project$ItemShop$getQuantity = function (qty) {
 	var val = qty.a;
 	return val;
@@ -8946,48 +8834,19 @@ var $author$project$ItemShop$get_adjusted_item_cost = F3(
 				shop_trends.item_type_sentiment));
 		return $elm$core$Basics$round(scaled_raw_cost * item_sentiment);
 	});
-var $author$project$ItemShop$isElementOnScreen = F2(
-	function (gvp, _v0) {
-		var element = _v0.element;
-		var _v1 = gvp.viewport;
-		var y = _v1.y;
-		var height = _v1.height;
-		return _Utils_cmp(y, element.y + element.height) > 0;
-	});
-var $elm$core$Maybe$map = F2(
-	function (f, maybe) {
-		if (maybe.$ === 'Just') {
-			var value = maybe.a;
-			return $elm$core$Maybe$Just(
-				f(value));
-		} else {
-			return $elm$core$Maybe$Nothing;
-		}
-	});
-var $author$project$ItemShop$withCharacter = F2(
-	function (new_char, model) {
-		var new_characters = A2(
-			$elm$core$List$map,
-			function (_char) {
-				return _Utils_eq(_char.char_id, new_char.char_id) ? new_char : _char;
-			},
-			model.characters);
-		return _Utils_update(
-			model,
-			{characters: new_characters});
-	});
 var $author$project$ItemShop$mapPlayer = F2(
-	function (callback, model) {
-		var _v0 = $author$project$ItemShop$getPlayer(model);
-		if (_v0.$ === 'Just') {
-			var player = _v0.a;
-			return A2(
-				$author$project$ItemShop$withCharacter,
-				callback(player),
-				model);
-		} else {
-			return model;
-		}
+	function (callback, _v0) {
+		var player = _v0.a.player;
+		var shop = _v0.a.shop;
+		var others = _v0.a.others;
+		return $author$project$ItemShop$Characters(
+			{
+				others: others,
+				player: $author$project$ItemShop$Player(
+					callback(
+						$author$project$ItemShop$getInnerPlayer(player))),
+				shop: shop
+			});
 	});
 var $elm$core$Basics$ge = _Utils_ge;
 var $author$project$ItemShop$subQuantity = F2(
@@ -9018,6 +8877,94 @@ var $author$project$ItemShop$remove_item_from_inventory_records = F4(
 			$elm$core$List$map,
 			A3($author$project$ItemShop$reduce_if_matched, item, qty, total_cost),
 			records);
+	});
+var $author$project$ItemShop$charIdMatches = F2(
+	function (char_id_to_match, _v0) {
+		var char_id = _v0.char_id;
+		return _Utils_eq(char_id, char_id_to_match);
+	});
+var $author$project$ItemShop$charactersToList = function (_v0) {
+	var player = _v0.a.player;
+	var shop = _v0.a.shop;
+	var others = _v0.a.others;
+	return A2(
+		$elm$core$List$cons,
+		$author$project$ItemShop$getInnerPlayer(player),
+		A2(
+			$elm$core$List$cons,
+			$author$project$ItemShop$getInnerShop(shop),
+			others));
+};
+var $elm$core$List$filter = F2(
+	function (isGood, list) {
+		return A3(
+			$elm$core$List$foldr,
+			F2(
+				function (x, xs) {
+					return isGood(x) ? A2($elm$core$List$cons, x, xs) : xs;
+				}),
+			_List_Nil,
+			list);
+	});
+var $elm$core$List$head = function (list) {
+	if (list.b) {
+		var x = list.a;
+		var xs = list.b;
+		return $elm$core$Maybe$Just(x);
+	} else {
+		return $elm$core$Maybe$Nothing;
+	}
+};
+var $author$project$ItemShop$mapCharacters = F2(
+	function (mapFunc, characters) {
+		var player = characters.a.player;
+		var shop = characters.a.shop;
+		var others = characters.a.others;
+		var rawChars = A2(
+			$elm$core$List$map,
+			mapFunc,
+			$author$project$ItemShop$charactersToList(characters));
+		var matchesShopId = $author$project$ItemShop$charIdMatches(
+			function ($) {
+				return $.char_id;
+			}(
+				$author$project$ItemShop$getInnerShop(shop)));
+		var newShop = $author$project$ItemShop$Shop(
+			A2(
+				$elm$core$Maybe$withDefault,
+				$author$project$ItemShop$getInnerShop(shop),
+				$elm$core$List$head(
+					A2($elm$core$List$filter, matchesShopId, rawChars))));
+		var matchesPlayerId = $author$project$ItemShop$charIdMatches(
+			function ($) {
+				return $.char_id;
+			}(
+				$author$project$ItemShop$getInnerPlayer(player)));
+		var newOthers = A2(
+			$elm$core$List$filter,
+			function (c) {
+				return !(matchesPlayerId(c) || matchesShopId(c));
+			},
+			rawChars);
+		var newPlayer = $author$project$ItemShop$Player(
+			A2(
+				$elm$core$Maybe$withDefault,
+				$author$project$ItemShop$getInnerPlayer(player),
+				$elm$core$List$head(
+					A2($elm$core$List$filter, matchesPlayerId, rawChars))));
+		return $author$project$ItemShop$Characters(
+			{others: newOthers, player: newPlayer, shop: newShop});
+	});
+var $author$project$ItemShop$replaceCharacter = F2(
+	function (new_char, model) {
+		var characterReplacer = function (other_char) {
+			return _Utils_eq(other_char.char_id, new_char.char_id) ? new_char : other_char;
+		};
+		return _Utils_update(
+			model,
+			{
+				characters: A2($author$project$ItemShop$mapCharacters, characterReplacer, model.characters)
+			});
 	});
 var $author$project$ItemShop$CompletedTradeRecord = F2(
 	function (a, b) {
@@ -9386,37 +9333,56 @@ var $author$project$ItemShop$tabTypeToString = function (tabType) {
 			return 'battle';
 	}
 };
+var $author$project$ItemShop$setBattleModel = F2(
+	function (model, battleModel) {
+		return _Utils_update(
+			model,
+			{battleModel: battleModel});
+	});
+var $author$project$ItemShop$setCharacters = F2(
+	function (model, newCharacters) {
+		return _Utils_update(
+			model,
+			{characters: newCharacters});
+	});
 var $author$project$ItemShop$transferFromBattleModel = F2(
 	function (model, newBattleModel) {
-		return A2(
+		var newModel = A2($author$project$ItemShop$setBattleModel, model, newBattleModel);
+		var newCharacters = A2(
 			$author$project$ItemShop$mapPlayer,
 			function (player) {
 				return _Utils_update(
 					player,
 					{held_blood: newBattleModel.player.held_blood, held_gold: newBattleModel.player.held_gold});
 			},
-			_Utils_update(
-				model,
-				{battleModel: newBattleModel}));
+			newModel.characters);
+		return A2($author$project$ItemShop$setCharacters, newModel, newCharacters);
 	});
 var $author$project$ItemShop$transferToBattleModel = function (model) {
-	return A2(
-		$elm$core$Maybe$withDefault,
-		model.battleModel,
-		A2(
-			$elm$core$Maybe$map,
-			function (p) {
-				var _v0 = model;
-				var battleModel = _v0.battleModel;
-				var battlePlayer = battleModel.player;
-				var newPlayer = _Utils_update(
-					battlePlayer,
-					{held_blood: p.held_blood, held_gold: p.held_gold});
-				return _Utils_update(
-					battleModel,
-					{player: newPlayer});
-			},
-			$author$project$ItemShop$getPlayer(model)));
+	var _v0 = $author$project$ItemShop$getPlayer(model.characters);
+	var p = _v0.a;
+	var spRefillAmount = A3(
+		$elm$core$List$foldl,
+		F2(
+			function (upgrade, acc) {
+				if (upgrade.$ === 'AutomaticBPtoSP') {
+					var level = upgrade.a;
+					return level;
+				} else {
+					return acc;
+				}
+			}),
+		0,
+		model.player_upgrades);
+	var _v1 = model;
+	var battleModel = _v1.battleModel;
+	var battlePlayer = battleModel.player;
+	var newPlayer = _Utils_update(
+		battlePlayer,
+		{held_blood: p.held_blood, held_gold: p.held_gold});
+	return _Utils_update(
+		battleModel,
+		{player: newPlayer, spRefillAmount: spRefillAmount});
 };
 var $author$project$Battle$FoundNewMonster = function (a) {
 	return {$: 'FoundNewMonster', a: a};
@@ -9453,7 +9419,10 @@ var $author$project$Battle$addToStatCurVal = F2(
 		return _Utils_update(
 			stat,
 			{
-				curVal: A2($elm$core$Basics$min, stat.maxVal, stat.curVal + addedCurVal)
+				curVal: A2(
+					$elm$core$Basics$max,
+					0,
+					A2($elm$core$Basics$min, stat.maxVal, stat.curVal + addedCurVal))
 			});
 	});
 var $author$project$Battle$addToStatMaxVal = F2(
@@ -9528,6 +9497,27 @@ var $elm$random$Random$constant = function (value) {
 			return _Utils_Tuple2(value, seed);
 		});
 };
+var $elm$core$List$drop = F2(
+	function (n, list) {
+		drop:
+		while (true) {
+			if (n <= 0) {
+				return list;
+			} else {
+				if (!list.b) {
+					return list;
+				} else {
+					var x = list.a;
+					var xs = list.b;
+					var $temp$n = n - 1,
+						$temp$list = xs;
+					n = $temp$n;
+					list = $temp$list;
+					continue drop;
+				}
+			}
+		}
+	});
 var $elm_community$random_extra$Random$List$get = F2(
 	function (index, list) {
 		return $elm$core$List$head(
@@ -9682,6 +9672,16 @@ var $author$project$Battle$setStatToMax = function (intStat) {
 		intStat,
 		{curVal: intStat.maxVal});
 };
+var $elm$core$Maybe$map = F2(
+	function (f, maybe) {
+		if (maybe.$ === 'Just') {
+			var value = maybe.a;
+			return $elm$core$Maybe$Just(
+				f(value));
+		} else {
+			return $elm$core$Maybe$Nothing;
+		}
+	});
 var $author$project$Battle$MonsterKilledGolem = F2(
 	function (a, b) {
 		return {$: 'MonsterKilledGolem', a: a, b: b};
@@ -9967,7 +9967,7 @@ var $author$project$Battle$updateTick = F2(
 					var newGolem = A2(
 						$author$project$Battle$monsterLivingMap,
 						$author$project$Battle$monsterStatMapStamina(
-							$author$project$Battle$addToStatCurVal(1)),
+							$author$project$Battle$addToStatCurVal(model.spRefillAmount)),
 						m.golem);
 					return _Utils_update(
 						m,
@@ -9977,7 +9977,6 @@ var $author$project$Battle$updateTick = F2(
 				}
 			}(
 				function (m) {
-					var secondsWaitedSince = m.secondsWaitedSince;
 					return _Utils_update(
 						m,
 						{secondsWaitedSince: incrSecondsWaitedSince});
@@ -10182,21 +10181,6 @@ var $author$project$ItemShop$append_player_action_log = F2(
 						[new_player_action_log]))
 			});
 	});
-var $elm$core$Maybe$map2 = F3(
-	function (func, ma, mb) {
-		if (ma.$ === 'Nothing') {
-			return $elm$core$Maybe$Nothing;
-		} else {
-			var a = ma.a;
-			if (mb.$ === 'Nothing') {
-				return $elm$core$Maybe$Nothing;
-			} else {
-				var b = mb.a;
-				return $elm$core$Maybe$Just(
-					A2(func, a, b));
-			}
-		}
-	});
 var $elm$core$Dict$values = function (dict) {
 	return A3(
 		$elm$core$Dict$foldr,
@@ -10242,40 +10226,42 @@ var $author$project$ItemShop$updateBattleOutMsg = F2(
 					var _v2 = A2($author$project$ItemShop$pick_random_unlocked_item_from_db, model.item_db, model.global_seed);
 					var mbNewItem = _v2.a;
 					var newSeed = _v2.b;
+					var withNewItem = F2(
+						function (_v3, newItem) {
+							var shop = _v3.a;
+							return A2(
+								$author$project$ItemShop$append_player_action_log,
+								$author$project$ItemShop$MonsterDeliveredItemToShop(newItem.id),
+								A2(
+									$author$project$ItemShop$replaceCharacter,
+									A2(
+										$author$project$ItemShop$add_inventory_record_to_character,
+										{
+											avg_price: $author$project$ItemShop$setPrice(newItem.raw_gold_cost),
+											item: newItem,
+											quantity: $author$project$ItemShop$setQuantity(1)
+										},
+										shop),
+									_Utils_update(
+										model,
+										{global_seed: newSeed})));
+						});
 					return function (m) {
 						return _Utils_Tuple2(m, $elm$core$Platform$Cmd$none);
 					}(
 						A2(
 							$elm$core$Maybe$withDefault,
 							model,
-							A3(
-								$elm$core$Maybe$map2,
-								F2(
-									function (shop, newItem) {
-										return A2(
-											$author$project$ItemShop$append_player_action_log,
-											$author$project$ItemShop$MonsterDeliveredItemToShop(newItem.id),
-											A2(
-												$author$project$ItemShop$withCharacter,
-												A2(
-													$author$project$ItemShop$add_inventory_record_to_character,
-													{
-														avg_price: $author$project$ItemShop$setPrice(newItem.raw_gold_cost),
-														item: newItem,
-														quantity: $author$project$ItemShop$setQuantity(1)
-													},
-													shop),
-												_Utils_update(
-													model,
-													{global_seed: newSeed})));
-									}),
-								$author$project$ItemShop$getShop(model),
+							A2(
+								$elm$core$Maybe$map,
+								withNewItem(
+									$author$project$ItemShop$getShop(model.characters)),
 								mbNewItem)));
 				}
 			case 'ReturnToShop':
-				var _v3 = model.browserNavKey;
-				if (_v3.$ === 'Just') {
-					var key = _v3.a;
+				var _v4 = model.browserNavKey;
+				if (_v4.$ === 'Just') {
+					var key = _v4.a;
 					return _Utils_Tuple2(
 						_Utils_update(
 							model,
@@ -10380,17 +10366,471 @@ var $author$project$ItemShop$updateTimesYouSold = F2(
 			item_db_record_trades,
 			{times_you_sold: old_times_you_sold + new_times_you_sold});
 	});
-var $author$project$ItemShop$exclude_player_and_shop = F2(
-	function (_v0, characters) {
-		var player_id = _v0.player_id;
-		var shop_id = _v0.shop_id;
-		return A2(
-			$elm$core$List$filter,
-			function (c) {
-				return (!_Utils_eq(c.char_id, player_id)) && (!_Utils_eq(c.char_id, shop_id));
-			},
-			characters);
+var $author$project$ItemShop$GotShowDebugElement = function (a) {
+	return {$: 'GotShowDebugElement', a: a};
+};
+var $author$project$ItemShop$GotTooltipSize = function (a) {
+	return {$: 'GotTooltipSize', a: a};
+};
+var $author$project$ItemShop$GotUiOptionsMsg = function (a) {
+	return {$: 'GotUiOptionsMsg', a: a};
+};
+var $author$project$ItemShop$GotViewport = function (a) {
+	return {$: 'GotViewport', a: a};
+};
+var $author$project$ItemShop$HoveredTooltipWithOffset = function (a) {
+	return {$: 'HoveredTooltipWithOffset', a: a};
+};
+var $author$project$ItemShop$HoveredTooltipWithoutOffset = function (a) {
+	return {$: 'HoveredTooltipWithoutOffset', a: a};
+};
+var $elm$core$Basics$abs = function (n) {
+	return (n < 0) ? (-n) : n;
+};
+var $author$project$ItemShop$allItemTypes = _List_fromArray(
+	[$author$project$ItemShop$Weapon, $author$project$ItemShop$Armor, $author$project$ItemShop$Spellbook, $author$project$ItemShop$Furniture, $author$project$ItemShop$Food]);
+var $elm$core$Maybe$andThen = F2(
+	function (callback, maybeValue) {
+		if (maybeValue.$ === 'Just') {
+			var value = maybeValue.a;
+			return callback(value);
+		} else {
+			return $elm$core$Maybe$Nothing;
+		}
 	});
+var $elm$core$Task$onError = _Scheduler_onError;
+var $elm$core$Task$attempt = F2(
+	function (resultToMessage, task) {
+		return $elm$core$Task$command(
+			$elm$core$Task$Perform(
+				A2(
+					$elm$core$Task$onError,
+					A2(
+						$elm$core$Basics$composeL,
+						A2($elm$core$Basics$composeL, $elm$core$Task$succeed, resultToMessage),
+						$elm$core$Result$Err),
+					A2(
+						$elm$core$Task$andThen,
+						A2(
+							$elm$core$Basics$composeL,
+							A2($elm$core$Basics$composeL, $elm$core$Task$succeed, resultToMessage),
+							$elm$core$Result$Ok),
+						task))));
+	});
+var $elm_community$list_extra$List$Extra$findIndexHelp = F3(
+	function (index, predicate, list) {
+		findIndexHelp:
+		while (true) {
+			if (!list.b) {
+				return $elm$core$Maybe$Nothing;
+			} else {
+				var x = list.a;
+				var xs = list.b;
+				if (predicate(x)) {
+					return $elm$core$Maybe$Just(index);
+				} else {
+					var $temp$index = index + 1,
+						$temp$predicate = predicate,
+						$temp$list = xs;
+					index = $temp$index;
+					predicate = $temp$predicate;
+					list = $temp$list;
+					continue findIndexHelp;
+				}
+			}
+		}
+	});
+var $elm_community$list_extra$List$Extra$findIndex = $elm_community$list_extra$List$Extra$findIndexHelp(0);
+var $elm_community$list_extra$List$Extra$elemIndex = function (x) {
+	return $elm_community$list_extra$List$Extra$findIndex(
+		$elm$core$Basics$eq(x));
+};
+var $elm_community$list_extra$List$Extra$getAt = F2(
+	function (idx, xs) {
+		return (idx < 0) ? $elm$core$Maybe$Nothing : $elm$core$List$head(
+			A2($elm$core$List$drop, idx, xs));
+	});
+var $author$project$ItemShop$getCharacter = F2(
+	function (_v0, char_id) {
+		var player = _v0.a.player;
+		var shop = _v0.a.shop;
+		var others = _v0.a.others;
+		return A2(
+			$author$project$ItemShop$charIdMatches,
+			char_id,
+			$author$project$ItemShop$getInnerPlayer(player)) ? $elm$core$Maybe$Just(
+			$author$project$ItemShop$getInnerPlayer(player)) : (A2(
+			$author$project$ItemShop$charIdMatches,
+			char_id,
+			$author$project$ItemShop$getInnerShop(shop)) ? $elm$core$Maybe$Just(
+			$author$project$ItemShop$getInnerShop(shop)) : $elm$core$List$head(
+			A2(
+				$elm$core$List$filter,
+				$author$project$ItemShop$charIdMatches(char_id),
+				others)));
+	});
+var $elm$browser$Browser$Dom$getElement = _Browser_getElement;
+var $elm$browser$Browser$Dom$getViewport = _Browser_withWindow(_Browser_getViewport);
+var $author$project$ItemShop$isElementOnScreen = F2(
+	function (gvp, _v0) {
+		var element = _v0.element;
+		var _v1 = gvp.viewport;
+		var y = _v1.y;
+		var height = _v1.height;
+		return _Utils_cmp(y, element.y + element.height) > 0;
+	});
+var $author$project$ItemShop$updateUiOption = F2(
+	function (updater, m) {
+		return _Utils_update(
+			m,
+			{
+				uiOptions: updater(m.uiOptions)
+			});
+	});
+var $author$project$ItemShop$updateUiOptions = F2(
+	function (uiOptMsg, model) {
+		var noop = _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
+		switch (uiOptMsg.$) {
+			case 'MouseEnterShopItem':
+				var context = uiOptMsg.a;
+				var item = uiOptMsg.b;
+				return _Utils_Tuple2(
+					A2(
+						$author$project$ItemShop$updateUiOption,
+						function (uio) {
+							return _Utils_update(
+								uio,
+								{
+									hovered_item_in_character: $elm$core$Maybe$Just(item)
+								});
+						},
+						model),
+					$elm$core$Platform$Cmd$none);
+			case 'MouseLeaveShopItem':
+				var context = uiOptMsg.a;
+				var item = uiOptMsg.b;
+				return _Utils_Tuple2(
+					A2(
+						$author$project$ItemShop$updateUiOption,
+						function (uio) {
+							return _Utils_update(
+								uio,
+								{hovered_item_in_character: $elm$core$Maybe$Nothing});
+						},
+						model),
+					$elm$core$Platform$Cmd$none);
+			case 'StartTooltipHover':
+				var tooltip_id = uiOptMsg.a;
+				return _Utils_Tuple2(
+					A2(
+						$author$project$ItemShop$updateUiOption,
+						function (uio) {
+							return _Utils_update(
+								uio,
+								{
+									hovered_tooltip: $author$project$ItemShop$HoveredTooltipWithoutOffset(
+										A2(
+											$elm$core$Maybe$withDefault,
+											{hovered_tooltip_id: tooltip_id, offset_x: 0, offset_y: 0},
+											A2($elm$core$Dict$get, tooltip_id, uio.cached_tooltip_offsets)))
+								});
+						},
+						model),
+					A2(
+						$elm$core$Task$attempt,
+						A2($elm$core$Basics$composeL, $author$project$ItemShop$GotUiOptionsMsg, $author$project$ItemShop$GotTooltipSize),
+						$elm$browser$Browser$Dom$getElement('tooltip__' + tooltip_id)));
+			case 'EndTooltipHover':
+				var tooltip_id = uiOptMsg.a;
+				return _Utils_Tuple2(
+					A2(
+						$author$project$ItemShop$updateUiOption,
+						function (uio) {
+							return _Utils_update(
+								uio,
+								{hovered_tooltip: $author$project$ItemShop$NoHoveredTooltip});
+						},
+						model),
+					$elm$core$Platform$Cmd$none);
+			case 'GotTooltipSize':
+				var tooltip_size_result = uiOptMsg.a;
+				if (tooltip_size_result.$ === 'Ok') {
+					var sizes = tooltip_size_result.a;
+					var viewport_width = sizes.viewport.width;
+					var viewport_height = sizes.viewport.height;
+					var _v2 = sizes.element;
+					var x = _v2.x;
+					var y = _v2.y;
+					var width = _v2.width;
+					var height = _v2.height;
+					var offset_x = (x < 0) ? $elm$core$Basics$floor(
+						$elm$core$Basics$abs(x) + 10) : ((_Utils_cmp(x + width, viewport_width) > 0) ? $elm$core$Basics$floor((viewport_width - (x + width)) - 10) : $elm$core$Basics$floor(0));
+					var offset_y = (y < 0) ? $elm$core$Basics$floor(
+						$elm$core$Basics$abs(y) + 10) : ((_Utils_cmp(y + height, viewport_height) > 0) ? $elm$core$Basics$floor((viewport_height - (y + height)) - 10) : $elm$core$Basics$floor(0));
+					var _v3 = model.uiOptions.hovered_tooltip;
+					switch (_v3.$) {
+						case 'NoHoveredTooltip':
+							return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
+						case 'HoveredTooltipWithoutOffset':
+							var old_tooltip_data = _v3.a;
+							var new_tooltip_data = {hovered_tooltip_id: old_tooltip_data.hovered_tooltip_id, offset_x: offset_x + old_tooltip_data.offset_x, offset_y: offset_y + old_tooltip_data.offset_y};
+							return _Utils_Tuple2(
+								A2(
+									$author$project$ItemShop$updateUiOption,
+									function (uio) {
+										return _Utils_update(
+											uio,
+											{
+												cached_tooltip_offsets: A3($elm$core$Dict$insert, old_tooltip_data.hovered_tooltip_id, new_tooltip_data, uio.cached_tooltip_offsets),
+												hovered_tooltip: $author$project$ItemShop$HoveredTooltipWithOffset(new_tooltip_data)
+											});
+									},
+									model),
+								$elm$core$Platform$Cmd$none);
+						default:
+							var old_tooltip_data = _v3.a;
+							var new_tooltip_data = _Utils_update(
+								old_tooltip_data,
+								{offset_x: offset_x, offset_y: offset_y});
+							return _Utils_Tuple2(
+								A2(
+									$author$project$ItemShop$updateUiOption,
+									function (uio) {
+										return _Utils_update(
+											uio,
+											{
+												hovered_tooltip: $author$project$ItemShop$HoveredTooltipWithOffset(new_tooltip_data)
+											});
+									},
+									model),
+								$elm$core$Platform$Cmd$none);
+					}
+				} else {
+					return noop;
+				}
+			case 'StartTrendsHover':
+				return _Utils_Tuple2(
+					A2(
+						$author$project$ItemShop$updateUiOption,
+						function (uio) {
+							return _Utils_update(
+								uio,
+								{shop_trends_hovered: true});
+						},
+						model),
+					$elm$core$Platform$Cmd$none);
+			case 'EndTrendsHover':
+				return _Utils_Tuple2(
+					A2(
+						$author$project$ItemShop$updateUiOption,
+						function (uio) {
+							return _Utils_update(
+								uio,
+								{shop_trends_hovered: false});
+						},
+						model),
+					$elm$core$Platform$Cmd$none);
+			case 'ToggleShowMainChart':
+				return _Utils_Tuple2(
+					A2(
+						$author$project$ItemShop$updateUiOption,
+						function (uio) {
+							return _Utils_update(
+								uio,
+								{show_main_chart: !uio.show_main_chart});
+						},
+						model),
+					$elm$core$Platform$Cmd$none);
+			case 'OnTrendChartHover':
+				var hovered = uiOptMsg.a;
+				return _Utils_Tuple2(
+					A2(
+						$author$project$ItemShop$updateUiOption,
+						function (uio) {
+							return _Utils_update(
+								uio,
+								{hovered_trend_chart: hovered});
+						},
+						model),
+					$elm$core$Platform$Cmd$none);
+			case 'ToggleShowDebugInventories':
+				return _Utils_Tuple2(
+					A2(
+						$author$project$ItemShop$updateUiOption,
+						function (uio) {
+							return _Utils_update(
+								uio,
+								{show_debug_inventories: !uio.show_debug_inventories});
+						},
+						model),
+					$elm$core$Platform$Cmd$none);
+			case 'ChangeInventorySortType':
+				var inventorySortType = uiOptMsg.a;
+				return _Utils_Tuple2(
+					A2(
+						$author$project$ItemShop$updateUiOption,
+						function (uio) {
+							return _Utils_update(
+								uio,
+								{inventorySortType: inventorySortType});
+						},
+						model),
+					$elm$core$Platform$Cmd$none);
+			case 'ToggleHideNonZeroRows':
+				var char_id = uiOptMsg.a;
+				var new_characters = A2(
+					$author$project$ItemShop$mapCharacters,
+					function (_char) {
+						return (!_Utils_eq(_char.char_id, char_id)) ? _char : _Utils_update(
+							_char,
+							{hide_zero_qty_inv_rows: !_char.hide_zero_qty_inv_rows});
+					},
+					model.characters);
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{characters: new_characters}),
+					$elm$core$Platform$Cmd$none);
+			case 'CycleFilterDisplayedItemsForward':
+				var character_id = uiOptMsg.a;
+				var mb_item_type = uiOptMsg.b;
+				var maybeCharacter = A2($author$project$ItemShop$getCharacter, model.characters, character_id);
+				if (maybeCharacter.$ === 'Just') {
+					var character = maybeCharacter.a;
+					var getIdx = function (idx) {
+						return A2($elm_community$list_extra$List$Extra$getAt, idx, $author$project$ItemShop$allItemTypes);
+					};
+					var newItemType = function () {
+						if (mb_item_type.$ === 'Nothing') {
+							return getIdx(0);
+						} else {
+							var item_type = mb_item_type.a;
+							var curIdx = A2($elm_community$list_extra$List$Extra$elemIndex, item_type, $author$project$ItemShop$allItemTypes);
+							return A2(
+								$elm$core$Maybe$andThen,
+								getIdx,
+								A2(
+									$elm$core$Maybe$map,
+									$elm$core$Basics$add(1),
+									curIdx));
+						}
+					}();
+					return _Utils_Tuple2(
+						A2(
+							$author$project$ItemShop$replaceCharacter,
+							_Utils_update(
+								character,
+								{displayedItemType: newItemType}),
+							model),
+						$elm$core$Platform$Cmd$none);
+				} else {
+					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
+				}
+			case 'CycleFilterDisplayedItemsBackward':
+				var character_id = uiOptMsg.a;
+				var mb_item_type = uiOptMsg.b;
+				var maybeCharacter = A2($author$project$ItemShop$getCharacter, model.characters, character_id);
+				if (maybeCharacter.$ === 'Just') {
+					var character = maybeCharacter.a;
+					var getIdx = function (idx) {
+						return A2($elm_community$list_extra$List$Extra$getAt, idx, $author$project$ItemShop$allItemTypes);
+					};
+					var newItemType = function () {
+						if (mb_item_type.$ === 'Nothing') {
+							return getIdx(0);
+						} else {
+							var item_type = mb_item_type.a;
+							var curIdx = A2($elm_community$list_extra$List$Extra$elemIndex, item_type, $author$project$ItemShop$allItemTypes);
+							return A2(
+								$elm$core$Maybe$andThen,
+								getIdx,
+								A2(
+									$elm$core$Debug$log,
+									'curIdx',
+									A2(
+										$elm$core$Maybe$map,
+										function (i) {
+											return i - 1;
+										},
+										curIdx)));
+						}
+					}();
+					return _Utils_Tuple2(
+						A2(
+							$author$project$ItemShop$replaceCharacter,
+							_Utils_update(
+								character,
+								{displayedItemType: newItemType}),
+							model),
+						$elm$core$Platform$Cmd$none);
+				} else {
+					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
+				}
+			case 'ScrollViewport':
+				return _Utils_Tuple2(
+					model,
+					A2(
+						$elm$core$Task$perform,
+						A2($elm$core$Basics$composeL, $author$project$ItemShop$GotUiOptionsMsg, $author$project$ItemShop$GotViewport),
+						$elm$browser$Browser$Dom$getViewport));
+			case 'GotViewport':
+				var viewport = uiOptMsg.a;
+				return _Utils_Tuple2(
+					A2(
+						$author$project$ItemShop$updateUiOption,
+						function (uio) {
+							return _Utils_update(
+								uio,
+								{
+									globalViewport: $elm$core$Maybe$Just(viewport)
+								});
+						},
+						model),
+					A2(
+						$elm$core$Task$attempt,
+						A2($elm$core$Basics$composeL, $author$project$ItemShop$GotUiOptionsMsg, $author$project$ItemShop$GotShowDebugElement),
+						$elm$browser$Browser$Dom$getElement('show_debug_inventories')));
+			default:
+				var attemptedElement = uiOptMsg.a;
+				return _Utils_Tuple2(
+					A2(
+						$author$project$ItemShop$updateUiOption,
+						function (uio) {
+							var _v8 = function () {
+								if (attemptedElement.$ === 'Ok') {
+									var element = attemptedElement.a;
+									var shouldDisplay = A2(
+										$elm$core$Maybe$withDefault,
+										false,
+										A2(
+											$elm$core$Maybe$map,
+											function (gvp) {
+												return A2($author$project$ItemShop$isElementOnScreen, gvp, element);
+											},
+											model.uiOptions.globalViewport));
+									return _Utils_Tuple2(
+										$elm$core$Maybe$Just(element),
+										shouldDisplay);
+								} else {
+									return _Utils_Tuple2($elm$core$Maybe$Nothing, false);
+								}
+							}();
+							var modelElement = _v8.a;
+							var shouldDisplayShowDebugInventoriesOverlay = _v8.b;
+							return _Utils_update(
+								uio,
+								{shouldDisplayShowDebugInventoriesOverlay: shouldDisplayShowDebugInventoriesOverlay, showDebugInventoriesElement: modelElement});
+						},
+						model),
+					$elm$core$Platform$Cmd$none);
+		}
+	});
+var $author$project$ItemShop$getOthers = function (_v0) {
+	var player = _v0.a.player;
+	var shop = _v0.a.shop;
+	var others = _v0.a.others;
+	return others;
+};
 var $elm$time$Time$posixToMillis = function (_v0) {
 	var millis = _v0.a;
 	return millis;
@@ -10730,8 +11170,8 @@ var $author$project$ItemShop$ai_buy_item_from_shop = F5(
 						return _Debug_todo(
 							'ItemShop',
 							{
-								start: {line: 2689, column: 25},
-								end: {line: 2689, column: 35}
+								start: {line: 3324, column: 25},
+								end: {line: 3324, column: 35}
 							})('');
 					}
 				}()
@@ -10883,8 +11323,8 @@ var $author$project$ItemShop$ai_sell_item_to_shop = F5(
 							_Debug_todo(
 								'ItemShop',
 								{
-									start: {line: 2782, column: 25},
-									end: {line: 2782, column: 35}
+									start: {line: 3417, column: 25},
+									end: {line: 3417, column: 35}
 								}),
 							'',
 							_List_Nil);
@@ -10968,7 +11408,7 @@ var $author$project$ItemShop$update_ai = F4(
 				}
 			}();
 			var new_characters = A2(
-				$elm$core$List$map,
+				$author$project$ItemShop$mapCharacters,
 				function (c) {
 					return _Utils_eq(c.char_id, character.char_id) ? ai_update_record.character : (_Utils_eq(c.char_id, shop.char_id) ? ai_update_record.shop : c);
 				},
@@ -11016,11 +11456,51 @@ var $author$project$ItemShop$update_ai_chars = function (model) {
 			function ($) {
 				return $.char_id;
 			},
-			A2($author$project$ItemShop$exclude_player_and_shop, model, old_characters)));
+			$author$project$ItemShop$getOthers(old_characters)));
 	return _Utils_update(
 		model,
 		{characters: new_ai_data.characters, historical_shop_trends: new_ai_data.historical_shop_trends, item_db: new_ai_data.item_db, shop_trends: new_ai_data.shop_trends});
 };
+var $author$project$ItemShop$bloodCostForRefillSp = 3;
+var $author$project$Battle$isStatNotMax = function (stat) {
+	return !_Utils_eq(stat.curVal, stat.maxVal);
+};
+var $author$project$Battle$doesGolemNeedStamina = function (model) {
+	var golem = model.golem;
+	if (golem.$ === 'LivingMonster') {
+		var livingGolem = golem.a;
+		return $author$project$Battle$isStatNotMax(livingGolem.statStamina);
+	} else {
+		return false;
+	}
+};
+var $author$project$Battle$setGolem = F2(
+	function (newGolem, model) {
+		return _Utils_update(
+			model,
+			{golem: newGolem});
+	});
+var $author$project$Battle$increaseGolemStamina = F2(
+	function (model, staminaToGain) {
+		var golem = model.golem;
+		return function (g) {
+			return A2($author$project$Battle$setGolem, g, model);
+		}(
+			A2(
+				$author$project$Battle$monsterLivingMap,
+				$author$project$Battle$monsterStatMapStamina(
+					$author$project$Battle$addToStatCurVal(staminaToGain)),
+				golem));
+	});
+var $author$project$ItemShop$addGolemSpFromBlood = F3(
+	function (player, level, battleModel) {
+		var held_blood = player.held_blood;
+		return ((_Utils_cmp(held_blood, $author$project$ItemShop$bloodCostForRefillSp * level) > -1) && $author$project$Battle$doesGolemNeedStamina(battleModel)) ? _Utils_Tuple2(
+			_Utils_update(
+				player,
+				{held_blood: held_blood - ($author$project$ItemShop$bloodCostForRefillSp * level)}),
+			A2($author$project$Battle$increaseGolemStamina, battleModel, level)) : _Utils_Tuple2(player, battleModel);
+	});
 var $author$project$ItemShop$add_player_gpm = F2(
 	function (player, to_add) {
 		var max_gold = 50;
@@ -11032,23 +11512,36 @@ var $author$project$ItemShop$add_player_gpm = F2(
 				held_gold: A2($elm$core$Basics$min, max_gold, held_gold + to_add)
 			}) : player;
 	});
-var $author$project$ItemShop$apply_upgrade = F2(
+var $author$project$ItemShop$applyUpgrade = F2(
 	function (upgrade, _v0) {
 		var player = _v0.a;
 		var model = _v0.b;
-		var new_player = function () {
+		if (upgrade.$ === 'AutomaticGPM') {
 			var to_add = upgrade.a;
-			return A2($author$project$ItemShop$add_player_gpm, player, to_add);
-		}();
-		return _Utils_Tuple2(
-			new_player,
-			A2($author$project$ItemShop$withCharacter, new_player, model));
+			var newPlayer = A2($author$project$ItemShop$add_player_gpm, player, to_add);
+			return _Utils_Tuple2(
+				newPlayer,
+				A2($author$project$ItemShop$replaceCharacter, newPlayer, model));
+		} else {
+			var level = upgrade.a;
+			var _v2 = A3($author$project$ItemShop$addGolemSpFromBlood, player, level, model.battleModel);
+			var newPlayer = _v2.a;
+			var newBattleModel = _v2.b;
+			return _Utils_Tuple2(
+				newPlayer,
+				function (m) {
+					return _Utils_update(
+						m,
+						{battleModel: newBattleModel});
+				}(
+					A2($author$project$ItemShop$replaceCharacter, newPlayer, model)));
+		}
 	});
-var $author$project$ItemShop$apply_upgrades = F2(
+var $author$project$ItemShop$applyUpgrades = F2(
 	function (player, model) {
 		var _v0 = A3(
 			$elm$core$List$foldl,
-			$author$project$ItemShop$apply_upgrade,
+			$author$project$ItemShop$applyUpgrade,
 			_Utils_Tuple2(player, model),
 			model.player_upgrades);
 		var new_player = _v0.a;
@@ -11056,16 +11549,28 @@ var $author$project$ItemShop$apply_upgrades = F2(
 		return new_model;
 	});
 var $author$project$ItemShop$update_player = function (model) {
-	var _v0 = $author$project$ItemShop$getPlayer(model);
-	if (_v0.$ === 'Just') {
-		var player = _v0.a;
-		return A2($author$project$ItemShop$apply_upgrades, player, model);
-	} else {
-		return A2($elm$core$Debug$log, 'error: cant find player', model);
-	}
+	var _v0 = $author$project$ItemShop$getPlayer(model.characters);
+	var player = _v0.a;
+	return A2($author$project$ItemShop$applyUpgrades, player, model);
 };
 var $author$project$ItemShop$TookSpecialActionTogglePauseAi = {$: 'TookSpecialActionTogglePauseAi'};
 var $author$project$ItemShop$TookSpecialActionInviteTrader = {$: 'TookSpecialActionInviteTrader'};
+var $author$project$ItemShop$addOther = F2(
+	function (_v0, newOther) {
+		var player = _v0.a.player;
+		var shop = _v0.a.shop;
+		var others = _v0.a.others;
+		return $author$project$ItemShop$Characters(
+			{
+				others: A2(
+					$elm$core$List$append,
+					others,
+					_List_fromArray(
+						[newOther])),
+				player: player,
+				shop: shop
+			});
+	});
 var $author$project$ItemShop$addQuantityInt = F2(
 	function (qty, val) {
 		var orig_val = qty.a;
@@ -11092,6 +11597,12 @@ var $elm$core$List$any = F2(
 			}
 		}
 	});
+var $author$project$ItemShop$charactersLength = function (_v0) {
+	var player = _v0.a.player;
+	var shop = _v0.a.shop;
+	var others = _v0.a.others;
+	return 2 + $elm$core$List$length(others);
+};
 var $author$project$ItemShop$pick_item = F3(
 	function (item_db, _v0, _v1) {
 		var prev_seed = _v1.a;
@@ -11115,7 +11626,7 @@ var $author$project$ItemShop$pick_item = F3(
 	});
 var $author$project$ItemShop$handle_invite_trader = function (model) {
 	var name = 'Character ' + $elm$core$String$fromInt(
-		$elm$core$List$length(model.characters) + 1);
+		$author$project$ItemShop$charactersLength(model.characters) + 1);
 	var invited_character = A2(
 		$author$project$ItemShop$createCharacter,
 		$author$project$ItemShop$generate_uuid(name),
@@ -11181,14 +11692,11 @@ var $author$project$ItemShop$handle_invite_trader = function (model) {
 			model,
 			{
 				characters: A2(
-					$elm$core$List$append,
+					$author$project$ItemShop$addOther,
 					characters,
-					_List_fromArray(
-						[
-							_Utils_update(
-							invited_character,
-							{held_gold: 50, held_items: held_items})
-						])),
+					_Utils_update(
+						invited_character,
+						{held_gold: 50, held_items: held_items})),
 				global_seed: new_global_seed
 			}));
 };
@@ -11311,41 +11819,45 @@ var $author$project$ItemShop$scale_increase_income_cost = function (current_leve
 	return $author$project$ItemShop$setPrice(20 + (((5 * current_level) * current_level) * 2));
 };
 var $author$project$ItemShop$special_action_increase_income = function (model) {
-	var _v0 = $author$project$ItemShop$getPlayer(model);
-	if (_v0.$ === 'Nothing') {
-		return model;
-	} else {
-		var player = _v0.a;
-		var automaticGpmLevel = A2(
-			$elm$core$Maybe$withDefault,
-			1,
-			$elm$core$List$head(
-				A2(
-					$elm$core$List$filterMap,
-					function (_v2) {
-						var level = _v2.a;
-						return $elm$core$Maybe$Just(level);
-					},
-					model.player_upgrades)));
-		var upgradeCost = $author$project$ItemShop$scale_increase_income_cost(automaticGpmLevel);
-		return A2($author$project$ItemShop$hasEnoughGold, player, upgradeCost) ? function (m) {
-			return _Utils_update(
-				m,
-				{
-					player_upgrades: A2(
-						$elm$core$List$map,
-						function (_v1) {
-							var level = _v1.a;
-							return $author$project$ItemShop$AutomaticGPM(level + 1);
-						},
-						m.player_upgrades)
-				});
-		}(
+	var _v0 = $author$project$ItemShop$getPlayer(model.characters);
+	var player = _v0.a;
+	var automaticGpmLevel = A2(
+		$elm$core$Maybe$withDefault,
+		1,
+		$elm$core$List$head(
 			A2(
-				$author$project$ItemShop$withCharacter,
-				A2($author$project$ItemShop$subGold, player, upgradeCost),
-				model)) : model;
-	}
+				$elm$core$List$filterMap,
+				function (upgrade) {
+					if (upgrade.$ === 'AutomaticGPM') {
+						var level = upgrade.a;
+						return $elm$core$Maybe$Just(level);
+					} else {
+						return $elm$core$Maybe$Nothing;
+					}
+				},
+				model.player_upgrades)));
+	var upgradeCost = $author$project$ItemShop$scale_increase_income_cost(automaticGpmLevel);
+	return A2($author$project$ItemShop$hasEnoughGold, player, upgradeCost) ? function (m) {
+		return _Utils_update(
+			m,
+			{
+				player_upgrades: A2(
+					$elm$core$List$map,
+					function (upgrade) {
+						if (upgrade.$ === 'AutomaticGPM') {
+							var level = upgrade.a;
+							return $author$project$ItemShop$AutomaticGPM(level + 1);
+						} else {
+							return upgrade;
+						}
+					},
+					m.player_upgrades)
+			});
+	}(
+		A2(
+			$author$project$ItemShop$replaceCharacter,
+			A2($author$project$ItemShop$subGold, player, upgradeCost),
+			model)) : model;
 };
 var $author$project$ItemShop$TookSpecialActionUnlockItem = function (a) {
 	return {$: 'TookSpecialActionUnlockItem', a: a};
@@ -11420,168 +11932,119 @@ var $author$project$ItemShop$special_action_unlock_item = function (model) {
 };
 var $author$project$ItemShop$update_special_action = F3(
 	function (special_action, price, model) {
-		return A2(
-			$elm$core$Maybe$withDefault,
-			_Utils_Tuple2(model, $elm$core$Platform$Cmd$none),
-			A2(
-				$elm$core$Maybe$map,
-				function (player) {
-					return function (new_model) {
-						switch (special_action.$) {
-							case 'InviteTrader':
-								return _Utils_Tuple2(
+		var _v0 = $author$project$ItemShop$getPlayer(model.characters);
+		var player = _v0.a;
+		return A2($author$project$ItemShop$hasEnoughGold, player, price) ? function (new_model) {
+			switch (special_action.$) {
+				case 'InviteTrader':
+					return _Utils_Tuple2(
+						$author$project$ItemShop$handle_invite_trader(
+							$author$project$ItemShop$handle_invite_trader(
+								$author$project$ItemShop$handle_invite_trader(
 									$author$project$ItemShop$handle_invite_trader(
 										$author$project$ItemShop$handle_invite_trader(
 											$author$project$ItemShop$handle_invite_trader(
 												$author$project$ItemShop$handle_invite_trader(
-													$author$project$ItemShop$handle_invite_trader(
-														$author$project$ItemShop$handle_invite_trader(
-															$author$project$ItemShop$handle_invite_trader(
-																$author$project$ItemShop$handle_invite_trader(new_model)))))))),
-									$elm$core$Platform$Cmd$none);
-							case 'TriggerEvent':
-								var event = special_action.a;
-								return _Utils_Tuple2(
-									A2($author$project$ItemShop$handle_special_event, new_model, event),
-									$elm$core$Platform$Cmd$none);
-							case 'TogglePauseAi':
-								return _Utils_Tuple2(
-									A2(
-										$author$project$ItemShop$append_player_action_log,
-										$author$project$ItemShop$TookSpecialActionTogglePauseAi,
-										_Utils_update(
-											new_model,
-											{ai_updates_paused: !new_model.ai_updates_paused})),
-									$elm$core$Platform$Cmd$none);
-							case 'UnlockItem':
-								return _Utils_Tuple2(
-									$author$project$ItemShop$special_action_unlock_item(model),
-									$elm$core$Platform$Cmd$none);
-							default:
-								return _Utils_Tuple2(
-									$author$project$ItemShop$special_action_increase_income(model),
-									$elm$core$Platform$Cmd$none);
-						}
-					}(
+													$author$project$ItemShop$handle_invite_trader(new_model)))))))),
+						$elm$core$Platform$Cmd$none);
+				case 'TriggerEvent':
+					var event = special_action.a;
+					return _Utils_Tuple2(
+						A2($author$project$ItemShop$handle_special_event, new_model, event),
+						$elm$core$Platform$Cmd$none);
+				case 'TogglePauseAi':
+					return _Utils_Tuple2(
 						A2(
-							$author$project$ItemShop$withCharacter,
-							A2($author$project$ItemShop$subGold, player, price),
-							model));
-				},
-				A2(
-					$elm$core$Maybe$andThen,
-					function (player) {
-						return A2($author$project$ItemShop$hasEnoughGold, player, price) ? $elm$core$Maybe$Just(player) : $elm$core$Maybe$Nothing;
-					},
-					$author$project$ItemShop$getPlayer(model))));
+							$author$project$ItemShop$append_player_action_log,
+							$author$project$ItemShop$TookSpecialActionTogglePauseAi,
+							_Utils_update(
+								new_model,
+								{ai_updates_paused: !new_model.ai_updates_paused})),
+						$elm$core$Platform$Cmd$none);
+				case 'UnlockItem':
+					return _Utils_Tuple2(
+						$author$project$ItemShop$special_action_unlock_item(model),
+						$elm$core$Platform$Cmd$none);
+				default:
+					return _Utils_Tuple2(
+						$author$project$ItemShop$special_action_increase_income(model),
+						$elm$core$Platform$Cmd$none);
+			}
+		}(
+			A2(
+				$author$project$ItemShop$replaceCharacter,
+				A2($author$project$ItemShop$subGold, player, price),
+				model)) : _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 	});
 var $author$project$ItemShop$update = F2(
 	function (msg, model) {
 		switch (msg.$) {
 			case 'Noop':
 				return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
-			case 'MouseEnterShopItem':
-				var context = msg.a;
-				var item = msg.b;
-				return _Utils_Tuple2(
-					_Utils_update(
-						model,
-						{
-							hovered_item_in_character: $elm$core$Maybe$Just(item)
-						}),
-					$elm$core$Platform$Cmd$none);
-			case 'MouseLeaveShopItem':
-				var context = msg.a;
-				var item = msg.b;
-				return _Utils_Tuple2(
-					_Utils_update(
-						model,
-						{hovered_item_in_character: $elm$core$Maybe$Nothing}),
-					$elm$core$Platform$Cmd$none);
 			case 'PlayerBuyItemFromShop':
 				var item = msg.a;
 				var qty = msg.b;
 				var _v1 = _Utils_Tuple2(
-					$author$project$ItemShop$getShop(model),
-					$author$project$ItemShop$getPlayer(model));
-				if ((_v1.a.$ === 'Just') && (_v1.b.$ === 'Just')) {
-					var shop = _v1.a.a;
-					var player = _v1.b.a;
-					var trade_record = A2(
-						$author$project$ItemShop$sell_items_from_party_to_other,
-						{from_party: shop, shop_trends: model.shop_trends, to_party: player},
-						{item: item, qty: qty});
-					var new_trade_context = $author$project$ItemShop$getTradeContext(trade_record);
-					var new_item_db = A3($author$project$ItemShop$updateItemDbFromTradeRecord, model.item_db, $author$project$ItemShop$updateTimesYouBought, trade_record);
-					return _Utils_Tuple2(
+					$author$project$ItemShop$getShop(model.characters),
+					$author$project$ItemShop$getPlayer(model.characters));
+				var shop = _v1.a.a;
+				var player = _v1.b.a;
+				var trade_record = A2(
+					$author$project$ItemShop$sell_items_from_party_to_other,
+					{from_party: shop, shop_trends: model.shop_trends, to_party: player},
+					{item: item, qty: qty});
+				var new_trade_context = $author$project$ItemShop$getTradeContext(trade_record);
+				var new_item_db = A3($author$project$ItemShop$updateItemDbFromTradeRecord, model.item_db, $author$project$ItemShop$updateTimesYouBought, trade_record);
+				return _Utils_Tuple2(
+					A2(
+						$author$project$ItemShop$replaceCharacter,
+						new_trade_context.from_party,
 						A2(
-							$author$project$ItemShop$withCharacter,
-							new_trade_context.from_party,
-							A2(
-								$author$project$ItemShop$withCharacter,
-								new_trade_context.to_party,
-								_Utils_update(
-									model,
-									{
-										historical_shop_trends: A2(
-											$elm$core$List$append,
-											model.historical_shop_trends,
-											_List_fromArray(
-												[model.shop_trends])),
-										item_db: new_item_db,
-										shop_trends: new_trade_context.shop_trends
-									}))),
-						$elm$core$Platform$Cmd$none);
-				} else {
-					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
-				}
+							$author$project$ItemShop$replaceCharacter,
+							new_trade_context.to_party,
+							_Utils_update(
+								model,
+								{
+									historical_shop_trends: A2(
+										$elm$core$List$append,
+										model.historical_shop_trends,
+										_List_fromArray(
+											[model.shop_trends])),
+									item_db: new_item_db,
+									shop_trends: new_trade_context.shop_trends
+								}))),
+					$elm$core$Platform$Cmd$none);
 			case 'PlayerSellItemToShop':
 				var item = msg.a;
 				var qty = msg.b;
 				var _v2 = _Utils_Tuple2(
-					$author$project$ItemShop$getShop(model),
-					$author$project$ItemShop$getPlayer(model));
-				if ((_v2.a.$ === 'Just') && (_v2.b.$ === 'Just')) {
-					var shop = _v2.a.a;
-					var player = _v2.b.a;
-					var trade_order = {item: item, qty: qty};
-					var orig_trade_context = {from_party: player, shop_trends: model.shop_trends, to_party: shop};
-					var trade_record = A2($author$project$ItemShop$sell_items_from_party_to_other, orig_trade_context, trade_order);
-					var new_trade_context = $author$project$ItemShop$getTradeContext(trade_record);
-					var new_item_db = A3($author$project$ItemShop$updateItemDbFromTradeRecord, model.item_db, $author$project$ItemShop$updateTimesYouSold, trade_record);
-					return _Utils_Tuple2(
+					$author$project$ItemShop$getShop(model.characters),
+					$author$project$ItemShop$getPlayer(model.characters));
+				var shop = _v2.a.a;
+				var player = _v2.b.a;
+				var trade_order = {item: item, qty: qty};
+				var orig_trade_context = {from_party: player, shop_trends: model.shop_trends, to_party: shop};
+				var trade_record = A2($author$project$ItemShop$sell_items_from_party_to_other, orig_trade_context, trade_order);
+				var new_trade_context = $author$project$ItemShop$getTradeContext(trade_record);
+				var new_item_db = A3($author$project$ItemShop$updateItemDbFromTradeRecord, model.item_db, $author$project$ItemShop$updateTimesYouSold, trade_record);
+				return _Utils_Tuple2(
+					A2(
+						$author$project$ItemShop$replaceCharacter,
+						new_trade_context.to_party,
 						A2(
-							$author$project$ItemShop$withCharacter,
-							new_trade_context.to_party,
-							A2(
-								$author$project$ItemShop$withCharacter,
-								new_trade_context.from_party,
-								_Utils_update(
-									model,
-									{
-										historical_shop_trends: A2(
-											$elm$core$List$append,
-											model.historical_shop_trends,
-											_List_fromArray(
-												[model.shop_trends])),
-										item_db: new_item_db,
-										shop_trends: new_trade_context.shop_trends
-									}))),
-						$elm$core$Platform$Cmd$none);
-				} else {
-					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
-				}
-			case 'StartTrendsHover':
-				return _Utils_Tuple2(
-					_Utils_update(
-						model,
-						{shop_trends_hovered: true}),
-					$elm$core$Platform$Cmd$none);
-			case 'EndTrendsHover':
-				return _Utils_Tuple2(
-					_Utils_update(
-						model,
-						{shop_trends_hovered: false}),
+							$author$project$ItemShop$replaceCharacter,
+							new_trade_context.from_party,
+							_Utils_update(
+								model,
+								{
+									historical_shop_trends: A2(
+										$elm$core$List$append,
+										model.historical_shop_trends,
+										_List_fromArray(
+											[model.shop_trends])),
+									item_db: new_item_db,
+									shop_trends: new_trade_context.shop_trends
+								}))),
 					$elm$core$Platform$Cmd$none);
 			case 'TickSecond':
 				var time = msg.a;
@@ -11592,32 +12055,18 @@ var $author$project$ItemShop$update = F2(
 								model,
 								{ai_tick_time: time}))),
 					$elm$core$Platform$Cmd$none) : _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
-			case 'ToggleShowMainChart':
-				return _Utils_Tuple2(
-					_Utils_update(
-						model,
-						{show_main_chart: !model.show_main_chart}),
-					$elm$core$Platform$Cmd$none);
-			case 'OnTrendChartHover':
-				var hovered = msg.a;
-				return _Utils_Tuple2(
-					_Utils_update(
-						model,
-						{hovered_trend_chart: hovered}),
-					$elm$core$Platform$Cmd$none);
-			case 'ToggleShowDebugInventories':
-				return _Utils_Tuple2(
-					_Utils_update(
-						model,
-						{show_debug_inventories: !model.show_debug_inventories}),
-					$elm$core$Platform$Cmd$none);
 			case 'KeyPressedMsg':
 				var key_event_msg = msg.a;
 				if (key_event_msg.$ === 'KeyEventShift') {
+					var _v4 = model;
+					var uiOptions = _v4.uiOptions;
+					var newUiOptions = _Utils_update(
+						uiOptions,
+						{shiftIsPressed: true, show_charts_in_hovered_item: true});
 					return _Utils_Tuple2(
 						_Utils_update(
 							model,
-							{shiftIsPressed: true, show_charts_in_hovered_item: true}),
+							{uiOptions: newUiOptions}),
 						$elm$core$Platform$Cmd$none);
 				} else {
 					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
@@ -11625,103 +12074,23 @@ var $author$project$ItemShop$update = F2(
 			case 'KeyReleasedMsg':
 				var key_event_msg = msg.a;
 				if (key_event_msg.$ === 'KeyEventShift') {
+					var _v6 = model;
+					var uiOptions = _v6.uiOptions;
+					var newUiOptions = _Utils_update(
+						uiOptions,
+						{shiftIsPressed: false, show_charts_in_hovered_item: false});
 					return _Utils_Tuple2(
 						_Utils_update(
 							model,
-							{shiftIsPressed: false, show_charts_in_hovered_item: false}),
+							{uiOptions: newUiOptions}),
 						$elm$core$Platform$Cmd$none);
 				} else {
-					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
-				}
-			case 'StartTooltipHover':
-				var tooltip_id = msg.a;
-				return _Utils_Tuple2(
-					_Utils_update(
-						model,
-						{
-							hovered_tooltip: $author$project$ItemShop$HoveredTooltipWithoutOffset(
-								A2(
-									$elm$core$Maybe$withDefault,
-									{hovered_tooltip_id: tooltip_id, offset_x: 0, offset_y: 0},
-									A2($elm$core$Dict$get, tooltip_id, model.cached_tooltip_offsets)))
-						}),
-					A2(
-						$elm$core$Task$attempt,
-						$author$project$ItemShop$GotTooltipSize,
-						$elm$browser$Browser$Dom$getElement('tooltip__' + tooltip_id)));
-			case 'EndTooltipHover':
-				var tooltip_id = msg.a;
-				return _Utils_Tuple2(
-					_Utils_update(
-						model,
-						{hovered_tooltip: $author$project$ItemShop$NoHoveredTooltip}),
-					$elm$core$Platform$Cmd$none);
-			case 'GotTooltipSize':
-				var tooltip_size_result = msg.a;
-				if (tooltip_size_result.$ === 'Ok') {
-					var sizes = tooltip_size_result.a;
-					var viewport_width = sizes.viewport.width;
-					var viewport_height = sizes.viewport.height;
-					var _v6 = sizes.element;
-					var x = _v6.x;
-					var y = _v6.y;
-					var width = _v6.width;
-					var height = _v6.height;
-					var offset_x = (x < 0) ? $elm$core$Basics$floor(
-						$elm$core$Basics$abs(x) + 10) : ((_Utils_cmp(x + width, viewport_width) > 0) ? $elm$core$Basics$floor((viewport_width - (x + width)) - 10) : $elm$core$Basics$floor(0));
-					var offset_y = (y < 0) ? $elm$core$Basics$floor(
-						$elm$core$Basics$abs(y) + 10) : ((_Utils_cmp(y + height, viewport_height) > 0) ? $elm$core$Basics$floor((viewport_height - (y + height)) - 10) : $elm$core$Basics$floor(0));
-					var _v7 = model.hovered_tooltip;
-					switch (_v7.$) {
-						case 'NoHoveredTooltip':
-							return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
-						case 'HoveredTooltipWithoutOffset':
-							var old_tooltip_data = _v7.a;
-							var new_tooltip_data = {hovered_tooltip_id: old_tooltip_data.hovered_tooltip_id, offset_x: offset_x + old_tooltip_data.offset_x, offset_y: offset_y + old_tooltip_data.offset_y};
-							return _Utils_Tuple2(
-								_Utils_update(
-									model,
-									{
-										cached_tooltip_offsets: A3($elm$core$Dict$insert, old_tooltip_data.hovered_tooltip_id, new_tooltip_data, model.cached_tooltip_offsets),
-										hovered_tooltip: $author$project$ItemShop$HoveredTooltipWithOffset(new_tooltip_data)
-									}),
-								$elm$core$Platform$Cmd$none);
-						default:
-							var old_tooltip_data = _v7.a;
-							var new_tooltip_data = _Utils_update(
-								old_tooltip_data,
-								{offset_x: offset_x, offset_y: offset_y});
-							return _Utils_Tuple2(
-								_Utils_update(
-									model,
-									{
-										hovered_tooltip: $author$project$ItemShop$HoveredTooltipWithOffset(new_tooltip_data)
-									}),
-								$elm$core$Platform$Cmd$none);
-					}
-				} else {
-					var error = tooltip_size_result.a;
 					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 				}
 			case 'OnSpecialAction':
 				var special_action = msg.a;
 				var price = msg.b;
 				return A3($author$project$ItemShop$update_special_action, special_action, price, model);
-			case 'ToggleHideNonZeroRows':
-				var char_id = msg.a;
-				var new_characters = A2(
-					$elm$core$List$map,
-					function (_char) {
-						return (!_Utils_eq(_char.char_id, char_id)) ? _char : _Utils_update(
-							_char,
-							{hide_zero_qty_inv_rows: !_char.hide_zero_qty_inv_rows});
-					},
-					model.characters);
-				return _Utils_Tuple2(
-					_Utils_update(
-						model,
-						{characters: new_characters}),
-					$elm$core$Platform$Cmd$none);
 			case 'ChangeTabType':
 				var tab_type = msg.a;
 				return _Utils_Tuple2(
@@ -11729,9 +12098,9 @@ var $author$project$ItemShop$update = F2(
 						model,
 						{tab_type: tab_type}),
 					function () {
-						var _v8 = model.browserNavKey;
-						if (_v8.$ === 'Just') {
-							var key = _v8.a;
+						var _v7 = model.browserNavKey;
+						if (_v7.$ === 'Just') {
+							var key = _v7.a;
 							return A2(
 								$elm$browser$Browser$Navigation$pushUrl,
 								key,
@@ -11740,152 +12109,36 @@ var $author$project$ItemShop$update = F2(
 							return $elm$core$Platform$Cmd$none;
 						}
 					}());
-			case 'CycleFilterDisplayedItemsForward':
-				var character_id = msg.a;
-				var mb_item_type = msg.b;
-				var maybeCharacter = A2($author$project$ItemShop$getCharacter, model.characters, character_id);
-				if (maybeCharacter.$ === 'Just') {
-					var character = maybeCharacter.a;
-					var getIdx = function (idx) {
-						return A2($elm_community$list_extra$List$Extra$getAt, idx, $author$project$ItemShop$allItemTypes);
-					};
-					var newItemType = function () {
-						if (mb_item_type.$ === 'Nothing') {
-							return getIdx(0);
-						} else {
-							var item_type = mb_item_type.a;
-							var curIdx = A2($elm_community$list_extra$List$Extra$elemIndex, item_type, $author$project$ItemShop$allItemTypes);
-							return A2(
-								$elm$core$Maybe$andThen,
-								getIdx,
-								A2(
-									$elm$core$Maybe$map,
-									$elm$core$Basics$add(1),
-									curIdx));
-						}
-					}();
-					return _Utils_Tuple2(
-						A2(
-							$author$project$ItemShop$withCharacter,
-							_Utils_update(
-								character,
-								{displayedItemType: newItemType}),
-							model),
-						$elm$core$Platform$Cmd$none);
-				} else {
-					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
-				}
-			case 'CycleFilterDisplayedItemsBackward':
-				var character_id = msg.a;
-				var mb_item_type = msg.b;
-				var maybeCharacter = A2($author$project$ItemShop$getCharacter, model.characters, character_id);
-				if (maybeCharacter.$ === 'Just') {
-					var character = maybeCharacter.a;
-					var getIdx = function (idx) {
-						return A2($elm_community$list_extra$List$Extra$getAt, idx, $author$project$ItemShop$allItemTypes);
-					};
-					var newItemType = function () {
-						if (mb_item_type.$ === 'Nothing') {
-							return getIdx(0);
-						} else {
-							var item_type = mb_item_type.a;
-							var curIdx = A2($elm_community$list_extra$List$Extra$elemIndex, item_type, $author$project$ItemShop$allItemTypes);
-							return A2(
-								$elm$core$Maybe$andThen,
-								getIdx,
-								A2(
-									$elm$core$Debug$log,
-									'curIdx',
-									A2(
-										$elm$core$Maybe$map,
-										function (i) {
-											return i - 1;
-										},
-										curIdx)));
-						}
-					}();
-					return _Utils_Tuple2(
-						A2(
-							$author$project$ItemShop$withCharacter,
-							_Utils_update(
-								character,
-								{displayedItemType: newItemType}),
-							model),
-						$elm$core$Platform$Cmd$none);
-				} else {
-					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
-				}
-			case 'ScrollViewport':
-				return _Utils_Tuple2(
-					model,
-					A2($elm$core$Task$perform, $author$project$ItemShop$GotViewport, $elm$browser$Browser$Dom$getViewport));
-			case 'GotViewport':
-				var viewport = msg.a;
-				return _Utils_Tuple2(
-					_Utils_update(
-						model,
-						{
-							globalViewport: $elm$core$Maybe$Just(viewport)
-						}),
-					A2(
-						$elm$core$Task$attempt,
-						$author$project$ItemShop$GotShowDebugElement,
-						$elm$browser$Browser$Dom$getElement('show_debug_inventories')));
-			case 'GotShowDebugElement':
-				var attemptedElement = msg.a;
-				var _v13 = function () {
-					if (attemptedElement.$ === 'Ok') {
-						var element = attemptedElement.a;
-						var shouldDisplay = A2(
-							$elm$core$Maybe$withDefault,
-							false,
-							A2(
-								$elm$core$Maybe$map,
-								function (gvp) {
-									return A2($author$project$ItemShop$isElementOnScreen, gvp, element);
-								},
-								model.globalViewport));
-						return _Utils_Tuple2(
-							$elm$core$Maybe$Just(element),
-							shouldDisplay);
-					} else {
-						return _Utils_Tuple2($elm$core$Maybe$Nothing, false);
-					}
-				}();
-				var modelElement = _v13.a;
-				var shouldDisplayShowDebugInventoriesOverlay = _v13.b;
-				return _Utils_Tuple2(
-					_Utils_update(
-						model,
-						{shouldDisplayShowDebugInventoriesOverlay: shouldDisplayShowDebugInventoriesOverlay, showDebugInventoriesElement: modelElement}),
-					$elm$core$Platform$Cmd$none);
 			case 'SacrificeItem':
 				var item = msg.a;
+				var newCharacters = A2(
+					$author$project$ItemShop$mapPlayer,
+					function (player) {
+						var itemGoldCost = A3(
+							$author$project$ItemShop$get_adjusted_item_cost,
+							model.shop_trends,
+							item,
+							$author$project$ItemShop$setQuantity(1));
+						var newItems = A4(
+							$author$project$ItemShop$remove_item_from_inventory_records,
+							player.held_items,
+							item,
+							$author$project$ItemShop$setQuantity(1),
+							itemGoldCost);
+						return _Utils_update(
+							player,
+							{held_blood: player.held_blood + itemGoldCost, held_items: newItems});
+					},
+					model.characters);
 				return _Utils_Tuple2(
-					A2(
-						$author$project$ItemShop$mapPlayer,
-						function (player) {
-							var itemGoldCost = A3(
-								$author$project$ItemShop$get_adjusted_item_cost,
-								model.shop_trends,
-								item,
-								$author$project$ItemShop$setQuantity(1));
-							var newItems = A4(
-								$author$project$ItemShop$remove_item_from_inventory_records,
-								player.held_items,
-								item,
-								$author$project$ItemShop$setQuantity(1),
-								itemGoldCost);
-							return _Utils_update(
-								player,
-								{held_blood: player.held_blood + itemGoldCost, held_items: newItems});
-						},
-						model),
+					_Utils_update(
+						model,
+						{characters: newCharacters}),
 					$elm$core$Platform$Cmd$none);
 			case 'ToggleColorTheme':
 				var newColorTheme = function () {
-					var _v15 = model.colorTheme;
-					if (_v15.$ === 'BrightTheme') {
+					var _v8 = model.colorTheme;
+					if (_v8.$ === 'BrightTheme') {
 						return $author$project$Interface$DarkTheme;
 					} else {
 						return $author$project$Interface$BrightTheme;
@@ -11898,20 +12151,20 @@ var $author$project$ItemShop$update = F2(
 					$elm$core$Platform$Cmd$none);
 			case 'GotBattleMsg':
 				var battleMsg = msg.a;
-				var _v16 = A2(
+				var _v9 = A2(
 					$author$project$Battle$update,
 					$author$project$ItemShop$transferToBattleModel(model),
 					battleMsg);
-				var newBattleModel = _v16.a;
-				var newBattleCmds = _v16.b;
-				var battleOutMsg = _v16.c;
+				var newBattleModel = _v9.a;
+				var newBattleCmds = _v9.b;
+				var battleOutMsg = _v9.c;
 				var mappedCmds = A2($elm$core$Platform$Cmd$map, $author$project$ItemShop$GotBattleMsg, newBattleCmds);
-				var _v17 = A2(
+				var _v10 = A2(
 					$author$project$ItemShop$updateBattleOutMsg,
 					battleOutMsg,
 					A2($author$project$ItemShop$transferFromBattleModel, model, newBattleModel));
-				var newModel = _v17.a;
-				var newOutCmds = _v17.b;
+				var newModel = _v10.a;
+				var newOutCmds = _v10.b;
 				var newCmds = $elm$core$Platform$Cmd$batch(
 					A2(
 						$elm$core$List$cons,
@@ -11920,12 +12173,8 @@ var $author$project$ItemShop$update = F2(
 							[newOutCmds])));
 				return _Utils_Tuple2(newModel, newCmds);
 			default:
-				var inventorySortType = msg.a;
-				return _Utils_Tuple2(
-					_Utils_update(
-						model,
-						{inventorySortType: inventorySortType}),
-					$elm$core$Platform$Cmd$none);
+				var uiOptMsg = msg.a;
+				return A2($author$project$ItemShop$updateUiOptions, uiOptMsg, model);
 		}
 	});
 var $elm$json$Json$Encode$bool = _Json_wrap;
@@ -18490,15 +18739,15 @@ var $mdgriffith$elm_ui$Element$none = $mdgriffith$elm_ui$Internal$Model$Empty;
 var $elm$virtual_dom$VirtualDom$style = _VirtualDom_style;
 var $elm$html$Html$Attributes$style = $elm$virtual_dom$VirtualDom$style;
 var $author$project$ItemShop$ScrollViewport = {$: 'ScrollViewport'};
-var $mdgriffith$elm_ui$Element$Font$color = function (fontColor) {
+var $mdgriffith$elm_ui$Element$Background$color = function (clr) {
 	return A2(
 		$mdgriffith$elm_ui$Internal$Model$StyleClass,
-		$mdgriffith$elm_ui$Internal$Flag$fontColor,
+		$mdgriffith$elm_ui$Internal$Flag$bgColor,
 		A3(
 			$mdgriffith$elm_ui$Internal$Model$Colored,
-			'fc-' + $mdgriffith$elm_ui$Internal$Model$formatColorClass(fontColor),
-			'color',
-			fontColor));
+			'bg-' + $mdgriffith$elm_ui$Internal$Model$formatColorClass(clr),
+			'background-color',
+			clr));
 };
 var $mdgriffith$elm_ui$Element$fromRgb = function (clr) {
 	return A4($mdgriffith$elm_ui$Internal$Model$Rgba, clr.red, clr.green, clr.blue, clr.alpha);
@@ -18518,18 +18767,6 @@ var $avh4$elm_color$Color$RgbaSpace = F4(
 	function (a, b, c, d) {
 		return {$: 'RgbaSpace', a: a, b: b, c: c, d: d};
 	});
-var $avh4$elm_color$Color$red = A4($avh4$elm_color$Color$RgbaSpace, 204 / 255, 0 / 255, 0 / 255, 1.0);
-var $author$project$Interface$color_danger = $author$project$Interface$convertColor($avh4$elm_color$Color$red);
-var $mdgriffith$elm_ui$Element$Background$color = function (clr) {
-	return A2(
-		$mdgriffith$elm_ui$Internal$Model$StyleClass,
-		$mdgriffith$elm_ui$Internal$Flag$bgColor,
-		A3(
-			$mdgriffith$elm_ui$Internal$Model$Colored,
-			'bg-' + $mdgriffith$elm_ui$Internal$Model$formatColorClass(clr),
-			'background-color',
-			clr));
-};
 var $avh4$elm_color$Color$darkCharcoal = A4($avh4$elm_color$Color$RgbaSpace, 46 / 255, 52 / 255, 54 / 255, 1.0);
 var $avh4$elm_color$Color$white = A4($avh4$elm_color$Color$RgbaSpace, 255 / 255, 255 / 255, 255 / 255, 1.0);
 var $author$project$ItemShop$defaultSolidColor = function (colorTheme) {
@@ -18542,6 +18779,16 @@ var $author$project$ItemShop$defaultSolidColor = function (colorTheme) {
 var $author$project$ItemShop$defaultBackgroundColor = function (colorTheme) {
 	return $mdgriffith$elm_ui$Element$Background$color(
 		$author$project$ItemShop$defaultSolidColor(colorTheme));
+};
+var $mdgriffith$elm_ui$Element$Font$color = function (fontColor) {
+	return A2(
+		$mdgriffith$elm_ui$Internal$Model$StyleClass,
+		$mdgriffith$elm_ui$Internal$Flag$fontColor,
+		A3(
+			$mdgriffith$elm_ui$Internal$Model$Colored,
+			'fc-' + $mdgriffith$elm_ui$Internal$Model$formatColorClass(fontColor),
+			'color',
+			fontColor));
 };
 var $avh4$elm_color$Color$black = A4($avh4$elm_color$Color$RgbaSpace, 0 / 255, 0 / 255, 0 / 255, 1.0);
 var $elm$core$Result$andThen = F2(
@@ -18822,33 +19069,6 @@ var $author$project$ItemShop$defaultFontColor = function (colorTheme) {
 	return $mdgriffith$elm_ui$Element$Font$color(
 		$author$project$ItemShop$defaultTextColor(colorTheme));
 };
-var $mdgriffith$elm_ui$Internal$Model$Height = function (a) {
-	return {$: 'Height', a: a};
-};
-var $mdgriffith$elm_ui$Element$height = $mdgriffith$elm_ui$Internal$Model$Height;
-var $mdgriffith$elm_ui$Internal$Model$Content = {$: 'Content'};
-var $mdgriffith$elm_ui$Element$shrink = $mdgriffith$elm_ui$Internal$Model$Content;
-var $mdgriffith$elm_ui$Internal$Model$Width = function (a) {
-	return {$: 'Width', a: a};
-};
-var $mdgriffith$elm_ui$Element$width = $mdgriffith$elm_ui$Internal$Model$Width;
-var $mdgriffith$elm_ui$Element$el = F2(
-	function (attrs, child) {
-		return A4(
-			$mdgriffith$elm_ui$Internal$Model$element,
-			$mdgriffith$elm_ui$Internal$Model$asEl,
-			$mdgriffith$elm_ui$Internal$Model$div,
-			A2(
-				$elm$core$List$cons,
-				$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$shrink),
-				A2(
-					$elm$core$List$cons,
-					$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$shrink),
-					attrs)),
-			$mdgriffith$elm_ui$Internal$Model$Unkeyed(
-				_List_fromArray(
-					[child])));
-	});
 var $mdgriffith$elm_ui$Internal$Model$Fill = function (a) {
 	return {$: 'Fill', a: a};
 };
@@ -18985,9 +19205,6 @@ var $mdgriffith$elm_ui$Element$padding = function (x) {
 			f,
 			f));
 };
-var $mdgriffith$elm_ui$Element$text = function (content) {
-	return $mdgriffith$elm_ui$Internal$Model$Text(content);
-};
 var $author$project$Battle$ChangeLocation = function (a) {
 	return {$: 'ChangeLocation', a: a};
 };
@@ -19014,6 +19231,16 @@ var $mdgriffith$elm_ui$Internal$Model$CenterY = {$: 'CenterY'};
 var $mdgriffith$elm_ui$Element$centerY = $mdgriffith$elm_ui$Internal$Model$AlignY($mdgriffith$elm_ui$Internal$Model$CenterY);
 var $mdgriffith$elm_ui$Internal$Model$AsColumn = {$: 'AsColumn'};
 var $mdgriffith$elm_ui$Internal$Model$asColumn = $mdgriffith$elm_ui$Internal$Model$AsColumn;
+var $mdgriffith$elm_ui$Internal$Model$Height = function (a) {
+	return {$: 'Height', a: a};
+};
+var $mdgriffith$elm_ui$Element$height = $mdgriffith$elm_ui$Internal$Model$Height;
+var $mdgriffith$elm_ui$Internal$Model$Content = {$: 'Content'};
+var $mdgriffith$elm_ui$Element$shrink = $mdgriffith$elm_ui$Internal$Model$Content;
+var $mdgriffith$elm_ui$Internal$Model$Width = function (a) {
+	return {$: 'Width', a: a};
+};
+var $mdgriffith$elm_ui$Element$width = $mdgriffith$elm_ui$Internal$Model$Width;
 var $mdgriffith$elm_ui$Element$column = F2(
 	function (attrs, children) {
 		return A4(
@@ -19169,7 +19396,8 @@ var $mdgriffith$elm_ui$Element$Input$button = F2(
 				_List_fromArray(
 					[label])));
 	});
-var $author$project$Interface$color_black = A3($mdgriffith$elm_ui$Element$rgb, 0, 0, 0);
+var $avh4$elm_color$Color$red = A4($avh4$elm_color$Color$RgbaSpace, 204 / 255, 0 / 255, 0 / 255, 1.0);
+var $author$project$Interface$color_danger = $author$project$Interface$convertColor($avh4$elm_color$Color$red);
 var $avh4$elm_color$Color$lightRed = A4($avh4$elm_color$Color$RgbaSpace, 239 / 255, 41 / 255, 41 / 255, 1.0);
 var $author$project$Interface$color_danger_bright = $author$project$Interface$convertColor($avh4$elm_color$Color$lightRed);
 var $author$project$Interface$color_white = A3($mdgriffith$elm_ui$Element$rgb, 1, 1, 1);
@@ -19341,8 +19569,7 @@ var $author$project$Interface$common_button_attrs = function (_v0) {
 				[
 					$mdgriffith$elm_ui$Element$Background$color(hovered_button_color),
 					$mdgriffith$elm_ui$Element$Border$color(hovered_button_color),
-					$mdgriffith$elm_ui$Element$Font$color(
-					A3($mdgriffith$elm_ui$Element$rgb, 0, 0, 0))
+					$mdgriffith$elm_ui$Element$Font$color(hovered_font_color)
 				]))
 		]);
 };
@@ -19352,13 +19579,16 @@ var $author$project$Interface$danger_button_custom = F3(
 			$mdgriffith$elm_ui$Element$Input$button,
 			_Utils_ap(
 				$author$project$Interface$common_button_attrs(
-					{button_color: $author$project$Interface$color_danger, font_color: $author$project$Interface$color_white, hovered_button_color: $author$project$Interface$color_danger_bright, hovered_font_color: $author$project$Interface$color_black}),
+					{button_color: $author$project$Interface$color_danger, font_color: $author$project$Interface$color_white, hovered_button_color: $author$project$Interface$color_danger_bright, hovered_font_color: $author$project$Interface$color_white}),
 				custom_attrs),
 			{
 				label: label,
 				onPress: $elm$core$Maybe$Just(on_press)
 			});
 	});
+var $mdgriffith$elm_ui$Element$text = function (content) {
+	return $mdgriffith$elm_ui$Internal$Model$Text(content);
+};
 var $author$project$Interface$danger_button = F3(
 	function (custom_attrs, on_press, label_str) {
 		return A3(
@@ -19493,6 +19723,23 @@ var $author$project$Battle$dividingLine = A2(
 					_List_Nil)
 				]))
 		]));
+var $mdgriffith$elm_ui$Element$el = F2(
+	function (attrs, child) {
+		return A4(
+			$mdgriffith$elm_ui$Internal$Model$element,
+			$mdgriffith$elm_ui$Internal$Model$asEl,
+			$mdgriffith$elm_ui$Internal$Model$div,
+			A2(
+				$elm$core$List$cons,
+				$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$shrink),
+				A2(
+					$elm$core$List$cons,
+					$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$shrink),
+					attrs)),
+			$mdgriffith$elm_ui$Internal$Model$Unkeyed(
+				_List_fromArray(
+					[child])));
+	});
 var $mdgriffith$elm_ui$Internal$Model$Min = F2(
 	function (a, b) {
 		return {$: 'Min', a: a, b: b};
@@ -19586,7 +19833,7 @@ var $author$project$Interface$primary_button_custom = F3(
 			$mdgriffith$elm_ui$Element$Input$button,
 			_Utils_ap(
 				$author$project$Interface$common_button_attrs(
-					{button_color: $author$project$Interface$color_primary, font_color: $author$project$Interface$color_white, hovered_button_color: $author$project$Interface$primary_color_bright, hovered_font_color: $author$project$Interface$color_black}),
+					{button_color: $author$project$Interface$color_primary, font_color: $author$project$Interface$color_white, hovered_button_color: $author$project$Interface$primary_color_bright, hovered_font_color: $author$project$Interface$color_white}),
 				custom_attrs),
 			{
 				label: label,
@@ -19607,13 +19854,15 @@ var $mdgriffith$elm_ui$Internal$Model$Px = function (a) {
 var $mdgriffith$elm_ui$Element$px = $mdgriffith$elm_ui$Internal$Model$Px;
 var $avh4$elm_color$Color$charcoal = A4($avh4$elm_color$Color$RgbaSpace, 85 / 255, 87 / 255, 83 / 255, 1.0);
 var $author$project$Interface$color_secondary = $author$project$Interface$convertColor($avh4$elm_color$Color$charcoal);
+var $avh4$elm_color$Color$lightCharcoal = A4($avh4$elm_color$Color$RgbaSpace, 136 / 255, 138 / 255, 133 / 255, 1.0);
+var $author$project$Interface$color_secondary_bright = $author$project$Interface$convertColor($avh4$elm_color$Color$lightCharcoal);
 var $author$project$Interface$secondary_button_custom = F3(
 	function (custom_attrs, on_press, label) {
 		return A2(
 			$mdgriffith$elm_ui$Element$Input$button,
 			_Utils_ap(
 				$author$project$Interface$common_button_attrs(
-					{button_color: $author$project$Interface$color_secondary, font_color: $author$project$Interface$color_white, hovered_button_color: $author$project$Interface$color_secondary, hovered_font_color: $author$project$Interface$color_black}),
+					{button_color: $author$project$Interface$color_secondary, font_color: $author$project$Interface$color_white, hovered_button_color: $author$project$Interface$color_secondary_bright, hovered_font_color: $author$project$Interface$color_white}),
 				custom_attrs),
 			{
 				label: label,
@@ -20473,7 +20722,6 @@ var $mdgriffith$elm_ui$Internal$Model$Bottom = {$: 'Bottom'};
 var $mdgriffith$elm_ui$Element$alignBottom = $mdgriffith$elm_ui$Internal$Model$AlignY($mdgriffith$elm_ui$Internal$Model$Bottom);
 var $mdgriffith$elm_ui$Element$Font$alignRight = A2($mdgriffith$elm_ui$Internal$Model$Class, $mdgriffith$elm_ui$Internal$Flag$fontAlignment, $mdgriffith$elm_ui$Internal$Style$classes.textRight);
 var $author$project$Interface$color_ultra_light_grey = A3($mdgriffith$elm_ui$Element$rgb, 0.95, 0.95, 0.95);
-var $avh4$elm_color$Color$lightCharcoal = A4($avh4$elm_color$Color$RgbaSpace, 136 / 255, 138 / 255, 133 / 255, 1.0);
 var $author$project$Interface$noUserSelect = $mdgriffith$elm_ui$Element$htmlAttribute(
 	A2($elm$html$Html$Attributes$style, 'userSelect', 'none'));
 var $author$project$Interface$pointerEventsAll = $mdgriffith$elm_ui$Element$htmlAttribute(
@@ -20506,7 +20754,7 @@ var $author$project$Interface$renderBlood = F2(
 	});
 var $author$project$Interface$color_grey = A3($mdgriffith$elm_ui$Element$rgb, 0.35, 0.35, 0.35);
 var $author$project$Interface$font_grey = $mdgriffith$elm_ui$Element$Font$color($author$project$Interface$color_grey);
-var $author$project$Interface$render_gp_sized = F3(
+var $author$project$Interface$renderGpSized = F3(
 	function (colorTheme, count, font_size) {
 		return A2(
 			$mdgriffith$elm_ui$Element$paragraph,
@@ -20532,9 +20780,9 @@ var $author$project$Interface$render_gp_sized = F3(
 					$mdgriffith$elm_ui$Element$text('gp'))
 				]));
 	});
-var $author$project$Interface$render_gp = F2(
+var $author$project$Interface$renderGp = F2(
 	function (colorTheme, count) {
-		return A3($author$project$Interface$render_gp_sized, colorTheme, count, 12);
+		return A3($author$project$Interface$renderGpSized, colorTheme, count, 12);
 	});
 var $author$project$ItemShop$ToggleShowDebugInventories = {$: 'ToggleShowDebugInventories'};
 var $author$project$Interface$defineHtmlId = function (name) {
@@ -20550,76 +20798,70 @@ var $author$project$ItemShop$showHideDebugInventoriesButton = F2(
 				$elm$core$List$cons,
 				$author$project$Interface$defineHtmlId('show_debug_inventories'),
 				attrs),
-			$author$project$ItemShop$ToggleShowDebugInventories,
+			$author$project$ItemShop$GotUiOptionsMsg($author$project$ItemShop$ToggleShowDebugInventories),
 			buttonText);
 	});
 var $author$project$ItemShop$viewOverlay = function (model) {
+	var _v0 = $author$project$ItemShop$getPlayer(model.characters);
+	var player = _v0.a;
 	return A2(
-		$elm$core$Maybe$withDefault,
-		$mdgriffith$elm_ui$Element$none,
-		A2(
-			$elm$core$Maybe$map,
-			function (player) {
-				return A2(
+		$mdgriffith$elm_ui$Element$el,
+		_List_fromArray(
+			[
+				$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
+				$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$fill),
+				$mdgriffith$elm_ui$Element$Font$size(12),
+				$author$project$Interface$pointerEventsNone,
+				$mdgriffith$elm_ui$Element$padding(1),
+				$mdgriffith$elm_ui$Element$inFront(
+				model.uiOptions.shouldDisplayShowDebugInventoriesOverlay ? A2(
 					$mdgriffith$elm_ui$Element$el,
 					_List_fromArray(
 						[
 							$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
-							$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$fill),
-							$mdgriffith$elm_ui$Element$Font$size(12),
-							$author$project$Interface$pointerEventsNone,
-							$mdgriffith$elm_ui$Element$padding(1),
-							$mdgriffith$elm_ui$Element$inFront(
-							model.shouldDisplayShowDebugInventoriesOverlay ? A2(
-								$mdgriffith$elm_ui$Element$el,
-								_List_fromArray(
-									[
-										$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
-										$mdgriffith$elm_ui$Element$padding(10)
-									]),
-								A2(
-									$author$project$ItemShop$showHideDebugInventoriesButton,
-									_List_fromArray(
-										[
-											$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill)
-										]),
-									model.show_debug_inventories)) : $mdgriffith$elm_ui$Element$none)
+							$mdgriffith$elm_ui$Element$padding(10)
 						]),
 					A2(
-						$mdgriffith$elm_ui$Element$el,
+						$author$project$ItemShop$showHideDebugInventoriesButton,
 						_List_fromArray(
 							[
-								$mdgriffith$elm_ui$Element$Font$alignRight,
-								$mdgriffith$elm_ui$Element$alignRight,
-								$mdgriffith$elm_ui$Element$alignBottom,
-								$author$project$ItemShop$defaultBackgroundColor(model.colorTheme),
-								$mdgriffith$elm_ui$Element$Border$color(
-								function () {
-									var _v0 = model.colorTheme;
-									if (_v0.$ === 'BrightTheme') {
-										return $author$project$Interface$color_ultra_light_grey;
-									} else {
-										return $author$project$Interface$convertColor($avh4$elm_color$Color$lightCharcoal);
-									}
-								}()),
-								$mdgriffith$elm_ui$Element$Border$width(1),
-								$mdgriffith$elm_ui$Element$Border$rounded(3),
-								$author$project$Interface$pointerEventsAll,
-								$mdgriffith$elm_ui$Element$padding(10)
+								$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill)
 							]),
-						A2(
-							$mdgriffith$elm_ui$Element$row,
-							_List_fromArray(
-								[$author$project$Interface$noUserSelect]),
-							_List_fromArray(
-								[
-									$mdgriffith$elm_ui$Element$text('Held: '),
-									A2($author$project$Interface$render_gp, model.colorTheme, player.held_gold),
-									$mdgriffith$elm_ui$Element$text(' '),
-									A2($author$project$Interface$renderBlood, model.colorTheme, player.held_blood)
-								]))));
-			},
-			$author$project$ItemShop$getPlayer(model)));
+						model.uiOptions.show_debug_inventories)) : $mdgriffith$elm_ui$Element$none)
+			]),
+		A2(
+			$mdgriffith$elm_ui$Element$el,
+			_List_fromArray(
+				[
+					$mdgriffith$elm_ui$Element$Font$alignRight,
+					$mdgriffith$elm_ui$Element$alignRight,
+					$mdgriffith$elm_ui$Element$alignBottom,
+					$author$project$ItemShop$defaultBackgroundColor(model.colorTheme),
+					$mdgriffith$elm_ui$Element$Border$color(
+					function () {
+						var _v1 = model.colorTheme;
+						if (_v1.$ === 'BrightTheme') {
+							return $author$project$Interface$color_ultra_light_grey;
+						} else {
+							return $author$project$Interface$convertColor($avh4$elm_color$Color$lightCharcoal);
+						}
+					}()),
+					$mdgriffith$elm_ui$Element$Border$width(1),
+					$mdgriffith$elm_ui$Element$Border$rounded(3),
+					$author$project$Interface$pointerEventsAll,
+					$mdgriffith$elm_ui$Element$padding(10)
+				]),
+			A2(
+				$mdgriffith$elm_ui$Element$row,
+				_List_fromArray(
+					[$author$project$Interface$noUserSelect]),
+				_List_fromArray(
+					[
+						$mdgriffith$elm_ui$Element$text('Held: '),
+						A2($author$project$Interface$renderGp, model.colorTheme, player.held_gold),
+						$mdgriffith$elm_ui$Element$text(' '),
+						A2($author$project$Interface$renderBlood, model.colorTheme, player.held_blood)
+					]))));
 };
 var $author$project$ItemShop$ChangeTabType = function (a) {
 	return {$: 'ChangeTabType', a: a};
@@ -20734,7 +20976,7 @@ var $author$project$ItemShop$render_item_db_item = F2(
 							$mdgriffith$elm_ui$Element$el,
 							_List_fromArray(
 								[$mdgriffith$elm_ui$Element$alignRight]),
-							A2($author$project$Interface$render_gp, colorTheme, item.raw_gold_cost))
+							A2($author$project$Interface$renderGp, colorTheme, item.raw_gold_cost))
 						])),
 					A2(
 					$mdgriffith$elm_ui$Element$row,
@@ -25168,6 +25410,21 @@ var $terezka$elm_charts$Internal$Legend$toDotLegends = F2(
 				},
 				A2($elm$core$List$map, $terezka$elm_charts$Internal$Property$toConfigs, properties)));
 	});
+var $elm$core$Maybe$map2 = F3(
+	function (func, ma, mb) {
+		if (ma.$ === 'Nothing') {
+			return $elm$core$Maybe$Nothing;
+		} else {
+			var a = ma.a;
+			if (mb.$ === 'Nothing') {
+				return $elm$core$Maybe$Nothing;
+			} else {
+				var b = mb.a;
+				return $elm$core$Maybe$Just(
+					A2(func, a, b));
+			}
+		}
+	});
 var $elm$html$Html$table = _VirtualDom_node('table');
 var $terezka$elm_charts$Internal$Produce$toDefaultName = F2(
 	function (index, name) {
@@ -28412,10 +28669,10 @@ var $author$project$ItemShop$charts_display = F2(
 				{bottom: 5, left: 10, right: 10, top: 10}),
 				A2(
 				$terezka$elm_charts$Chart$Events$onMouseMove,
-				$author$project$ItemShop$OnTrendChartHover,
+				A2($elm$core$Basics$composeL, $author$project$ItemShop$GotUiOptionsMsg, $author$project$ItemShop$OnTrendChartHover),
 				$terezka$elm_charts$Chart$Events$getNearest($terezka$elm_charts$Chart$Item$dots)),
 				$terezka$elm_charts$Chart$Events$onMouseLeave(
-				$author$project$ItemShop$OnTrendChartHover(_List_Nil)),
+				A2($elm$core$Basics$composeL, $author$project$ItemShop$GotUiOptionsMsg, $author$project$ItemShop$OnTrendChartHover)(_List_Nil)),
 				$terezka$elm_charts$Chart$Attributes$domain(
 				_List_fromArray(
 					[
@@ -28585,8 +28842,8 @@ var $author$project$ItemShop$shop_sell_button = F2(
 				$author$project$ItemShop$Quantity(1)),
 			buttonText);
 	});
-var $author$project$ItemShop$playerInventoryControls = F3(
-	function (player, _v0, _v1) {
+var $author$project$ItemShop$playerInventoryControls = F2(
+	function (_v0, _v1) {
 		var shiftIsPressed = _v0.a;
 		var shop_trends = _v0.b;
 		var item = _v1.item;
@@ -28715,16 +28972,42 @@ var $author$project$ItemShop$player_action_log_display = F2(
 	});
 var $author$project$ItemShop$render_single_player_upgrade = F2(
 	function (colorTheme, player_upgrade) {
-		var gpm = player_upgrade.a;
-		return A2(
-			$mdgriffith$elm_ui$Element$paragraph,
-			_List_Nil,
-			_List_fromArray(
-				[
-					$mdgriffith$elm_ui$Element$text('Income: '),
-					A2($author$project$Interface$render_gp, colorTheme, gpm),
-					$mdgriffith$elm_ui$Element$text('/sec')
-				]));
+		if (player_upgrade.$ === 'AutomaticGPM') {
+			var lvl = player_upgrade.a;
+			return A2(
+				$mdgriffith$elm_ui$Element$paragraph,
+				_List_Nil,
+				_List_fromArray(
+					[
+						$mdgriffith$elm_ui$Element$text('Income: '),
+						A2($author$project$Interface$renderGp, colorTheme, lvl),
+						$mdgriffith$elm_ui$Element$text('/sec')
+					]));
+		} else {
+			var lvl = player_upgrade.a;
+			return A2(
+				$mdgriffith$elm_ui$Element$paragraph,
+				_List_Nil,
+				_List_fromArray(
+					[
+						$mdgriffith$elm_ui$Element$text('Bloodfeed lv'),
+						$mdgriffith$elm_ui$Element$text(
+						$elm$core$String$fromInt(lvl)),
+						$mdgriffith$elm_ui$Element$text(': '),
+						A2($author$project$Interface$renderBlood, colorTheme, -lvl),
+						$mdgriffith$elm_ui$Element$text('/sec +'),
+						$mdgriffith$elm_ui$Element$text(
+						$elm$core$String$fromInt(lvl)),
+						A2(
+						$mdgriffith$elm_ui$Element$el,
+						_List_fromArray(
+							[
+								$mdgriffith$elm_ui$Element$Font$size(12)
+							]),
+						$mdgriffith$elm_ui$Element$text('stamina')),
+						$mdgriffith$elm_ui$Element$text('/5sec')
+					]));
+		}
 	});
 var $author$project$ItemShop$player_upgrades_display = F2(
 	function (colorTheme, player_upgrades) {
@@ -28753,7 +29036,8 @@ var $author$project$ItemShop$player_upgrades_display = F2(
 						$mdgriffith$elm_ui$Element$column,
 						_List_fromArray(
 							[
-								A2($mdgriffith$elm_ui$Element$paddingXY, 0, 10)
+								A2($mdgriffith$elm_ui$Element$paddingXY, 0, 10),
+								$mdgriffith$elm_ui$Element$spacing(5)
 							]),
 						A2(
 							$elm$core$List$map,
@@ -28833,6 +29117,7 @@ var $author$project$Interface$colorFromInt = F4(
 	function (_int, positiveColor, neutralColor, negativeColor) {
 		return (_int > 0) ? positiveColor : ((!_int) ? neutralColor : negativeColor);
 	});
+var $author$project$Interface$color_black = A3($mdgriffith$elm_ui$Element$rgb, 0, 0, 0);
 var $author$project$Interface$color_very_light_grey = A3($mdgriffith$elm_ui$Element$rgb, 0.75, 0.75, 0.75);
 var $author$project$Interface$cssRule = F2(
 	function (name, value) {
@@ -29030,10 +29315,10 @@ var $author$project$ItemShop$small_charts_display = F2(
 				{bottom: 5, left: 10, right: 10, top: 10}),
 				A2(
 				$terezka$elm_charts$Chart$Events$onMouseMove,
-				$author$project$ItemShop$OnTrendChartHover,
+				A2($elm$core$Basics$composeL, $author$project$ItemShop$GotUiOptionsMsg, $author$project$ItemShop$OnTrendChartHover),
 				$terezka$elm_charts$Chart$Events$getNearest($terezka$elm_charts$Chart$Item$dots)),
 				$terezka$elm_charts$Chart$Events$onMouseLeave(
-				$author$project$ItemShop$OnTrendChartHover(_List_Nil)),
+				A2($elm$core$Basics$composeL, $author$project$ItemShop$GotUiOptionsMsg, $author$project$ItemShop$OnTrendChartHover)(_List_Nil)),
 				$terezka$elm_charts$Chart$Attributes$domain(
 				_List_fromArray(
 					[
@@ -29338,7 +29623,8 @@ var $author$project$ItemShop$render_inventory_grid = F7(
 						[
 							$mdgriffith$elm_ui$Element$Font$size(10),
 							$mdgriffith$elm_ui$Element$Events$onClick(
-							$author$project$ItemShop$ChangeInventorySortType(sortType)),
+							$author$project$ItemShop$GotUiOptionsMsg(
+								$author$project$ItemShop$ChangeInventorySortType(sortType))),
 							$author$project$Interface$noUserSelect,
 							$mdgriffith$elm_ui$Element$Border$rounded(2),
 							$mdgriffith$elm_ui$Element$mouseOver(
@@ -29353,9 +29639,9 @@ var $author$project$ItemShop$render_inventory_grid = F7(
 						_Utils_ap(
 							str,
 							function () {
-								if (_Utils_eq(model.inventorySortType, sortType)) {
-									var _v21 = model.inventorySortDir;
-									if (_v21.$ === 'Descending') {
+								if (_Utils_eq(model.uiOptions.inventorySortType, sortType)) {
+									var _v22 = model.uiOptions.inventorySortDir;
+									if (_v22.$ === 'Descending') {
 										return '▲';
 									} else {
 										return '▼';
@@ -29367,14 +29653,14 @@ var $author$project$ItemShop$render_inventory_grid = F7(
 			});
 		var rendered_dislikes = A2(
 			$elm$core$List$map,
-			function (_v19) {
-				var it_id = _v19.a;
-				var trd = _v19.b;
+			function (_v20) {
+				var it_id = _v20.a;
+				var trd = _v20.b;
 				return $mdgriffith$elm_ui$Element$text(
 					'Dislikes: ' + function () {
-						var _v20 = $author$project$ItemShop$id_to_item_type(it_id);
-						if (_v20.$ === 'Just') {
-							var item_type = _v20.a;
+						var _v21 = $author$project$ItemShop$id_to_item_type(it_id);
+						if (_v21.$ === 'Just') {
+							var item_type = _v21.a;
 							return $author$project$ItemShop$item_type_to_pretty_string(item_type);
 						} else {
 							return 'Unknown';
@@ -29392,14 +29678,14 @@ var $author$project$ItemShop$render_inventory_grid = F7(
 				$elm$core$Dict$toList(character.item_types_desired)));
 		var rendered_desires = A2(
 			$elm$core$List$map,
-			function (_v17) {
-				var it_id = _v17.a;
-				var trd = _v17.b;
+			function (_v18) {
+				var it_id = _v18.a;
+				var trd = _v18.b;
 				return $mdgriffith$elm_ui$Element$text(
 					'Desires: ' + function () {
-						var _v18 = $author$project$ItemShop$id_to_item_type(it_id);
-						if (_v18.$ === 'Just') {
-							var item_type = _v18.a;
+						var _v19 = $author$project$ItemShop$id_to_item_type(it_id);
+						if (_v19.$ === 'Just') {
+							var item_type = _v19.a;
 							return $author$project$ItemShop$item_type_to_pretty_string(item_type);
 						} else {
 							return 'Unknown';
@@ -29430,8 +29716,8 @@ var $author$project$ItemShop$render_inventory_grid = F7(
 				});
 		};
 		var sortFunc = function () {
-			var _v16 = model.inventorySortType;
-			switch (_v16.$) {
+			var _v17 = model.uiOptions.inventorySortType;
+			switch (_v17.$) {
 				case 'SortByName':
 					return buildCompare(
 						A2(
@@ -29491,10 +29777,11 @@ var $author$project$ItemShop$render_inventory_grid = F7(
 							}));
 			}
 		}();
-		var _v0 = model;
-		var historical_shop_trends = _v0.historical_shop_trends;
-		var item_db = _v0.item_db;
+		var _v0 = model.uiOptions;
 		var show_charts_in_hovered_item = _v0.show_charts_in_hovered_item;
+		var _v1 = model;
+		var historical_shop_trends = _v1.historical_shop_trends;
+		var item_db = _v1.item_db;
 		var render_single_action_log = function (log) {
 			return A2(
 				$mdgriffith$elm_ui$Element$el,
@@ -29529,16 +29816,16 @@ var $author$project$ItemShop$render_inventory_grid = F7(
 					]),
 				(!is_shop_context) ? rendered_action_log_items : _List_Nil)
 			]);
-		var _v1 = character;
-		var char_id = _v1.char_id;
-		var held_items = _v1.held_items;
-		var held_gold = _v1.held_gold;
-		var hide_zero_qty_inv_rows = _v1.hide_zero_qty_inv_rows;
+		var _v2 = character;
+		var char_id = _v2.char_id;
+		var held_items = _v2.held_items;
+		var held_gold = _v2.held_gold;
+		var hide_zero_qty_inv_rows = _v2.hide_zero_qty_inv_rows;
 		var is_hovered_item = function (item) {
 			if (hovered_item.$ === 'Just') {
-				var _v15 = hovered_item.a;
-				var hovered_char_id = _v15.a;
-				var hovered_item_ = _v15.b;
+				var _v16 = hovered_item.a;
+				var hovered_char_id = _v16.a;
+				var hovered_item_ = _v16.b;
 				return _Utils_eq(char_id, hovered_char_id) && _Utils_eq(item, hovered_item_);
 			} else {
 				return false;
@@ -29595,8 +29882,8 @@ var $author$project$ItemShop$render_inventory_grid = F7(
 												$mdgriffith$elm_ui$Element$alignRight,
 												$mdgriffith$elm_ui$Element$Font$color(
 												function () {
-													var _v13 = model.colorTheme;
-													if (_v13.$ === 'BrightTheme') {
+													var _v14 = model.colorTheme;
+													if (_v14.$ === 'BrightTheme') {
 														return $author$project$Interface$color_grey;
 													} else {
 														return $author$project$Interface$convertColor($avh4$elm_color$Color$white);
@@ -29614,7 +29901,7 @@ var $author$project$ItemShop$render_inventory_grid = F7(
 										[
 											$mdgriffith$elm_ui$Element$text('Current Price: '),
 											A2(
-											$author$project$Interface$render_gp,
+											$author$project$Interface$renderGp,
 											model.colorTheme,
 											current_price(item))
 										]),
@@ -29623,7 +29910,7 @@ var $author$project$ItemShop$render_inventory_grid = F7(
 										current_price(item)))) ? _List_fromArray(
 										[
 											$mdgriffith$elm_ui$Element$text(' (originally '),
-											A2($author$project$Interface$render_gp, model.colorTheme, item.raw_gold_cost),
+											A2($author$project$Interface$renderGp, model.colorTheme, item.raw_gold_cost),
 											$mdgriffith$elm_ui$Element$text(')')
 										]) : _List_Nil)),
 								show_charts_in_hovered_item ? A2(
@@ -29639,15 +29926,17 @@ var $author$project$ItemShop$render_inventory_grid = F7(
 			return _List_fromArray(
 				[
 					$mdgriffith$elm_ui$Element$Events$onMouseEnter(
-					A2(
-						$author$project$ItemShop$MouseEnterShopItem,
-						context,
-						_Utils_Tuple2(char_id, item))),
+					$author$project$ItemShop$GotUiOptionsMsg(
+						A2(
+							$author$project$ItemShop$MouseEnterShopItem,
+							context,
+							_Utils_Tuple2(char_id, item)))),
 					$mdgriffith$elm_ui$Element$Events$onMouseLeave(
-					A2(
-						$author$project$ItemShop$MouseLeaveShopItem,
-						context,
-						_Utils_Tuple2(char_id, item)))
+					$author$project$ItemShop$GotUiOptionsMsg(
+						A2(
+							$author$project$ItemShop$MouseLeaveShopItem,
+							context,
+							_Utils_Tuple2(char_id, item))))
 				]);
 		};
 		var table_columns = A2(
@@ -29683,10 +29972,10 @@ var $author$project$ItemShop$render_inventory_grid = F7(
 				[
 					{
 					header: A2(small_header, 'Name', $author$project$ItemShop$SortByName),
-					view: function (_v5) {
-						var item = _v5.item;
-						var quantity = _v5.quantity;
-						var avg_price = _v5.avg_price;
+					view: function (_v6) {
+						var item = _v6.item;
+						var quantity = _v6.quantity;
+						var avg_price = _v6.avg_price;
 						return A2(
 							$mdgriffith$elm_ui$Element$el,
 							_Utils_ap(
@@ -29709,10 +29998,10 @@ var $author$project$ItemShop$render_inventory_grid = F7(
 				},
 					{
 					header: A2(small_header, 'Price', $author$project$ItemShop$SortByPrice),
-					view: function (_v6) {
-						var item = _v6.item;
-						var quantity = _v6.quantity;
-						var avg_price = _v6.avg_price;
+					view: function (_v7) {
+						var item = _v7.item;
+						var quantity = _v7.quantity;
+						var avg_price = _v7.avg_price;
 						return A2(
 							$mdgriffith$elm_ui$Element$el,
 							_List_fromArray(
@@ -29731,7 +30020,7 @@ var $author$project$ItemShop$render_inventory_grid = F7(
 										_List_fromArray(
 											[
 												A2(
-												$author$project$Interface$render_gp,
+												$author$project$Interface$renderGp,
 												model.colorTheme,
 												A2($author$project$ItemShop$get_single_adjusted_item_cost, shop_trends, item))
 											]),
@@ -29765,9 +30054,9 @@ var $author$project$ItemShop$render_inventory_grid = F7(
 				},
 					{
 					header: A2(small_header, 'Avg Px', $author$project$ItemShop$SortByAvgPrice),
-					view: function (_v7) {
-						var quantity = _v7.quantity;
-						var avg_price = _v7.avg_price;
+					view: function (_v8) {
+						var quantity = _v8.quantity;
+						var avg_price = _v8.avg_price;
 						return A2(
 							$mdgriffith$elm_ui$Element$el,
 							_List_fromArray(
@@ -29781,7 +30070,7 @@ var $author$project$ItemShop$render_inventory_grid = F7(
 									return $mdgriffith$elm_ui$Element$text('');
 								} else {
 									return (!(!$author$project$ItemShop$getQuantity(quantity))) ? A2(
-										$author$project$Interface$render_gp,
+										$author$project$Interface$renderGp,
 										model.colorTheme,
 										$author$project$ItemShop$getPrice(avg_price)) : $mdgriffith$elm_ui$Element$none;
 								}
@@ -29791,8 +30080,8 @@ var $author$project$ItemShop$render_inventory_grid = F7(
 				},
 					{
 					header: A2(small_header, 'Qty.', $author$project$ItemShop$SortByQuantity),
-					view: function (_v9) {
-						var quantity = _v9.quantity;
+					view: function (_v10) {
+						var quantity = _v10.quantity;
 						return A2(
 							$mdgriffith$elm_ui$Element$el,
 							_List_fromArray(
@@ -29818,8 +30107,8 @@ var $author$project$ItemShop$render_inventory_grid = F7(
 				},
 					{
 					header: A2(small_header, 'Item Type', $author$project$ItemShop$SortByItemType),
-					view: function (_v11) {
-						var item = _v11.item;
+					view: function (_v12) {
+						var item = _v12.item;
 						return A2(
 							$mdgriffith$elm_ui$Element$el,
 							_List_fromArray(
@@ -29830,8 +30119,8 @@ var $author$project$ItemShop$render_inventory_grid = F7(
 				},
 					{
 					header: A2(small_header, 'Item Desc.', $author$project$ItemShop$SortByItemDesc),
-					view: function (_v12) {
-						var item = _v12.item;
+					view: function (_v13) {
+						var item = _v13.item;
 						return A2(
 							$mdgriffith$elm_ui$Element$el,
 							_List_fromArray(
@@ -29848,11 +30137,11 @@ var $author$project$ItemShop$render_inventory_grid = F7(
 				}
 				]));
 		var items = function (irs) {
-			var _v4 = character.displayedItemType;
-			if (_v4.$ === 'Nothing') {
+			var _v5 = character.displayedItemType;
+			if (_v5.$ === 'Nothing') {
 				return irs;
 			} else {
-				var item_type = _v4.a;
+				var item_type = _v5.a;
 				return A2(
 					$elm$core$List$filter,
 					function (ir) {
@@ -29866,8 +30155,8 @@ var $author$project$ItemShop$render_inventory_grid = F7(
 				sortFunc,
 				hide_zero_qty_inv_rows ? A2(
 					$elm$core$List$filter,
-					function (_v3) {
-						var quantity = _v3.quantity;
+					function (_v4) {
+						var quantity = _v4.quantity;
 						return $author$project$ItemShop$getQuantity(quantity) > 0;
 					},
 					held_items) : held_items));
@@ -29884,7 +30173,8 @@ var $author$project$ItemShop$render_inventory_grid = F7(
 						A3(
 						$author$project$Interface$primary_button,
 						_List_Nil,
-						$author$project$ItemShop$ToggleHideNonZeroRows(character.char_id),
+						$author$project$ItemShop$GotUiOptionsMsg(
+							$author$project$ItemShop$ToggleHideNonZeroRows(character.char_id)),
 						hide_zero_qty_inv_rows ? 'Show Nonzero' : 'Hide Nonzero'),
 						A3(
 						$author$project$Interface$secondary_button,
@@ -29896,16 +30186,18 @@ var $author$project$ItemShop$render_inventory_grid = F7(
 									'contextmenu',
 									$elm$json$Json$Decode$succeed(
 										_Utils_Tuple2(
-											A2($author$project$ItemShop$CycleFilterDisplayedItemsBackward, character.char_id, character.displayedItemType),
+											$author$project$ItemShop$GotUiOptionsMsg(
+												A2($author$project$ItemShop$CycleFilterDisplayedItemsBackward, character.char_id, character.displayedItemType)),
 											true))))
 							]),
-						A2($author$project$ItemShop$CycleFilterDisplayedItemsForward, character.char_id, character.displayedItemType),
+						$author$project$ItemShop$GotUiOptionsMsg(
+							A2($author$project$ItemShop$CycleFilterDisplayedItemsForward, character.char_id, character.displayedItemType)),
 						'Filter: ' + function () {
-							var _v2 = character.displayedItemType;
-							if (_v2.$ === 'Nothing') {
+							var _v3 = character.displayedItemType;
+							if (_v3.$ === 'Nothing') {
 								return 'All';
 							} else {
-								var itemType = _v2.a;
+								var itemType = _v3.a;
 								return $author$project$ItemShop$item_type_to_pretty_string(itemType);
 							}
 						}())
@@ -29967,7 +30259,7 @@ var $author$project$ItemShop$render_inventory_grid = F7(
 												_List_fromArray(
 													[
 														$mdgriffith$elm_ui$Element$text('Held: '),
-														A2($author$project$Interface$render_gp, model.colorTheme, held_gold)
+														A2($author$project$Interface$renderGp, model.colorTheme, held_gold)
 													])),
 												(is_player_context && (character.held_blood > 0)) ? A2(
 												$mdgriffith$elm_ui$Element$row,
@@ -30031,21 +30323,15 @@ var $author$project$ItemShop$shop_buy_button = F3(
 			can_afford ? 'BUY' : 'Need GP');
 	});
 var $author$project$ItemShop$shopInventoryControls = F3(
-	function (maybe_player, shop_trends, _v0) {
-		var item = _v0.item;
-		var quantity = _v0.quantity;
-		var avg_price = _v0.avg_price;
+	function (_v0, shop_trends, _v1) {
+		var player = _v0.a;
+		var item = _v1.item;
+		var quantity = _v1.quantity;
+		var avg_price = _v1.avg_price;
 		return A3(
 			$author$project$ItemShop$shop_buy_button,
 			A2($author$project$ItemShop$get_single_adjusted_item_cost, shop_trends, item),
-			function () {
-				if (maybe_player.$ === 'Just') {
-					var player = maybe_player.a;
-					return player.held_gold;
-				} else {
-					return 99999;
-				}
-			}(),
+			player.held_gold,
 			{avg_price: avg_price, item: item, quantity: quantity});
 	});
 var $author$project$ItemShop$IncreaseIncome = {$: 'IncreaseIncome'};
@@ -30180,9 +30466,11 @@ var $author$project$ItemShop$primary_button_tooltip = F6(
 				_List_fromArray(
 					[
 						$mdgriffith$elm_ui$Element$Events$onMouseLeave(
-						$author$project$ItemShop$EndTooltipHover(tooltip_id)),
+						$author$project$ItemShop$GotUiOptionsMsg(
+							$author$project$ItemShop$EndTooltipHover(tooltip_id))),
 						$mdgriffith$elm_ui$Element$Events$onMouseEnter(
-						$author$project$ItemShop$StartTooltipHover(tooltip_id))
+						$author$project$ItemShop$GotUiOptionsMsg(
+							$author$project$ItemShop$StartTooltipHover(tooltip_id)))
 					]),
 				_Utils_ap(tooltip_attr, custom_attrs)),
 			on_press,
@@ -30193,7 +30481,7 @@ var $author$project$ItemShop$build_special_action_button = F7(
 		var tooltip_config = function (t) {
 			if (!_Utils_eq(price, $author$project$ItemShop$Free)) {
 				var renderedCost = A2(
-					$author$project$Interface$render_gp,
+					$author$project$Interface$renderGp,
 					colorTheme,
 					$author$project$ItemShop$getPrice(price));
 				return A2(
@@ -30306,8 +30594,12 @@ var $author$project$ItemShop$special_actions_display = F5(
 				$elm$core$List$foldl,
 				F2(
 					function (u, acc) {
-						var lvl = u.a;
-						return lvl;
+						if (u.$ === 'AutomaticGPM') {
+							var lvl = u.a;
+							return lvl;
+						} else {
+							return acc;
+						}
 					}),
 				1,
 				player_upgrades);
@@ -30359,10 +30651,33 @@ var $author$project$ItemShop$special_actions_display = F5(
 					_List_fromArray(
 						[
 							$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
-							A2($mdgriffith$elm_ui$Element$spacingXY, 10, 10)
+							A2($mdgriffith$elm_ui$Element$spacingXY, 20, 0)
 						]),
 					_List_fromArray(
-						[button_toggle_ai_pause, button_battle, button_increase_income, button_search, button_unlock_item, button_high_desire, button_low_desire]))
+						[
+							A2(
+							$mdgriffith$elm_ui$Element$wrappedRow,
+							_List_fromArray(
+								[
+									$mdgriffith$elm_ui$Element$width(
+									$mdgriffith$elm_ui$Element$fillPortion(1)),
+									A2($mdgriffith$elm_ui$Element$spacingXY, 10, 10),
+									$mdgriffith$elm_ui$Element$alignTop
+								]),
+							_List_fromArray(
+								[button_toggle_ai_pause, button_battle])),
+							A2(
+							$mdgriffith$elm_ui$Element$wrappedRow,
+							_List_fromArray(
+								[
+									$mdgriffith$elm_ui$Element$width(
+									$mdgriffith$elm_ui$Element$fillPortion(3)),
+									A2($mdgriffith$elm_ui$Element$spacingXY, 10, 10),
+									$mdgriffith$elm_ui$Element$alignTop
+								]),
+							_List_fromArray(
+								[button_increase_income, button_search, button_unlock_item, button_high_desire, button_low_desire]))
+						]))
 				]));
 	});
 var $author$project$ItemShop$EndTrendsHover = {$: 'EndTrendsHover'};
@@ -30387,7 +30702,10 @@ var $author$project$ItemShop$item_type_to_pretty_string_plural = function (item_
 };
 var $avh4$elm_color$Color$lightGrey = A4($avh4$elm_color$Color$RgbaSpace, 238 / 255, 238 / 255, 236 / 255, 1.0);
 var $author$project$ItemShop$trade_party_to_str = F2(
-	function (all_characters, party) {
+	function (_v0, party) {
+		var player = _v0.a.player;
+		var shop = _v0.a.shop;
+		var others = _v0.a.others;
 		switch (party.$) {
 			case 'ShopParty':
 				return 'Shop';
@@ -30395,7 +30713,7 @@ var $author$project$ItemShop$trade_party_to_str = F2(
 				return 'Player';
 			default:
 				var char_id = party.a;
-				var _v1 = $elm$core$List$head(
+				var _v2 = $elm$core$List$head(
 					A2(
 						$elm$core$List$filter,
 						A2(
@@ -30404,9 +30722,9 @@ var $author$project$ItemShop$trade_party_to_str = F2(
 								return $.char_id;
 							},
 							$elm$core$Basics$eq(char_id)),
-						all_characters));
-				if (_v1.$ === 'Just') {
-					var character = _v1.a;
+						others));
+				if (_v2.$ === 'Just') {
+					var character = _v2.a;
 					return character.name;
 				} else {
 					return 'Unnamed Character';
@@ -30414,14 +30732,17 @@ var $author$project$ItemShop$trade_party_to_str = F2(
 		}
 	});
 var $author$project$ItemShop$render_single_trade_log_entry = F4(
-	function (colorTheme, item_db, all_characters, trade_log) {
+	function (colorTheme, item_db, characters, trade_log) {
+		var player = characters.a.player;
+		var shop = characters.a.shop;
+		var others = characters.a.others;
 		var _v0 = trade_log;
 		var from_party = _v0.from_party;
 		var to_party = _v0.to_party;
 		var item_id = _v0.item_id;
 		var quantity = _v0.quantity;
 		var gold_cost = _v0.gold_cost;
-		var rendered_cost = A2($author$project$Interface$render_gp, colorTheme, gold_cost);
+		var rendered_cost = A2($author$project$Interface$renderGp, colorTheme, gold_cost);
 		var maybe_item = A2($author$project$ItemShop$lookup_item_id, item_db, item_id);
 		var item_name = function () {
 			if (maybe_item.$ === 'Just') {
@@ -30481,7 +30802,7 @@ var $author$project$ItemShop$render_single_trade_log_entry = F4(
 								_List_fromArray(
 									[
 										$mdgriffith$elm_ui$Element$text(
-										'Shop <-- ' + (A2($author$project$ItemShop$trade_party_to_str, all_characters, from_party) + (' ' + (item_name + (' (' + (qty_str + (') ' + '-- value: '))))))),
+										'Shop <-- ' + (A2($author$project$ItemShop$trade_party_to_str, characters, from_party) + (' ' + (item_name + (' (' + (qty_str + (') ' + '-- value: '))))))),
 										A2(
 										$mdgriffith$elm_ui$Element$el,
 										_List_fromArray(
@@ -30502,7 +30823,7 @@ var $author$project$ItemShop$render_single_trade_log_entry = F4(
 				_List_fromArray(
 					[
 						$mdgriffith$elm_ui$Element$text(
-						item_name + (' was traded from ' + (A2($author$project$ItemShop$trade_party_to_str, all_characters, from_party) + (' to ' + (A2($author$project$ItemShop$trade_party_to_str, all_characters, to_party) + (' (' + (qty_str + (') ' + 'was traded for ')))))))),
+						item_name + (' was traded from ' + (A2($author$project$ItemShop$trade_party_to_str, characters, from_party) + (' to ' + (A2($author$project$ItemShop$trade_party_to_str, characters, to_party) + (' (' + (qty_str + (') ' + 'was traded for ')))))))),
 						rendered_cost
 					]));
 		}
@@ -30513,7 +30834,7 @@ var $author$project$ItemShop$render_single_trade_log_entry = F4(
 			_List_fromArray(
 				[
 					$mdgriffith$elm_ui$Element$text(
-					'Shop --> ' + (A2($author$project$ItemShop$trade_party_to_str, all_characters, to_party) + (' ' + (item_name + (' (' + (qty_str + (') ' + '-- value: '))))))),
+					'Shop --> ' + (A2($author$project$ItemShop$trade_party_to_str, characters, to_party) + (' ' + (item_name + (' (' + (qty_str + (') ' + '-- value: '))))))),
 					A2(
 					$mdgriffith$elm_ui$Element$el,
 					_List_fromArray(
@@ -30526,13 +30847,16 @@ var $author$project$ItemShop$render_single_trade_log_entry = F4(
 	});
 var $mdgriffith$elm_ui$Element$spaceEvenly = A2($mdgriffith$elm_ui$Internal$Model$Class, $mdgriffith$elm_ui$Internal$Flag$spacing, $mdgriffith$elm_ui$Internal$Style$classes.spaceEvenly);
 var $author$project$ItemShop$trends_display = F6(
-	function (colorTheme, shiftIsPressed, item_db, shop_trends, all_characters, is_expanded) {
+	function (colorTheme, shiftIsPressed, item_db, shop_trends, characters, is_expanded) {
+		var player = characters.a.player;
+		var shop = characters.a.shop;
+		var others = characters.a.others;
 		var rendered_item_trade_logs = _List_fromArray(
 			[
 				$mdgriffith$elm_ui$Element$text(
 				'There have been ' + ($elm$core$String$fromInt(
 					$elm$core$List$length(shop_trends.item_trade_logs)) + (' trades, and ' + ($elm$core$String$fromInt(
-					$elm$core$List$length(all_characters)) + ' traders.'))))
+					$author$project$ItemShop$charactersLength(characters)) + ' traders.'))))
 			]);
 		var render_single_popularity = function (_v2) {
 			var type_id = _v2.a;
@@ -30647,7 +30971,7 @@ var $author$project$ItemShop$trends_display = F6(
 						]),
 					A2(
 						$elm$core$List$map,
-						A3($author$project$ItemShop$render_single_trade_log_entry, colorTheme, item_db, all_characters),
+						A3($author$project$ItemShop$render_single_trade_log_entry, colorTheme, item_db, characters),
 						A2(
 							$elm$core$List$take,
 							shiftIsPressed ? 50 : 5,
@@ -30662,8 +30986,10 @@ var $author$project$ItemShop$trends_display = F6(
 				_Utils_ap(
 					has_trades ? _List_fromArray(
 						[
-							$mdgriffith$elm_ui$Element$Events$onMouseEnter($author$project$ItemShop$StartTrendsHover),
-							$mdgriffith$elm_ui$Element$Events$onMouseLeave($author$project$ItemShop$EndTrendsHover)
+							$mdgriffith$elm_ui$Element$Events$onMouseEnter(
+							$author$project$ItemShop$GotUiOptionsMsg($author$project$ItemShop$StartTrendsHover)),
+							$mdgriffith$elm_ui$Element$Events$onMouseLeave(
+							$author$project$ItemShop$GotUiOptionsMsg($author$project$ItemShop$EndTrendsHover))
 						]) : _List_Nil,
 					is_expanded ? _List_fromArray(
 						[expanded_trade_logs]) : _List_Nil)),
@@ -30696,12 +31022,22 @@ var $author$project$ItemShop$view_shop_tab_type = function (model) {
 			$mdgriffith$elm_ui$Element$Border$width(10),
 			$mdgriffith$elm_ui$Element$Border$dashed
 		]);
+	var shopChar = function () {
+		var _v4 = $author$project$ItemShop$getShop(model.characters);
+		var s = _v4.a;
+		return s;
+	}();
+	var playerChar = function () {
+		var _v3 = $author$project$ItemShop$getPlayer(model.characters);
+		var p = _v3.a;
+		return p;
+	}();
 	var paused_border_attrs = _List_fromArray(
 		[
 			$mdgriffith$elm_ui$Element$Border$color(
 			function () {
-				var _v4 = model.colorTheme;
-				if (_v4.$ === 'BrightTheme') {
+				var _v2 = model.colorTheme;
+				if (_v2.$ === 'BrightTheme') {
 					return $author$project$Interface$color_light_grey;
 				} else {
 					return $author$project$Interface$color_grey;
@@ -30710,8 +31046,6 @@ var $author$project$ItemShop$view_shop_tab_type = function (model) {
 			$mdgriffith$elm_ui$Element$Border$width(10),
 			$mdgriffith$elm_ui$Element$Border$dashed
 		]);
-	var maybe_shop = $author$project$ItemShop$getShop(model);
-	var maybe_player = $author$project$ItemShop$getPlayer(model);
 	var debug_inventories = A2(
 		$elm$core$List$map,
 		function (character) {
@@ -30731,7 +31065,7 @@ var $author$project$ItemShop$view_shop_tab_type = function (model) {
 						character.name + '\'s Inventory',
 						character,
 						model.shop_trends,
-						model.hovered_item_in_character,
+						model.uiOptions.hovered_item_in_character,
 						$author$project$ItemShop$CharacterItems,
 						$elm$core$Basics$always($mdgriffith$elm_ui$Element$none))));
 		},
@@ -30743,7 +31077,7 @@ var $author$project$ItemShop$view_shop_tab_type = function (model) {
 					return $.char_id;
 				},
 				$TSFoster$elm_uuid$UUID$toString),
-			A2($author$project$ItemShop$exclude_player_and_shop, model, model.characters)));
+			$author$project$ItemShop$getOthers(model.characters)));
 	return A2(
 		$mdgriffith$elm_ui$Element$el,
 		_Utils_ap(
@@ -30788,8 +31122,8 @@ var $author$project$ItemShop$view_shop_tab_type = function (model) {
 								A3(
 								$author$project$Interface$outline_button,
 								_List_Nil,
-								$author$project$ItemShop$ToggleShowMainChart,
-								model.show_main_chart ? 'Hide Charts' : 'Charts'),
+								$author$project$ItemShop$GotUiOptionsMsg($author$project$ItemShop$ToggleShowMainChart),
+								model.uiOptions.show_main_chart ? 'Hide Charts' : 'Charts'),
 								A3(
 								$author$project$Interface$outline_button,
 								_List_fromArray(
@@ -30804,14 +31138,14 @@ var $author$project$ItemShop$view_shop_tab_type = function (model) {
 									}
 								}())
 							])),
-						model.show_main_chart ? A2(
+						model.uiOptions.show_main_chart ? A2(
 						$mdgriffith$elm_ui$Element$el,
 						_List_fromArray(
 							[
 								A2($mdgriffith$elm_ui$Element$paddingXY, 0, 10),
 								$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill)
 							]),
-						A2($author$project$ItemShop$charts_display, model.historical_shop_trends, model.hovered_trend_chart)) : $mdgriffith$elm_ui$Element$none,
+						A2($author$project$ItemShop$charts_display, model.historical_shop_trends, model.uiOptions.hovered_trend_chart)) : $mdgriffith$elm_ui$Element$none,
 						A2(
 						$mdgriffith$elm_ui$Element$row,
 						_List_fromArray(
@@ -30850,14 +31184,11 @@ var $author$project$ItemShop$view_shop_tab_type = function (model) {
 								A3($mdgriffith$elm_ui$Element$Lazy$lazy2, $author$project$ItemShop$player_upgrades_display, model.colorTheme, model.player_upgrades))
 							])),
 						function () {
-						if (maybe_player.$ === 'Just') {
-							var player = maybe_player.a;
-							return A5($author$project$ItemShop$special_actions_display, model.colorTheme, model.player_upgrades, model.hovered_tooltip, player, model.ai_updates_paused);
-						} else {
-							return $mdgriffith$elm_ui$Element$none;
-						}
+						var _v1 = $author$project$ItemShop$getPlayer(model.characters);
+						var player = _v1.a;
+						return A5($author$project$ItemShop$special_actions_display, model.colorTheme, model.player_upgrades, model.uiOptions.hovered_tooltip, player, model.ai_updates_paused);
 					}(),
-						A6($author$project$ItemShop$trends_display, model.colorTheme, model.shiftIsPressed, model.item_db, model.shop_trends, model.characters, model.shop_trends_hovered),
+						A6($author$project$ItemShop$trends_display, model.colorTheme, model.uiOptions.shiftIsPressed, model.item_db, model.shop_trends, model.characters, model.uiOptions.shop_trends_hovered),
 						A2(
 						$mdgriffith$elm_ui$Element$el,
 						_List_fromArray(
@@ -30865,30 +31196,18 @@ var $author$project$ItemShop$view_shop_tab_type = function (model) {
 								A2($mdgriffith$elm_ui$Element$paddingXY, 0, 0),
 								$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill)
 							]),
-						function () {
-							if (maybe_shop.$ === 'Just') {
-								var shop = maybe_shop.a;
-								return A7(
-									$author$project$ItemShop$render_inventory_grid,
-									model,
-									'Items For Sale',
-									shop,
-									model.shop_trends,
-									model.hovered_item_in_character,
-									$author$project$ItemShop$ShopItems,
-									A2($author$project$ItemShop$shopInventoryControls, maybe_player, model.shop_trends));
-							} else {
-								return A2(
-									$mdgriffith$elm_ui$Element$el,
-									_List_fromArray(
-										[
-											$mdgriffith$elm_ui$Element$Font$color(
-											A3($mdgriffith$elm_ui$Element$rgb, 1, 0, 0)),
-											$author$project$ItemShop$font_scaled(5)
-										]),
-									$mdgriffith$elm_ui$Element$text('ERR: Can\'t find shop'));
-							}
-						}()),
+						A7(
+							$author$project$ItemShop$render_inventory_grid,
+							model,
+							'Items For Sale',
+							shopChar,
+							model.shop_trends,
+							model.uiOptions.hovered_item_in_character,
+							$author$project$ItemShop$ShopItems,
+							A2(
+								$author$project$ItemShop$shopInventoryControls,
+								$author$project$ItemShop$getPlayer(model.characters),
+								model.shop_trends))),
 						A2(
 						$mdgriffith$elm_ui$Element$el,
 						_List_fromArray(
@@ -30896,25 +31215,16 @@ var $author$project$ItemShop$view_shop_tab_type = function (model) {
 								A2($mdgriffith$elm_ui$Element$paddingXY, 0, 10),
 								$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill)
 							]),
-						function () {
-							if (maybe_player.$ === 'Just') {
-								var player = maybe_player.a;
-								return A7(
-									$author$project$ItemShop$render_inventory_grid,
-									model,
-									'Items In Inventory',
-									player,
-									model.shop_trends,
-									model.hovered_item_in_character,
-									$author$project$ItemShop$InventoryItems,
-									A2(
-										$author$project$ItemShop$playerInventoryControls,
-										player,
-										_Utils_Tuple2(model.shiftIsPressed, model.shop_trends)));
-							} else {
-								return $mdgriffith$elm_ui$Element$text('Can\'t find player');
-							}
-						}())
+						A7(
+							$author$project$ItemShop$render_inventory_grid,
+							model,
+							'Items In Inventory',
+							playerChar,
+							model.shop_trends,
+							model.uiOptions.hovered_item_in_character,
+							$author$project$ItemShop$InventoryItems,
+							$author$project$ItemShop$playerInventoryControls(
+								_Utils_Tuple2(model.uiOptions.shiftIsPressed, model.shop_trends))))
 					]),
 				_List_fromArray(
 					[
@@ -30926,8 +31236,8 @@ var $author$project$ItemShop$view_shop_tab_type = function (model) {
 							]),
 						A2(
 							$elm$core$List$cons,
-							A2($author$project$ItemShop$showHideDebugInventoriesButton, _List_Nil, model.show_debug_inventories),
-							model.show_debug_inventories ? debug_inventories : _List_Nil))
+							A2($author$project$ItemShop$showHideDebugInventoriesButton, _List_Nil, model.uiOptions.show_debug_inventories),
+							model.uiOptions.show_debug_inventories ? debug_inventories : _List_Nil))
 					]))));
 };
 var $author$project$ItemShop$view = function (model) {
@@ -30951,12 +31261,14 @@ var $author$project$ItemShop$view = function (model) {
 				A2(
 					$elm$html$Html$Events$on,
 					'wheel',
-					$elm$json$Json$Decode$succeed($author$project$ItemShop$ScrollViewport))),
+					$elm$json$Json$Decode$succeed(
+						$author$project$ItemShop$GotUiOptionsMsg($author$project$ItemShop$ScrollViewport)))),
 				$mdgriffith$elm_ui$Element$htmlAttribute(
 				A2(
 					$elm$html$Html$Events$on,
 					'scroll',
-					$elm$json$Json$Decode$succeed($author$project$ItemShop$ScrollViewport))),
+					$elm$json$Json$Decode$succeed(
+						$author$project$ItemShop$GotUiOptionsMsg($author$project$ItemShop$ScrollViewport)))),
 				$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
 				$mdgriffith$elm_ui$Element$padding(20),
 				$author$project$ItemShop$defaultBackgroundColor(model.colorTheme),
@@ -30973,21 +31285,11 @@ var $author$project$ItemShop$view = function (model) {
 					return A2(
 						$mdgriffith$elm_ui$Element$map,
 						$author$project$ItemShop$GotBattleMsg,
-						A2(
-							$elm$core$Maybe$withDefault,
-							A2(
-								$mdgriffith$elm_ui$Element$el,
-								_List_fromArray(
-									[
-										$mdgriffith$elm_ui$Element$Font$color($author$project$Interface$color_danger)
-									]),
-								$mdgriffith$elm_ui$Element$text('ERR: NO PLAYER')),
-							A2(
-								$elm$core$Maybe$map,
-								function (player) {
-									return A2($mdgriffith$elm_ui$Element$Lazy$lazy, $author$project$Battle$view, model.battleModel);
-								},
-								$author$project$ItemShop$getPlayer(model))));
+						function () {
+							var _v1 = $author$project$ItemShop$getPlayer(model.characters);
+							var player = _v1.a;
+							return A2($mdgriffith$elm_ui$Element$Lazy$lazy, $author$project$Battle$view, model.battleModel);
+						}());
 			}
 		}());
 };
