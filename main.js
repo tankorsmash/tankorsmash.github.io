@@ -7415,7 +7415,7 @@ var $author$project$ItemShop$init = F2(
 					party: $author$project$ItemShop$ShopParty
 				}));
 		var initial_tab_type = $author$project$ItemShop$stringToTabType(hash);
-		var initUiOptions = {cached_tooltip_offsets: $elm$core$Dict$empty, globalViewport: $elm$core$Maybe$Nothing, hovered_item_in_character: $elm$core$Maybe$Nothing, hovered_tooltip: $author$project$ItemShop$NoHoveredTooltip, hovered_trend_chart: _List_Nil, inventorySortDir: $author$project$ItemShop$Ascending, inventorySortType: $author$project$ItemShop$SortByName, shiftIsPressed: false, shop_trends_hovered: false, shouldDisplayShowDebugInventoriesOverlay: false, showDebugInventoriesElement: $elm$core$Maybe$Nothing, show_charts_in_hovered_item: false, show_debug_inventories: true, show_main_chart: true};
+		var initUiOptions = {cached_tooltip_offsets: $elm$core$Dict$empty, globalViewport: $elm$core$Maybe$Nothing, hovered_item_in_character: $elm$core$Maybe$Nothing, hovered_tooltip: $author$project$ItemShop$NoHoveredTooltip, hovered_trend_chart: _List_Nil, inventorySortDir: $author$project$ItemShop$Ascending, inventorySortType: $author$project$ItemShop$SortByName, shiftIsPressed: false, shop_trends_hovered: false, shouldDisplayShowDebugInventoriesOverlay: false, showDebugInventoriesElement: $elm$core$Maybe$Nothing, show_charts_in_hovered_item: false, show_debug_inventories: false, show_main_chart: true};
 		var characters = $author$project$ItemShop$Characters(
 			{
 				others: $author$project$ItemShop$initial_characters(item_db),
@@ -31116,7 +31116,7 @@ var $author$project$ItemShop$view_shop_tab_type = function (model) {
 										$author$project$Interface$secondary_button,
 										_List_Nil,
 										$author$project$ItemShop$ChangeTabType($author$project$ItemShop$ItemsUnlockedTabType),
-										'View Items'),
+										'View Codex'),
 									url: '#items'
 								}),
 								A3(
