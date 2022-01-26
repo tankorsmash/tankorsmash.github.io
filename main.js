@@ -7405,8 +7405,8 @@ var $author$project$ItemShop$initial_items_for_sale = function (item_db) {
 		_Debug_todo(
 			'ItemShop',
 			{
-				start: {line: 1531, column: 17},
-				end: {line: 1531, column: 27}
+				start: {line: 1602, column: 17},
+				end: {line: 1602, column: 27}
 			}),
 		'THERE WAS AN ERROR IN INITIAL ITEM SETUP!!!!',
 		$elm$core$Result$Err(''));
@@ -7524,6 +7524,7 @@ var $author$project$ItemShop$init = F2(
 			browserNavKey: key,
 			characters: characters,
 			colorTheme: $author$project$Interface$BrightTheme,
+			communityFund: 0,
 			global_seed: $elm$random$Random$initialSeed(4),
 			historical_player_actions: _List_fromArray(
 				[$author$project$ItemShop$WelcomeMessageActionLog]),
@@ -11041,6 +11042,10 @@ var $author$project$ItemShop$append_to_character_action_log = F2(
 			character,
 			{action_log: new_action_log});
 	});
+var $author$project$ItemShop$getShopCharacter = function (_v0) {
+	var shop = _v0.a;
+	return shop;
+};
 var $author$project$ItemShop$get_sentiment_for_item_type = F2(
 	function (item_type_sentiment, item_type) {
 		return A2(
@@ -11081,7 +11086,7 @@ var $author$project$ItemShop$get_wanted_items = F3(
 			function (inventory_record) {
 				return $author$project$ItemShop$nonzero_qty(inventory_record) && (A3($author$project$ItemShop$check_can_afford_one, character, shop_trends, inventory_record.item) && A2($author$project$ItemShop$check_nonzero_desire, character, inventory_record.item));
 			},
-			shop.held_items);
+			$author$project$ItemShop$getShopCharacter(shop).held_items);
 	});
 var $elm_community$list_extra$List$Extra$greedyGroupsOfWithStep = F3(
 	function (size, step, xs) {
@@ -11218,8 +11223,12 @@ var $author$project$ItemShop$seed_from_time = function (time) {
 	return $elm$random$Random$initialSeed(
 		$elm$time$Time$posixToMillis(time));
 };
-var $author$project$ItemShop$ai_buy_item_from_shop = F5(
-	function (ai_tick_time, item_db, shop_trends, character, shop) {
+var $author$project$ItemShop$ai_buy_item_from_shop = F3(
+	function (ai_tick_time, item_db, _v0) {
+		var shop_trends = _v0.shop_trends;
+		var character = _v0.character;
+		var shop = _v0.shop;
+		var communityFund = _v0.communityFund;
 		var wanted_items = A3($author$project$ItemShop$get_wanted_items, character, shop, shop_trends);
 		var sentiment_above_zero = function (item_type_id) {
 			var maybe_item_type = $author$project$ItemShop$id_to_item_type(item_type_id);
@@ -11236,14 +11245,14 @@ var $author$project$ItemShop$ai_buy_item_from_shop = F5(
 		var qty_to_buy = $author$project$ItemShop$Quantity(1);
 		var max_trend = 1.4;
 		var is_item_wanted = F2(
-			function (_v6, buyable_item) {
-				var item_type = _v6.a;
-				var trend = _v6.b;
+			function (_v7, buyable_item) {
+				var item_type = _v7.a;
+				var trend = _v7.b;
 				if (buyable_item.$ === 'Just') {
 					var buyable = buyable_item.a;
 					return $elm$core$Maybe$Just(buyable);
 				} else {
-					var _v5 = A2(
+					var _v6 = A2(
 						$elm$core$List$filter,
 						A2(
 							$elm$core$Basics$composeR,
@@ -11257,18 +11266,18 @@ var $author$project$ItemShop$ai_buy_item_from_shop = F5(
 								},
 								$elm$core$Basics$eq(item_type))),
 						wanted_items);
-					if (!_v5.b) {
+					if (!_v6.b) {
 						return $elm$core$Maybe$Nothing;
 					} else {
-						var item = _v5.a.item;
-						var rest_sentiments = _v5.b;
+						var item = _v6.a.item;
+						var rest_sentiments = _v6.b;
 						return $elm$core$Maybe$Just(item);
 					}
 				}
 			});
-		var is_item_trendy_enough = function (_v3) {
-			var it_id = _v3.a;
-			var trd = _v3.b;
+		var is_item_trendy_enough = function (_v4) {
+			var it_id = _v4.a;
+			var trd = _v4.b;
 			return A2(
 				$elm$core$Maybe$andThen,
 				(_Utils_cmp(trd, max_trend) < 0) ? function (item_type) {
@@ -11299,7 +11308,7 @@ var $author$project$ItemShop$ai_buy_item_from_shop = F5(
 			if (maybe_item_to_buy.$ === 'Nothing') {
 				return $author$project$ItemShop$IncompleteTradeRecord(
 					{
-						from_party: shop,
+						from_party: $author$project$ItemShop$getShopCharacter(shop),
 						shop_trends: shop_trends,
 						to_party: A2(
 							$author$project$ItemShop$append_to_character_action_log,
@@ -11313,13 +11322,23 @@ var $author$project$ItemShop$ai_buy_item_from_shop = F5(
 				var item = maybe_item_to_buy.a;
 				return A2(
 					$author$project$ItemShop$sell_items_from_party_to_other,
-					{from_party: shop, shop_trends: shop_trends, to_party: character},
+					{
+						from_party: $author$project$ItemShop$getShopCharacter(shop),
+						shop_trends: shop_trends,
+						to_party: character
+					},
 					{item: item, qty: qty_to_buy});
 			}
 		}();
 		if (trade_record.$ === 'IncompleteTradeRecord') {
 			var trade_context_ = trade_record.a;
-			return {character: trade_context_.to_party, shop: trade_context_.from_party, shop_trends: trade_context_.shop_trends, traded_items: _List_Nil};
+			return {
+				character: trade_context_.to_party,
+				communityFund: communityFund,
+				shop: $author$project$ItemShop$Shop(trade_context_.from_party),
+				shop_trends: trade_context_.shop_trends,
+				traded_items: _List_Nil
+			};
 		} else {
 			var trade_context_ = trade_record.a;
 			var log = trade_record.b;
@@ -11331,12 +11350,13 @@ var $author$project$ItemShop$ai_buy_item_from_shop = F5(
 						log_type: $author$project$ItemShop$Traded(log),
 						time: ai_tick_time
 					}),
-				shop: trade_context_.from_party,
+				communityFund: communityFund,
+				shop: $author$project$ItemShop$Shop(trade_context_.from_party),
 				shop_trends: trade_context_.shop_trends,
 				traded_items: function () {
-					var _v1 = A2($author$project$ItemShop$lookup_item_id, item_db, log.item_id);
-					if (_v1.$ === 'Just') {
-						var item_trade_log = _v1.a;
+					var _v2 = A2($author$project$ItemShop$lookup_item_id, item_db, log.item_id);
+					if (_v2.$ === 'Just') {
+						var item_trade_log = _v2.a;
 						return _List_fromArray(
 							[
 								{
@@ -11349,8 +11369,8 @@ var $author$project$ItemShop$ai_buy_item_from_shop = F5(
 						return _Debug_todo(
 							'ItemShop',
 							{
-								start: {line: 3401, column: 25},
-								end: {line: 3401, column: 35}
+								start: {line: 3506, column: 25},
+								end: {line: 3506, column: 35}
 							})('');
 					}
 				}()
@@ -11360,48 +11380,75 @@ var $author$project$ItemShop$ai_buy_item_from_shop = F5(
 var $author$project$ItemShop$FetchedItem = function (a) {
 	return {$: 'FetchedItem', a: a};
 };
-var $author$project$ItemShop$ai_fetch_item = F5(
-	function (ai_tick_time, item_db, shop_trends, character, shop) {
+var $author$project$ItemShop$FetchedItemButFundNotBigEnough = function (a) {
+	return {$: 'FetchedItemButFundNotBigEnough', a: a};
+};
+var $author$project$ItemShop$addHeldItem = F2(
+	function (item, character) {
 		var held_items = character.held_items;
+		return _Utils_update(
+			character,
+			{
+				held_items: A4(
+					$author$project$ItemShop$add_item_to_inventory_records,
+					held_items,
+					item,
+					$author$project$ItemShop$setQuantity(1),
+					item.raw_gold_cost)
+			});
+	});
+var $author$project$ItemShop$convertPreUpdateRecordToPostUpdate = function (_v0) {
+	var shop_trends = _v0.shop_trends;
+	var character = _v0.character;
+	var shop = _v0.shop;
+	var communityFund = _v0.communityFund;
+	return {character: character, communityFund: communityFund, shop: shop, shop_trends: shop_trends, traded_items: _List_Nil};
+};
+var $author$project$ItemShop$ai_fetch_item = F3(
+	function (ai_tick_time, item_db, preUpdateRecord) {
+		var shop_trends = preUpdateRecord.shop_trends;
+		var character = preUpdateRecord.character;
+		var shop = preUpdateRecord.shop;
+		var communityFund = preUpdateRecord.communityFund;
 		var _v0 = A2(
 			$author$project$ItemShop$pick_random_unlocked_item_from_db,
 			item_db,
 			$author$project$ItemShop$seed_from_time(ai_tick_time));
 		var mbNewItem = _v0.a;
-		var newSeed = _v0.b;
-		return {
-			character: function () {
-				if (mbNewItem.$ === 'Just') {
-					var newItem = mbNewItem.a;
-					return function (c) {
-						return A2(
+		if (mbNewItem.$ === 'Just') {
+			var newItem = mbNewItem.a;
+			return (_Utils_cmp(newItem.raw_gold_cost, communityFund) < 1) ? {
+				character: function (c) {
+					return A2(
+						$author$project$ItemShop$append_to_character_action_log,
+						c,
+						{
+							log_type: $author$project$ItemShop$FetchedItem(newItem.id),
+							time: ai_tick_time
+						});
+				}(
+					A2($author$project$ItemShop$addHeldItem, newItem, character)),
+				communityFund: communityFund - newItem.raw_gold_cost,
+				shop: shop,
+				shop_trends: shop_trends,
+				traded_items: _List_Nil
+			} : function (ai_update_record) {
+				return _Utils_update(
+					ai_update_record,
+					{
+						character: A2(
 							$author$project$ItemShop$append_to_character_action_log,
-							c,
+							character,
 							{
-								log_type: $author$project$ItemShop$FetchedItem(newItem.id),
+								log_type: $author$project$ItemShop$FetchedItemButFundNotBigEnough(newItem.id),
 								time: ai_tick_time
-							});
-					}(
-						function (c) {
-							return _Utils_update(
-								c,
-								{
-									held_items: A4(
-										$author$project$ItemShop$add_item_to_inventory_records,
-										held_items,
-										newItem,
-										$author$project$ItemShop$setQuantity(1),
-										newItem.raw_gold_cost)
-								});
-						}(character));
-				} else {
-					return character;
-				}
-			}(),
-			shop: shop,
-			shop_trends: shop_trends,
-			traded_items: _List_Nil
-		};
+							})
+					});
+			}(
+				$author$project$ItemShop$convertPreUpdateRecordToPostUpdate(preUpdateRecord));
+		} else {
+			return $author$project$ItemShop$convertPreUpdateRecordToPostUpdate(preUpdateRecord);
+		}
 	});
 var $author$project$ItemShop$WantedToSell = {$: 'WantedToSell'};
 var $author$project$ItemShop$get_single_adjusted_item_cost = F2(
@@ -11416,30 +11463,34 @@ var $author$project$ItemShop$get_trend_for_item = F2(
 	function (shop_trends, item) {
 		return A2($author$project$ItemShop$get_sentiment_for_item, shop_trends.item_type_sentiment, item);
 	});
-var $author$project$ItemShop$ai_sell_item_to_shop = F5(
-	function (ai_tick_time, item_db, shop_trends, character, shop) {
+var $author$project$ItemShop$ai_sell_item_to_shop = F3(
+	function (ai_tick_time, item_db, _v0) {
+		var shop_trends = _v0.shop_trends;
+		var character = _v0.character;
+		var shop = _v0.shop;
+		var communityFund = _v0.communityFund;
 		var wanted_to_sell_but_couldnt = {
 			log_type: $author$project$ItemShop$WantedButCouldntTrade($author$project$ItemShop$WantedToSell),
 			time: ai_tick_time
 		};
 		var sellable_trend = 0.8;
-		var untrendy_enough = function (_v6) {
-			var item = _v6.item;
+		var untrendy_enough = function (_v7) {
+			var item = _v7.item;
 			return _Utils_cmp(
 				A2($author$project$ItemShop$get_trend_for_item, shop_trends, item),
 				sellable_trend) > -1;
 		};
 		var sellable_items = A2(
 			$elm$core$List$filter,
-			function (_v5) {
-				var quantity = _v5.quantity;
+			function (_v6) {
+				var quantity = _v6.quantity;
 				return $author$project$ItemShop$getQuantity(quantity) > 0;
 			},
 			character.held_items);
 		var untrendy_items = A2($elm$core$List$filter, untrendy_enough, sellable_items);
 		var qty_to_sell = $author$project$ItemShop$Quantity(1);
-		var profitable_enough = function (_v4) {
-			var item = _v4.item;
+		var profitable_enough = function (_v5) {
+			var item = _v5.item;
 			return A2($author$project$ItemShop$get_single_adjusted_item_cost, shop_trends, item) > 0;
 		};
 		var shuffled_items_to_sell = A2(
@@ -11453,25 +11504,35 @@ var $author$project$ItemShop$ai_sell_item_to_shop = F5(
 				}
 			}());
 		var trade_record = function () {
-			var _v2 = $elm$core$List$head(shuffled_items_to_sell);
-			if (_v2.$ === 'Nothing') {
+			var _v3 = $elm$core$List$head(shuffled_items_to_sell);
+			if (_v3.$ === 'Nothing') {
 				return $author$project$ItemShop$IncompleteTradeRecord(
 					{
 						from_party: A2($author$project$ItemShop$append_to_character_action_log, character, wanted_to_sell_but_couldnt),
 						shop_trends: shop_trends,
-						to_party: shop
+						to_party: $author$project$ItemShop$getShopCharacter(shop)
 					});
 			} else {
-				var item = _v2.a.item;
+				var item = _v3.a.item;
 				return A2(
 					$author$project$ItemShop$sell_items_from_party_to_other,
-					{from_party: character, shop_trends: shop_trends, to_party: shop},
+					{
+						from_party: character,
+						shop_trends: shop_trends,
+						to_party: $author$project$ItemShop$getShopCharacter(shop)
+					},
 					{item: item, qty: qty_to_sell});
 			}
 		}();
 		if (trade_record.$ === 'IncompleteTradeRecord') {
 			var trade_context_ = trade_record.a;
-			return {character: trade_context_.from_party, shop: trade_context_.to_party, shop_trends: trade_context_.shop_trends, traded_items: _List_Nil};
+			return {
+				character: trade_context_.from_party,
+				communityFund: communityFund,
+				shop: $author$project$ItemShop$Shop(trade_context_.to_party),
+				shop_trends: trade_context_.shop_trends,
+				traded_items: _List_Nil
+			};
 		} else {
 			var trade_context_ = trade_record.a;
 			var log = trade_record.b;
@@ -11483,12 +11544,13 @@ var $author$project$ItemShop$ai_sell_item_to_shop = F5(
 						log_type: $author$project$ItemShop$Traded(log),
 						time: ai_tick_time
 					}),
-				shop: trade_context_.to_party,
+				communityFund: communityFund,
+				shop: $author$project$ItemShop$Shop(trade_context_.to_party),
 				shop_trends: trade_context_.shop_trends,
 				traded_items: function () {
-					var _v1 = A2($author$project$ItemShop$lookup_item_id, item_db, log.item_id);
-					if (_v1.$ === 'Just') {
-						var item_trade_log = _v1.a;
+					var _v2 = A2($author$project$ItemShop$lookup_item_id, item_db, log.item_id);
+					if (_v2.$ === 'Just') {
+						var item_trade_log = _v2.a;
 						return _List_fromArray(
 							[
 								{
@@ -11502,8 +11564,8 @@ var $author$project$ItemShop$ai_sell_item_to_shop = F5(
 							_Debug_todo(
 								'ItemShop',
 								{
-									start: {line: 3494, column: 25},
-									end: {line: 3494, column: 35}
+									start: {line: 3601, column: 25},
+									end: {line: 3601, column: 35}
 								}),
 							'',
 							_List_Nil);
@@ -11543,6 +11605,13 @@ var $author$project$ItemShop$pickAiActionChoice = function (ai_tick_seed) {
 							A2($elm$core$List$repeat, 2, $author$project$ItemShop$WantsToFetchItem),
 							A2($elm$core$List$repeat, 5, $author$project$ItemShop$NoActionChoice)))))));
 };
+var $author$project$ItemShop$setShop = F2(
+	function (shop, _v0) {
+		var player = _v0.a.player;
+		var others = _v0.a.others;
+		return $author$project$ItemShop$Characters(
+			{others: others, player: player, shop: shop});
+	});
 var $author$project$ItemShop$updateTimesOthersTraded = F2(
 	function (item_db_record_trades, new_times_others_traded) {
 		var old_times_others_traded = item_db_record_trades.times_others_traded;
@@ -11557,41 +11626,45 @@ var $author$project$ItemShop$update_ai = F4(
 		var characters = original_ai_update_data.characters;
 		var ai_tick_seed = original_ai_update_data.ai_tick_seed;
 		var item_db = original_ai_update_data.item_db;
-		var maybe_shop = A2($author$project$ItemShop$getCharacter, characters, shop_char_id);
+		var communityFund = original_ai_update_data.communityFund;
+		var shop = $author$project$ItemShop$getShop(characters);
 		var maybe_character = A2($author$project$ItemShop$getCharacter, characters, char_id);
-		var _v0 = _Utils_Tuple2(maybe_character, maybe_shop);
-		if ((_v0.a.$ === 'Just') && (_v0.b.$ === 'Just')) {
-			var character = _v0.a.a;
-			var shop = _v0.b.a;
+		if (maybe_character.$ === 'Just') {
+			var character = maybe_character.a;
+			var preUpdateRecord = {character: character, communityFund: communityFund, shop: shop, shop_trends: shop_trends};
 			var _v1 = $author$project$ItemShop$pickAiActionChoice(ai_tick_seed);
 			var chosen_action = _v1.a;
 			var new_seed = _v1.b;
 			var ai_update_record = function () {
 				switch (chosen_action.$) {
 					case 'WantsToSell':
-						return A5($author$project$ItemShop$ai_sell_item_to_shop, ai_tick_time, item_db, shop_trends, character, shop);
+						return A3($author$project$ItemShop$ai_sell_item_to_shop, ai_tick_time, item_db, preUpdateRecord);
 					case 'WantsToBuy':
-						return A5($author$project$ItemShop$ai_buy_item_from_shop, ai_tick_time, item_db, shop_trends, character, shop);
+						return A3($author$project$ItemShop$ai_buy_item_from_shop, ai_tick_time, item_db, preUpdateRecord);
 					case 'WantsToFetchItem':
-						return A5($author$project$ItemShop$ai_fetch_item, ai_tick_time, item_db, shop_trends, character, shop);
+						return A3($author$project$ItemShop$ai_fetch_item, ai_tick_time, item_db, preUpdateRecord);
 					default:
 						return {
 							character: A2(
 								$author$project$ItemShop$append_to_character_action_log,
-								character,
+								preUpdateRecord.character,
 								{log_type: $author$project$ItemShop$DidNothing, time: ai_tick_time}),
-							shop: shop,
-							shop_trends: shop_trends,
+							communityFund: preUpdateRecord.communityFund,
+							shop: preUpdateRecord.shop,
+							shop_trends: preUpdateRecord.shop_trends,
 							traded_items: _List_Nil
 						};
 				}
 			}();
 			var new_characters = A2(
-				$author$project$ItemShop$mapCharacters,
-				function (c) {
-					return _Utils_eq(c.char_id, character.char_id) ? ai_update_record.character : (_Utils_eq(c.char_id, shop.char_id) ? ai_update_record.shop : c);
-				},
-				characters);
+				$author$project$ItemShop$setShop,
+				ai_update_record.shop,
+				A2(
+					$author$project$ItemShop$mapCharacters,
+					function (c) {
+						return _Utils_eq(c.char_id, character.char_id) ? ai_update_record.character : c;
+					},
+					characters));
 			var new_historical_shop_trends = A2(
 				$elm$core$List$append,
 				historical_shop_trends,
@@ -11610,7 +11683,7 @@ var $author$project$ItemShop$update_ai = F4(
 						inventory_records);
 				}
 			}();
-			return {ai_tick_seed: new_seed, characters: new_characters, historical_shop_trends: new_historical_shop_trends, item_db: new_item_db, shop_trends: ai_update_record.shop_trends};
+			return {ai_tick_seed: new_seed, characters: new_characters, communityFund: ai_update_record.communityFund, historical_shop_trends: new_historical_shop_trends, item_db: new_item_db, shop_trends: ai_update_record.shop_trends};
 		} else {
 			return A2($elm$core$Debug$log, 'ERRORRRRR no matching characters', original_ai_update_data);
 		}
@@ -11625,7 +11698,8 @@ var $author$project$ItemShop$update_ai_chars = function (model) {
 	var ai_tick_time = _v0.ai_tick_time;
 	var item_db = _v0.item_db;
 	var shop_id = _v0.shop_id;
-	var first_ai_update_data = {ai_tick_seed: ai_tick_seed, characters: old_characters, historical_shop_trends: old_historical_shop_trends, item_db: item_db, shop_trends: old_shop_trends};
+	var communityFund = _v0.communityFund;
+	var first_ai_update_data = {ai_tick_seed: ai_tick_seed, characters: old_characters, communityFund: communityFund, historical_shop_trends: old_historical_shop_trends, item_db: item_db, shop_trends: old_shop_trends};
 	var new_ai_data = A3(
 		$elm$core$List$foldl,
 		A2($author$project$ItemShop$update_ai, ai_tick_time, shop_id),
@@ -12028,6 +12102,25 @@ var $author$project$ItemShop$hasEnoughGold = F2(
 			character.held_gold,
 			$author$project$ItemShop$getPrice(price)) > -1;
 	});
+var $author$project$ItemShop$communityFundCost = $author$project$ItemShop$setPrice(25);
+var $author$project$ItemShop$special_action_community_fund = function (model) {
+	var price = $author$project$ItemShop$communityFundCost;
+	return function (_v0) {
+		var player = _v0.a;
+		return A2($author$project$ItemShop$hasEnoughGold, player, price) ? function (m) {
+			return _Utils_update(
+				m,
+				{
+					communityFund: model.communityFund + $author$project$ItemShop$getPrice(price)
+				});
+		}(
+			A2(
+				$author$project$ItemShop$replaceCharacter,
+				A2($author$project$ItemShop$subGold, player, price),
+				model)) : model;
+	}(
+		$author$project$ItemShop$getPlayer(model.characters));
+};
 var $author$project$ItemShop$scale_increase_income_cost = function (current_level) {
 	return $author$project$ItemShop$setPrice(20 + (((5 * current_level) * current_level) * 2));
 };
@@ -12178,9 +12271,13 @@ var $author$project$ItemShop$update_special_action = F3(
 					return _Utils_Tuple2(
 						$author$project$ItemShop$special_action_unlock_item(model),
 						$elm$core$Platform$Cmd$none);
-				default:
+				case 'IncreaseIncome':
 					return _Utils_Tuple2(
 						$author$project$ItemShop$special_action_increase_income(model),
+						$elm$core$Platform$Cmd$none);
+				default:
+					return _Utils_Tuple2(
+						$author$project$ItemShop$special_action_community_fund(model),
 						$elm$core$Platform$Cmd$none);
 			}
 		}(
@@ -29483,8 +29580,11 @@ var $author$project$ItemShop$ToggleHideNonZeroRows = function (a) {
 var $author$project$ItemShop$is_item_trade_log_to_shop = function (item_trade_log) {
 	return _Utils_eq(item_trade_log.to_party, $author$project$ItemShop$ShopParty);
 };
-var $author$project$ItemShop$action_log_to_str = F2(
-	function (item_db, action_log) {
+var $author$project$Interface$renderGpString = function (count) {
+	return $elm$core$String$fromInt(count) + 'gp';
+};
+var $author$project$ItemShop$action_log_to_str = F3(
+	function (colorTheme, item_db, action_log) {
 		var _v0 = action_log.log_type;
 		switch (_v0.$) {
 			case 'Traded':
@@ -29510,7 +29610,11 @@ var $author$project$ItemShop$action_log_to_str = F2(
 				}
 			case 'FetchedItem':
 				var itemId = _v0.a;
-				return 'Fetched an item';
+				return 'Fetched an item: ' + A2($author$project$ItemShop$lookup_item_id_default, item_db, itemId).name;
+			case 'FetchedItemButFundNotBigEnough':
+				var itemId = _v0.a;
+				return 'Tried to fetch an item, but the Community Fund didn\'t contain enough gold. Needed' + $author$project$Interface$renderGpString(
+					A2($author$project$ItemShop$lookup_item_id_default, item_db, itemId).raw_gold_cost);
 			default:
 				return 'Did nothing';
 		}
@@ -30163,48 +30267,11 @@ var $author$project$ItemShop$render_inventory_grid = F7(
 		}();
 		var _v0 = model.uiOptions;
 		var show_charts_in_hovered_item = _v0.show_charts_in_hovered_item;
-		var _v1 = model;
-		var historical_shop_trends = _v1.historical_shop_trends;
-		var item_db = _v1.item_db;
-		var render_single_action_log = function (log) {
-			return A2(
-				$mdgriffith$elm_ui$Element$el,
-				_List_Nil,
-				$mdgriffith$elm_ui$Element$text(
-					A2($author$project$ItemShop$action_log_to_str, item_db, log)));
-		};
-		var rendered_action_log_items = ($elm$core$List$length(character.action_log) > 0) ? A2(
-			$elm$core$List$map,
-			render_single_action_log,
-			A2(
-				$elm$core$List$take,
-				50,
-				$elm$core$List$reverse(character.action_log))) : _List_fromArray(
-			[
-				$mdgriffith$elm_ui$Element$text('No actions taken')
-			]);
-		var rendered_action_log = _List_fromArray(
-			[
-				A2(
-				$mdgriffith$elm_ui$Element$column,
-				_List_fromArray(
-					[
-						$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
-						$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$fill),
-						$mdgriffith$elm_ui$Element$scrollbars,
-						((!is_shop_context) && ($elm$core$List$length(character.action_log) > 0)) ? $mdgriffith$elm_ui$Element$height(
-						A2(
-							$mdgriffith$elm_ui$Element$minimum,
-							50,
-							A2($mdgriffith$elm_ui$Element$maximum, 600, $mdgriffith$elm_ui$Element$fill))) : $mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$fill)
-					]),
-				(!is_shop_context) ? rendered_action_log_items : _List_Nil)
-			]);
-		var _v2 = character;
-		var char_id = _v2.char_id;
-		var held_items = _v2.held_items;
-		var held_gold = _v2.held_gold;
-		var hide_zero_qty_inv_rows = _v2.hide_zero_qty_inv_rows;
+		var _v1 = character;
+		var char_id = _v1.char_id;
+		var held_items = _v1.held_items;
+		var held_gold = _v1.held_gold;
+		var hide_zero_qty_inv_rows = _v1.hide_zero_qty_inv_rows;
 		var is_hovered_item = function (item) {
 			if (hovered_item.$ === 'Just') {
 				var _v16 = hovered_item.a;
@@ -30214,97 +30281,6 @@ var $author$project$ItemShop$render_inventory_grid = F7(
 			} else {
 				return false;
 			}
-		};
-		var expanded_display = function (item) {
-			return is_hovered_item(item) ? A2(
-				$mdgriffith$elm_ui$Element$Keyed$el,
-				_List_fromArray(
-					[
-						$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
-						$mdgriffith$elm_ui$Element$Background$color(
-						A3($mdgriffith$elm_ui$Element$rgb, 1, 1, 1)),
-						$mdgriffith$elm_ui$Element$Border$color(
-						A3($mdgriffith$elm_ui$Element$rgb, 0.35, 0.35, 0.35)),
-						$mdgriffith$elm_ui$Element$Border$rounded(3),
-						$mdgriffith$elm_ui$Element$Border$width(2),
-						$mdgriffith$elm_ui$Element$padding(10),
-						$mdgriffith$elm_ui$Element$moveDown(20)
-					]),
-				_Utils_Tuple2(
-					$TSFoster$elm_uuid$UUID$toString(item.id),
-					A2(
-						$mdgriffith$elm_ui$Element$column,
-						_List_fromArray(
-							[
-								$mdgriffith$elm_ui$Element$spacing(5),
-								$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill)
-							]),
-						_List_fromArray(
-							[
-								A2(
-								$mdgriffith$elm_ui$Element$row,
-								_List_fromArray(
-									[
-										$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill)
-									]),
-								_List_fromArray(
-									[
-										A2(
-										$mdgriffith$elm_ui$Element$paragraph,
-										_List_Nil,
-										_List_fromArray(
-											[
-												$mdgriffith$elm_ui$Element$text(item.name),
-												$mdgriffith$elm_ui$Element$text(': '),
-												$mdgriffith$elm_ui$Element$text(item.description)
-											])),
-										(!show_charts_in_hovered_item) ? A2(
-										$mdgriffith$elm_ui$Element$el,
-										_List_fromArray(
-											[
-												$mdgriffith$elm_ui$Element$Font$italic,
-												$mdgriffith$elm_ui$Element$alignRight,
-												$mdgriffith$elm_ui$Element$Font$color(
-												function () {
-													var _v14 = model.colorTheme;
-													if (_v14.$ === 'BrightTheme') {
-														return $author$project$Interface$color_grey;
-													} else {
-														return $author$project$Interface$convertColor($avh4$elm_color$Color$white);
-													}
-												}()),
-												$mdgriffith$elm_ui$Element$Font$size(12)
-											]),
-										$mdgriffith$elm_ui$Element$text('Hold Shift for more')) : $mdgriffith$elm_ui$Element$none
-									])),
-								A2(
-								$mdgriffith$elm_ui$Element$paragraph,
-								_List_Nil,
-								_Utils_ap(
-									_List_fromArray(
-										[
-											$mdgriffith$elm_ui$Element$text('Current Price: '),
-											A2(
-											$author$project$Interface$renderGp,
-											model.colorTheme,
-											current_price(item))
-										]),
-									(A2($author$project$ItemShop$is_item_trending, shop_trends.item_type_sentiment, item) && (!_Utils_eq(
-										item.raw_gold_cost,
-										current_price(item)))) ? _List_fromArray(
-										[
-											$mdgriffith$elm_ui$Element$text(' (originally '),
-											A2($author$project$Interface$renderGp, model.colorTheme, item.raw_gold_cost),
-											$mdgriffith$elm_ui$Element$text(')')
-										]) : _List_Nil)),
-								show_charts_in_hovered_item ? A2(
-								$mdgriffith$elm_ui$Element$el,
-								_List_fromArray(
-									[
-										A2($mdgriffith$elm_ui$Element$paddingXY, 20, 20)
-									]),
-								A2($author$project$ItemShop$small_charts_display, historical_shop_trends, item.item_type)) : $mdgriffith$elm_ui$Element$none
-							])))) : $mdgriffith$elm_ui$Element$none;
 		};
 		var mouse_hover_attrs = function (item) {
 			return _List_fromArray(
@@ -30356,10 +30332,10 @@ var $author$project$ItemShop$render_inventory_grid = F7(
 				[
 					{
 					header: A2(small_header, 'Name', $author$project$ItemShop$SortByName),
-					view: function (_v6) {
-						var item = _v6.item;
-						var quantity = _v6.quantity;
-						var avg_price = _v6.avg_price;
+					view: function (_v7) {
+						var item = _v7.item;
+						var quantity = _v7.quantity;
+						var avg_price = _v7.avg_price;
 						return A2(
 							$mdgriffith$elm_ui$Element$el,
 							_Utils_ap(
@@ -30382,10 +30358,10 @@ var $author$project$ItemShop$render_inventory_grid = F7(
 				},
 					{
 					header: A2(small_header, 'Price', $author$project$ItemShop$SortByPrice),
-					view: function (_v7) {
-						var item = _v7.item;
-						var quantity = _v7.quantity;
-						var avg_price = _v7.avg_price;
+					view: function (_v8) {
+						var item = _v8.item;
+						var quantity = _v8.quantity;
+						var avg_price = _v8.avg_price;
 						return A2(
 							$mdgriffith$elm_ui$Element$el,
 							_List_fromArray(
@@ -30438,9 +30414,9 @@ var $author$project$ItemShop$render_inventory_grid = F7(
 				},
 					{
 					header: A2(small_header, 'Avg Px', $author$project$ItemShop$SortByAvgPrice),
-					view: function (_v8) {
-						var quantity = _v8.quantity;
-						var avg_price = _v8.avg_price;
+					view: function (_v9) {
+						var quantity = _v9.quantity;
+						var avg_price = _v9.avg_price;
 						return A2(
 							$mdgriffith$elm_ui$Element$el,
 							_List_fromArray(
@@ -30464,8 +30440,8 @@ var $author$project$ItemShop$render_inventory_grid = F7(
 				},
 					{
 					header: A2(small_header, 'Qty.', $author$project$ItemShop$SortByQuantity),
-					view: function (_v10) {
-						var quantity = _v10.quantity;
+					view: function (_v11) {
+						var quantity = _v11.quantity;
 						return A2(
 							$mdgriffith$elm_ui$Element$el,
 							_List_fromArray(
@@ -30491,8 +30467,8 @@ var $author$project$ItemShop$render_inventory_grid = F7(
 				},
 					{
 					header: A2(small_header, 'Item Type', $author$project$ItemShop$SortByItemType),
-					view: function (_v12) {
-						var item = _v12.item;
+					view: function (_v13) {
+						var item = _v13.item;
 						return A2(
 							$mdgriffith$elm_ui$Element$el,
 							_List_fromArray(
@@ -30503,8 +30479,8 @@ var $author$project$ItemShop$render_inventory_grid = F7(
 				},
 					{
 					header: A2(small_header, 'Item Desc.', $author$project$ItemShop$SortByItemDesc),
-					view: function (_v13) {
-						var item = _v13.item;
+					view: function (_v14) {
+						var item = _v14.item;
 						return A2(
 							$mdgriffith$elm_ui$Element$el,
 							_List_fromArray(
@@ -30521,11 +30497,11 @@ var $author$project$ItemShop$render_inventory_grid = F7(
 				}
 				]));
 		var items = function (irs) {
-			var _v5 = character.displayedItemType;
-			if (_v5.$ === 'Nothing') {
+			var _v6 = character.displayedItemType;
+			if (_v6.$ === 'Nothing') {
 				return irs;
 			} else {
-				var item_type = _v5.a;
+				var item_type = _v6.a;
 				return A2(
 					$elm$core$List$filter,
 					function (ir) {
@@ -30539,8 +30515,8 @@ var $author$project$ItemShop$render_inventory_grid = F7(
 				sortFunc,
 				hide_zero_qty_inv_rows ? A2(
 					$elm$core$List$filter,
-					function (_v4) {
-						var quantity = _v4.quantity;
+					function (_v5) {
+						var quantity = _v5.quantity;
 						return $author$project$ItemShop$getQuantity(quantity) > 0;
 					},
 					held_items) : held_items));
@@ -30584,16 +30560,145 @@ var $author$project$ItemShop$render_inventory_grid = F7(
 								onPressMsg: $author$project$ItemShop$GotUiOptionsMsg(
 									A2($author$project$ItemShop$CycleFilterDisplayedItemsForward, character.char_id, character.displayedItemType)),
 								textLabel: 'Filter: ' + function () {
-									var _v3 = character.displayedItemType;
-									if (_v3.$ === 'Nothing') {
+									var _v4 = character.displayedItemType;
+									if (_v4.$ === 'Nothing') {
 										return 'All';
 									} else {
-										var itemType = _v3.a;
+										var itemType = _v4.a;
 										return $author$project$ItemShop$item_type_to_pretty_string(itemType);
 									}
 								}()
 							}))
 					]))
+			]);
+		var _v2 = model;
+		var historical_shop_trends = _v2.historical_shop_trends;
+		var item_db = _v2.item_db;
+		var colorTheme = _v2.colorTheme;
+		var expanded_display = function (item) {
+			return is_hovered_item(item) ? A2(
+				$mdgriffith$elm_ui$Element$Keyed$el,
+				_List_fromArray(
+					[
+						$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
+						$mdgriffith$elm_ui$Element$Background$color(
+						A3($mdgriffith$elm_ui$Element$rgb, 1, 1, 1)),
+						$mdgriffith$elm_ui$Element$Border$color(
+						A3($mdgriffith$elm_ui$Element$rgb, 0.35, 0.35, 0.35)),
+						$mdgriffith$elm_ui$Element$Border$rounded(3),
+						$mdgriffith$elm_ui$Element$Border$width(2),
+						$mdgriffith$elm_ui$Element$padding(10),
+						$mdgriffith$elm_ui$Element$moveDown(20)
+					]),
+				_Utils_Tuple2(
+					$TSFoster$elm_uuid$UUID$toString(item.id),
+					A2(
+						$mdgriffith$elm_ui$Element$column,
+						_List_fromArray(
+							[
+								$mdgriffith$elm_ui$Element$spacing(5),
+								$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill)
+							]),
+						_List_fromArray(
+							[
+								A2(
+								$mdgriffith$elm_ui$Element$row,
+								_List_fromArray(
+									[
+										$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill)
+									]),
+								_List_fromArray(
+									[
+										A2(
+										$mdgriffith$elm_ui$Element$paragraph,
+										_List_Nil,
+										_List_fromArray(
+											[
+												$mdgriffith$elm_ui$Element$text(item.name),
+												$mdgriffith$elm_ui$Element$text(': '),
+												$mdgriffith$elm_ui$Element$text(item.description)
+											])),
+										(!show_charts_in_hovered_item) ? A2(
+										$mdgriffith$elm_ui$Element$el,
+										_List_fromArray(
+											[
+												$mdgriffith$elm_ui$Element$Font$italic,
+												$mdgriffith$elm_ui$Element$alignRight,
+												$mdgriffith$elm_ui$Element$Font$color(
+												function () {
+													var _v3 = model.colorTheme;
+													if (_v3.$ === 'BrightTheme') {
+														return $author$project$Interface$color_grey;
+													} else {
+														return $author$project$Interface$convertColor($avh4$elm_color$Color$white);
+													}
+												}()),
+												$mdgriffith$elm_ui$Element$Font$size(12)
+											]),
+										$mdgriffith$elm_ui$Element$text('Hold Shift for more')) : $mdgriffith$elm_ui$Element$none
+									])),
+								A2(
+								$mdgriffith$elm_ui$Element$paragraph,
+								_List_Nil,
+								_Utils_ap(
+									_List_fromArray(
+										[
+											$mdgriffith$elm_ui$Element$text('Current Price: '),
+											A2(
+											$author$project$Interface$renderGp,
+											model.colorTheme,
+											current_price(item))
+										]),
+									(A2($author$project$ItemShop$is_item_trending, shop_trends.item_type_sentiment, item) && (!_Utils_eq(
+										item.raw_gold_cost,
+										current_price(item)))) ? _List_fromArray(
+										[
+											$mdgriffith$elm_ui$Element$text(' (originally '),
+											A2($author$project$Interface$renderGp, model.colorTheme, item.raw_gold_cost),
+											$mdgriffith$elm_ui$Element$text(')')
+										]) : _List_Nil)),
+								show_charts_in_hovered_item ? A2(
+								$mdgriffith$elm_ui$Element$el,
+								_List_fromArray(
+									[
+										A2($mdgriffith$elm_ui$Element$paddingXY, 20, 20)
+									]),
+								A2($author$project$ItemShop$small_charts_display, historical_shop_trends, item.item_type)) : $mdgriffith$elm_ui$Element$none
+							])))) : $mdgriffith$elm_ui$Element$none;
+		};
+		var render_single_action_log = function (log) {
+			return A2(
+				$mdgriffith$elm_ui$Element$el,
+				_List_Nil,
+				$mdgriffith$elm_ui$Element$text(
+					A3($author$project$ItemShop$action_log_to_str, colorTheme, item_db, log)));
+		};
+		var rendered_action_log_items = ($elm$core$List$length(character.action_log) > 0) ? A2(
+			$elm$core$List$map,
+			render_single_action_log,
+			A2(
+				$elm$core$List$take,
+				50,
+				$elm$core$List$reverse(character.action_log))) : _List_fromArray(
+			[
+				$mdgriffith$elm_ui$Element$text('No actions taken')
+			]);
+		var rendered_action_log = _List_fromArray(
+			[
+				A2(
+				$mdgriffith$elm_ui$Element$column,
+				_List_fromArray(
+					[
+						$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
+						$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$fill),
+						$mdgriffith$elm_ui$Element$scrollbars,
+						((!is_shop_context) && ($elm$core$List$length(character.action_log) > 0)) ? $mdgriffith$elm_ui$Element$height(
+						A2(
+							$mdgriffith$elm_ui$Element$minimum,
+							50,
+							A2($mdgriffith$elm_ui$Element$maximum, 600, $mdgriffith$elm_ui$Element$fill))) : $mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$fill)
+					]),
+				(!is_shop_context) ? rendered_action_log_items : _List_Nil)
 			]);
 		return A2(
 			$mdgriffith$elm_ui$Element$column,
@@ -30662,7 +30767,18 @@ var $author$project$ItemShop$render_inventory_grid = F7(
 												_List_fromArray(
 													[
 														A2($author$project$Interface$renderBlood, model.colorTheme, character.held_blood)
-													])) : $mdgriffith$elm_ui$Element$none
+													])) : $mdgriffith$elm_ui$Element$none,
+												A2(
+												$mdgriffith$elm_ui$Element$row,
+												_List_fromArray(
+													[
+														$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill)
+													]),
+												_List_fromArray(
+													[
+														$mdgriffith$elm_ui$Element$text('Community Fund: '),
+														A2($author$project$Interface$renderGp, model.colorTheme, model.communityFund)
+													]))
 											]))
 									])) : $mdgriffith$elm_ui$Element$none
 							]))
@@ -30731,6 +30847,7 @@ var $author$project$ItemShop$shopInventoryControls = F4(
 			player.held_gold,
 			{avg_price: avg_price, item: item, quantity: quantity});
 	});
+var $author$project$ItemShop$CommunityFund = {$: 'CommunityFund'};
 var $author$project$ItemShop$IncreaseIncome = {$: 'IncreaseIncome'};
 var $author$project$ItemShop$InviteTrader = {$: 'InviteTrader'};
 var $author$project$ItemShop$TogglePauseAi = {$: 'TogglePauseAi'};
@@ -30977,6 +31094,7 @@ var $author$project$ItemShop$special_actions_display = F5(
 			'Spread Good Rumour',
 			'Sets a random Item Type to high value.\n\nSpreads a rumour that a given Item Type was the talk of the next town over.',
 			$author$project$ItemShop$setPrice(45));
+		var button_community_fund = A7($author$project$ItemShop$build_special_action_button, colorTheme, hoveredTooltip, player, $author$project$ItemShop$CommunityFund, 'Contribute', 'You\'ve always been a public member of the community. Add to the Community fund.\n\nAllows for invited traders to be able to afford finding new items.', $author$project$ItemShop$communityFundCost);
 		var button_battle = $author$project$Interface$button(
 			$author$project$Interface$TextParams(
 				{
@@ -31034,7 +31152,7 @@ var $author$project$ItemShop$special_actions_display = F5(
 									$mdgriffith$elm_ui$Element$alignTop
 								]),
 							_List_fromArray(
-								[button_increase_income, button_search, button_unlock_item, button_high_desire, button_low_desire]))
+								[button_increase_income, button_search, button_unlock_item, button_community_fund, button_high_desire, button_low_desire]))
 						]))
 				]));
 	});
