@@ -9941,6 +9941,9 @@ var $author$project$Battle$GolemKilledMonster = F3(
 	function (a, b, c) {
 		return {$: 'GolemKilledMonster', a: a, b: b, c: c};
 	});
+var $author$project$Battle$LocationNoEnemiesRemain = function (a) {
+	return {$: 'LocationNoEnemiesRemain', a: a};
+};
 var $author$project$Battle$OnMonsterDefeat = function (a) {
 	return {$: 'OnMonsterDefeat', a: a};
 };
@@ -9987,9 +9990,16 @@ var $author$project$Battle$golemKillsEnemy = F4(
 				curLocation,
 				{monstersLeft: curLocation.monstersLeft - 1});
 		};
+		var newLocations = A2($author$project$Battle$mapCurrentLocation, model, decrementMonstersLeft);
 		var _v0 = A2($author$project$Battle$addMonsterXpByMonster, golem, deadEnemy);
 		var victorGolem = _v0.a;
 		var gainedXp = _v0.b;
+		var newLogs = _List_fromArray(
+			[
+				A3($author$project$Battle$GolemKilledMonster, golem, deadEnemy, gainedXp),
+				$author$project$Battle$LocationNoEnemiesRemain(
+				$author$project$Battle$getCurrentLocation(model).locationId)
+			]);
 		return _Utils_Tuple2(
 			_Utils_update(
 				model,
@@ -9998,14 +10008,9 @@ var $author$project$Battle$golemKillsEnemy = F4(
 						$author$project$Battle$DeadMonster(deadEnemy)),
 					fightLogs: _Utils_ap(
 						model.fightLogs,
-						_Utils_ap(
-							fightLogs,
-							_List_fromArray(
-								[
-									A3($author$project$Battle$GolemKilledMonster, golem, deadEnemy, gainedXp)
-								]))),
+						_Utils_ap(fightLogs, newLogs)),
 					golem: $author$project$Battle$LivingMonster(victorGolem),
-					locations: A2($author$project$Battle$mapCurrentLocation, model, decrementMonstersLeft)
+					locations: newLocations
 				}),
 			$author$project$Battle$OnMonsterDefeat(deadEnemy.onDefeat));
 	});
@@ -20746,6 +20751,10 @@ var $author$project$Battle$viewBattleControls = function (_v0) {
 			'Back')
 		]);
 };
+var $mdgriffith$elm_ui$Internal$Flag$fontWeight = $mdgriffith$elm_ui$Internal$Flag$flag(13);
+var $mdgriffith$elm_ui$Element$Font$bold = A2($mdgriffith$elm_ui$Internal$Model$Class, $mdgriffith$elm_ui$Internal$Flag$fontWeight, $mdgriffith$elm_ui$Internal$Style$classes.bold);
+var $author$project$Interface$color_pastel_green_7 = $author$project$Interface$hex_to_color('#3ace3a');
+var $mdgriffith$elm_ui$Element$Font$italic = $mdgriffith$elm_ui$Internal$Model$htmlClass($mdgriffith$elm_ui$Internal$Style$classes.italic);
 var $author$project$Battle$viewSingleFightLog = F2(
 	function (expandedLog, fightLog) {
 		switch (fightLog.$) {
@@ -20777,7 +20786,12 @@ var $author$project$Battle$viewSingleFightLog = F2(
 					_List_Nil,
 					_List_fromArray(
 						[
-							$mdgriffith$elm_ui$Element$text('Found new monster: ' + newMonster.name)
+							$mdgriffith$elm_ui$Element$text('Found new monster: '),
+							A2(
+							$mdgriffith$elm_ui$Element$el,
+							_List_fromArray(
+								[$mdgriffith$elm_ui$Element$Font$bold]),
+							$mdgriffith$elm_ui$Element$text(newMonster.name))
 						]));
 			case 'GolemKilledMonster':
 				var attacker = fightLog.a;
@@ -20788,8 +20802,21 @@ var $author$project$Battle$viewSingleFightLog = F2(
 					_List_Nil,
 					_List_fromArray(
 						[
+							A2(
+							$mdgriffith$elm_ui$Element$el,
+							_List_fromArray(
+								[$mdgriffith$elm_ui$Element$Font$underline]),
+							$mdgriffith$elm_ui$Element$text(attacker.name + (' killed ' + deadMonster.name))),
 							$mdgriffith$elm_ui$Element$text(
-							attacker.name + (' killed ' + (deadMonster.name + (', gaining ' + ($elm$core$String$fromInt(xp_gained) + (' XP' + (_Utils_eq(deadMonster.onDefeat, $author$project$Battle$DeliverItemToShop) ? ', and an item was put up for sale.' : '')))))))
+							', gaining ' + ($elm$core$String$fromInt(xp_gained) + ' XP!')),
+							A2(
+							$mdgriffith$elm_ui$Element$el,
+							_List_fromArray(
+								[
+									$mdgriffith$elm_ui$Element$Font$color($author$project$Interface$color_primary)
+								]),
+							$mdgriffith$elm_ui$Element$text(
+								_Utils_eq(deadMonster.onDefeat, $author$project$Battle$DeliverItemToShop) ? ', and an item was put up for sale!' : ''))
 						]));
 			case 'MonsterKilledGolem':
 				var golem = fightLog.a;
@@ -20808,16 +20835,37 @@ var $author$project$Battle$viewSingleFightLog = F2(
 					_List_Nil,
 					_List_fromArray(
 						[
+							$mdgriffith$elm_ui$Element$text('You healed your creature by '),
+							A2(
+							$mdgriffith$elm_ui$Element$el,
+							_List_fromArray(
+								[
+									$mdgriffith$elm_ui$Element$Font$color($author$project$Interface$color_pastel_green_7)
+								]),
 							$mdgriffith$elm_ui$Element$text(
-							'You healed your creature by ' + ($elm$core$String$fromInt(amount) + ' HP.'))
+								$elm$core$String$fromInt(amount) + ' HP.'))
 						]));
-			default:
+			case 'PlayerRevivedGolem':
 				return A2(
 					$mdgriffith$elm_ui$Element$paragraph,
 					_List_Nil,
 					_List_fromArray(
 						[
 							$mdgriffith$elm_ui$Element$text('You revived your creature.')
+						]));
+			default:
+				var locationId = fightLog.a;
+				return A2(
+					$mdgriffith$elm_ui$Element$paragraph,
+					_List_Nil,
+					_List_fromArray(
+						[
+							A2(
+							$mdgriffith$elm_ui$Element$el,
+							_List_fromArray(
+								[$mdgriffith$elm_ui$Element$Font$italic]),
+							$mdgriffith$elm_ui$Element$text('No more enemies remain in this Location! ')),
+							$mdgriffith$elm_ui$Element$text('Change Locations to find new monsters, or wait long enough and they should repopulate shortly.')
 						]));
 		}
 	});
@@ -22425,7 +22473,6 @@ var $author$project$ItemShop$is_item_trending = F2(
 			return false;
 		}
 	});
-var $mdgriffith$elm_ui$Element$Font$italic = $mdgriffith$elm_ui$Internal$Model$htmlClass($mdgriffith$elm_ui$Internal$Style$classes.italic);
 var $author$project$ItemShop$portion = A2($elm$core$Basics$composeL, $mdgriffith$elm_ui$Element$width, $mdgriffith$elm_ui$Element$fillPortion);
 var $mdgriffith$elm_ui$Element$Font$alignLeft = A2($mdgriffith$elm_ui$Internal$Model$Class, $mdgriffith$elm_ui$Internal$Flag$fontAlignment, $mdgriffith$elm_ui$Internal$Style$classes.textLeft);
 var $author$project$ItemShop$get_item_type_trend = F2(
@@ -22447,7 +22494,6 @@ var $author$project$Interface$color_pastel_green_3 = $author$project$Interface$h
 var $author$project$Interface$color_pastel_green_4 = $author$project$Interface$hex_to_color('#77dd77');
 var $author$project$Interface$color_pastel_green_5 = $author$project$Interface$hex_to_color('#63d863');
 var $author$project$Interface$color_pastel_green_6 = $author$project$Interface$hex_to_color('#4ed34e');
-var $author$project$Interface$color_pastel_green_7 = $author$project$Interface$hex_to_color('#3ace3a');
 var $author$project$Interface$color_pastel_red_1 = $author$project$Interface$hex_to_color('#ecb4b4');
 var $author$project$Interface$color_pastel_red_2 = $author$project$Interface$hex_to_color('#e7a0a0');
 var $author$project$Interface$color_pastel_red_3 = $author$project$Interface$hex_to_color('#e28b8b');
