@@ -20308,6 +20308,10 @@ var $mdgriffith$elm_ui$Internal$Model$Px = function (a) {
 var $mdgriffith$elm_ui$Element$px = $mdgriffith$elm_ui$Internal$Model$Px;
 var $author$project$Battle$replaceMeColorTheme = $author$project$Interface$BrightTheme;
 var $mdgriffith$elm_ui$Element$Font$underline = $mdgriffith$elm_ui$Internal$Model$htmlClass($mdgriffith$elm_ui$Internal$Style$classes.underline);
+var $author$project$Battle$Blood = function (a) {
+	return {$: 'Blood', a: a};
+};
+var $author$project$Battle$Free = {$: 'Free'};
 var $author$project$Battle$GotTooltipMsg = function (a) {
 	return {$: 'GotTooltipMsg', a: a};
 };
@@ -20321,6 +20325,9 @@ var $author$project$Battle$SendOutMsg = function (a) {
 };
 var $author$project$Battle$ToggleShowExpandedLogs = {$: 'ToggleShowExpandedLogs'};
 var $author$project$Battle$ToggleShowLocationTypeMenu = {$: 'ToggleShowLocationTypeMenu'};
+var $author$project$Interface$TooltipElement = function (a) {
+	return {$: 'TooltipElement', a: a};
+};
 var $author$project$Interface$TooltipText = function (a) {
 	return {$: 'TooltipText', a: a};
 };
@@ -20542,6 +20549,7 @@ var $author$project$Battle$canChangeLocation = F2(
 		}
 		return false;
 	});
+var $author$project$Interface$color_grey = A3($mdgriffith$elm_ui$Element$rgb, 0.35, 0.35, 0.35);
 var $author$project$Battle$conditionalAlpha = F2(
 	function (invisCondition, semiCondition) {
 		return invisCondition ? 0.0 : (semiCondition ? 0.5 : 1.0);
@@ -20579,6 +20587,61 @@ var $author$project$Interface$outline_button = F3(
 		return $author$project$Interface$button(
 			$author$project$Interface$TextParams(
 				{buttonType: $author$project$Interface$Outline, colorTheme: $author$project$Interface$BrightTheme, customAttrs: customAttrs, onPressMsg: onPressMsg, textLabel: label}));
+	});
+var $author$project$Interface$font_blood = $mdgriffith$elm_ui$Element$Font$color($author$project$Interface$color_danger);
+var $author$project$Interface$renderBlood_sized = F3(
+	function (colorTheme, count, font_size) {
+		return A2(
+			$mdgriffith$elm_ui$Element$paragraph,
+			_List_Nil,
+			_List_fromArray(
+				[
+					$mdgriffith$elm_ui$Element$text(
+					$elm$core$String$fromInt(count)),
+					A2(
+					$mdgriffith$elm_ui$Element$el,
+					_List_fromArray(
+						[
+							$mdgriffith$elm_ui$Element$Font$size(font_size),
+							$author$project$Interface$font_blood
+						]),
+					$mdgriffith$elm_ui$Element$text('blood'))
+				]));
+	});
+var $author$project$Interface$renderBlood = F2(
+	function (colorTheme, count) {
+		return A3($author$project$Interface$renderBlood_sized, colorTheme, count, 12);
+	});
+var $author$project$Interface$font_grey = $mdgriffith$elm_ui$Element$Font$color($author$project$Interface$color_grey);
+var $author$project$Interface$renderGpSized = F3(
+	function (colorTheme, count, font_size) {
+		return A2(
+			$mdgriffith$elm_ui$Element$paragraph,
+			_List_Nil,
+			_List_fromArray(
+				[
+					$mdgriffith$elm_ui$Element$text(
+					$elm$core$String$fromInt(count)),
+					A2(
+					$mdgriffith$elm_ui$Element$el,
+					_List_fromArray(
+						[
+							$mdgriffith$elm_ui$Element$Font$size(font_size),
+							function () {
+							if (colorTheme.$ === 'BrightTheme') {
+								return $author$project$Interface$font_grey;
+							} else {
+								return $mdgriffith$elm_ui$Element$Font$color(
+									$author$project$Interface$hex_to_color('#777439'));
+							}
+						}()
+						]),
+					$mdgriffith$elm_ui$Element$text('gp'))
+				]));
+	});
+var $author$project$Interface$renderGp = F2(
+	function (colorTheme, count) {
+		return A3($author$project$Interface$renderGpSized, colorTheme, count, 12);
 	});
 var $mdgriffith$elm_ui$Element$transparent = function (on) {
 	return on ? A2(
@@ -20622,8 +20685,78 @@ var $author$project$Battle$viewBattleControls = function (_v0) {
 			return false;
 		}
 	}();
-	var controlButton = F4(
-		function (attrs, msg, txt, tooltipText) {
+	var controlButton = F5(
+		function (attrs, msg, txt, tooltipText, priceType) {
+			var tooltipBody = function () {
+				switch (priceType.$) {
+					case 'Free':
+						return $author$project$Interface$TooltipText(tooltipText);
+					case 'Gold':
+						var price = priceType.a;
+						return $author$project$Interface$TooltipElement(
+							A2(
+								$mdgriffith$elm_ui$Element$column,
+								_List_Nil,
+								_List_fromArray(
+									[
+										$mdgriffith$elm_ui$Element$text(tooltipText),
+										A2(
+										$mdgriffith$elm_ui$Element$el,
+										_List_fromArray(
+											[
+												$mdgriffith$elm_ui$Element$centerX,
+												$mdgriffith$elm_ui$Element$padding(1),
+												$mdgriffith$elm_ui$Element$Font$color($author$project$Interface$color_grey)
+											]),
+										$mdgriffith$elm_ui$Element$text('___')),
+										A2(
+										$mdgriffith$elm_ui$Element$paragraph,
+										_List_fromArray(
+											[
+												$mdgriffith$elm_ui$Element$padding(10),
+												$mdgriffith$elm_ui$Element$centerX,
+												$mdgriffith$elm_ui$Element$Font$size(14)
+											]),
+										_List_fromArray(
+											[
+												$mdgriffith$elm_ui$Element$text('Costs: '),
+												A2($author$project$Interface$renderGp, $author$project$Battle$replaceMeColorTheme, price)
+											]))
+									])));
+					default:
+						var price = priceType.a;
+						return $author$project$Interface$TooltipElement(
+							A2(
+								$mdgriffith$elm_ui$Element$column,
+								_List_Nil,
+								_List_fromArray(
+									[
+										$mdgriffith$elm_ui$Element$text(tooltipText),
+										A2(
+										$mdgriffith$elm_ui$Element$el,
+										_List_fromArray(
+											[
+												$mdgriffith$elm_ui$Element$centerX,
+												$mdgriffith$elm_ui$Element$padding(1),
+												$mdgriffith$elm_ui$Element$Font$color($author$project$Interface$color_grey)
+											]),
+										$mdgriffith$elm_ui$Element$text('___')),
+										A2(
+										$mdgriffith$elm_ui$Element$paragraph,
+										_List_fromArray(
+											[
+												$mdgriffith$elm_ui$Element$padding(10),
+												$mdgriffith$elm_ui$Element$centerX,
+												$mdgriffith$elm_ui$Element$Font$size(14)
+											]),
+										_List_fromArray(
+											[
+												$mdgriffith$elm_ui$Element$text('Costs: '),
+												A2($author$project$Interface$renderBlood, $author$project$Battle$replaceMeColorTheme, price)
+											]))
+									])));
+				}
+			}();
 			return A3(
 				$author$project$Interface$buttonWithTooltip,
 				$author$project$Interface$TextParams(
@@ -20643,7 +20776,7 @@ var $author$project$Battle$viewBattleControls = function (_v0) {
 					}),
 				{
 					onTooltipMsg: A2($elm$core$Basics$composeL, $author$project$Battle$GotUiOptionsMsg, $author$project$Battle$GotTooltipMsg),
-					tooltip_body: $author$project$Interface$TooltipText(tooltipText),
+					tooltip_body: tooltipBody,
 					tooltip_id: 'control_button__' + txt
 				},
 				uiOptions.hoveredTooltip);
@@ -20662,7 +20795,7 @@ var $author$project$Battle$viewBattleControls = function (_v0) {
 					$mdgriffith$elm_ui$Element$width(
 					$author$project$Battle$fillMax(150))
 				]),
-			A4(controlButton, _List_Nil, $author$project$Battle$ToggleShowExpandedLogs, 'Details', 'Toggles combat details')),
+			A5(controlButton, _List_Nil, $author$project$Battle$ToggleShowExpandedLogs, 'Details', 'Toggles combat details', $author$project$Battle$Free)),
 			A2(
 			$mdgriffith$elm_ui$Element$el,
 			_List_fromArray(
@@ -20673,7 +20806,7 @@ var $author$project$Battle$viewBattleControls = function (_v0) {
 					$mdgriffith$elm_ui$Element$paddingEach(
 					{bottom: 0, left: 0, right: 0, top: 10})
 				]),
-			A4(
+			A5(
 				controlButton,
 				_List_fromArray(
 					[
@@ -20681,7 +20814,8 @@ var $author$project$Battle$viewBattleControls = function (_v0) {
 					]),
 				A2($author$project$Battle$conditionalMsg, canChangeLocationNow, $author$project$Battle$ToggleShowLocationTypeMenu),
 				'Change Location',
-				'Changes the location of the battle.')),
+				'Changes the location of the battle.',
+				$author$project$Battle$Free)),
 			A2(
 			$mdgriffith$elm_ui$Element$column,
 			_List_fromArray(
@@ -20692,7 +20826,7 @@ var $author$project$Battle$viewBattleControls = function (_v0) {
 				]),
 			_List_fromArray(
 				[
-					A4(
+					A5(
 					controlButton,
 					_List_fromArray(
 						[
@@ -20701,8 +20835,9 @@ var $author$project$Battle$viewBattleControls = function (_v0) {
 						]),
 					A2($author$project$Battle$conditionalMsg, golemHealable && canAffordHealGolem, $author$project$Battle$HealGolem),
 					'Heal',
-					'Heals your golem to full HP'),
-					A4(
+					'Heals your golem to full HP',
+					$author$project$Battle$Blood($author$project$Battle$healGolemBloodCost)),
+					A5(
 					controlButton,
 					_List_fromArray(
 						[
@@ -20711,8 +20846,9 @@ var $author$project$Battle$viewBattleControls = function (_v0) {
 						]),
 					A2($author$project$Battle$conditionalMsg, golemRevivable && canAffordReviveGolem, $author$project$Battle$ReviveGolem),
 					'Revive',
-					'Revives your golem from the dead with 1HP'),
-					A4(
+					'Revives your golem from the dead with 1HP',
+					$author$project$Battle$Blood($author$project$Battle$reviveGolemBloodCost)),
+					A5(
 					controlButton,
 					_List_fromArray(
 						[
@@ -20721,8 +20857,9 @@ var $author$project$Battle$viewBattleControls = function (_v0) {
 						]),
 					A2($author$project$Battle$conditionalMsg, golemLevelupable && canAffordGolemLevelUp, $author$project$Battle$LevelUpGolem),
 					'Strengthen',
-					'Levels up your golem'),
-					A4(
+					'Levels up your golem',
+					$author$project$Battle$Free),
+					A5(
 					controlButton,
 					_List_fromArray(
 						[
@@ -20737,7 +20874,8 @@ var $author$project$Battle$viewBattleControls = function (_v0) {
 						golemSpRefillable(golem) && $author$project$Battle$canAffordRefillSp(player),
 						$author$project$Battle$RefillGolemSp),
 					'Envigorate',
-					'Refills your golem\'s SP')
+					'Refills your golem\'s SP',
+					$author$project$Battle$Blood($author$project$Battle$refillGolemSpCost))
 				])),
 			A3(
 			$author$project$Interface$outline_button,
@@ -20754,6 +20892,7 @@ var $author$project$Battle$viewBattleControls = function (_v0) {
 var $mdgriffith$elm_ui$Internal$Flag$fontWeight = $mdgriffith$elm_ui$Internal$Flag$flag(13);
 var $mdgriffith$elm_ui$Element$Font$bold = A2($mdgriffith$elm_ui$Internal$Model$Class, $mdgriffith$elm_ui$Internal$Flag$fontWeight, $mdgriffith$elm_ui$Internal$Style$classes.bold);
 var $author$project$Interface$color_pastel_green_7 = $author$project$Interface$hex_to_color('#3ace3a');
+var $author$project$Interface$color_pastel_red_7 = $author$project$Interface$hex_to_color('#ce3a3a');
 var $mdgriffith$elm_ui$Element$Font$italic = $mdgriffith$elm_ui$Internal$Model$htmlClass($mdgriffith$elm_ui$Internal$Style$classes.italic);
 var $author$project$Battle$viewSingleFightLog = F2(
 	function (expandedLog, fightLog) {
@@ -20826,7 +20965,14 @@ var $author$project$Battle$viewSingleFightLog = F2(
 					_List_Nil,
 					_List_fromArray(
 						[
-							$mdgriffith$elm_ui$Element$text(monster.name + (' killed ' + (golem.name + '. You must now Revive your Golem.')))
+							$mdgriffith$elm_ui$Element$text('The enemy ' + (monster.name + (' killed your ' + (golem.name + '. ')))),
+							A2(
+							$mdgriffith$elm_ui$Element$el,
+							_List_fromArray(
+								[
+									$mdgriffith$elm_ui$Element$Font$color($author$project$Interface$color_pastel_red_7)
+								]),
+							$mdgriffith$elm_ui$Element$text('You must now Revive your Golem!'))
 						]));
 			case 'PlayerHealedGolem':
 				var amount = fightLog.a;
@@ -21415,62 +21561,6 @@ var $author$project$Interface$pointerEventsAll = $mdgriffith$elm_ui$Element$html
 	A2($elm$html$Html$Attributes$style, 'pointer-events', 'all'));
 var $author$project$Interface$pointerEventsNone = $mdgriffith$elm_ui$Element$htmlAttribute(
 	A2($elm$html$Html$Attributes$style, 'pointer-events', 'none'));
-var $author$project$Interface$font_blood = $mdgriffith$elm_ui$Element$Font$color($author$project$Interface$color_danger);
-var $author$project$Interface$renderBlood_sized = F3(
-	function (colorTheme, count, font_size) {
-		return A2(
-			$mdgriffith$elm_ui$Element$paragraph,
-			_List_Nil,
-			_List_fromArray(
-				[
-					$mdgriffith$elm_ui$Element$text(
-					$elm$core$String$fromInt(count)),
-					A2(
-					$mdgriffith$elm_ui$Element$el,
-					_List_fromArray(
-						[
-							$mdgriffith$elm_ui$Element$Font$size(font_size),
-							$author$project$Interface$font_blood
-						]),
-					$mdgriffith$elm_ui$Element$text('blood'))
-				]));
-	});
-var $author$project$Interface$renderBlood = F2(
-	function (colorTheme, count) {
-		return A3($author$project$Interface$renderBlood_sized, colorTheme, count, 12);
-	});
-var $author$project$Interface$color_grey = A3($mdgriffith$elm_ui$Element$rgb, 0.35, 0.35, 0.35);
-var $author$project$Interface$font_grey = $mdgriffith$elm_ui$Element$Font$color($author$project$Interface$color_grey);
-var $author$project$Interface$renderGpSized = F3(
-	function (colorTheme, count, font_size) {
-		return A2(
-			$mdgriffith$elm_ui$Element$paragraph,
-			_List_Nil,
-			_List_fromArray(
-				[
-					$mdgriffith$elm_ui$Element$text(
-					$elm$core$String$fromInt(count)),
-					A2(
-					$mdgriffith$elm_ui$Element$el,
-					_List_fromArray(
-						[
-							$mdgriffith$elm_ui$Element$Font$size(font_size),
-							function () {
-							if (colorTheme.$ === 'BrightTheme') {
-								return $author$project$Interface$font_grey;
-							} else {
-								return $mdgriffith$elm_ui$Element$Font$color(
-									$author$project$Interface$hex_to_color('#777439'));
-							}
-						}()
-						]),
-					$mdgriffith$elm_ui$Element$text('gp'))
-				]));
-	});
-var $author$project$Interface$renderGp = F2(
-	function (colorTheme, count) {
-		return A3($author$project$Interface$renderGpSized, colorTheme, count, 12);
-	});
 var $author$project$ItemShop$ToggleShowDebugInventories = {$: 'ToggleShowDebugInventories'};
 var $author$project$Interface$defineHtmlId = function (name) {
 	return $mdgriffith$elm_ui$Element$htmlAttribute(
@@ -22500,7 +22590,6 @@ var $author$project$Interface$color_pastel_red_3 = $author$project$Interface$hex
 var $author$project$Interface$color_pastel_red_4 = $author$project$Interface$hex_to_color('#dd7777');
 var $author$project$Interface$color_pastel_red_5 = $author$project$Interface$hex_to_color('#d86363');
 var $author$project$Interface$color_pastel_red_6 = $author$project$Interface$hex_to_color('#d34e4e');
-var $author$project$Interface$color_pastel_red_7 = $author$project$Interface$hex_to_color('#ce3a3a');
 var $author$project$ItemShop$get_trend_color = function (trend) {
 	return (trend > 1.65) ? $author$project$Interface$color_pastel_red_7 : ((trend > 1.55) ? $author$project$Interface$color_pastel_red_6 : ((trend > 1.45) ? $author$project$Interface$color_pastel_red_5 : ((trend > 1.35) ? $author$project$Interface$color_pastel_red_4 : ((trend > 1.25) ? $author$project$Interface$color_pastel_red_3 : ((trend > 1.15) ? $author$project$Interface$color_pastel_red_2 : ((trend > 1.0) ? $author$project$Interface$color_pastel_red_1 : ((trend < 0.45) ? $author$project$Interface$color_pastel_green_7 : ((trend < 0.55) ? $author$project$Interface$color_pastel_green_6 : ((trend < 0.65) ? $author$project$Interface$color_pastel_green_5 : ((trend < 0.75) ? $author$project$Interface$color_pastel_green_4 : ((trend < 0.85) ? $author$project$Interface$color_pastel_green_3 : ((trend < 0.95) ? $author$project$Interface$color_pastel_green_2 : ((trend < 1.0) ? $author$project$Interface$color_pastel_green_1 : A3($mdgriffith$elm_ui$Element$rgb, 0, 0, 0))))))))))))));
 };
@@ -30786,9 +30875,6 @@ var $author$project$ItemShop$OnSpecialAction = F2(
 	function (a, b) {
 		return {$: 'OnSpecialAction', a: a, b: b};
 	});
-var $author$project$Interface$TooltipElement = function (a) {
-	return {$: 'TooltipElement', a: a};
-};
 var $author$project$Interface$buildTooltipElementConfig = F3(
 	function (tooltip_id, element, onTooltipMsg) {
 		return {
