@@ -5551,11 +5551,20 @@ var $author$project$Interface$BrightTheme = {$: 'BrightTheme'};
 var $author$project$ItemShop$Characters = function (a) {
 	return {$: 'Characters', a: a};
 };
+var $author$project$ItemShop$EarnGold = function (a) {
+	return {$: 'EarnGold', a: a};
+};
+var $author$project$ItemShop$IncompleteQuest = function (a) {
+	return {$: 'IncompleteQuest', a: a};
+};
 var $author$project$Interface$NoHoveredTooltip = {$: 'NoHoveredTooltip'};
 var $author$project$ItemShop$Player = function (a) {
 	return {$: 'Player', a: a};
 };
 var $author$project$ItemShop$PlayerParty = {$: 'PlayerParty'};
+var $author$project$ItemShop$SellAnyItem = function (a) {
+	return {$: 'SellAnyItem', a: a};
+};
 var $author$project$ItemShop$Shop = function (a) {
 	return {$: 'Shop', a: a};
 };
@@ -6500,10 +6509,6 @@ var $author$project$ItemShop$getInnerPlayer = function (_v0) {
 	var player = _v0.a;
 	return player;
 };
-var $author$project$ItemShop$getInnerShop = function (_v0) {
-	var shop = _v0.a;
-	return shop;
-};
 var $author$project$Battle$DeliverItemToShop = {$: 'DeliverItemToShop'};
 var $author$project$Battle$Forest = {$: 'Forest'};
 var $author$project$Battle$LivingMonster = function (a) {
@@ -6511,7 +6516,7 @@ var $author$project$Battle$LivingMonster = function (a) {
 };
 var $author$project$Battle$Mountains = {$: 'Mountains'};
 var $author$project$Battle$Plains = {$: 'Plains'};
-var $author$project$Battle$maxMonstersPerLocation = 10;
+var $author$project$Battle$maxMonstersPerLocation = 2;
 var $author$project$Battle$createLocation = F3(
 	function (locationType, locationId, name) {
 		return {locationId: locationId, locationType: locationType, monstersLeft: $author$project$Battle$maxMonstersPerLocation, name: name};
@@ -6742,7 +6747,7 @@ var $elm$core$Dict$fromList = function (assocs) {
 		$elm$core$Dict$empty,
 		assocs);
 };
-var $author$project$ItemShop$generate_uuid = function (str) {
+var $author$project$ItemShop$generateUuid = function (str) {
 	return A2($TSFoster$elm_uuid$UUID$forName, str, $TSFoster$elm_uuid$UUID$dnsNamespace);
 };
 var $author$project$ItemShop$item_type_to_id = function (item_type) {
@@ -6836,11 +6841,11 @@ var $author$project$ItemShop$setQuantity = function (qty) {
 var $author$project$ItemShop$initial_characters = function (item_db) {
 	var base_character_2 = A2(
 		$author$project$ItemShop$createCharacter,
-		$author$project$ItemShop$generate_uuid('character 2'),
+		$author$project$ItemShop$generateUuid('character 2'),
 		'Mitchell');
 	var base_character_1 = A2(
 		$author$project$ItemShop$createCharacter,
-		$author$project$ItemShop$generate_uuid('character 1'),
+		$author$project$ItemShop$generateUuid('character 1'),
 		'Billy');
 	return _List_fromArray(
 		[
@@ -7405,8 +7410,8 @@ var $author$project$ItemShop$initial_items_for_sale = function (item_db) {
 		_Debug_todo(
 			'ItemShop',
 			{
-				start: {line: 1602, column: 17},
-				end: {line: 1602, column: 27}
+				start: {line: 1785, column: 17},
+				end: {line: 1785, column: 27}
 			}),
 		'THERE WAS AN ERROR IN INITIAL ITEM SETUP!!!!',
 		$elm$core$Result$Err(''));
@@ -7531,11 +7536,23 @@ var $author$project$ItemShop$init = F2(
 			historical_shop_trends: _List_Nil,
 			item_db: item_db,
 			player_upgrades: playerUpgrades,
+			progressUnlocks: _List_Nil,
+			quests: _List_fromArray(
+				[
+					$author$project$ItemShop$IncompleteQuest(
+					$author$project$ItemShop$SellAnyItem(
+						{
+							current: $author$project$ItemShop$setQuantity(2),
+							target: $author$project$ItemShop$setQuantity(3)
+						})),
+					$author$project$ItemShop$IncompleteQuest(
+					$author$project$ItemShop$EarnGold(
+						{
+							current: $author$project$ItemShop$setQuantity(23),
+							target: $author$project$ItemShop$setQuantity(30)
+						}))
+				]),
 			secondsWaitedSince: {lastSpRefill: 0},
-			shop_id: function ($) {
-				return $.char_id;
-			}(
-				$author$project$ItemShop$getInnerShop(shop)),
 			shop_trends: $author$project$ItemShop$initial_shop_trends,
 			tab_type: initial_tab_type,
 			uiOptions: initUiOptions
@@ -8893,6 +8910,10 @@ var $author$project$ItemShop$getPlayer = function (_v0) {
 	var others = _v0.a.others;
 	return player;
 };
+var $author$project$ItemShop$getQuantity = function (qty) {
+	var val = qty.a;
+	return val;
+};
 var $author$project$ItemShop$getShop = function (_v0) {
 	var player = _v0.a.player;
 	var shop = _v0.a.shop;
@@ -8907,10 +8928,6 @@ var $author$project$ItemShop$getTradeContext = function (trade_record) {
 		var context = trade_record.a;
 		return context;
 	}
-};
-var $author$project$ItemShop$getQuantity = function (qty) {
-	var val = qty.a;
-	return val;
 };
 var $elm$core$Basics$round = _Basics_round;
 var $author$project$ItemShop$get_adjusted_item_cost = F3(
@@ -8940,6 +8957,98 @@ var $author$project$ItemShop$mapPlayer = F2(
 						$author$project$ItemShop$getInnerPlayer(player))),
 				shop: shop
 			});
+	});
+var $author$project$ItemShop$CompleteQuest = function (a) {
+	return {$: 'CompleteQuest', a: a};
+};
+var $author$project$ItemShop$addQuantity = F2(
+	function (qty, other_qty) {
+		var orig_val = qty.a;
+		return $author$project$ItemShop$Quantity(
+			orig_val + $author$project$ItemShop$getQuantity(other_qty));
+	});
+var $author$project$ItemShop$isQuestTrackerComplete = function (questTracker) {
+	return _Utils_eq(questTracker.current, questTracker.target);
+};
+var $author$project$ItemShop$mapIncompleteQuestType = F2(
+	function (mapper, quest) {
+		if (quest.$ === 'IncompleteQuest') {
+			var questGoal = quest.a;
+			return mapper(questGoal);
+		} else {
+			return quest;
+		}
+	});
+var $elm$core$Basics$min = F2(
+	function (x, y) {
+		return (_Utils_cmp(x, y) < 0) ? x : y;
+	});
+var $author$project$ItemShop$minQuantity = F2(
+	function (qty, other_qty) {
+		var orig_val = qty.a;
+		return $author$project$ItemShop$Quantity(
+			A2(
+				$elm$core$Basics$min,
+				orig_val,
+				$author$project$ItemShop$getQuantity(other_qty)));
+	});
+var $author$project$ItemShop$playerEarnedGold = F2(
+	function (earnedGold, quests) {
+		return A2(
+			$elm$core$List$map,
+			$author$project$ItemShop$mapIncompleteQuestType(
+				function (questType) {
+					if (questType.$ === 'EarnGold') {
+						var current = questType.a.current;
+						var target = questType.a.target;
+						var newTracker = {
+							current: A2(
+								$author$project$ItemShop$minQuantity,
+								A2($author$project$ItemShop$addQuantity, current, earnedGold),
+								target),
+							target: target
+						};
+						var newQuestType = $author$project$ItemShop$EarnGold(newTracker);
+						return $author$project$ItemShop$isQuestTrackerComplete(newTracker) ? $author$project$ItemShop$CompleteQuest(newQuestType) : $author$project$ItemShop$IncompleteQuest(newQuestType);
+					} else {
+						return $author$project$ItemShop$IncompleteQuest(questType);
+					}
+				}),
+			quests);
+	});
+var $author$project$ItemShop$playerSoldItem = F2(
+	function (soldQty, quests) {
+		return A2(
+			$elm$core$List$map,
+			$author$project$ItemShop$mapIncompleteQuestType(
+				function (questType) {
+					if (questType.$ === 'SellAnyItem') {
+						var current = questType.a.current;
+						var target = questType.a.target;
+						var newTracker = {
+							current: A2(
+								$author$project$ItemShop$minQuantity,
+								A2($author$project$ItemShop$addQuantity, current, soldQty),
+								target),
+							target: target
+						};
+						var newQuestType = $author$project$ItemShop$SellAnyItem(newTracker);
+						return $author$project$ItemShop$isQuestTrackerComplete(newTracker) ? $author$project$ItemShop$CompleteQuest(newQuestType) : $author$project$ItemShop$IncompleteQuest(newQuestType);
+					} else {
+						var current = questType.a.current;
+						var target = questType.a.target;
+						var newTracker = {
+							current: A2(
+								$author$project$ItemShop$minQuantity,
+								A2($author$project$ItemShop$addQuantity, current, soldQty),
+								target),
+							target: target
+						};
+						var newQuestType = $author$project$ItemShop$EarnGold(newTracker);
+						return $author$project$ItemShop$isQuestTrackerComplete(newTracker) ? $author$project$ItemShop$CompleteQuest(newQuestType) : $author$project$ItemShop$IncompleteQuest(newQuestType);
+					}
+				}),
+			quests);
 	});
 var $elm$core$Basics$ge = _Utils_ge;
 var $author$project$ItemShop$subQuantity = F2(
@@ -8976,6 +9085,10 @@ var $author$project$ItemShop$charIdMatches = F2(
 		var char_id = _v0.char_id;
 		return _Utils_eq(char_id, char_id_to_match);
 	});
+var $author$project$ItemShop$getInnerShop = function (_v0) {
+	var shop = _v0.a;
+	return shop;
+};
 var $author$project$ItemShop$charactersToList = function (_v0) {
 	var player = _v0.a.player;
 	var shop = _v0.a.shop;
@@ -9117,12 +9230,6 @@ var $author$project$ItemShop$subGold = F2(
 			{
 				held_gold: character.held_gold - $author$project$ItemShop$getPrice(price)
 			});
-	});
-var $author$project$ItemShop$addQuantity = F2(
-	function (qty, other_qty) {
-		var orig_val = qty.a;
-		return $author$project$ItemShop$Quantity(
-			orig_val + $author$project$ItemShop$getQuantity(other_qty));
 	});
 var $author$project$ItemShop$add_to_average = F4(
 	function (old_avg, old_count, new_value, new_count) {
@@ -9517,10 +9624,6 @@ var $author$project$Battle$addMonsterLevel = F2(
 			_Utils_update(
 				monster,
 				{level: level + toAdd}));
-	});
-var $elm$core$Basics$min = F2(
-	function (x, y) {
-		return (_Utils_cmp(x, y) < 0) ? x : y;
 	});
 var $author$project$Battle$addToStatCurVal = F2(
 	function (addedCurVal, stat) {
@@ -10098,28 +10201,30 @@ var $author$project$Battle$update = F2(
 			case 'Fight':
 				return $author$project$Battle$updateFight(model);
 			case 'FindNewEnemy':
-				var _v1 = A2(
-					$author$project$Battle$pickMonsterToSpawn,
-					model.battleSeed,
-					$author$project$Battle$getCurrentLocation(model));
-				var newMonster = _v1.a;
-				var newSeed = _v1.b;
-				return _Utils_Tuple3(
-					_Utils_update(
-						model,
-						{
-							battleSeed: newSeed,
-							enemyMonster: $elm$core$Maybe$Just(
-								$author$project$Battle$LivingMonster(newMonster)),
-							fightLogs: _Utils_ap(
-								model.fightLogs,
-								_List_fromArray(
-									[
-										$author$project$Battle$FoundNewMonster(newMonster)
-									]))
-						}),
-					$elm$core$Platform$Cmd$none,
-					$author$project$Battle$NoOutMsg);
+				var currentLocation = $author$project$Battle$getCurrentLocation(model);
+				if (currentLocation.monstersLeft > 0) {
+					var _v1 = A2($author$project$Battle$pickMonsterToSpawn, model.battleSeed, currentLocation);
+					var newMonster = _v1.a;
+					var newSeed = _v1.b;
+					return _Utils_Tuple3(
+						_Utils_update(
+							model,
+							{
+								battleSeed: newSeed,
+								enemyMonster: $elm$core$Maybe$Just(
+									$author$project$Battle$LivingMonster(newMonster)),
+								fightLogs: _Utils_ap(
+									model.fightLogs,
+									_List_fromArray(
+										[
+											$author$project$Battle$FoundNewMonster(newMonster)
+										]))
+							}),
+						$elm$core$Platform$Cmd$none,
+						$author$project$Battle$NoOutMsg);
+				} else {
+					return _Utils_Tuple3(model, $elm$core$Platform$Cmd$none, $author$project$Battle$NoOutMsg);
+				}
 			case 'ToggleShowExpandedLogs':
 				return _Utils_Tuple3(
 					_Utils_update(
@@ -11369,8 +11474,8 @@ var $author$project$ItemShop$ai_buy_item_from_shop = F3(
 						return _Debug_todo(
 							'ItemShop',
 							{
-								start: {line: 3506, column: 25},
-								end: {line: 3506, column: 35}
+								start: {line: 3801, column: 25},
+								end: {line: 3801, column: 35}
 							})('');
 					}
 				}()
@@ -11564,8 +11669,8 @@ var $author$project$ItemShop$ai_sell_item_to_shop = F3(
 							_Debug_todo(
 								'ItemShop',
 								{
-									start: {line: 3601, column: 25},
-									end: {line: 3601, column: 35}
+									start: {line: 3896, column: 25},
+									end: {line: 3896, column: 35}
 								}),
 							'',
 							_List_Nil);
@@ -11619,8 +11724,8 @@ var $author$project$ItemShop$updateTimesOthersTraded = F2(
 			item_db_record_trades,
 			{times_others_traded: old_times_others_traded + new_times_others_traded});
 	});
-var $author$project$ItemShop$update_ai = F4(
-	function (ai_tick_time, shop_char_id, char_id, original_ai_update_data) {
+var $author$project$ItemShop$update_ai = F3(
+	function (ai_tick_time, char_id, original_ai_update_data) {
 		var shop_trends = original_ai_update_data.shop_trends;
 		var historical_shop_trends = original_ai_update_data.historical_shop_trends;
 		var characters = original_ai_update_data.characters;
@@ -11697,12 +11802,11 @@ var $author$project$ItemShop$update_ai_chars = function (model) {
 	var _v0 = model;
 	var ai_tick_time = _v0.ai_tick_time;
 	var item_db = _v0.item_db;
-	var shop_id = _v0.shop_id;
 	var communityFund = _v0.communityFund;
 	var first_ai_update_data = {ai_tick_seed: ai_tick_seed, characters: old_characters, communityFund: communityFund, historical_shop_trends: old_historical_shop_trends, item_db: item_db, shop_trends: old_shop_trends};
 	var new_ai_data = A3(
 		$elm$core$List$foldl,
-		A2($author$project$ItemShop$update_ai, ai_tick_time, shop_id),
+		$author$project$ItemShop$update_ai(ai_tick_time),
 		first_ai_update_data,
 		A2(
 			$elm$core$List$map,
@@ -11916,7 +12020,7 @@ var $author$project$ItemShop$handle_invite_trader = function (model) {
 		$author$project$ItemShop$charactersLength(model.characters) + 1);
 	var invited_character = A2(
 		$author$project$ItemShop$createCharacter,
-		$author$project$ItemShop$generate_uuid(name),
+		$author$project$ItemShop$generateUuid(name),
 		name);
 	var incr_if_matches = F2(
 		function (item, ir) {
@@ -12335,27 +12439,37 @@ var $author$project$ItemShop$update = F2(
 				var trade_order = {item: item, qty: qty};
 				var orig_trade_context = {from_party: player, shop_trends: model.shop_trends, to_party: shop};
 				var trade_record = A2($author$project$ItemShop$sell_items_from_party_to_other, orig_trade_context, trade_order);
-				var new_trade_context = $author$project$ItemShop$getTradeContext(trade_record);
 				var new_item_db = A3($author$project$ItemShop$updateItemDbFromTradeRecord, model.item_db, $author$project$ItemShop$updateTimesYouSold, trade_record);
-				return _Utils_Tuple2(
-					A2(
-						$author$project$ItemShop$replaceCharacter,
-						new_trade_context.to_party,
+				if (trade_record.$ === 'CompletedTradeRecord') {
+					var new_trade_context = trade_record.a;
+					var item_trade_log = trade_record.b;
+					return _Utils_Tuple2(
 						A2(
 							$author$project$ItemShop$replaceCharacter,
-							new_trade_context.from_party,
-							_Utils_update(
-								model,
-								{
-									historical_shop_trends: A2(
-										$elm$core$List$append,
-										model.historical_shop_trends,
-										_List_fromArray(
-											[model.shop_trends])),
-									item_db: new_item_db,
-									shop_trends: new_trade_context.shop_trends
-								}))),
-					$elm$core$Platform$Cmd$none);
+							new_trade_context.to_party,
+							A2(
+								$author$project$ItemShop$replaceCharacter,
+								new_trade_context.from_party,
+								_Utils_update(
+									model,
+									{
+										historical_shop_trends: A2(
+											$elm$core$List$append,
+											model.historical_shop_trends,
+											_List_fromArray(
+												[model.shop_trends])),
+										item_db: new_item_db,
+										quests: A2(
+											$author$project$ItemShop$playerEarnedGold,
+											$author$project$ItemShop$setQuantity(
+												item_trade_log.gold_cost * $author$project$ItemShop$getQuantity(item_trade_log.quantity)),
+											A2($author$project$ItemShop$playerSoldItem, item_trade_log.quantity, model.quests)),
+										shop_trends: new_trade_context.shop_trends
+									}))),
+						$elm$core$Platform$Cmd$none);
+				} else {
+					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
+				}
 			case 'TickSecond':
 				var time = msg.a;
 				return (!model.ai_updates_paused) ? _Utils_Tuple2(
@@ -12368,8 +12482,8 @@ var $author$project$ItemShop$update = F2(
 			case 'KeyPressedMsg':
 				var key_event_msg = msg.a;
 				if (key_event_msg.$ === 'KeyEventShift') {
-					var _v4 = model;
-					var uiOptions = _v4.uiOptions;
+					var _v5 = model;
+					var uiOptions = _v5.uiOptions;
 					var newUiOptions = _Utils_update(
 						uiOptions,
 						{shiftIsPressed: true, show_charts_in_hovered_item: true});
@@ -12384,8 +12498,8 @@ var $author$project$ItemShop$update = F2(
 			case 'KeyReleasedMsg':
 				var key_event_msg = msg.a;
 				if (key_event_msg.$ === 'KeyEventShift') {
-					var _v6 = model;
-					var uiOptions = _v6.uiOptions;
+					var _v7 = model;
+					var uiOptions = _v7.uiOptions;
 					var newUiOptions = _Utils_update(
 						uiOptions,
 						{shiftIsPressed: false, show_charts_in_hovered_item: false});
@@ -12408,9 +12522,9 @@ var $author$project$ItemShop$update = F2(
 						model,
 						{tab_type: tab_type}),
 					function () {
-						var _v7 = model.browserNavKey;
-						if (_v7.$ === 'Just') {
-							var key = _v7.a;
+						var _v8 = model.browserNavKey;
+						if (_v8.$ === 'Just') {
+							var key = _v8.a;
 							return A2(
 								$elm$browser$Browser$Navigation$pushUrl,
 								key,
@@ -12447,8 +12561,8 @@ var $author$project$ItemShop$update = F2(
 					$elm$core$Platform$Cmd$none);
 			case 'ToggleColorTheme':
 				var newColorTheme = function () {
-					var _v8 = model.colorTheme;
-					if (_v8.$ === 'BrightTheme') {
+					var _v9 = model.colorTheme;
+					if (_v9.$ === 'BrightTheme') {
 						return $author$project$Interface$DarkTheme;
 					} else {
 						return $author$project$Interface$BrightTheme;
@@ -12461,20 +12575,20 @@ var $author$project$ItemShop$update = F2(
 					$elm$core$Platform$Cmd$none);
 			case 'GotBattleMsg':
 				var battleMsg = msg.a;
-				var _v9 = A2(
+				var _v10 = A2(
 					$author$project$Battle$update,
 					$author$project$ItemShop$transferToBattleModel(model),
 					battleMsg);
-				var newBattleModel = _v9.a;
-				var newBattleCmds = _v9.b;
-				var battleOutMsg = _v9.c;
+				var newBattleModel = _v10.a;
+				var newBattleCmds = _v10.b;
+				var battleOutMsg = _v10.c;
 				var mappedCmds = A2($elm$core$Platform$Cmd$map, $author$project$ItemShop$GotBattleMsg, newBattleCmds);
-				var _v10 = A2(
+				var _v11 = A2(
 					$author$project$ItemShop$updateBattleOutMsg,
 					battleOutMsg,
 					A2($author$project$ItemShop$transferFromBattleModel, model, newBattleModel));
-				var newModel = _v10.a;
-				var newOutCmds = _v10.b;
+				var newModel = _v11.a;
+				var newOutCmds = _v11.b;
 				var newCmds = $elm$core$Platform$Cmd$batch(
 					A2(
 						$elm$core$List$cons,
@@ -19361,8 +19475,8 @@ var $author$project$Interface$hex_to_color = function (hex_str) {
 			_Debug_todo(
 				'Interface',
 				{
-					start: {line: 197, column: 13},
-					end: {line: 197, column: 23}
+					start: {line: 224, column: 13},
+					end: {line: 224, column: 23}
 				}),
 			'NOOO',
 			A3($mdgriffith$elm_ui$Element$rgb255, 255, 0, 0));
@@ -19514,12 +19628,6 @@ var $mdgriffith$elm_ui$Element$padding = function (x) {
 			f,
 			f,
 			f));
-};
-var $author$project$Battle$ChangeLocation = function (a) {
-	return {$: 'ChangeLocation', a: a};
-};
-var $author$project$Interface$CustomParams = function (a) {
-	return {$: 'CustomParams', a: a};
 };
 var $author$project$Interface$Danger = {$: 'Danger'};
 var $author$project$Battle$Fight = {$: 'Fight'};
@@ -20873,8 +20981,8 @@ var $author$project$Battle$viewMonsterInBattle = F2(
 			return A2(viewMonster_, monster, true);
 		}
 	});
-var $author$project$Battle$view = function (model) {
-	return (!model.shouldShowLocationTypeMenu) ? A2(
+var $author$project$Battle$viewBattleMode = function (model) {
+	return A2(
 		$mdgriffith$elm_ui$Element$column,
 		_List_fromArray(
 			[
@@ -20931,13 +21039,13 @@ var $author$project$Battle$view = function (model) {
 									if (_v1.a.$ === 'LivingMonster') {
 										if (_v1.b.$ === 'Just') {
 											if (_v1.b.a.$ === 'LivingMonster') {
-												return _Utils_Tuple3($author$project$Interface$Primary, $author$project$Battle$Fight, 'Continue Fight');
+												return _Utils_Tuple3($author$project$Interface$Primary, $author$project$Battle$Fight, 'Fight');
 											} else {
-												return _Utils_Tuple3($author$project$Interface$Secondary, $author$project$Battle$FindNewEnemy, 'Find New Enemy');
+												return ($author$project$Battle$getCurrentLocation(model).monstersLeft > 0) ? _Utils_Tuple3($author$project$Interface$Secondary, $author$project$Battle$FindNewEnemy, 'Find New Enemy') : _Utils_Tuple3($author$project$Interface$Secondary, $author$project$Battle$Noop, 'No enemies remain');
 											}
 										} else {
 											var _v2 = _v1.b;
-											return _Utils_Tuple3($author$project$Interface$Secondary, $author$project$Battle$FindNewEnemy, 'Find New Enemy');
+											return ($author$project$Battle$getCurrentLocation(model).monstersLeft > 0) ? _Utils_Tuple3($author$project$Interface$Secondary, $author$project$Battle$FindNewEnemy, 'Find New Enemy') : _Utils_Tuple3($author$project$Interface$Secondary, $author$project$Battle$Noop, 'No enemies remain');
 										}
 									} else {
 										return _Utils_Tuple3($author$project$Interface$Danger, $author$project$Battle$Noop, 'You\'re dead');
@@ -21096,7 +21204,16 @@ var $author$project$Battle$view = function (model) {
 							])),
 						$author$project$Battle$dividingLine
 					])) : $mdgriffith$elm_ui$Element$none
-			])) : A2(
+			]));
+};
+var $author$project$Battle$ChangeLocation = function (a) {
+	return {$: 'ChangeLocation', a: a};
+};
+var $author$project$Interface$CustomParams = function (a) {
+	return {$: 'CustomParams', a: a};
+};
+var $author$project$Battle$viewLocationTypeMenu = function (model) {
+	return A2(
 		$mdgriffith$elm_ui$Element$column,
 		_List_fromArray(
 			[
@@ -21143,12 +21260,13 @@ var $author$project$Battle$view = function (model) {
 						$mdgriffith$elm_ui$Element$padding(10)
 					]),
 				A2(
-					$elm$core$List$map,
-					function (location) {
-						return $author$project$Interface$button(
+					$elm$core$List$append,
+					_List_fromArray(
+						[
+							$author$project$Interface$button(
 							$author$project$Interface$CustomParams(
 								{
-									buttonType: $author$project$Interface$Secondary,
+									buttonType: $author$project$Interface$Outline,
 									colorTheme: $author$project$Battle$replaceMeColorTheme,
 									customAttrs: _List_fromArray(
 										[
@@ -21167,44 +21285,77 @@ var $author$project$Battle$view = function (model) {
 												$mdgriffith$elm_ui$Element$el,
 												_List_fromArray(
 													[$mdgriffith$elm_ui$Element$centerX]),
-												$mdgriffith$elm_ui$Element$text(location.name)),
-												A2(
-												$mdgriffith$elm_ui$Element$el,
-												_List_fromArray(
-													[
-														$mdgriffith$elm_ui$Element$centerX,
-														$mdgriffith$elm_ui$Element$Font$size(12)
-													]),
-												A2(
-													$mdgriffith$elm_ui$Element$column,
-													_List_fromArray(
-														[
-															$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill)
-														]),
-													_List_fromArray(
-														[
-															A2(
-															$mdgriffith$elm_ui$Element$el,
-															_List_fromArray(
-																[
-																	$mdgriffith$elm_ui$Element$Font$underline,
-																	$mdgriffith$elm_ui$Element$centerX,
-																	$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill)
-																]),
-															$mdgriffith$elm_ui$Element$text('Monsters Remain')),
-															A2(
-															$mdgriffith$elm_ui$Element$el,
-															_List_fromArray(
-																[$mdgriffith$elm_ui$Element$centerX]),
-															$mdgriffith$elm_ui$Element$text(
-																$elm$core$String$fromInt(location.monstersLeft)))
-														])))
+												$mdgriffith$elm_ui$Element$text('Back'))
 											])),
-									onPressMsg: $author$project$Battle$ChangeLocation(location.locationId)
-								}));
-					},
-					$author$project$Battle$getLocationsList(model.locations)))
+									onPressMsg: $author$project$Battle$ToggleShowLocationTypeMenu
+								}))
+						]),
+					A2(
+						$elm$core$List$map,
+						function (location) {
+							return $author$project$Interface$button(
+								$author$project$Interface$CustomParams(
+									{
+										buttonType: $author$project$Interface$Secondary,
+										colorTheme: $author$project$Battle$replaceMeColorTheme,
+										customAttrs: _List_fromArray(
+											[
+												$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill)
+											]),
+										customLabel: A2(
+											$mdgriffith$elm_ui$Element$column,
+											_List_fromArray(
+												[
+													$mdgriffith$elm_ui$Element$centerX,
+													$mdgriffith$elm_ui$Element$spacing(5)
+												]),
+											_List_fromArray(
+												[
+													A2(
+													$mdgriffith$elm_ui$Element$el,
+													_List_fromArray(
+														[$mdgriffith$elm_ui$Element$centerX]),
+													$mdgriffith$elm_ui$Element$text(location.name)),
+													A2(
+													$mdgriffith$elm_ui$Element$el,
+													_List_fromArray(
+														[
+															$mdgriffith$elm_ui$Element$centerX,
+															$mdgriffith$elm_ui$Element$Font$size(12)
+														]),
+													A2(
+														$mdgriffith$elm_ui$Element$column,
+														_List_fromArray(
+															[
+																$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill)
+															]),
+														_List_fromArray(
+															[
+																A2(
+																$mdgriffith$elm_ui$Element$el,
+																_List_fromArray(
+																	[
+																		$mdgriffith$elm_ui$Element$Font$underline,
+																		$mdgriffith$elm_ui$Element$centerX,
+																		$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill)
+																	]),
+																$mdgriffith$elm_ui$Element$text('Monsters Remain')),
+																A2(
+																$mdgriffith$elm_ui$Element$el,
+																_List_fromArray(
+																	[$mdgriffith$elm_ui$Element$centerX]),
+																$mdgriffith$elm_ui$Element$text(
+																	$elm$core$String$fromInt(location.monstersLeft)))
+															])))
+												])),
+										onPressMsg: $author$project$Battle$ChangeLocation(location.locationId)
+									}));
+						},
+						$author$project$Battle$getLocationsList(model.locations))))
 			]));
+};
+var $author$project$Battle$view = function (model) {
+	return (!model.shouldShowLocationTypeMenu) ? $author$project$Battle$viewBattleMode(model) : $author$project$Battle$viewLocationTypeMenu(model);
 };
 var $mdgriffith$elm_ui$Internal$Model$Bottom = {$: 'Bottom'};
 var $mdgriffith$elm_ui$Element$alignBottom = $mdgriffith$elm_ui$Internal$Model$AlignY($mdgriffith$elm_ui$Internal$Model$Bottom);
@@ -21788,8 +21939,625 @@ var $author$project$ItemShop$InventoryItems = {$: 'InventoryItems'};
 var $author$project$ItemShop$ShopItems = {$: 'ShopItems'};
 var $author$project$ItemShop$ToggleColorTheme = {$: 'ToggleColorTheme'};
 var $author$project$ItemShop$ToggleShowMainChart = {$: 'ToggleShowMainChart'};
-var $author$project$ItemShop$OnTrendChartHover = function (a) {
-	return {$: 'OnTrendChartHover', a: a};
+var $author$project$ItemShop$UnlockedCharts = {$: 'UnlockedCharts'};
+var $author$project$ItemShop$UnlockedCodex = {$: 'UnlockedCodex'};
+var $author$project$ItemShop$UnlockedDarkMode = {$: 'UnlockedDarkMode'};
+var $author$project$ItemShop$UnlockedQuests = {$: 'UnlockedQuests'};
+var $author$project$ItemShop$UnlockedShopTrends = {$: 'UnlockedShopTrends'};
+var $author$project$Interface$color_light_grey = A3($mdgriffith$elm_ui$Element$rgb, 0.55, 0.55, 0.55);
+var $author$project$ItemShop$containsProgressUnlock = F2(
+	function (progressUnlock, progressUnlocks) {
+		return true;
+	});
+var $mdgriffith$elm_ui$Internal$Flag$borderStyle = $mdgriffith$elm_ui$Internal$Flag$flag(11);
+var $mdgriffith$elm_ui$Element$Border$dashed = A2($mdgriffith$elm_ui$Internal$Model$Class, $mdgriffith$elm_ui$Internal$Flag$borderStyle, $mdgriffith$elm_ui$Internal$Style$classes.borderDashed);
+var $mdgriffith$elm_ui$Element$Keyed$el = F2(
+	function (attrs, child) {
+		return A4(
+			$mdgriffith$elm_ui$Internal$Model$element,
+			$mdgriffith$elm_ui$Internal$Model$asEl,
+			$mdgriffith$elm_ui$Internal$Model$div,
+			A2(
+				$elm$core$List$cons,
+				$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$shrink),
+				A2(
+					$elm$core$List$cons,
+					$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$shrink),
+					attrs)),
+			$mdgriffith$elm_ui$Internal$Model$Keyed(
+				_List_fromArray(
+					[child])));
+	});
+var $mdgriffith$elm_ui$Element$modular = F3(
+	function (normal, ratio, rescale) {
+		return (!rescale) ? normal : ((rescale < 0) ? (normal * A2($elm$core$Basics$pow, ratio, rescale)) : (normal * A2($elm$core$Basics$pow, ratio, rescale - 1)));
+	});
+var $author$project$Interface$scaled = function (val) {
+	return $elm$core$Basics$round(
+		A3($mdgriffith$elm_ui$Element$modular, 14, 1.25, val));
+};
+var $author$project$Interface$font_scaled = function (scale) {
+	return $mdgriffith$elm_ui$Element$Font$size(
+		$author$project$Interface$scaled(scale));
+};
+var $author$project$ItemShop$hasProgressUnlock = F2(
+	function (progressUnlock, model) {
+		return A2($author$project$ItemShop$containsProgressUnlock, progressUnlock, model.progressUnlocks);
+	});
+var $mdgriffith$elm_ui$Element$Lazy$apply3 = F4(
+	function (fn, a, b, c) {
+		return $mdgriffith$elm_ui$Element$Lazy$embed(
+			A3(fn, a, b, c));
+	});
+var $elm$virtual_dom$VirtualDom$lazy5 = _VirtualDom_lazy5;
+var $mdgriffith$elm_ui$Element$Lazy$lazy3 = F4(
+	function (fn, a, b, c) {
+		return $mdgriffith$elm_ui$Internal$Model$Unstyled(
+			A5($elm$virtual_dom$VirtualDom$lazy5, $mdgriffith$elm_ui$Element$Lazy$apply3, fn, a, b, c));
+	});
+var $author$project$ItemShop$padding_bottom = function (pad) {
+	return $mdgriffith$elm_ui$Element$paddingEach(
+		{bottom: pad, left: 0, right: 0, top: 0});
+};
+var $author$project$ItemShop$SacrificeItem = function (a) {
+	return {$: 'SacrificeItem', a: a};
+};
+var $author$project$ItemShop$PlayerSellItemToShop = F2(
+	function (a, b) {
+		return {$: 'PlayerSellItemToShop', a: a, b: b};
+	});
+var $author$project$ItemShop$shop_sell_button = F3(
+	function (colorTheme, has_items_to_sell_, _v0) {
+		var item = _v0.item;
+		var button_type = has_items_to_sell_ ? $author$project$Interface$Primary : $author$project$Interface$Secondary;
+		var buttonText = has_items_to_sell_ ? 'SELL' : 'Need GP';
+		return $author$project$Interface$button(
+			$author$project$Interface$TextParams(
+				{
+					buttonType: button_type,
+					colorTheme: colorTheme,
+					customAttrs: _List_fromArray(
+						[
+							$mdgriffith$elm_ui$Element$transparent(!has_items_to_sell_),
+							$mdgriffith$elm_ui$Element$width(
+							A2($mdgriffith$elm_ui$Element$minimum, 120, $mdgriffith$elm_ui$Element$fill))
+						]),
+					onPressMsg: A2(
+						$author$project$ItemShop$PlayerSellItemToShop,
+						item,
+						$author$project$ItemShop$Quantity(1)),
+					textLabel: buttonText
+				}));
+	});
+var $author$project$ItemShop$playerInventoryControls = F3(
+	function (colorTheme, _v0, _v1) {
+		var shiftIsPressed = _v0.a;
+		var shop_trends = _v0.b;
+		var item = _v1.item;
+		var quantity = _v1.quantity;
+		var avg_price = _v1.avg_price;
+		var hasItemsToSell = $author$project$ItemShop$getQuantity(quantity) >= 1;
+		return (!shiftIsPressed) ? A3(
+			$author$project$ItemShop$shop_sell_button,
+			colorTheme,
+			hasItemsToSell,
+			{
+				avg_price: avg_price,
+				item: item,
+				quantity: $author$project$ItemShop$setQuantity(1)
+			}) : $author$project$Interface$button(
+			$author$project$Interface$TextParams(
+				{
+					buttonType: $author$project$Interface$Danger,
+					colorTheme: colorTheme,
+					customAttrs: _List_fromArray(
+						[
+							$mdgriffith$elm_ui$Element$transparent(!hasItemsToSell),
+							$mdgriffith$elm_ui$Element$width(
+							A2($mdgriffith$elm_ui$Element$minimum, 120, $mdgriffith$elm_ui$Element$fill))
+						]),
+					onPressMsg: $author$project$ItemShop$SacrificeItem(item),
+					textLabel: 'Sacrifice'
+				}));
+	});
+var $author$project$Interface$blankChar = '\u2003';
+var $author$project$ItemShop$border_bottom = function (bord) {
+	return $mdgriffith$elm_ui$Element$Border$widthEach(
+		{bottom: bord, left: 0, right: 0, top: 0});
+};
+var $author$project$ItemShop$render_single_player_action_log = F2(
+	function (item_db, player_action_log) {
+		return A2(
+			$mdgriffith$elm_ui$Element$paragraph,
+			_List_Nil,
+			_List_fromArray(
+				[
+					function () {
+					switch (player_action_log.$) {
+						case 'WelcomeMessageActionLog':
+							return $mdgriffith$elm_ui$Element$text('Welcome to ItemShop!');
+						case 'TookSpecialActionInviteTrader':
+							return $mdgriffith$elm_ui$Element$text('Invited Trader');
+						case 'TookSpecialActionTriggerEvent':
+							var special_event = player_action_log.a;
+							if (special_event.$ === 'EventVeryDesiredItemType') {
+								var mb_item_type = special_event.a;
+								var _v2 = A2($elm$core$Debug$log, 'mb_item_type', mb_item_type);
+								return $mdgriffith$elm_ui$Element$text(
+									A2(
+										$elm$core$Maybe$withDefault,
+										'Unknown',
+										A2($elm$core$Maybe$map, $author$project$ItemShop$item_type_to_pretty_string, mb_item_type)) + ' -- These became quite valuable.');
+							} else {
+								var mb_item_type = special_event.a;
+								return $mdgriffith$elm_ui$Element$text(
+									A2(
+										$elm$core$Maybe$withDefault,
+										'Unknown',
+										A2($elm$core$Maybe$map, $author$project$ItemShop$item_type_to_pretty_string, mb_item_type)) + ' -- Nobody is interested in these anymore.');
+							}
+						case 'TookSpecialActionTogglePauseAi':
+							return $mdgriffith$elm_ui$Element$text('Toggle Play/Pause');
+						case 'TookSpecialActionUnlockItem':
+							var item_id = player_action_log.a;
+							return $mdgriffith$elm_ui$Element$text(
+								'Found an item: ' + A2($author$project$ItemShop$lookup_item_id_default, item_db, item_id).name);
+						default:
+							var itemId = player_action_log.a;
+							return $mdgriffith$elm_ui$Element$text('A monster died, and left an item to the shop');
+					}
+				}()
+				]));
+	});
+var $author$project$ItemShop$player_action_log_display = F2(
+	function (item_db, player_action_logs) {
+		return A2(
+			$mdgriffith$elm_ui$Element$column,
+			_List_fromArray(
+				[
+					$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$fill)
+				]),
+			_Utils_ap(
+				_List_fromArray(
+					[
+						A2(
+						$mdgriffith$elm_ui$Element$el,
+						_List_fromArray(
+							[
+								$author$project$Interface$font_scaled(2),
+								$author$project$ItemShop$border_bottom(2),
+								$mdgriffith$elm_ui$Element$alignTop
+							]),
+						$mdgriffith$elm_ui$Element$text('Action Log'))
+					]),
+				_List_fromArray(
+					[
+						A2(
+						$mdgriffith$elm_ui$Element$column,
+						_List_fromArray(
+							[
+								A2($mdgriffith$elm_ui$Element$paddingXY, 0, 10),
+								$mdgriffith$elm_ui$Element$spacing(4)
+							]),
+						function (logs) {
+							return ($elm$core$List$length(logs) < 5) ? _Utils_ap(
+								logs,
+								A2(
+									$elm$core$List$repeat,
+									5 - $elm$core$List$length(logs),
+									A2(
+										$mdgriffith$elm_ui$Element$paragraph,
+										_List_Nil,
+										_List_fromArray(
+											[
+												$mdgriffith$elm_ui$Element$text($author$project$Interface$blankChar)
+											])))) : logs;
+						}(
+							A2(
+								$elm$core$List$map,
+								$author$project$ItemShop$render_single_player_action_log(item_db),
+								A2(
+									$elm$core$List$take,
+									5,
+									$elm$core$List$reverse(player_action_logs)))))
+					])));
+	});
+var $author$project$ItemShop$UnlockedUpgrades = {$: 'UnlockedUpgrades'};
+var $author$project$ItemShop$render_single_player_upgrade = F2(
+	function (colorTheme, player_upgrade) {
+		if (player_upgrade.$ === 'AutomaticGPM') {
+			var lvl = player_upgrade.a;
+			return A2(
+				$mdgriffith$elm_ui$Element$paragraph,
+				_List_Nil,
+				_List_fromArray(
+					[
+						$mdgriffith$elm_ui$Element$text('Income: '),
+						A2($author$project$Interface$renderGp, colorTheme, lvl),
+						$mdgriffith$elm_ui$Element$text('/sec')
+					]));
+		} else {
+			var lvl = player_upgrade.a;
+			return A2(
+				$mdgriffith$elm_ui$Element$paragraph,
+				_List_Nil,
+				_List_fromArray(
+					[
+						$mdgriffith$elm_ui$Element$text('Bloodfeed lv'),
+						$mdgriffith$elm_ui$Element$text(
+						$elm$core$String$fromInt(lvl)),
+						$mdgriffith$elm_ui$Element$text(': '),
+						A2($author$project$Interface$renderBlood, colorTheme, -lvl),
+						$mdgriffith$elm_ui$Element$text(
+						' +' + $elm$core$String$fromInt(lvl)),
+						A2(
+						$mdgriffith$elm_ui$Element$el,
+						_List_fromArray(
+							[
+								$mdgriffith$elm_ui$Element$Font$size(12)
+							]),
+						$mdgriffith$elm_ui$Element$text('stamina')),
+						$mdgriffith$elm_ui$Element$text('/5sec')
+					]));
+		}
+	});
+var $author$project$ItemShop$player_upgrades_display = F3(
+	function (colorTheme, player_upgrades, progressUnlocks) {
+		return A2($author$project$ItemShop$containsProgressUnlock, $author$project$ItemShop$UnlockedUpgrades, progressUnlocks) ? A2(
+			$mdgriffith$elm_ui$Element$column,
+			_List_fromArray(
+				[
+					$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$fill)
+				]),
+			_Utils_ap(
+				_List_fromArray(
+					[
+						A2(
+						$mdgriffith$elm_ui$Element$el,
+						_List_fromArray(
+							[
+								$author$project$Interface$font_scaled(2),
+								$author$project$ItemShop$border_bottom(2),
+								$mdgriffith$elm_ui$Element$alignTop
+							]),
+						$mdgriffith$elm_ui$Element$text('Upgrades'))
+					]),
+				_List_fromArray(
+					[
+						A2(
+						$mdgriffith$elm_ui$Element$column,
+						_List_fromArray(
+							[
+								A2($mdgriffith$elm_ui$Element$paddingXY, 0, 10),
+								$mdgriffith$elm_ui$Element$spacing(5)
+							]),
+						A2(
+							$elm$core$List$map,
+							$author$project$ItemShop$render_single_player_upgrade(colorTheme),
+							player_upgrades))
+					]))) : $mdgriffith$elm_ui$Element$none;
+	});
+var $author$project$ItemShop$quantityToStr = A2($elm$core$Basics$composeR, $author$project$ItemShop$getQuantity, $elm$core$String$fromInt);
+var $author$project$ItemShop$questTitle = function (questType) {
+	if (questType.$ === 'SellAnyItem') {
+		return 'Sell any Item!';
+	} else {
+		return 'Earn gold!';
+	}
+};
+var $author$project$ItemShop$viewSingleQuest = function (quest) {
+	if (quest.$ === 'IncompleteQuest') {
+		var questType = quest.a;
+		var questTitle_ = $author$project$ItemShop$questTitle(questType);
+		if (questType.$ === 'SellAnyItem') {
+			var current = questType.a.current;
+			var target = questType.a.target;
+			return $mdgriffith$elm_ui$Element$text(
+				'You\'ve got a quest:\n' + (questTitle_ + ('\n' + ($author$project$ItemShop$quantityToStr(current) + ('/' + $author$project$ItemShop$quantityToStr(target))))));
+		} else {
+			var current = questType.a.current;
+			var target = questType.a.target;
+			return $mdgriffith$elm_ui$Element$text(
+				'You\'ve got a quest:\n' + (questTitle_ + ('\n' + ($author$project$ItemShop$quantityToStr(current) + ('/' + $author$project$ItemShop$quantityToStr(target))))));
+		}
+	} else {
+		var questType = quest.a;
+		var questTitle_ = $author$project$ItemShop$questTitle(questType);
+		return $mdgriffith$elm_ui$Element$text('Completed quest!\n' + questTitle_);
+	}
+};
+var $author$project$ItemShop$quests_display = F2(
+	function (colorTheme, quests) {
+		return A2(
+			$mdgriffith$elm_ui$Element$column,
+			_List_fromArray(
+				[
+					$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$fill)
+				]),
+			_Utils_ap(
+				_List_fromArray(
+					[
+						A2(
+						$mdgriffith$elm_ui$Element$el,
+						_List_fromArray(
+							[
+								$author$project$Interface$font_scaled(2),
+								$author$project$ItemShop$border_bottom(2),
+								$mdgriffith$elm_ui$Element$alignTop
+							]),
+						$mdgriffith$elm_ui$Element$text('Quests'))
+					]),
+				_List_fromArray(
+					[
+						A2(
+						$mdgriffith$elm_ui$Element$column,
+						_List_fromArray(
+							[
+								A2($mdgriffith$elm_ui$Element$paddingXY, 0, 10),
+								$mdgriffith$elm_ui$Element$spacing(5)
+							]),
+						A2($elm$core$List$map, $author$project$ItemShop$viewSingleQuest, quests))
+					])));
+	});
+var $author$project$ItemShop$ChangeInventorySortType = function (a) {
+	return {$: 'ChangeInventorySortType', a: a};
+};
+var $author$project$ItemShop$CycleFilterDisplayedItemsBackward = F2(
+	function (a, b) {
+		return {$: 'CycleFilterDisplayedItemsBackward', a: a, b: b};
+	});
+var $author$project$ItemShop$CycleFilterDisplayedItemsForward = F2(
+	function (a, b) {
+		return {$: 'CycleFilterDisplayedItemsForward', a: a, b: b};
+	});
+var $author$project$ItemShop$MouseEnterShopItem = F2(
+	function (a, b) {
+		return {$: 'MouseEnterShopItem', a: a, b: b};
+	});
+var $author$project$ItemShop$MouseLeaveShopItem = F2(
+	function (a, b) {
+		return {$: 'MouseLeaveShopItem', a: a, b: b};
+	});
+var $author$project$ItemShop$SortByAvgPrice = {$: 'SortByAvgPrice'};
+var $author$project$ItemShop$SortByItemDesc = {$: 'SortByItemDesc'};
+var $author$project$ItemShop$SortByItemType = {$: 'SortByItemType'};
+var $author$project$ItemShop$SortByPrice = {$: 'SortByPrice'};
+var $author$project$ItemShop$SortByQuantity = {$: 'SortByQuantity'};
+var $author$project$ItemShop$ToggleHideNonZeroRows = function (a) {
+	return {$: 'ToggleHideNonZeroRows', a: a};
+};
+var $author$project$ItemShop$is_item_trade_log_to_shop = function (item_trade_log) {
+	return _Utils_eq(item_trade_log.to_party, $author$project$ItemShop$ShopParty);
+};
+var $author$project$Interface$renderGpString = function (count) {
+	return $elm$core$String$fromInt(count) + 'gp';
+};
+var $author$project$ItemShop$action_log_to_str = F3(
+	function (colorTheme, item_db, action_log) {
+		var _v0 = action_log.log_type;
+		switch (_v0.$) {
+			case 'Traded':
+				var item_trade_log = _v0.a;
+				var traded_prefix = $author$project$ItemShop$is_item_trade_log_to_shop(item_trade_log) ? 'Sold: ' : 'Bought: ';
+				return _Utils_ap(
+					traded_prefix,
+					function () {
+						var _v1 = A2($author$project$ItemShop$lookup_item_id, item_db, item_trade_log.item_id);
+						if (_v1.$ === 'Nothing') {
+							return 'Unknown Item';
+						} else {
+							var db_record = _v1.a;
+							return db_record.item.name;
+						}
+					}());
+			case 'WantedButCouldntTrade':
+				var action = _v0.a;
+				if (action.$ === 'WantedToSell') {
+					return 'Wanted to sell, but couldn\'t';
+				} else {
+					return 'Wanted to buy, but couldn\'t';
+				}
+			case 'FetchedItem':
+				var itemId = _v0.a;
+				return 'Fetched an item: ' + A2($author$project$ItemShop$lookup_item_id_default, item_db, itemId).name;
+			case 'FetchedItemButFundNotBigEnough':
+				var itemId = _v0.a;
+				return 'Tried to fetch an item, but the Community Fund didn\'t contain enough gold. Needed' + $author$project$Interface$renderGpString(
+					A2($author$project$ItemShop$lookup_item_id_default, item_db, itemId).raw_gold_cost);
+			default:
+				return 'Did nothing';
+		}
+	});
+var $author$project$Interface$clipText = F2(
+	function (str, length) {
+		return (_Utils_cmp(
+			$elm$core$String$length(str),
+			length) > 0) ? (A2($elm$core$String$left, length, str) + '...') : str;
+	});
+var $author$project$Interface$colorFromInt = F4(
+	function (_int, positiveColor, neutralColor, negativeColor) {
+		return (_int > 0) ? positiveColor : ((!_int) ? neutralColor : negativeColor);
+	});
+var $author$project$Interface$color_black = A3($mdgriffith$elm_ui$Element$rgb, 0, 0, 0);
+var $author$project$Interface$color_very_light_grey = A3($mdgriffith$elm_ui$Element$rgb, 0.75, 0.75, 0.75);
+var $author$project$Interface$cssRule = F2(
+	function (name, value) {
+		return $mdgriffith$elm_ui$Element$htmlAttribute(
+			A2($elm$html$Html$Attributes$style, name, value));
+	});
+var $author$project$ItemShop$divider = _List_fromArray(
+	[
+		A2(
+		$mdgriffith$elm_ui$Element$el,
+		_List_fromArray(
+			[
+				$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
+				A2($mdgriffith$elm_ui$Element$paddingXY, 50, 5)
+			]),
+		A2(
+			$mdgriffith$elm_ui$Element$el,
+			_List_fromArray(
+				[
+					$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
+					$author$project$ItemShop$border_bottom(1),
+					$mdgriffith$elm_ui$Element$Border$color($author$project$Interface$color_very_light_grey)
+				]),
+			$mdgriffith$elm_ui$Element$none))
+	]);
+var $avh4$elm_color$Color$green = A4($avh4$elm_color$Color$RgbaSpace, 115 / 255, 210 / 255, 22 / 255, 1.0);
+var $mdgriffith$elm_ui$Internal$Model$Behind = {$: 'Behind'};
+var $mdgriffith$elm_ui$Element$behindContent = function (element) {
+	return A2($mdgriffith$elm_ui$Element$createNearby, $mdgriffith$elm_ui$Internal$Model$Behind, element);
+};
+var $author$project$ItemShop$html_title = function (string) {
+	return $mdgriffith$elm_ui$Element$behindContent($mdgriffith$elm_ui$Element$none);
+};
+var $author$project$ItemShop$is_item_trending = F2(
+	function (item_type_sentiments, item) {
+		var _v0 = A2(
+			$elm$core$Dict$get,
+			$author$project$ItemShop$item_type_to_id(item.item_type),
+			item_type_sentiments);
+		if (_v0.$ === 'Just') {
+			var existing_sent = _v0.a;
+			return existing_sent !== 1.0;
+		} else {
+			return false;
+		}
+	});
+var $mdgriffith$elm_ui$Element$Font$italic = $mdgriffith$elm_ui$Internal$Model$htmlClass($mdgriffith$elm_ui$Internal$Style$classes.italic);
+var $author$project$ItemShop$portion = A2($elm$core$Basics$composeL, $mdgriffith$elm_ui$Element$width, $mdgriffith$elm_ui$Element$fillPortion);
+var $mdgriffith$elm_ui$Element$Font$alignLeft = A2($mdgriffith$elm_ui$Internal$Model$Class, $mdgriffith$elm_ui$Internal$Flag$fontAlignment, $mdgriffith$elm_ui$Internal$Style$classes.textLeft);
+var $author$project$ItemShop$get_item_type_trend = F2(
+	function (item_type_sentiments, item_type) {
+		var _v0 = A2(
+			$elm$core$Dict$get,
+			$author$project$ItemShop$item_type_to_id(item_type),
+			item_type_sentiments);
+		if (_v0.$ === 'Just') {
+			var existing_sent = _v0.a;
+			return existing_sent;
+		} else {
+			return 1.0;
+		}
+	});
+var $author$project$Interface$color_pastel_green_1 = $author$project$Interface$hex_to_color('#b4ecb4');
+var $author$project$Interface$color_pastel_green_2 = $author$project$Interface$hex_to_color('#a0e7a0');
+var $author$project$Interface$color_pastel_green_3 = $author$project$Interface$hex_to_color('#8be28b');
+var $author$project$Interface$color_pastel_green_4 = $author$project$Interface$hex_to_color('#77dd77');
+var $author$project$Interface$color_pastel_green_5 = $author$project$Interface$hex_to_color('#63d863');
+var $author$project$Interface$color_pastel_green_6 = $author$project$Interface$hex_to_color('#4ed34e');
+var $author$project$Interface$color_pastel_green_7 = $author$project$Interface$hex_to_color('#3ace3a');
+var $author$project$Interface$color_pastel_red_1 = $author$project$Interface$hex_to_color('#ecb4b4');
+var $author$project$Interface$color_pastel_red_2 = $author$project$Interface$hex_to_color('#e7a0a0');
+var $author$project$Interface$color_pastel_red_3 = $author$project$Interface$hex_to_color('#e28b8b');
+var $author$project$Interface$color_pastel_red_4 = $author$project$Interface$hex_to_color('#dd7777');
+var $author$project$Interface$color_pastel_red_5 = $author$project$Interface$hex_to_color('#d86363');
+var $author$project$Interface$color_pastel_red_6 = $author$project$Interface$hex_to_color('#d34e4e');
+var $author$project$Interface$color_pastel_red_7 = $author$project$Interface$hex_to_color('#ce3a3a');
+var $author$project$ItemShop$get_trend_color = function (trend) {
+	return (trend > 1.65) ? $author$project$Interface$color_pastel_red_7 : ((trend > 1.55) ? $author$project$Interface$color_pastel_red_6 : ((trend > 1.45) ? $author$project$Interface$color_pastel_red_5 : ((trend > 1.35) ? $author$project$Interface$color_pastel_red_4 : ((trend > 1.25) ? $author$project$Interface$color_pastel_red_3 : ((trend > 1.15) ? $author$project$Interface$color_pastel_red_2 : ((trend > 1.0) ? $author$project$Interface$color_pastel_red_1 : ((trend < 0.45) ? $author$project$Interface$color_pastel_green_7 : ((trend < 0.55) ? $author$project$Interface$color_pastel_green_6 : ((trend < 0.65) ? $author$project$Interface$color_pastel_green_5 : ((trend < 0.75) ? $author$project$Interface$color_pastel_green_4 : ((trend < 0.85) ? $author$project$Interface$color_pastel_green_3 : ((trend < 0.95) ? $author$project$Interface$color_pastel_green_2 : ((trend < 1.0) ? $author$project$Interface$color_pastel_green_1 : A3($mdgriffith$elm_ui$Element$rgb, 0, 0, 0))))))))))))));
+};
+var $mdgriffith$elm_ui$Internal$Model$formatTextShadow = function (shadow) {
+	return A2(
+		$elm$core$String$join,
+		' ',
+		_List_fromArray(
+			[
+				$elm$core$String$fromFloat(shadow.offset.a) + 'px',
+				$elm$core$String$fromFloat(shadow.offset.b) + 'px',
+				$elm$core$String$fromFloat(shadow.blur) + 'px',
+				$mdgriffith$elm_ui$Internal$Model$formatColor(shadow.color)
+			]));
+};
+var $mdgriffith$elm_ui$Internal$Model$textShadowClass = function (shadow) {
+	return $elm$core$String$concat(
+		_List_fromArray(
+			[
+				'txt',
+				$mdgriffith$elm_ui$Internal$Model$floatClass(shadow.offset.a) + 'px',
+				$mdgriffith$elm_ui$Internal$Model$floatClass(shadow.offset.b) + 'px',
+				$mdgriffith$elm_ui$Internal$Model$floatClass(shadow.blur) + 'px',
+				$mdgriffith$elm_ui$Internal$Model$formatColorClass(shadow.color)
+			]));
+};
+var $mdgriffith$elm_ui$Internal$Flag$txtShadows = $mdgriffith$elm_ui$Internal$Flag$flag(18);
+var $mdgriffith$elm_ui$Element$Font$shadow = function (shade) {
+	return A2(
+		$mdgriffith$elm_ui$Internal$Model$StyleClass,
+		$mdgriffith$elm_ui$Internal$Flag$txtShadows,
+		A3(
+			$mdgriffith$elm_ui$Internal$Model$Single,
+			$mdgriffith$elm_ui$Internal$Model$textShadowClass(shade),
+			'text-shadow',
+			$mdgriffith$elm_ui$Internal$Model$formatTextShadow(shade)));
+};
+var $author$project$ItemShop$renderItemTypeWithTrend = F2(
+	function (shop_trends, item_type) {
+		var trend = A2($author$project$ItemShop$get_item_type_trend, shop_trends.item_type_sentiment, item_type);
+		var trend_color = $author$project$ItemShop$get_trend_color(trend);
+		var trend_shadow = (trend !== 1.0) ? _List_fromArray(
+			[
+				$mdgriffith$elm_ui$Element$Font$shadow(
+				{
+					blur: 0.25,
+					color: A3($mdgriffith$elm_ui$Element$rgb, 0, 0, 0),
+					offset: _Utils_Tuple2(1, 1)
+				})
+			]) : _List_Nil;
+		var pretty_trend = $elm$core$String$fromInt(
+			$elm$core$Basics$round(trend * 100)) + '%';
+		return A2(
+			$mdgriffith$elm_ui$Element$paragraph,
+			_List_fromArray(
+				[
+					$mdgriffith$elm_ui$Element$Font$alignLeft,
+					$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill)
+				]),
+			_List_fromArray(
+				[
+					$mdgriffith$elm_ui$Element$text(
+					$author$project$ItemShop$item_type_to_pretty_string(item_type)),
+					$mdgriffith$elm_ui$Element$text(' - '),
+					A2(
+					$mdgriffith$elm_ui$Element$el,
+					_Utils_ap(
+						_List_fromArray(
+							[
+								$mdgriffith$elm_ui$Element$Font$color(trend_color)
+							]),
+						trend_shadow),
+					$mdgriffith$elm_ui$Element$text(pretty_trend))
+				]));
+	});
+var $author$project$ItemShop$renderItemTypeWithoutTrend = function (item_type) {
+	return A2(
+		$mdgriffith$elm_ui$Element$paragraph,
+		_List_fromArray(
+			[
+				$mdgriffith$elm_ui$Element$Font$alignLeft,
+				$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill)
+			]),
+		_List_fromArray(
+			[
+				$mdgriffith$elm_ui$Element$text(
+				$author$project$ItemShop$item_type_to_pretty_string(item_type))
+			]));
+};
+var $mdgriffith$elm_ui$Internal$Flag$overflow = $mdgriffith$elm_ui$Internal$Flag$flag(20);
+var $mdgriffith$elm_ui$Element$scrollbars = A2($mdgriffith$elm_ui$Internal$Model$Class, $mdgriffith$elm_ui$Internal$Flag$overflow, $mdgriffith$elm_ui$Internal$Style$classes.scrollbars);
+var $author$project$ItemShop$signedFromInt = function (_int) {
+	return (_int > 0) ? ('+' + $elm$core$String$fromInt(_int)) : $elm$core$String$fromInt(_int);
+};
+var $elm$core$List$sortWith = _List_sortWith;
+var $mdgriffith$elm_ui$Element$InternalColumn = function (a) {
+	return {$: 'InternalColumn', a: a};
+};
+var $mdgriffith$elm_ui$Internal$Model$GridPosition = function (a) {
+	return {$: 'GridPosition', a: a};
+};
+var $mdgriffith$elm_ui$Internal$Model$GridTemplateStyle = function (a) {
+	return {$: 'GridTemplateStyle', a: a};
 };
 var $elm$core$List$all = F2(
 	function (isOkay, list) {
@@ -21798,6 +22566,196 @@ var $elm$core$List$all = F2(
 			A2($elm$core$Basics$composeL, $elm$core$Basics$not, isOkay),
 			list);
 	});
+var $mdgriffith$elm_ui$Internal$Model$AsGrid = {$: 'AsGrid'};
+var $mdgriffith$elm_ui$Internal$Model$asGrid = $mdgriffith$elm_ui$Internal$Model$AsGrid;
+var $mdgriffith$elm_ui$Internal$Model$getSpacing = F2(
+	function (attrs, _default) {
+		return A2(
+			$elm$core$Maybe$withDefault,
+			_default,
+			A3(
+				$elm$core$List$foldr,
+				F2(
+					function (attr, acc) {
+						if (acc.$ === 'Just') {
+							var x = acc.a;
+							return $elm$core$Maybe$Just(x);
+						} else {
+							if ((attr.$ === 'StyleClass') && (attr.b.$ === 'SpacingStyle')) {
+								var _v2 = attr.b;
+								var x = _v2.b;
+								var y = _v2.c;
+								return $elm$core$Maybe$Just(
+									_Utils_Tuple2(x, y));
+							} else {
+								return $elm$core$Maybe$Nothing;
+							}
+						}
+					}),
+				$elm$core$Maybe$Nothing,
+				attrs));
+	});
+var $mdgriffith$elm_ui$Internal$Flag$gridPosition = $mdgriffith$elm_ui$Internal$Flag$flag(35);
+var $mdgriffith$elm_ui$Internal$Flag$gridTemplate = $mdgriffith$elm_ui$Internal$Flag$flag(34);
+var $mdgriffith$elm_ui$Element$tableHelper = F2(
+	function (attrs, config) {
+		var onGrid = F3(
+			function (rowLevel, columnLevel, elem) {
+				return A4(
+					$mdgriffith$elm_ui$Internal$Model$element,
+					$mdgriffith$elm_ui$Internal$Model$asEl,
+					$mdgriffith$elm_ui$Internal$Model$div,
+					_List_fromArray(
+						[
+							A2(
+							$mdgriffith$elm_ui$Internal$Model$StyleClass,
+							$mdgriffith$elm_ui$Internal$Flag$gridPosition,
+							$mdgriffith$elm_ui$Internal$Model$GridPosition(
+								{col: columnLevel, height: 1, row: rowLevel, width: 1}))
+						]),
+					$mdgriffith$elm_ui$Internal$Model$Unkeyed(
+						_List_fromArray(
+							[elem])));
+			});
+		var columnWidth = function (col) {
+			if (col.$ === 'InternalIndexedColumn') {
+				var colConfig = col.a;
+				return colConfig.width;
+			} else {
+				var colConfig = col.a;
+				return colConfig.width;
+			}
+		};
+		var columnHeader = function (col) {
+			if (col.$ === 'InternalIndexedColumn') {
+				var colConfig = col.a;
+				return colConfig.header;
+			} else {
+				var colConfig = col.a;
+				return colConfig.header;
+			}
+		};
+		var maybeHeaders = function (headers) {
+			return A2(
+				$elm$core$List$all,
+				$elm$core$Basics$eq($mdgriffith$elm_ui$Internal$Model$Empty),
+				headers) ? $elm$core$Maybe$Nothing : $elm$core$Maybe$Just(
+				A2(
+					$elm$core$List$indexedMap,
+					F2(
+						function (col, header) {
+							return A3(onGrid, 1, col + 1, header);
+						}),
+					headers));
+		}(
+			A2($elm$core$List$map, columnHeader, config.columns));
+		var add = F3(
+			function (cell, columnConfig, cursor) {
+				if (columnConfig.$ === 'InternalIndexedColumn') {
+					var col = columnConfig.a;
+					return _Utils_update(
+						cursor,
+						{
+							column: cursor.column + 1,
+							elements: A2(
+								$elm$core$List$cons,
+								A3(
+									onGrid,
+									cursor.row,
+									cursor.column,
+									A2(
+										col.view,
+										_Utils_eq(maybeHeaders, $elm$core$Maybe$Nothing) ? (cursor.row - 1) : (cursor.row - 2),
+										cell)),
+								cursor.elements)
+						});
+				} else {
+					var col = columnConfig.a;
+					return {
+						column: cursor.column + 1,
+						elements: A2(
+							$elm$core$List$cons,
+							A3(
+								onGrid,
+								cursor.row,
+								cursor.column,
+								col.view(cell)),
+							cursor.elements),
+						row: cursor.row
+					};
+				}
+			});
+		var build = F3(
+			function (columns, rowData, cursor) {
+				var newCursor = A3(
+					$elm$core$List$foldl,
+					add(rowData),
+					cursor,
+					columns);
+				return {column: 1, elements: newCursor.elements, row: cursor.row + 1};
+			});
+		var children = A3(
+			$elm$core$List$foldl,
+			build(config.columns),
+			{
+				column: 1,
+				elements: _List_Nil,
+				row: _Utils_eq(maybeHeaders, $elm$core$Maybe$Nothing) ? 1 : 2
+			},
+			config.data);
+		var _v0 = A2(
+			$mdgriffith$elm_ui$Internal$Model$getSpacing,
+			attrs,
+			_Utils_Tuple2(0, 0));
+		var sX = _v0.a;
+		var sY = _v0.b;
+		var template = A2(
+			$mdgriffith$elm_ui$Internal$Model$StyleClass,
+			$mdgriffith$elm_ui$Internal$Flag$gridTemplate,
+			$mdgriffith$elm_ui$Internal$Model$GridTemplateStyle(
+				{
+					columns: A2($elm$core$List$map, columnWidth, config.columns),
+					rows: A2(
+						$elm$core$List$repeat,
+						$elm$core$List$length(config.data),
+						$mdgriffith$elm_ui$Internal$Model$Content),
+					spacing: _Utils_Tuple2(
+						$mdgriffith$elm_ui$Element$px(sX),
+						$mdgriffith$elm_ui$Element$px(sY))
+				}));
+		return A4(
+			$mdgriffith$elm_ui$Internal$Model$element,
+			$mdgriffith$elm_ui$Internal$Model$asGrid,
+			$mdgriffith$elm_ui$Internal$Model$div,
+			A2(
+				$elm$core$List$cons,
+				$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
+				A2($elm$core$List$cons, template, attrs)),
+			$mdgriffith$elm_ui$Internal$Model$Unkeyed(
+				function () {
+					if (maybeHeaders.$ === 'Nothing') {
+						return children.elements;
+					} else {
+						var renderedHeaders = maybeHeaders.a;
+						return _Utils_ap(
+							renderedHeaders,
+							$elm$core$List$reverse(children.elements));
+					}
+				}()));
+	});
+var $mdgriffith$elm_ui$Element$table = F2(
+	function (attrs, config) {
+		return A2(
+			$mdgriffith$elm_ui$Element$tableHelper,
+			attrs,
+			{
+				columns: A2($elm$core$List$map, $mdgriffith$elm_ui$Element$InternalColumn, config.columns),
+				data: config.data
+			});
+	});
+var $author$project$ItemShop$OnTrendChartHover = function (a) {
+	return {$: 'OnTrendChartHover', a: a};
+};
 var $terezka$elm_charts$Chart$Attributes$centerAt = F2(
 	function (v, axis) {
 		var full = axis.max - axis.min;
@@ -23978,20 +24936,6 @@ var $terezka$elm_charts$Internal$Many$dots = function () {
 		$elm$core$List$filterMap($terezka$elm_charts$Internal$Item$isDot));
 }();
 var $terezka$elm_charts$Chart$Item$dots = $terezka$elm_charts$Internal$Many$dots;
-var $terezka$elm_charts$Chart$SubElements = function (a) {
-	return {$: 'SubElements', a: a};
-};
-var $terezka$elm_charts$Chart$each = F2(
-	function (items, func) {
-		return $terezka$elm_charts$Chart$SubElements(
-			F2(
-				function (p, _v0) {
-					return A2(
-						$elm$core$List$concatMap,
-						func(p),
-						items);
-				}));
-	});
 var $author$project$ItemShop$float_to_percent = function (flt) {
 	return function (str) {
 		return str + '%';
@@ -24007,11 +24951,6 @@ var $terezka$elm_charts$Chart$Attributes$format = F2(
 				format: $elm$core$Maybe$Just(v)
 			});
 	});
-var $terezka$elm_charts$Internal$Item$getDatum = function (_v0) {
-	var item = _v0.a;
-	return item.config.values.datum;
-};
-var $terezka$elm_charts$Chart$Item$getData = $terezka$elm_charts$Internal$Item$getDatum;
 var $terezka$elm_charts$Internal$Events$Decoder = function (a) {
 	return {$: 'Decoder', a: a};
 };
@@ -24122,19 +25061,6 @@ var $terezka$elm_charts$Internal$Events$getNearest = function (grouping) {
 			}));
 };
 var $terezka$elm_charts$Chart$Events$getNearest = $terezka$elm_charts$Internal$Events$getNearest;
-var $author$project$ItemShop$get_item_type_trend = F2(
-	function (item_type_sentiments, item_type) {
-		var _v0 = A2(
-			$elm$core$Dict$get,
-			$author$project$ItemShop$item_type_to_id(item_type),
-			item_type_sentiments);
-		if (_v0.$ === 'Just') {
-			var existing_sent = _v0.a;
-			return existing_sent;
-		} else {
-			return 1.0;
-		}
-	});
 var $terezka$elm_charts$Chart$Attributes$height = F2(
 	function (v, config) {
 		return _Utils_update(
@@ -26254,206 +27180,6 @@ var $terezka$elm_charts$Chart$Attributes$spacing = F2(
 		return _Utils_update(
 			config,
 			{spacing: v});
-	});
-var $terezka$elm_charts$Chart$html = function (func) {
-	return $terezka$elm_charts$Chart$HtmlElement(
-		F2(
-			function (p, _v0) {
-				return func(p);
-			}));
-};
-var $terezka$elm_charts$Internal$Svg$defaultTooltip = {arrow: true, background: 'white', border: '#D8D8D8', direction: $elm$core$Maybe$Nothing, focal: $elm$core$Maybe$Nothing, height: 0, offset: 8, width: 0};
-var $terezka$elm_charts$Internal$Svg$Bottom = {$: 'Bottom'};
-var $terezka$elm_charts$Internal$Svg$Left = {$: 'Left'};
-var $terezka$elm_charts$Internal$Svg$Right = {$: 'Right'};
-var $terezka$elm_charts$Internal$Svg$Top = {$: 'Top'};
-var $terezka$elm_charts$Internal$Coordinates$bottom = function (pos) {
-	return {x: pos.x1 + ((pos.x2 - pos.x1) / 2), y: pos.y1};
-};
-var $terezka$elm_charts$Internal$Coordinates$left = function (pos) {
-	return {x: pos.x1, y: pos.y1 + ((pos.y2 - pos.y1) / 2)};
-};
-var $terezka$elm_charts$Internal$Coordinates$right = function (pos) {
-	return {x: pos.x2, y: pos.y1 + ((pos.y2 - pos.y1) / 2)};
-};
-var $terezka$elm_charts$Internal$Svg$tooltipPointerStyle = F4(
-	function (direction, className, background, borderColor) {
-		var config = function () {
-			switch (direction.$) {
-				case 'Top':
-					return {a: 'right', b: 'top', c: 'left'};
-				case 'Bottom':
-					return {a: 'right', b: 'bottom', c: 'left'};
-				case 'Left':
-					return {a: 'bottom', b: 'left', c: 'top'};
-				case 'Right':
-					return {a: 'bottom', b: 'right', c: 'top'};
-				case 'LeftOrRight':
-					return {a: 'bottom', b: 'left', c: 'top'};
-				default:
-					return {a: 'right', b: 'top', c: 'left'};
-			}
-		}();
-		return '\n  .' + (className + (':before, .' + (className + (':after {\n    content: "";\n    position: absolute;\n    border-' + (config.c + (': 5px solid transparent;\n    border-' + (config.a + (': 5px solid transparent;\n    ' + (config.b + (': 100%;\n    ' + (config.c + (': 50%;\n    margin-' + (config.c + (': -5px;\n  }\n\n  .' + (className + (':after {\n    border-' + (config.b + (': 5px solid ' + (background + (';\n    margin-' + (config.b + (': -1px;\n    z-index: 1;\n    height: 0px;\n  }\n\n  .' + (className + (':before {\n    border-' + (config.b + (': 5px solid ' + (borderColor + ';\n    height: 0px;\n  }\n  ')))))))))))))))))))))))))));
-	});
-var $terezka$elm_charts$Internal$Coordinates$top = function (pos) {
-	return {x: pos.x1 + ((pos.x2 - pos.x1) / 2), y: pos.y2};
-};
-var $terezka$elm_charts$Internal$Svg$tooltip = F5(
-	function (plane, pos, config, htmlAttrs, content) {
-		var distanceTop = A2($terezka$elm_charts$Internal$Coordinates$toSVGY, plane, pos.y2);
-		var distanceRight = plane.x.length - A2($terezka$elm_charts$Internal$Coordinates$toSVGX, plane, pos.x1);
-		var distanceLeft = A2($terezka$elm_charts$Internal$Coordinates$toSVGX, plane, pos.x2);
-		var distanceBottom = plane.y.length - A2($terezka$elm_charts$Internal$Coordinates$toSVGY, plane, pos.y1);
-		var direction = function () {
-			var _v5 = config.direction;
-			if (_v5.$ === 'Just') {
-				switch (_v5.a.$) {
-					case 'LeftOrRight':
-						var _v6 = _v5.a;
-						return (config.width > 0) ? ((_Utils_cmp(distanceLeft, config.width + config.offset) > 0) ? $terezka$elm_charts$Internal$Svg$Left : $terezka$elm_charts$Internal$Svg$Right) : ((_Utils_cmp(distanceLeft, distanceRight) > 0) ? $terezka$elm_charts$Internal$Svg$Left : $terezka$elm_charts$Internal$Svg$Right);
-					case 'TopOrBottom':
-						var _v7 = _v5.a;
-						return (config.height > 0) ? ((_Utils_cmp(distanceTop, config.height + config.offset) > 0) ? $terezka$elm_charts$Internal$Svg$Top : $terezka$elm_charts$Internal$Svg$Bottom) : ((_Utils_cmp(distanceTop, distanceBottom) > 0) ? $terezka$elm_charts$Internal$Svg$Top : $terezka$elm_charts$Internal$Svg$Bottom);
-					default:
-						var dir = _v5.a;
-						return dir;
-				}
-			} else {
-				var isLargest = function (a) {
-					return $elm$core$List$all(
-						function (b) {
-							return _Utils_cmp(a, b) > -1;
-						});
-				};
-				return A2(
-					isLargest,
-					distanceTop,
-					_List_fromArray(
-						[distanceBottom, distanceLeft, distanceRight])) ? $terezka$elm_charts$Internal$Svg$Top : (A2(
-					isLargest,
-					distanceBottom,
-					_List_fromArray(
-						[distanceTop, distanceLeft, distanceRight])) ? $terezka$elm_charts$Internal$Svg$Bottom : (A2(
-					isLargest,
-					distanceLeft,
-					_List_fromArray(
-						[distanceTop, distanceBottom, distanceRight])) ? $terezka$elm_charts$Internal$Svg$Left : $terezka$elm_charts$Internal$Svg$Right));
-			}
-		}();
-		var focalPoint = function () {
-			var _v2 = config.focal;
-			if (_v2.$ === 'Just') {
-				var focal = _v2.a;
-				switch (direction.$) {
-					case 'Top':
-						return $terezka$elm_charts$Internal$Coordinates$top(
-							focal(pos));
-					case 'Bottom':
-						return $terezka$elm_charts$Internal$Coordinates$bottom(
-							focal(pos));
-					case 'Left':
-						return $terezka$elm_charts$Internal$Coordinates$left(
-							focal(pos));
-					case 'Right':
-						return $terezka$elm_charts$Internal$Coordinates$right(
-							focal(pos));
-					case 'LeftOrRight':
-						return $terezka$elm_charts$Internal$Coordinates$left(
-							focal(pos));
-					default:
-						return $terezka$elm_charts$Internal$Coordinates$right(
-							focal(pos));
-				}
-			} else {
-				switch (direction.$) {
-					case 'Top':
-						return $terezka$elm_charts$Internal$Coordinates$top(pos);
-					case 'Bottom':
-						return $terezka$elm_charts$Internal$Coordinates$bottom(pos);
-					case 'Left':
-						return $terezka$elm_charts$Internal$Coordinates$left(pos);
-					case 'Right':
-						return $terezka$elm_charts$Internal$Coordinates$right(pos);
-					case 'LeftOrRight':
-						return $terezka$elm_charts$Internal$Coordinates$left(pos);
-					default:
-						return $terezka$elm_charts$Internal$Coordinates$right(pos);
-				}
-			}
-		}();
-		var arrowWidth = config.arrow ? 4 : 0;
-		var _v0 = function () {
-			switch (direction.$) {
-				case 'Top':
-					return {className: 'elm-charts__tooltip-top', transformation: 'translate(-50%, -100%)', xOff: 0, yOff: config.offset + arrowWidth};
-				case 'Bottom':
-					return {className: 'elm-charts__tooltip-bottom', transformation: 'translate(-50%, 0%)', xOff: 0, yOff: (-config.offset) - arrowWidth};
-				case 'Left':
-					return {className: 'elm-charts__tooltip-left', transformation: 'translate(-100%, -50%)', xOff: (-config.offset) - arrowWidth, yOff: 0};
-				case 'Right':
-					return {className: 'elm-charts__tooltip-right', transformation: 'translate(0, -50%)', xOff: config.offset + arrowWidth, yOff: 0};
-				case 'LeftOrRight':
-					return {className: 'elm-charts__tooltip-leftOrRight', transformation: 'translate(0, -50%)', xOff: (-config.offset) - arrowWidth, yOff: 0};
-				default:
-					return {className: 'elm-charts__tooltip-topOrBottom', transformation: 'translate(-50%, -100%)', xOff: 0, yOff: config.offset + arrowWidth};
-			}
-		}();
-		var xOff = _v0.xOff;
-		var yOff = _v0.yOff;
-		var transformation = _v0.transformation;
-		var className = _v0.className;
-		var children = config.arrow ? A2(
-			$elm$core$List$cons,
-			A3(
-				$elm$html$Html$node,
-				'style',
-				_List_Nil,
-				_List_fromArray(
-					[
-						$elm$html$Html$text(
-						A4($terezka$elm_charts$Internal$Svg$tooltipPointerStyle, direction, className, config.background, config.border))
-					])),
-			content) : content;
-		var attributes = _Utils_ap(
-			_List_fromArray(
-				[
-					$elm$html$Html$Attributes$class(className),
-					A2($elm$html$Html$Attributes$style, 'transform', transformation),
-					A2($elm$html$Html$Attributes$style, 'padding', '5px 8px'),
-					A2($elm$html$Html$Attributes$style, 'background', config.background),
-					A2($elm$html$Html$Attributes$style, 'border', '1px solid ' + config.border),
-					A2($elm$html$Html$Attributes$style, 'border-radius', '3px'),
-					A2($elm$html$Html$Attributes$style, 'pointer-events', 'none')
-				]),
-			htmlAttrs);
-		return A2(
-			$elm$html$Html$map,
-			$elm$core$Basics$never,
-			A7($terezka$elm_charts$Internal$Svg$positionHtml, plane, focalPoint.x, focalPoint.y, xOff, yOff, attributes, children));
-	});
-var $terezka$elm_charts$Chart$Svg$tooltip = F3(
-	function (plane, pos, edits) {
-		return A3(
-			$terezka$elm_charts$Internal$Svg$tooltip,
-			plane,
-			pos,
-			A2($terezka$elm_charts$Internal$Helpers$apply, edits, $terezka$elm_charts$Internal$Svg$defaultTooltip));
-	});
-var $terezka$elm_charts$Chart$tooltip = F4(
-	function (i, edits, attrs_, content) {
-		return $terezka$elm_charts$Chart$html(
-			function (p) {
-				var pos = $terezka$elm_charts$Internal$Item$getLimits(i);
-				var content_ = _Utils_eq(content, _List_Nil) ? $terezka$elm_charts$Internal$Item$toHtml(i) : content;
-				return A3($terezka$elm_charts$Internal$Svg$isWithinPlane, p, pos.x1, pos.y2) ? A5(
-					$terezka$elm_charts$Chart$Svg$tooltip,
-					p,
-					A2($terezka$elm_charts$Internal$Item$getPosition, p, i),
-					edits,
-					attrs_,
-					content_) : $elm$html$Html$text('');
-			});
 	});
 var $terezka$elm_charts$Chart$Attributes$withGrid = function (config) {
 	return _Utils_update(
@@ -29112,668 +29838,7 @@ var $terezka$elm_charts$Chart$yLabels = function (edits) {
 						A2(toTicks, p, config)));
 			}));
 };
-var $author$project$ItemShop$charts_display = F2(
-	function (historical_shop_trends, hovered_trend_chart) {
-		var render_tooltip = F2(
-			function (plane, item) {
-				var item_type = $author$project$ItemShop$Weapon;
-				var _v6 = $terezka$elm_charts$Chart$Item$getData(item);
-				var id = _v6.a;
-				var it_val = _v6.b;
-				var _v7 = it_val;
-				var item_type_ = _v7.a;
-				var val = _v7.b;
-				return _List_fromArray(
-					[
-						A4(
-						$terezka$elm_charts$Chart$tooltip,
-						item,
-						_List_Nil,
-						_List_Nil,
-						_List_fromArray(
-							[
-								$elm$html$Html$text(
-								$author$project$ItemShop$item_type_to_pretty_string(item_type_) + (': ' + $author$project$ItemShop$float_to_percent(val)))
-							]))
-					]);
-			});
-		var raw_dataset_len = $elm$core$List$length(historical_shop_trends);
-		var get_y_from_single_datum = function (_v5) {
-			var idx = _v5.a;
-			var it_val = _v5.b;
-			return it_val.b;
-		};
-		var get_x_from_single_datum = A2($elm$core$Basics$composeR, $elm$core$Tuple$first, $elm$core$Basics$toFloat);
-		var filter_dataset_by_item_type = F2(
-			function (item_type, _v4) {
-				var item_type_sentiment = _v4.item_type_sentiment;
-				return _Utils_Tuple2(
-					item_type,
-					A2($author$project$ItemShop$get_item_type_trend, item_type_sentiment, item_type));
-			});
-		var chart_width = 700;
-		var chart_points = 200;
-		var raw_dataset = A2(
-			$elm$core$List$indexedMap,
-			$elm$core$Tuple$pair,
-			(_Utils_cmp(raw_dataset_len, chart_points) > 0) ? A2($elm$core$List$drop, raw_dataset_len - chart_points, historical_shop_trends) : historical_shop_trends);
-		var chart_height = 150;
-		var chart_attributes = _List_fromArray(
-			[
-				$terezka$elm_charts$Chart$Attributes$height(chart_height),
-				$terezka$elm_charts$Chart$Attributes$width(chart_width),
-				$terezka$elm_charts$Chart$Attributes$padding(
-				{bottom: 5, left: 10, right: 10, top: 10}),
-				A2(
-				$terezka$elm_charts$Chart$Events$onMouseMove,
-				A2($elm$core$Basics$composeL, $author$project$ItemShop$GotUiOptionsMsg, $author$project$ItemShop$OnTrendChartHover),
-				$terezka$elm_charts$Chart$Events$getNearest($terezka$elm_charts$Chart$Item$dots)),
-				$terezka$elm_charts$Chart$Events$onMouseLeave(
-				A2($elm$core$Basics$composeL, $author$project$ItemShop$GotUiOptionsMsg, $author$project$ItemShop$OnTrendChartHover)(_List_Nil)),
-				$terezka$elm_charts$Chart$Attributes$domain(
-				_List_fromArray(
-					[
-						A2($terezka$elm_charts$Chart$Attributes$lowest, 0.5, $terezka$elm_charts$Chart$Attributes$orLower),
-						A2($terezka$elm_charts$Chart$Attributes$highest, 1.5, $terezka$elm_charts$Chart$Attributes$orHigher),
-						$terezka$elm_charts$Chart$Attributes$centerAt(1.0)
-					]))
-			]);
-		var build_filtered_dataset = function (item_type) {
-			return A2(
-				$elm$core$List$map,
-				function (_v3) {
-					var idx = _v3.a;
-					var s_t = _v3.b;
-					return _Utils_Tuple2(
-						idx,
-						A2(filter_dataset_by_item_type, item_type, s_t));
-				},
-				raw_dataset);
-		};
-		var build_dataset = function (item_type) {
-			return A2(
-				$elm$core$List$all,
-				function (_v0) {
-					var shop_trends = _v0.b;
-					return A2($author$project$ItemShop$get_item_type_trend, shop_trends.item_type_sentiment, item_type) === 1.0;
-				},
-				raw_dataset) ? $terezka$elm_charts$Chart$none : A3(
-				$terezka$elm_charts$Chart$series,
-				function (_v1) {
-					var idx = _v1.a;
-					return idx;
-				},
-				_List_fromArray(
-					[
-						A2(
-						$terezka$elm_charts$Chart$named,
-						$author$project$ItemShop$item_type_to_pretty_string(item_type),
-						A3(
-							$terezka$elm_charts$Chart$interpolated,
-							function (_v2) {
-								var idx = _v2.a;
-								var it_val = _v2.b;
-								return it_val.b;
-							},
-							_List_fromArray(
-								[$terezka$elm_charts$Chart$Attributes$monotone]),
-							_List_Nil))
-					]),
-				build_filtered_dataset(item_type));
-		};
-		var datasets = _List_fromArray(
-			[
-				build_dataset($author$project$ItemShop$Weapon),
-				build_dataset($author$project$ItemShop$Armor),
-				build_dataset($author$project$ItemShop$Spellbook),
-				build_dataset($author$project$ItemShop$Furniture),
-				build_dataset($author$project$ItemShop$Food)
-			]);
-		var chart_elements = _Utils_ap(
-			_List_fromArray(
-				[
-					$terezka$elm_charts$Chart$xLabels(_List_Nil),
-					$terezka$elm_charts$Chart$yLabels(
-					_List_fromArray(
-						[
-							$terezka$elm_charts$Chart$Attributes$format($author$project$ItemShop$float_to_percent),
-							$terezka$elm_charts$Chart$Attributes$withGrid
-						]))
-				]),
-			_Utils_ap(
-				datasets,
-				_List_fromArray(
-					[
-						A4(
-						$terezka$elm_charts$Chart$legendsAt,
-						function ($) {
-							return $.min;
-						},
-						function ($) {
-							return $.max;
-						},
-						_List_fromArray(
-							[
-								$terezka$elm_charts$Chart$Attributes$column,
-								$terezka$elm_charts$Chart$Attributes$moveRight(15),
-								$terezka$elm_charts$Chart$Attributes$spacing(5)
-							]),
-						_List_fromArray(
-							[
-								$terezka$elm_charts$Chart$Attributes$width(20)
-							])),
-						A2($terezka$elm_charts$Chart$each, hovered_trend_chart, render_tooltip)
-					])));
-		return A2(
-			$mdgriffith$elm_ui$Element$el,
-			_List_fromArray(
-				[
-					$mdgriffith$elm_ui$Element$width(
-					$mdgriffith$elm_ui$Element$px(chart_width)),
-					$mdgriffith$elm_ui$Element$height(
-					$mdgriffith$elm_ui$Element$px(chart_height + 20)),
-					A2($mdgriffith$elm_ui$Element$paddingXY, 20, 0)
-				]),
-			$mdgriffith$elm_ui$Element$html(
-				A2($terezka$elm_charts$Chart$chart, chart_attributes, chart_elements)));
-	});
-var $author$project$Interface$color_light_grey = A3($mdgriffith$elm_ui$Element$rgb, 0.55, 0.55, 0.55);
-var $mdgriffith$elm_ui$Internal$Flag$borderStyle = $mdgriffith$elm_ui$Internal$Flag$flag(11);
-var $mdgriffith$elm_ui$Element$Border$dashed = A2($mdgriffith$elm_ui$Internal$Model$Class, $mdgriffith$elm_ui$Internal$Flag$borderStyle, $mdgriffith$elm_ui$Internal$Style$classes.borderDashed);
-var $mdgriffith$elm_ui$Element$Keyed$el = F2(
-	function (attrs, child) {
-		return A4(
-			$mdgriffith$elm_ui$Internal$Model$element,
-			$mdgriffith$elm_ui$Internal$Model$asEl,
-			$mdgriffith$elm_ui$Internal$Model$div,
-			A2(
-				$elm$core$List$cons,
-				$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$shrink),
-				A2(
-					$elm$core$List$cons,
-					$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$shrink),
-					attrs)),
-			$mdgriffith$elm_ui$Internal$Model$Keyed(
-				_List_fromArray(
-					[child])));
-	});
-var $mdgriffith$elm_ui$Element$modular = F3(
-	function (normal, ratio, rescale) {
-		return (!rescale) ? normal : ((rescale < 0) ? (normal * A2($elm$core$Basics$pow, ratio, rescale)) : (normal * A2($elm$core$Basics$pow, ratio, rescale - 1)));
-	});
-var $author$project$Interface$scaled = function (val) {
-	return $elm$core$Basics$round(
-		A3($mdgriffith$elm_ui$Element$modular, 14, 1.25, val));
-};
-var $author$project$Interface$font_scaled = function (scale) {
-	return $mdgriffith$elm_ui$Element$Font$size(
-		$author$project$Interface$scaled(scale));
-};
-var $author$project$ItemShop$padding_bottom = function (pad) {
-	return $mdgriffith$elm_ui$Element$paddingEach(
-		{bottom: pad, left: 0, right: 0, top: 0});
-};
-var $author$project$ItemShop$SacrificeItem = function (a) {
-	return {$: 'SacrificeItem', a: a};
-};
-var $author$project$ItemShop$PlayerSellItemToShop = F2(
-	function (a, b) {
-		return {$: 'PlayerSellItemToShop', a: a, b: b};
-	});
-var $author$project$ItemShop$shop_sell_button = F3(
-	function (colorTheme, has_items_to_sell_, _v0) {
-		var item = _v0.item;
-		var button_type = has_items_to_sell_ ? $author$project$Interface$Primary : $author$project$Interface$Secondary;
-		var buttonText = has_items_to_sell_ ? 'SELL' : 'Need GP';
-		return $author$project$Interface$button(
-			$author$project$Interface$TextParams(
-				{
-					buttonType: button_type,
-					colorTheme: colorTheme,
-					customAttrs: _List_fromArray(
-						[
-							$mdgriffith$elm_ui$Element$transparent(!has_items_to_sell_),
-							$mdgriffith$elm_ui$Element$width(
-							A2($mdgriffith$elm_ui$Element$minimum, 120, $mdgriffith$elm_ui$Element$fill))
-						]),
-					onPressMsg: A2(
-						$author$project$ItemShop$PlayerSellItemToShop,
-						item,
-						$author$project$ItemShop$Quantity(1)),
-					textLabel: buttonText
-				}));
-	});
-var $author$project$ItemShop$playerInventoryControls = F3(
-	function (colorTheme, _v0, _v1) {
-		var shiftIsPressed = _v0.a;
-		var shop_trends = _v0.b;
-		var item = _v1.item;
-		var quantity = _v1.quantity;
-		var avg_price = _v1.avg_price;
-		var hasItemsToSell = $author$project$ItemShop$getQuantity(quantity) >= 1;
-		return (!shiftIsPressed) ? A3(
-			$author$project$ItemShop$shop_sell_button,
-			colorTheme,
-			hasItemsToSell,
-			{
-				avg_price: avg_price,
-				item: item,
-				quantity: $author$project$ItemShop$setQuantity(1)
-			}) : $author$project$Interface$button(
-			$author$project$Interface$TextParams(
-				{
-					buttonType: $author$project$Interface$Danger,
-					colorTheme: colorTheme,
-					customAttrs: _List_fromArray(
-						[
-							$mdgriffith$elm_ui$Element$transparent(!hasItemsToSell),
-							$mdgriffith$elm_ui$Element$width(
-							A2($mdgriffith$elm_ui$Element$minimum, 120, $mdgriffith$elm_ui$Element$fill))
-						]),
-					onPressMsg: $author$project$ItemShop$SacrificeItem(item),
-					textLabel: 'Sacrifice'
-				}));
-	});
-var $author$project$Interface$blankChar = '\u2003';
-var $author$project$ItemShop$border_bottom = function (bord) {
-	return $mdgriffith$elm_ui$Element$Border$widthEach(
-		{bottom: bord, left: 0, right: 0, top: 0});
-};
-var $author$project$ItemShop$render_single_player_action_log = F2(
-	function (item_db, player_action_log) {
-		return A2(
-			$mdgriffith$elm_ui$Element$paragraph,
-			_List_Nil,
-			_List_fromArray(
-				[
-					function () {
-					switch (player_action_log.$) {
-						case 'WelcomeMessageActionLog':
-							return $mdgriffith$elm_ui$Element$text('Welcome to ItemShop!');
-						case 'TookSpecialActionInviteTrader':
-							return $mdgriffith$elm_ui$Element$text('Invited Trader');
-						case 'TookSpecialActionTriggerEvent':
-							var special_event = player_action_log.a;
-							if (special_event.$ === 'EventVeryDesiredItemType') {
-								var mb_item_type = special_event.a;
-								var _v2 = A2($elm$core$Debug$log, 'mb_item_type', mb_item_type);
-								return $mdgriffith$elm_ui$Element$text(
-									A2(
-										$elm$core$Maybe$withDefault,
-										'Unknown',
-										A2($elm$core$Maybe$map, $author$project$ItemShop$item_type_to_pretty_string, mb_item_type)) + ' -- These became quite valuable.');
-							} else {
-								var mb_item_type = special_event.a;
-								return $mdgriffith$elm_ui$Element$text(
-									A2(
-										$elm$core$Maybe$withDefault,
-										'Unknown',
-										A2($elm$core$Maybe$map, $author$project$ItemShop$item_type_to_pretty_string, mb_item_type)) + ' -- Nobody is interested in these anymore.');
-							}
-						case 'TookSpecialActionTogglePauseAi':
-							return $mdgriffith$elm_ui$Element$text('Toggle Play/Pause');
-						case 'TookSpecialActionUnlockItem':
-							var item_id = player_action_log.a;
-							return $mdgriffith$elm_ui$Element$text(
-								'Found an item: ' + A2($author$project$ItemShop$lookup_item_id_default, item_db, item_id).name);
-						default:
-							var itemId = player_action_log.a;
-							return $mdgriffith$elm_ui$Element$text('A monster died, and left an item to the shop');
-					}
-				}()
-				]));
-	});
-var $author$project$ItemShop$player_action_log_display = F2(
-	function (item_db, player_action_logs) {
-		return A2(
-			$mdgriffith$elm_ui$Element$column,
-			_List_fromArray(
-				[
-					$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$fill)
-				]),
-			_Utils_ap(
-				_List_fromArray(
-					[
-						A2(
-						$mdgriffith$elm_ui$Element$el,
-						_List_fromArray(
-							[
-								$author$project$Interface$font_scaled(2),
-								$author$project$ItemShop$border_bottom(2),
-								$mdgriffith$elm_ui$Element$alignTop
-							]),
-						$mdgriffith$elm_ui$Element$text('Action Log'))
-					]),
-				_List_fromArray(
-					[
-						A2(
-						$mdgriffith$elm_ui$Element$column,
-						_List_fromArray(
-							[
-								A2($mdgriffith$elm_ui$Element$paddingXY, 0, 10),
-								$mdgriffith$elm_ui$Element$spacing(4)
-							]),
-						function (logs) {
-							return ($elm$core$List$length(logs) < 5) ? _Utils_ap(
-								logs,
-								A2(
-									$elm$core$List$repeat,
-									5 - $elm$core$List$length(logs),
-									A2(
-										$mdgriffith$elm_ui$Element$paragraph,
-										_List_Nil,
-										_List_fromArray(
-											[
-												$mdgriffith$elm_ui$Element$text($author$project$Interface$blankChar)
-											])))) : logs;
-						}(
-							A2(
-								$elm$core$List$map,
-								$author$project$ItemShop$render_single_player_action_log(item_db),
-								A2(
-									$elm$core$List$take,
-									5,
-									$elm$core$List$reverse(player_action_logs)))))
-					])));
-	});
-var $author$project$ItemShop$render_single_player_upgrade = F2(
-	function (colorTheme, player_upgrade) {
-		if (player_upgrade.$ === 'AutomaticGPM') {
-			var lvl = player_upgrade.a;
-			return A2(
-				$mdgriffith$elm_ui$Element$paragraph,
-				_List_Nil,
-				_List_fromArray(
-					[
-						$mdgriffith$elm_ui$Element$text('Income: '),
-						A2($author$project$Interface$renderGp, colorTheme, lvl),
-						$mdgriffith$elm_ui$Element$text('/sec')
-					]));
-		} else {
-			var lvl = player_upgrade.a;
-			return A2(
-				$mdgriffith$elm_ui$Element$paragraph,
-				_List_Nil,
-				_List_fromArray(
-					[
-						$mdgriffith$elm_ui$Element$text('Bloodfeed lv'),
-						$mdgriffith$elm_ui$Element$text(
-						$elm$core$String$fromInt(lvl)),
-						$mdgriffith$elm_ui$Element$text(': '),
-						A2($author$project$Interface$renderBlood, colorTheme, -lvl),
-						$mdgriffith$elm_ui$Element$text(
-						' +' + $elm$core$String$fromInt(lvl)),
-						A2(
-						$mdgriffith$elm_ui$Element$el,
-						_List_fromArray(
-							[
-								$mdgriffith$elm_ui$Element$Font$size(12)
-							]),
-						$mdgriffith$elm_ui$Element$text('stamina')),
-						$mdgriffith$elm_ui$Element$text('/5sec')
-					]));
-		}
-	});
-var $author$project$ItemShop$player_upgrades_display = F2(
-	function (colorTheme, player_upgrades) {
-		return A2(
-			$mdgriffith$elm_ui$Element$column,
-			_List_fromArray(
-				[
-					$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$fill)
-				]),
-			_Utils_ap(
-				_List_fromArray(
-					[
-						A2(
-						$mdgriffith$elm_ui$Element$el,
-						_List_fromArray(
-							[
-								$author$project$Interface$font_scaled(2),
-								$author$project$ItemShop$border_bottom(2),
-								$mdgriffith$elm_ui$Element$alignTop
-							]),
-						$mdgriffith$elm_ui$Element$text('Upgrades'))
-					]),
-				_List_fromArray(
-					[
-						A2(
-						$mdgriffith$elm_ui$Element$column,
-						_List_fromArray(
-							[
-								A2($mdgriffith$elm_ui$Element$paddingXY, 0, 10),
-								$mdgriffith$elm_ui$Element$spacing(5)
-							]),
-						A2(
-							$elm$core$List$map,
-							$author$project$ItemShop$render_single_player_upgrade(colorTheme),
-							player_upgrades))
-					])));
-	});
-var $author$project$ItemShop$ChangeInventorySortType = function (a) {
-	return {$: 'ChangeInventorySortType', a: a};
-};
-var $author$project$ItemShop$CycleFilterDisplayedItemsBackward = F2(
-	function (a, b) {
-		return {$: 'CycleFilterDisplayedItemsBackward', a: a, b: b};
-	});
-var $author$project$ItemShop$CycleFilterDisplayedItemsForward = F2(
-	function (a, b) {
-		return {$: 'CycleFilterDisplayedItemsForward', a: a, b: b};
-	});
-var $author$project$ItemShop$MouseEnterShopItem = F2(
-	function (a, b) {
-		return {$: 'MouseEnterShopItem', a: a, b: b};
-	});
-var $author$project$ItemShop$MouseLeaveShopItem = F2(
-	function (a, b) {
-		return {$: 'MouseLeaveShopItem', a: a, b: b};
-	});
-var $author$project$ItemShop$SortByAvgPrice = {$: 'SortByAvgPrice'};
-var $author$project$ItemShop$SortByItemDesc = {$: 'SortByItemDesc'};
-var $author$project$ItemShop$SortByItemType = {$: 'SortByItemType'};
-var $author$project$ItemShop$SortByPrice = {$: 'SortByPrice'};
-var $author$project$ItemShop$SortByQuantity = {$: 'SortByQuantity'};
-var $author$project$ItemShop$ToggleHideNonZeroRows = function (a) {
-	return {$: 'ToggleHideNonZeroRows', a: a};
-};
-var $author$project$ItemShop$is_item_trade_log_to_shop = function (item_trade_log) {
-	return _Utils_eq(item_trade_log.to_party, $author$project$ItemShop$ShopParty);
-};
-var $author$project$Interface$renderGpString = function (count) {
-	return $elm$core$String$fromInt(count) + 'gp';
-};
-var $author$project$ItemShop$action_log_to_str = F3(
-	function (colorTheme, item_db, action_log) {
-		var _v0 = action_log.log_type;
-		switch (_v0.$) {
-			case 'Traded':
-				var item_trade_log = _v0.a;
-				var traded_prefix = $author$project$ItemShop$is_item_trade_log_to_shop(item_trade_log) ? 'Sold: ' : 'Bought: ';
-				return _Utils_ap(
-					traded_prefix,
-					function () {
-						var _v1 = A2($author$project$ItemShop$lookup_item_id, item_db, item_trade_log.item_id);
-						if (_v1.$ === 'Nothing') {
-							return 'Unknown Item';
-						} else {
-							var db_record = _v1.a;
-							return db_record.item.name;
-						}
-					}());
-			case 'WantedButCouldntTrade':
-				var action = _v0.a;
-				if (action.$ === 'WantedToSell') {
-					return 'Wanted to sell, but couldn\'t';
-				} else {
-					return 'Wanted to buy, but couldn\'t';
-				}
-			case 'FetchedItem':
-				var itemId = _v0.a;
-				return 'Fetched an item: ' + A2($author$project$ItemShop$lookup_item_id_default, item_db, itemId).name;
-			case 'FetchedItemButFundNotBigEnough':
-				var itemId = _v0.a;
-				return 'Tried to fetch an item, but the Community Fund didn\'t contain enough gold. Needed' + $author$project$Interface$renderGpString(
-					A2($author$project$ItemShop$lookup_item_id_default, item_db, itemId).raw_gold_cost);
-			default:
-				return 'Did nothing';
-		}
-	});
-var $author$project$Interface$clipText = F2(
-	function (str, length) {
-		return (_Utils_cmp(
-			$elm$core$String$length(str),
-			length) > 0) ? (A2($elm$core$String$left, length, str) + '...') : str;
-	});
-var $author$project$Interface$colorFromInt = F4(
-	function (_int, positiveColor, neutralColor, negativeColor) {
-		return (_int > 0) ? positiveColor : ((!_int) ? neutralColor : negativeColor);
-	});
-var $author$project$Interface$color_black = A3($mdgriffith$elm_ui$Element$rgb, 0, 0, 0);
-var $author$project$Interface$color_very_light_grey = A3($mdgriffith$elm_ui$Element$rgb, 0.75, 0.75, 0.75);
-var $author$project$Interface$cssRule = F2(
-	function (name, value) {
-		return $mdgriffith$elm_ui$Element$htmlAttribute(
-			A2($elm$html$Html$Attributes$style, name, value));
-	});
-var $author$project$ItemShop$divider = _List_fromArray(
-	[
-		A2(
-		$mdgriffith$elm_ui$Element$el,
-		_List_fromArray(
-			[
-				$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
-				A2($mdgriffith$elm_ui$Element$paddingXY, 50, 5)
-			]),
-		A2(
-			$mdgriffith$elm_ui$Element$el,
-			_List_fromArray(
-				[
-					$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
-					$author$project$ItemShop$border_bottom(1),
-					$mdgriffith$elm_ui$Element$Border$color($author$project$Interface$color_very_light_grey)
-				]),
-			$mdgriffith$elm_ui$Element$none))
-	]);
-var $avh4$elm_color$Color$green = A4($avh4$elm_color$Color$RgbaSpace, 115 / 255, 210 / 255, 22 / 255, 1.0);
-var $mdgriffith$elm_ui$Internal$Model$Behind = {$: 'Behind'};
-var $mdgriffith$elm_ui$Element$behindContent = function (element) {
-	return A2($mdgriffith$elm_ui$Element$createNearby, $mdgriffith$elm_ui$Internal$Model$Behind, element);
-};
-var $author$project$ItemShop$html_title = function (string) {
-	return $mdgriffith$elm_ui$Element$behindContent($mdgriffith$elm_ui$Element$none);
-};
-var $author$project$ItemShop$is_item_trending = F2(
-	function (item_type_sentiments, item) {
-		var _v0 = A2(
-			$elm$core$Dict$get,
-			$author$project$ItemShop$item_type_to_id(item.item_type),
-			item_type_sentiments);
-		if (_v0.$ === 'Just') {
-			var existing_sent = _v0.a;
-			return existing_sent !== 1.0;
-		} else {
-			return false;
-		}
-	});
-var $mdgriffith$elm_ui$Element$Font$italic = $mdgriffith$elm_ui$Internal$Model$htmlClass($mdgriffith$elm_ui$Internal$Style$classes.italic);
-var $author$project$ItemShop$portion = A2($elm$core$Basics$composeL, $mdgriffith$elm_ui$Element$width, $mdgriffith$elm_ui$Element$fillPortion);
-var $mdgriffith$elm_ui$Element$Font$alignLeft = A2($mdgriffith$elm_ui$Internal$Model$Class, $mdgriffith$elm_ui$Internal$Flag$fontAlignment, $mdgriffith$elm_ui$Internal$Style$classes.textLeft);
-var $author$project$Interface$color_pastel_green_1 = $author$project$Interface$hex_to_color('#b4ecb4');
-var $author$project$Interface$color_pastel_green_2 = $author$project$Interface$hex_to_color('#a0e7a0');
-var $author$project$Interface$color_pastel_green_3 = $author$project$Interface$hex_to_color('#8be28b');
-var $author$project$Interface$color_pastel_green_4 = $author$project$Interface$hex_to_color('#77dd77');
-var $author$project$Interface$color_pastel_green_5 = $author$project$Interface$hex_to_color('#63d863');
-var $author$project$Interface$color_pastel_green_6 = $author$project$Interface$hex_to_color('#4ed34e');
-var $author$project$Interface$color_pastel_green_7 = $author$project$Interface$hex_to_color('#3ace3a');
-var $author$project$Interface$color_pastel_red_1 = $author$project$Interface$hex_to_color('#ecb4b4');
-var $author$project$Interface$color_pastel_red_2 = $author$project$Interface$hex_to_color('#e7a0a0');
-var $author$project$Interface$color_pastel_red_3 = $author$project$Interface$hex_to_color('#e28b8b');
-var $author$project$Interface$color_pastel_red_4 = $author$project$Interface$hex_to_color('#dd7777');
-var $author$project$Interface$color_pastel_red_5 = $author$project$Interface$hex_to_color('#d86363');
-var $author$project$Interface$color_pastel_red_6 = $author$project$Interface$hex_to_color('#d34e4e');
-var $author$project$Interface$color_pastel_red_7 = $author$project$Interface$hex_to_color('#ce3a3a');
-var $author$project$ItemShop$get_trend_color = function (trend) {
-	return (trend > 1.65) ? $author$project$Interface$color_pastel_red_7 : ((trend > 1.55) ? $author$project$Interface$color_pastel_red_6 : ((trend > 1.45) ? $author$project$Interface$color_pastel_red_5 : ((trend > 1.35) ? $author$project$Interface$color_pastel_red_4 : ((trend > 1.25) ? $author$project$Interface$color_pastel_red_3 : ((trend > 1.15) ? $author$project$Interface$color_pastel_red_2 : ((trend > 1.0) ? $author$project$Interface$color_pastel_red_1 : ((trend < 0.45) ? $author$project$Interface$color_pastel_green_7 : ((trend < 0.55) ? $author$project$Interface$color_pastel_green_6 : ((trend < 0.65) ? $author$project$Interface$color_pastel_green_5 : ((trend < 0.75) ? $author$project$Interface$color_pastel_green_4 : ((trend < 0.85) ? $author$project$Interface$color_pastel_green_3 : ((trend < 0.95) ? $author$project$Interface$color_pastel_green_2 : ((trend < 1.0) ? $author$project$Interface$color_pastel_green_1 : A3($mdgriffith$elm_ui$Element$rgb, 0, 0, 0))))))))))))));
-};
-var $mdgriffith$elm_ui$Internal$Model$formatTextShadow = function (shadow) {
-	return A2(
-		$elm$core$String$join,
-		' ',
-		_List_fromArray(
-			[
-				$elm$core$String$fromFloat(shadow.offset.a) + 'px',
-				$elm$core$String$fromFloat(shadow.offset.b) + 'px',
-				$elm$core$String$fromFloat(shadow.blur) + 'px',
-				$mdgriffith$elm_ui$Internal$Model$formatColor(shadow.color)
-			]));
-};
-var $mdgriffith$elm_ui$Internal$Model$textShadowClass = function (shadow) {
-	return $elm$core$String$concat(
-		_List_fromArray(
-			[
-				'txt',
-				$mdgriffith$elm_ui$Internal$Model$floatClass(shadow.offset.a) + 'px',
-				$mdgriffith$elm_ui$Internal$Model$floatClass(shadow.offset.b) + 'px',
-				$mdgriffith$elm_ui$Internal$Model$floatClass(shadow.blur) + 'px',
-				$mdgriffith$elm_ui$Internal$Model$formatColorClass(shadow.color)
-			]));
-};
-var $mdgriffith$elm_ui$Internal$Flag$txtShadows = $mdgriffith$elm_ui$Internal$Flag$flag(18);
-var $mdgriffith$elm_ui$Element$Font$shadow = function (shade) {
-	return A2(
-		$mdgriffith$elm_ui$Internal$Model$StyleClass,
-		$mdgriffith$elm_ui$Internal$Flag$txtShadows,
-		A3(
-			$mdgriffith$elm_ui$Internal$Model$Single,
-			$mdgriffith$elm_ui$Internal$Model$textShadowClass(shade),
-			'text-shadow',
-			$mdgriffith$elm_ui$Internal$Model$formatTextShadow(shade)));
-};
-var $author$project$ItemShop$render_item_type = F2(
-	function (shop_trends, item_type) {
-		var trend = A2($author$project$ItemShop$get_item_type_trend, shop_trends.item_type_sentiment, item_type);
-		var trend_color = $author$project$ItemShop$get_trend_color(trend);
-		var trend_shadow = (trend !== 1.0) ? _List_fromArray(
-			[
-				$mdgriffith$elm_ui$Element$Font$shadow(
-				{
-					blur: 0.25,
-					color: A3($mdgriffith$elm_ui$Element$rgb, 0, 0, 0),
-					offset: _Utils_Tuple2(1, 1)
-				})
-			]) : _List_Nil;
-		var pretty_trend = $elm$core$String$fromInt(
-			$elm$core$Basics$round(trend * 100)) + '%';
-		return A2(
-			$mdgriffith$elm_ui$Element$paragraph,
-			_List_fromArray(
-				[
-					$mdgriffith$elm_ui$Element$Font$alignLeft,
-					$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill)
-				]),
-			_List_fromArray(
-				[
-					$mdgriffith$elm_ui$Element$text(
-					$author$project$ItemShop$item_type_to_pretty_string(item_type)),
-					$mdgriffith$elm_ui$Element$text(' - '),
-					A2(
-					$mdgriffith$elm_ui$Element$el,
-					_Utils_ap(
-						_List_fromArray(
-							[
-								$mdgriffith$elm_ui$Element$Font$color(trend_color)
-							]),
-						trend_shadow),
-					$mdgriffith$elm_ui$Element$text(pretty_trend))
-				]));
-	});
-var $mdgriffith$elm_ui$Internal$Flag$overflow = $mdgriffith$elm_ui$Internal$Flag$flag(20);
-var $mdgriffith$elm_ui$Element$scrollbars = A2($mdgriffith$elm_ui$Internal$Model$Class, $mdgriffith$elm_ui$Internal$Flag$overflow, $mdgriffith$elm_ui$Internal$Style$classes.scrollbars);
-var $author$project$ItemShop$signedFromInt = function (_int) {
-	return (_int > 0) ? ('+' + $elm$core$String$fromInt(_int)) : $elm$core$String$fromInt(_int);
-};
-var $author$project$ItemShop$small_charts_display = F2(
+var $author$project$ItemShop$viewSingleItemTypeCharts = F2(
 	function (historical_shop_trends, item_type) {
 		var raw_dataset_len = $elm$core$List$length(historical_shop_trends);
 		var get_y_from_single_datum = function (_v5) {
@@ -29904,203 +29969,6 @@ var $author$project$ItemShop$small_charts_display = F2(
 			$mdgriffith$elm_ui$Element$html(
 				A2($terezka$elm_charts$Chart$chart, chart_attributes, chart_elements)));
 	});
-var $elm$core$List$sortWith = _List_sortWith;
-var $mdgriffith$elm_ui$Element$InternalColumn = function (a) {
-	return {$: 'InternalColumn', a: a};
-};
-var $mdgriffith$elm_ui$Internal$Model$GridPosition = function (a) {
-	return {$: 'GridPosition', a: a};
-};
-var $mdgriffith$elm_ui$Internal$Model$GridTemplateStyle = function (a) {
-	return {$: 'GridTemplateStyle', a: a};
-};
-var $mdgriffith$elm_ui$Internal$Model$AsGrid = {$: 'AsGrid'};
-var $mdgriffith$elm_ui$Internal$Model$asGrid = $mdgriffith$elm_ui$Internal$Model$AsGrid;
-var $mdgriffith$elm_ui$Internal$Model$getSpacing = F2(
-	function (attrs, _default) {
-		return A2(
-			$elm$core$Maybe$withDefault,
-			_default,
-			A3(
-				$elm$core$List$foldr,
-				F2(
-					function (attr, acc) {
-						if (acc.$ === 'Just') {
-							var x = acc.a;
-							return $elm$core$Maybe$Just(x);
-						} else {
-							if ((attr.$ === 'StyleClass') && (attr.b.$ === 'SpacingStyle')) {
-								var _v2 = attr.b;
-								var x = _v2.b;
-								var y = _v2.c;
-								return $elm$core$Maybe$Just(
-									_Utils_Tuple2(x, y));
-							} else {
-								return $elm$core$Maybe$Nothing;
-							}
-						}
-					}),
-				$elm$core$Maybe$Nothing,
-				attrs));
-	});
-var $mdgriffith$elm_ui$Internal$Flag$gridPosition = $mdgriffith$elm_ui$Internal$Flag$flag(35);
-var $mdgriffith$elm_ui$Internal$Flag$gridTemplate = $mdgriffith$elm_ui$Internal$Flag$flag(34);
-var $mdgriffith$elm_ui$Element$tableHelper = F2(
-	function (attrs, config) {
-		var onGrid = F3(
-			function (rowLevel, columnLevel, elem) {
-				return A4(
-					$mdgriffith$elm_ui$Internal$Model$element,
-					$mdgriffith$elm_ui$Internal$Model$asEl,
-					$mdgriffith$elm_ui$Internal$Model$div,
-					_List_fromArray(
-						[
-							A2(
-							$mdgriffith$elm_ui$Internal$Model$StyleClass,
-							$mdgriffith$elm_ui$Internal$Flag$gridPosition,
-							$mdgriffith$elm_ui$Internal$Model$GridPosition(
-								{col: columnLevel, height: 1, row: rowLevel, width: 1}))
-						]),
-					$mdgriffith$elm_ui$Internal$Model$Unkeyed(
-						_List_fromArray(
-							[elem])));
-			});
-		var columnWidth = function (col) {
-			if (col.$ === 'InternalIndexedColumn') {
-				var colConfig = col.a;
-				return colConfig.width;
-			} else {
-				var colConfig = col.a;
-				return colConfig.width;
-			}
-		};
-		var columnHeader = function (col) {
-			if (col.$ === 'InternalIndexedColumn') {
-				var colConfig = col.a;
-				return colConfig.header;
-			} else {
-				var colConfig = col.a;
-				return colConfig.header;
-			}
-		};
-		var maybeHeaders = function (headers) {
-			return A2(
-				$elm$core$List$all,
-				$elm$core$Basics$eq($mdgriffith$elm_ui$Internal$Model$Empty),
-				headers) ? $elm$core$Maybe$Nothing : $elm$core$Maybe$Just(
-				A2(
-					$elm$core$List$indexedMap,
-					F2(
-						function (col, header) {
-							return A3(onGrid, 1, col + 1, header);
-						}),
-					headers));
-		}(
-			A2($elm$core$List$map, columnHeader, config.columns));
-		var add = F3(
-			function (cell, columnConfig, cursor) {
-				if (columnConfig.$ === 'InternalIndexedColumn') {
-					var col = columnConfig.a;
-					return _Utils_update(
-						cursor,
-						{
-							column: cursor.column + 1,
-							elements: A2(
-								$elm$core$List$cons,
-								A3(
-									onGrid,
-									cursor.row,
-									cursor.column,
-									A2(
-										col.view,
-										_Utils_eq(maybeHeaders, $elm$core$Maybe$Nothing) ? (cursor.row - 1) : (cursor.row - 2),
-										cell)),
-								cursor.elements)
-						});
-				} else {
-					var col = columnConfig.a;
-					return {
-						column: cursor.column + 1,
-						elements: A2(
-							$elm$core$List$cons,
-							A3(
-								onGrid,
-								cursor.row,
-								cursor.column,
-								col.view(cell)),
-							cursor.elements),
-						row: cursor.row
-					};
-				}
-			});
-		var build = F3(
-			function (columns, rowData, cursor) {
-				var newCursor = A3(
-					$elm$core$List$foldl,
-					add(rowData),
-					cursor,
-					columns);
-				return {column: 1, elements: newCursor.elements, row: cursor.row + 1};
-			});
-		var children = A3(
-			$elm$core$List$foldl,
-			build(config.columns),
-			{
-				column: 1,
-				elements: _List_Nil,
-				row: _Utils_eq(maybeHeaders, $elm$core$Maybe$Nothing) ? 1 : 2
-			},
-			config.data);
-		var _v0 = A2(
-			$mdgriffith$elm_ui$Internal$Model$getSpacing,
-			attrs,
-			_Utils_Tuple2(0, 0));
-		var sX = _v0.a;
-		var sY = _v0.b;
-		var template = A2(
-			$mdgriffith$elm_ui$Internal$Model$StyleClass,
-			$mdgriffith$elm_ui$Internal$Flag$gridTemplate,
-			$mdgriffith$elm_ui$Internal$Model$GridTemplateStyle(
-				{
-					columns: A2($elm$core$List$map, columnWidth, config.columns),
-					rows: A2(
-						$elm$core$List$repeat,
-						$elm$core$List$length(config.data),
-						$mdgriffith$elm_ui$Internal$Model$Content),
-					spacing: _Utils_Tuple2(
-						$mdgriffith$elm_ui$Element$px(sX),
-						$mdgriffith$elm_ui$Element$px(sY))
-				}));
-		return A4(
-			$mdgriffith$elm_ui$Internal$Model$element,
-			$mdgriffith$elm_ui$Internal$Model$asGrid,
-			$mdgriffith$elm_ui$Internal$Model$div,
-			A2(
-				$elm$core$List$cons,
-				$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
-				A2($elm$core$List$cons, template, attrs)),
-			$mdgriffith$elm_ui$Internal$Model$Unkeyed(
-				function () {
-					if (maybeHeaders.$ === 'Nothing') {
-						return children.elements;
-					} else {
-						var renderedHeaders = maybeHeaders.a;
-						return _Utils_ap(
-							renderedHeaders,
-							$elm$core$List$reverse(children.elements));
-					}
-				}()));
-	});
-var $mdgriffith$elm_ui$Element$table = F2(
-	function (attrs, config) {
-		return A2(
-			$mdgriffith$elm_ui$Element$tableHelper,
-			attrs,
-			{
-				columns: A2($elm$core$List$map, $mdgriffith$elm_ui$Element$InternalColumn, config.columns),
-				data: config.data
-			});
-	});
 var $author$project$ItemShop$render_inventory_grid = F7(
 	function (model, header, character, shop_trends, hovered_item, context, controls_column) {
 		var small_header = F2(
@@ -30128,8 +29996,8 @@ var $author$project$ItemShop$render_inventory_grid = F7(
 							str,
 							function () {
 								if (_Utils_eq(model.uiOptions.inventorySortType, sortType)) {
-									var _v22 = model.uiOptions.inventorySortDir;
-									if (_v22.$ === 'Descending') {
+									var _v23 = model.uiOptions.inventorySortDir;
+									if (_v23.$ === 'Descending') {
 										return '▲';
 									} else {
 										return '▼';
@@ -30141,14 +30009,14 @@ var $author$project$ItemShop$render_inventory_grid = F7(
 			});
 		var rendered_dislikes = A2(
 			$elm$core$List$map,
-			function (_v20) {
-				var it_id = _v20.a;
-				var trd = _v20.b;
+			function (_v21) {
+				var it_id = _v21.a;
+				var trd = _v21.b;
 				return $mdgriffith$elm_ui$Element$text(
 					'Dislikes: ' + function () {
-						var _v21 = $author$project$ItemShop$id_to_item_type(it_id);
-						if (_v21.$ === 'Just') {
-							var item_type = _v21.a;
+						var _v22 = $author$project$ItemShop$id_to_item_type(it_id);
+						if (_v22.$ === 'Just') {
+							var item_type = _v22.a;
 							return $author$project$ItemShop$item_type_to_pretty_string(item_type);
 						} else {
 							return 'Unknown';
@@ -30166,14 +30034,14 @@ var $author$project$ItemShop$render_inventory_grid = F7(
 				$elm$core$Dict$toList(character.item_types_desired)));
 		var rendered_desires = A2(
 			$elm$core$List$map,
-			function (_v18) {
-				var it_id = _v18.a;
-				var trd = _v18.b;
+			function (_v19) {
+				var it_id = _v19.a;
+				var trd = _v19.b;
 				return $mdgriffith$elm_ui$Element$text(
 					'Desires: ' + function () {
-						var _v19 = $author$project$ItemShop$id_to_item_type(it_id);
-						if (_v19.$ === 'Just') {
-							var item_type = _v19.a;
+						var _v20 = $author$project$ItemShop$id_to_item_type(it_id);
+						if (_v20.$ === 'Just') {
+							var item_type = _v20.a;
 							return $author$project$ItemShop$item_type_to_pretty_string(item_type);
 						} else {
 							return 'Unknown';
@@ -30204,8 +30072,8 @@ var $author$project$ItemShop$render_inventory_grid = F7(
 				});
 		};
 		var sortFunc = function () {
-			var _v17 = model.uiOptions.inventorySortType;
-			switch (_v17.$) {
+			var _v18 = model.uiOptions.inventorySortType;
+			switch (_v18.$) {
 				case 'SortByName':
 					return buildCompare(
 						A2(
@@ -30274,9 +30142,9 @@ var $author$project$ItemShop$render_inventory_grid = F7(
 		var hide_zero_qty_inv_rows = _v1.hide_zero_qty_inv_rows;
 		var is_hovered_item = function (item) {
 			if (hovered_item.$ === 'Just') {
-				var _v16 = hovered_item.a;
-				var hovered_char_id = _v16.a;
-				var hovered_item_ = _v16.b;
+				var _v17 = hovered_item.a;
+				var hovered_char_id = _v17.a;
+				var hovered_item_ = _v17.b;
 				return _Utils_eq(char_id, hovered_char_id) && _Utils_eq(item, hovered_item_);
 			} else {
 				return false;
@@ -30467,20 +30335,27 @@ var $author$project$ItemShop$render_inventory_grid = F7(
 				},
 					{
 					header: A2(small_header, 'Item Type', $author$project$ItemShop$SortByItemType),
-					view: function (_v13) {
+					view: A2($author$project$ItemShop$hasProgressUnlock, $author$project$ItemShop$UnlockedShopTrends, model) ? function (_v13) {
 						var item = _v13.item;
 						return A2(
 							$mdgriffith$elm_ui$Element$el,
 							_List_fromArray(
 								[$mdgriffith$elm_ui$Element$centerY]),
-							A2($author$project$ItemShop$render_item_type, shop_trends, item.item_type));
+							A2($author$project$ItemShop$renderItemTypeWithTrend, shop_trends, item.item_type));
+					} : function (_v14) {
+						var item = _v14.item;
+						return A2(
+							$mdgriffith$elm_ui$Element$el,
+							_List_fromArray(
+								[$mdgriffith$elm_ui$Element$centerY]),
+							$author$project$ItemShop$renderItemTypeWithoutTrend(item.item_type));
 					},
 					width: $mdgriffith$elm_ui$Element$fillPortion(2)
 				},
 					{
 					header: A2(small_header, 'Item Desc.', $author$project$ItemShop$SortByItemDesc),
-					view: function (_v14) {
-						var item = _v14.item;
+					view: function (_v15) {
+						var item = _v15.item;
 						return A2(
 							$mdgriffith$elm_ui$Element$el,
 							_List_fromArray(
@@ -30663,7 +30538,7 @@ var $author$project$ItemShop$render_inventory_grid = F7(
 									[
 										A2($mdgriffith$elm_ui$Element$paddingXY, 20, 20)
 									]),
-								A2($author$project$ItemShop$small_charts_display, historical_shop_trends, item.item_type)) : $mdgriffith$elm_ui$Element$none
+								A2($author$project$ItemShop$viewSingleItemTypeCharts, historical_shop_trends, item.item_type)) : $mdgriffith$elm_ui$Element$none
 							])))) : $mdgriffith$elm_ui$Element$none;
 		};
 		var render_single_action_log = function (log) {
@@ -30855,6 +30730,8 @@ var $author$project$ItemShop$TriggerEvent = function (a) {
 	return {$: 'TriggerEvent', a: a};
 };
 var $author$project$ItemShop$UnlockItem = {$: 'UnlockItem'};
+var $author$project$ItemShop$UnlockedBattles = {$: 'UnlockedBattles'};
+var $author$project$ItemShop$UnlockedSpecialActions = {$: 'UnlockedSpecialActions'};
 var $author$project$ItemShop$GotTooltipMsg = function (a) {
 	return {$: 'GotTooltipMsg', a: a};
 };
@@ -31021,8 +30898,8 @@ var $author$project$ItemShop$build_special_action_button = F7(
 			tooltip_config,
 			hoveredTooltip);
 	});
-var $author$project$ItemShop$special_actions_display = F5(
-	function (colorTheme, player_upgrades, hoveredTooltip, player, ai_updates_paused) {
+var $author$project$ItemShop$special_actions_display = F6(
+	function (colorTheme, progressUnlocks, player_upgrades, hoveredTooltip, player, ai_updates_paused) {
 		var button_unlock_item = A7(
 			$author$project$ItemShop$build_special_action_button,
 			colorTheme,
@@ -31095,7 +30972,7 @@ var $author$project$ItemShop$special_actions_display = F5(
 			'Sets a random Item Type to high value.\n\nSpreads a rumour that a given Item Type was the talk of the next town over.',
 			$author$project$ItemShop$setPrice(45));
 		var button_community_fund = A7($author$project$ItemShop$build_special_action_button, colorTheme, hoveredTooltip, player, $author$project$ItemShop$CommunityFund, 'Contribute', 'You\'ve always been a public member of the community. Add to the Community fund.\n\nAllows for invited traders to be able to afford finding new items.', $author$project$ItemShop$communityFundCost);
-		var button_battle = $author$project$Interface$button(
+		var button_battle = A2($author$project$ItemShop$containsProgressUnlock, $author$project$ItemShop$UnlockedBattles, progressUnlocks) ? $author$project$Interface$button(
 			$author$project$Interface$TextParams(
 				{
 					buttonType: $author$project$Interface$Primary,
@@ -31103,7 +30980,7 @@ var $author$project$ItemShop$special_actions_display = F5(
 					customAttrs: _List_Nil,
 					onPressMsg: $author$project$ItemShop$ChangeTabType($author$project$ItemShop$BattleTabType),
 					textLabel: 'To Battle!'
-				}));
+				})) : $mdgriffith$elm_ui$Element$none;
 		return A2(
 			$mdgriffith$elm_ui$Element$column,
 			_List_fromArray(
@@ -31142,7 +31019,7 @@ var $author$project$ItemShop$special_actions_display = F5(
 								]),
 							_List_fromArray(
 								[button_toggle_ai_pause, button_battle])),
-							A2(
+							A2($author$project$ItemShop$containsProgressUnlock, $author$project$ItemShop$UnlockedSpecialActions, progressUnlocks) ? A2(
 							$mdgriffith$elm_ui$Element$wrappedRow,
 							_List_fromArray(
 								[
@@ -31152,7 +31029,7 @@ var $author$project$ItemShop$special_actions_display = F5(
 									$mdgriffith$elm_ui$Element$alignTop
 								]),
 							_List_fromArray(
-								[button_increase_income, button_search, button_unlock_item, button_community_fund, button_high_desire, button_low_desire]))
+								[button_increase_income, button_search, button_unlock_item, button_community_fund, button_high_desire, button_low_desire])) : $mdgriffith$elm_ui$Element$none
 						]))
 				]));
 	});
@@ -31482,6 +31359,390 @@ var $author$project$ItemShop$trends_display = F6(
 					rendered_popularity
 				]));
 	});
+var $terezka$elm_charts$Chart$SubElements = function (a) {
+	return {$: 'SubElements', a: a};
+};
+var $terezka$elm_charts$Chart$each = F2(
+	function (items, func) {
+		return $terezka$elm_charts$Chart$SubElements(
+			F2(
+				function (p, _v0) {
+					return A2(
+						$elm$core$List$concatMap,
+						func(p),
+						items);
+				}));
+	});
+var $terezka$elm_charts$Internal$Item$getDatum = function (_v0) {
+	var item = _v0.a;
+	return item.config.values.datum;
+};
+var $terezka$elm_charts$Chart$Item$getData = $terezka$elm_charts$Internal$Item$getDatum;
+var $terezka$elm_charts$Chart$html = function (func) {
+	return $terezka$elm_charts$Chart$HtmlElement(
+		F2(
+			function (p, _v0) {
+				return func(p);
+			}));
+};
+var $terezka$elm_charts$Internal$Svg$defaultTooltip = {arrow: true, background: 'white', border: '#D8D8D8', direction: $elm$core$Maybe$Nothing, focal: $elm$core$Maybe$Nothing, height: 0, offset: 8, width: 0};
+var $terezka$elm_charts$Internal$Svg$Bottom = {$: 'Bottom'};
+var $terezka$elm_charts$Internal$Svg$Left = {$: 'Left'};
+var $terezka$elm_charts$Internal$Svg$Right = {$: 'Right'};
+var $terezka$elm_charts$Internal$Svg$Top = {$: 'Top'};
+var $terezka$elm_charts$Internal$Coordinates$bottom = function (pos) {
+	return {x: pos.x1 + ((pos.x2 - pos.x1) / 2), y: pos.y1};
+};
+var $terezka$elm_charts$Internal$Coordinates$left = function (pos) {
+	return {x: pos.x1, y: pos.y1 + ((pos.y2 - pos.y1) / 2)};
+};
+var $terezka$elm_charts$Internal$Coordinates$right = function (pos) {
+	return {x: pos.x2, y: pos.y1 + ((pos.y2 - pos.y1) / 2)};
+};
+var $terezka$elm_charts$Internal$Svg$tooltipPointerStyle = F4(
+	function (direction, className, background, borderColor) {
+		var config = function () {
+			switch (direction.$) {
+				case 'Top':
+					return {a: 'right', b: 'top', c: 'left'};
+				case 'Bottom':
+					return {a: 'right', b: 'bottom', c: 'left'};
+				case 'Left':
+					return {a: 'bottom', b: 'left', c: 'top'};
+				case 'Right':
+					return {a: 'bottom', b: 'right', c: 'top'};
+				case 'LeftOrRight':
+					return {a: 'bottom', b: 'left', c: 'top'};
+				default:
+					return {a: 'right', b: 'top', c: 'left'};
+			}
+		}();
+		return '\n  .' + (className + (':before, .' + (className + (':after {\n    content: "";\n    position: absolute;\n    border-' + (config.c + (': 5px solid transparent;\n    border-' + (config.a + (': 5px solid transparent;\n    ' + (config.b + (': 100%;\n    ' + (config.c + (': 50%;\n    margin-' + (config.c + (': -5px;\n  }\n\n  .' + (className + (':after {\n    border-' + (config.b + (': 5px solid ' + (background + (';\n    margin-' + (config.b + (': -1px;\n    z-index: 1;\n    height: 0px;\n  }\n\n  .' + (className + (':before {\n    border-' + (config.b + (': 5px solid ' + (borderColor + ';\n    height: 0px;\n  }\n  ')))))))))))))))))))))))))));
+	});
+var $terezka$elm_charts$Internal$Coordinates$top = function (pos) {
+	return {x: pos.x1 + ((pos.x2 - pos.x1) / 2), y: pos.y2};
+};
+var $terezka$elm_charts$Internal$Svg$tooltip = F5(
+	function (plane, pos, config, htmlAttrs, content) {
+		var distanceTop = A2($terezka$elm_charts$Internal$Coordinates$toSVGY, plane, pos.y2);
+		var distanceRight = plane.x.length - A2($terezka$elm_charts$Internal$Coordinates$toSVGX, plane, pos.x1);
+		var distanceLeft = A2($terezka$elm_charts$Internal$Coordinates$toSVGX, plane, pos.x2);
+		var distanceBottom = plane.y.length - A2($terezka$elm_charts$Internal$Coordinates$toSVGY, plane, pos.y1);
+		var direction = function () {
+			var _v5 = config.direction;
+			if (_v5.$ === 'Just') {
+				switch (_v5.a.$) {
+					case 'LeftOrRight':
+						var _v6 = _v5.a;
+						return (config.width > 0) ? ((_Utils_cmp(distanceLeft, config.width + config.offset) > 0) ? $terezka$elm_charts$Internal$Svg$Left : $terezka$elm_charts$Internal$Svg$Right) : ((_Utils_cmp(distanceLeft, distanceRight) > 0) ? $terezka$elm_charts$Internal$Svg$Left : $terezka$elm_charts$Internal$Svg$Right);
+					case 'TopOrBottom':
+						var _v7 = _v5.a;
+						return (config.height > 0) ? ((_Utils_cmp(distanceTop, config.height + config.offset) > 0) ? $terezka$elm_charts$Internal$Svg$Top : $terezka$elm_charts$Internal$Svg$Bottom) : ((_Utils_cmp(distanceTop, distanceBottom) > 0) ? $terezka$elm_charts$Internal$Svg$Top : $terezka$elm_charts$Internal$Svg$Bottom);
+					default:
+						var dir = _v5.a;
+						return dir;
+				}
+			} else {
+				var isLargest = function (a) {
+					return $elm$core$List$all(
+						function (b) {
+							return _Utils_cmp(a, b) > -1;
+						});
+				};
+				return A2(
+					isLargest,
+					distanceTop,
+					_List_fromArray(
+						[distanceBottom, distanceLeft, distanceRight])) ? $terezka$elm_charts$Internal$Svg$Top : (A2(
+					isLargest,
+					distanceBottom,
+					_List_fromArray(
+						[distanceTop, distanceLeft, distanceRight])) ? $terezka$elm_charts$Internal$Svg$Bottom : (A2(
+					isLargest,
+					distanceLeft,
+					_List_fromArray(
+						[distanceTop, distanceBottom, distanceRight])) ? $terezka$elm_charts$Internal$Svg$Left : $terezka$elm_charts$Internal$Svg$Right));
+			}
+		}();
+		var focalPoint = function () {
+			var _v2 = config.focal;
+			if (_v2.$ === 'Just') {
+				var focal = _v2.a;
+				switch (direction.$) {
+					case 'Top':
+						return $terezka$elm_charts$Internal$Coordinates$top(
+							focal(pos));
+					case 'Bottom':
+						return $terezka$elm_charts$Internal$Coordinates$bottom(
+							focal(pos));
+					case 'Left':
+						return $terezka$elm_charts$Internal$Coordinates$left(
+							focal(pos));
+					case 'Right':
+						return $terezka$elm_charts$Internal$Coordinates$right(
+							focal(pos));
+					case 'LeftOrRight':
+						return $terezka$elm_charts$Internal$Coordinates$left(
+							focal(pos));
+					default:
+						return $terezka$elm_charts$Internal$Coordinates$right(
+							focal(pos));
+				}
+			} else {
+				switch (direction.$) {
+					case 'Top':
+						return $terezka$elm_charts$Internal$Coordinates$top(pos);
+					case 'Bottom':
+						return $terezka$elm_charts$Internal$Coordinates$bottom(pos);
+					case 'Left':
+						return $terezka$elm_charts$Internal$Coordinates$left(pos);
+					case 'Right':
+						return $terezka$elm_charts$Internal$Coordinates$right(pos);
+					case 'LeftOrRight':
+						return $terezka$elm_charts$Internal$Coordinates$left(pos);
+					default:
+						return $terezka$elm_charts$Internal$Coordinates$right(pos);
+				}
+			}
+		}();
+		var arrowWidth = config.arrow ? 4 : 0;
+		var _v0 = function () {
+			switch (direction.$) {
+				case 'Top':
+					return {className: 'elm-charts__tooltip-top', transformation: 'translate(-50%, -100%)', xOff: 0, yOff: config.offset + arrowWidth};
+				case 'Bottom':
+					return {className: 'elm-charts__tooltip-bottom', transformation: 'translate(-50%, 0%)', xOff: 0, yOff: (-config.offset) - arrowWidth};
+				case 'Left':
+					return {className: 'elm-charts__tooltip-left', transformation: 'translate(-100%, -50%)', xOff: (-config.offset) - arrowWidth, yOff: 0};
+				case 'Right':
+					return {className: 'elm-charts__tooltip-right', transformation: 'translate(0, -50%)', xOff: config.offset + arrowWidth, yOff: 0};
+				case 'LeftOrRight':
+					return {className: 'elm-charts__tooltip-leftOrRight', transformation: 'translate(0, -50%)', xOff: (-config.offset) - arrowWidth, yOff: 0};
+				default:
+					return {className: 'elm-charts__tooltip-topOrBottom', transformation: 'translate(-50%, -100%)', xOff: 0, yOff: config.offset + arrowWidth};
+			}
+		}();
+		var xOff = _v0.xOff;
+		var yOff = _v0.yOff;
+		var transformation = _v0.transformation;
+		var className = _v0.className;
+		var children = config.arrow ? A2(
+			$elm$core$List$cons,
+			A3(
+				$elm$html$Html$node,
+				'style',
+				_List_Nil,
+				_List_fromArray(
+					[
+						$elm$html$Html$text(
+						A4($terezka$elm_charts$Internal$Svg$tooltipPointerStyle, direction, className, config.background, config.border))
+					])),
+			content) : content;
+		var attributes = _Utils_ap(
+			_List_fromArray(
+				[
+					$elm$html$Html$Attributes$class(className),
+					A2($elm$html$Html$Attributes$style, 'transform', transformation),
+					A2($elm$html$Html$Attributes$style, 'padding', '5px 8px'),
+					A2($elm$html$Html$Attributes$style, 'background', config.background),
+					A2($elm$html$Html$Attributes$style, 'border', '1px solid ' + config.border),
+					A2($elm$html$Html$Attributes$style, 'border-radius', '3px'),
+					A2($elm$html$Html$Attributes$style, 'pointer-events', 'none')
+				]),
+			htmlAttrs);
+		return A2(
+			$elm$html$Html$map,
+			$elm$core$Basics$never,
+			A7($terezka$elm_charts$Internal$Svg$positionHtml, plane, focalPoint.x, focalPoint.y, xOff, yOff, attributes, children));
+	});
+var $terezka$elm_charts$Chart$Svg$tooltip = F3(
+	function (plane, pos, edits) {
+		return A3(
+			$terezka$elm_charts$Internal$Svg$tooltip,
+			plane,
+			pos,
+			A2($terezka$elm_charts$Internal$Helpers$apply, edits, $terezka$elm_charts$Internal$Svg$defaultTooltip));
+	});
+var $terezka$elm_charts$Chart$tooltip = F4(
+	function (i, edits, attrs_, content) {
+		return $terezka$elm_charts$Chart$html(
+			function (p) {
+				var pos = $terezka$elm_charts$Internal$Item$getLimits(i);
+				var content_ = _Utils_eq(content, _List_Nil) ? $terezka$elm_charts$Internal$Item$toHtml(i) : content;
+				return A3($terezka$elm_charts$Internal$Svg$isWithinPlane, p, pos.x1, pos.y2) ? A5(
+					$terezka$elm_charts$Chart$Svg$tooltip,
+					p,
+					A2($terezka$elm_charts$Internal$Item$getPosition, p, i),
+					edits,
+					attrs_,
+					content_) : $elm$html$Html$text('');
+			});
+	});
+var $author$project$ItemShop$viewShopTrendsChart = F2(
+	function (historical_shop_trends, hovered_trend_chart) {
+		var render_tooltip = F2(
+			function (plane, item) {
+				var item_type = $author$project$ItemShop$Weapon;
+				var _v6 = $terezka$elm_charts$Chart$Item$getData(item);
+				var id = _v6.a;
+				var it_val = _v6.b;
+				var _v7 = it_val;
+				var item_type_ = _v7.a;
+				var val = _v7.b;
+				return _List_fromArray(
+					[
+						A4(
+						$terezka$elm_charts$Chart$tooltip,
+						item,
+						_List_Nil,
+						_List_Nil,
+						_List_fromArray(
+							[
+								$elm$html$Html$text(
+								$author$project$ItemShop$item_type_to_pretty_string(item_type_) + (': ' + $author$project$ItemShop$float_to_percent(val)))
+							]))
+					]);
+			});
+		var raw_dataset_len = $elm$core$List$length(historical_shop_trends);
+		var get_y_from_single_datum = function (_v5) {
+			var idx = _v5.a;
+			var it_val = _v5.b;
+			return it_val.b;
+		};
+		var get_x_from_single_datum = A2($elm$core$Basics$composeR, $elm$core$Tuple$first, $elm$core$Basics$toFloat);
+		var filter_dataset_by_item_type = F2(
+			function (item_type, _v4) {
+				var item_type_sentiment = _v4.item_type_sentiment;
+				return _Utils_Tuple2(
+					item_type,
+					A2($author$project$ItemShop$get_item_type_trend, item_type_sentiment, item_type));
+			});
+		var chart_width = 700;
+		var chart_points = 200;
+		var raw_dataset = A2(
+			$elm$core$List$indexedMap,
+			$elm$core$Tuple$pair,
+			(_Utils_cmp(raw_dataset_len, chart_points) > 0) ? A2($elm$core$List$drop, raw_dataset_len - chart_points, historical_shop_trends) : historical_shop_trends);
+		var chart_height = 150;
+		var chart_attributes = _List_fromArray(
+			[
+				$terezka$elm_charts$Chart$Attributes$height(chart_height),
+				$terezka$elm_charts$Chart$Attributes$width(chart_width),
+				$terezka$elm_charts$Chart$Attributes$padding(
+				{bottom: 5, left: 10, right: 10, top: 10}),
+				A2(
+				$terezka$elm_charts$Chart$Events$onMouseMove,
+				A2($elm$core$Basics$composeL, $author$project$ItemShop$GotUiOptionsMsg, $author$project$ItemShop$OnTrendChartHover),
+				$terezka$elm_charts$Chart$Events$getNearest($terezka$elm_charts$Chart$Item$dots)),
+				$terezka$elm_charts$Chart$Events$onMouseLeave(
+				A2($elm$core$Basics$composeL, $author$project$ItemShop$GotUiOptionsMsg, $author$project$ItemShop$OnTrendChartHover)(_List_Nil)),
+				$terezka$elm_charts$Chart$Attributes$domain(
+				_List_fromArray(
+					[
+						A2($terezka$elm_charts$Chart$Attributes$lowest, 0.5, $terezka$elm_charts$Chart$Attributes$orLower),
+						A2($terezka$elm_charts$Chart$Attributes$highest, 1.5, $terezka$elm_charts$Chart$Attributes$orHigher),
+						$terezka$elm_charts$Chart$Attributes$centerAt(1.0)
+					]))
+			]);
+		var build_filtered_dataset = function (item_type) {
+			return A2(
+				$elm$core$List$map,
+				function (_v3) {
+					var idx = _v3.a;
+					var s_t = _v3.b;
+					return _Utils_Tuple2(
+						idx,
+						A2(filter_dataset_by_item_type, item_type, s_t));
+				},
+				raw_dataset);
+		};
+		var build_dataset = function (item_type) {
+			return A2(
+				$elm$core$List$all,
+				function (_v0) {
+					var shop_trends = _v0.b;
+					return A2($author$project$ItemShop$get_item_type_trend, shop_trends.item_type_sentiment, item_type) === 1.0;
+				},
+				raw_dataset) ? $terezka$elm_charts$Chart$none : A3(
+				$terezka$elm_charts$Chart$series,
+				function (_v1) {
+					var idx = _v1.a;
+					return idx;
+				},
+				_List_fromArray(
+					[
+						A2(
+						$terezka$elm_charts$Chart$named,
+						$author$project$ItemShop$item_type_to_pretty_string(item_type),
+						A3(
+							$terezka$elm_charts$Chart$interpolated,
+							function (_v2) {
+								var idx = _v2.a;
+								var it_val = _v2.b;
+								return it_val.b;
+							},
+							_List_fromArray(
+								[$terezka$elm_charts$Chart$Attributes$monotone]),
+							_List_Nil))
+					]),
+				build_filtered_dataset(item_type));
+		};
+		var datasets = _List_fromArray(
+			[
+				build_dataset($author$project$ItemShop$Weapon),
+				build_dataset($author$project$ItemShop$Armor),
+				build_dataset($author$project$ItemShop$Spellbook),
+				build_dataset($author$project$ItemShop$Furniture),
+				build_dataset($author$project$ItemShop$Food)
+			]);
+		var chart_elements = _Utils_ap(
+			_List_fromArray(
+				[
+					$terezka$elm_charts$Chart$xLabels(_List_Nil),
+					$terezka$elm_charts$Chart$yLabels(
+					_List_fromArray(
+						[
+							$terezka$elm_charts$Chart$Attributes$format($author$project$ItemShop$float_to_percent),
+							$terezka$elm_charts$Chart$Attributes$withGrid
+						]))
+				]),
+			_Utils_ap(
+				datasets,
+				_List_fromArray(
+					[
+						A4(
+						$terezka$elm_charts$Chart$legendsAt,
+						function ($) {
+							return $.min;
+						},
+						function ($) {
+							return $.max;
+						},
+						_List_fromArray(
+							[
+								$terezka$elm_charts$Chart$Attributes$column,
+								$terezka$elm_charts$Chart$Attributes$moveRight(15),
+								$terezka$elm_charts$Chart$Attributes$spacing(5)
+							]),
+						_List_fromArray(
+							[
+								$terezka$elm_charts$Chart$Attributes$width(20)
+							])),
+						A2($terezka$elm_charts$Chart$each, hovered_trend_chart, render_tooltip)
+					])));
+		return A2(
+			$mdgriffith$elm_ui$Element$el,
+			_List_fromArray(
+				[
+					$mdgriffith$elm_ui$Element$width(
+					$mdgriffith$elm_ui$Element$px(chart_width)),
+					$mdgriffith$elm_ui$Element$height(
+					$mdgriffith$elm_ui$Element$px(chart_height + 20)),
+					A2($mdgriffith$elm_ui$Element$paddingXY, 20, 0)
+				]),
+			$mdgriffith$elm_ui$Element$html(
+				A2($terezka$elm_charts$Chart$chart, chart_attributes, chart_elements)));
+	});
 var $author$project$ItemShop$view_shop_tab_type = function (model) {
 	var welcome_header = A2(
 		$mdgriffith$elm_ui$Element$el,
@@ -31584,7 +31845,7 @@ var $author$project$ItemShop$view_shop_tab_type = function (model) {
 							]),
 						_List_fromArray(
 							[
-								A2(
+								A2($author$project$ItemShop$hasProgressUnlock, $author$project$ItemShop$UnlockedCodex, model) ? A2(
 								$mdgriffith$elm_ui$Element$link,
 								_List_Nil,
 								{
@@ -31598,13 +31859,13 @@ var $author$project$ItemShop$view_shop_tab_type = function (model) {
 												textLabel: 'View Codex'
 											})),
 									url: '#items'
-								}),
-								A3(
+								}) : $mdgriffith$elm_ui$Element$none,
+								A2($author$project$ItemShop$hasProgressUnlock, $author$project$ItemShop$UnlockedCharts, model) ? A3(
 								$author$project$Interface$outline_button,
 								_List_Nil,
 								$author$project$ItemShop$GotUiOptionsMsg($author$project$ItemShop$ToggleShowMainChart),
-								model.uiOptions.show_main_chart ? 'Hide Charts' : 'Charts'),
-								A3(
+								model.uiOptions.show_main_chart ? 'Hide Charts' : 'Charts') : $mdgriffith$elm_ui$Element$none,
+								A2($author$project$ItemShop$hasProgressUnlock, $author$project$ItemShop$UnlockedDarkMode, model) ? A3(
 								$author$project$Interface$outline_button,
 								_List_fromArray(
 									[$mdgriffith$elm_ui$Element$alignRight]),
@@ -31616,16 +31877,16 @@ var $author$project$ItemShop$view_shop_tab_type = function (model) {
 									} else {
 										return 'Brighten';
 									}
-								}())
+								}()) : $mdgriffith$elm_ui$Element$none
 							])),
-						model.uiOptions.show_main_chart ? A2(
+						(model.uiOptions.show_main_chart && A2($author$project$ItemShop$hasProgressUnlock, $author$project$ItemShop$UnlockedCharts, model)) ? A2(
 						$mdgriffith$elm_ui$Element$el,
 						_List_fromArray(
 							[
 								A2($mdgriffith$elm_ui$Element$paddingXY, 0, 10),
 								$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill)
 							]),
-						A2($author$project$ItemShop$charts_display, model.historical_shop_trends, model.uiOptions.hovered_trend_chart)) : $mdgriffith$elm_ui$Element$none,
+						A2($author$project$ItemShop$viewShopTrendsChart, model.historical_shop_trends, model.uiOptions.hovered_trend_chart)) : $mdgriffith$elm_ui$Element$none,
 						A2(
 						$mdgriffith$elm_ui$Element$row,
 						_List_fromArray(
@@ -31658,17 +31919,26 @@ var $author$project$ItemShop$view_shop_tab_type = function (model) {
 								_List_fromArray(
 									[
 										$mdgriffith$elm_ui$Element$width(
-										$mdgriffith$elm_ui$Element$fillPortion(7)),
+										$mdgriffith$elm_ui$Element$fillPortion(6)),
 										$mdgriffith$elm_ui$Element$alignTop
 									]),
-								A3($mdgriffith$elm_ui$Element$Lazy$lazy2, $author$project$ItemShop$player_upgrades_display, model.colorTheme, model.player_upgrades))
+								A4($mdgriffith$elm_ui$Element$Lazy$lazy3, $author$project$ItemShop$player_upgrades_display, model.colorTheme, model.player_upgrades, model.progressUnlocks)),
+								A2(
+								$mdgriffith$elm_ui$Element$el,
+								_List_fromArray(
+									[
+										$mdgriffith$elm_ui$Element$width(
+										$mdgriffith$elm_ui$Element$fillPortion(3)),
+										$mdgriffith$elm_ui$Element$alignTop
+									]),
+								A2($author$project$ItemShop$containsProgressUnlock, $author$project$ItemShop$UnlockedQuests, model.progressUnlocks) ? A3($mdgriffith$elm_ui$Element$Lazy$lazy2, $author$project$ItemShop$quests_display, model.colorTheme, model.quests) : $mdgriffith$elm_ui$Element$none)
 							])),
 						function () {
 						var _v1 = $author$project$ItemShop$getPlayer(model.characters);
 						var player = _v1.a;
-						return A5($author$project$ItemShop$special_actions_display, model.colorTheme, model.player_upgrades, model.uiOptions.hoveredTooltip, player, model.ai_updates_paused);
+						return A6($author$project$ItemShop$special_actions_display, model.colorTheme, model.progressUnlocks, model.player_upgrades, model.uiOptions.hoveredTooltip, player, model.ai_updates_paused);
 					}(),
-						A6($author$project$ItemShop$trends_display, model.colorTheme, model.uiOptions.shiftIsPressed, model.item_db, model.shop_trends, model.characters, model.uiOptions.shop_trends_hovered),
+						A2($author$project$ItemShop$hasProgressUnlock, $author$project$ItemShop$UnlockedShopTrends, model) ? A6($author$project$ItemShop$trends_display, model.colorTheme, model.uiOptions.shiftIsPressed, model.item_db, model.shop_trends, model.characters, model.uiOptions.shop_trends_hovered) : $mdgriffith$elm_ui$Element$none,
 						A2(
 						$mdgriffith$elm_ui$Element$el,
 						_List_fromArray(
