@@ -80,271 +80,6 @@ function A9(fun, a, b, c, d, e, f, g, h, i) {
 console.warn('Compiled in DEV mode. Follow the advice at https://elm-lang.org/0.19.1/optimize for better performance and smaller assets.');
 
 
-// EQUALITY
-
-function _Utils_eq(x, y)
-{
-	for (
-		var pair, stack = [], isEqual = _Utils_eqHelp(x, y, 0, stack);
-		isEqual && (pair = stack.pop());
-		isEqual = _Utils_eqHelp(pair.a, pair.b, 0, stack)
-		)
-	{}
-
-	return isEqual;
-}
-
-function _Utils_eqHelp(x, y, depth, stack)
-{
-	if (x === y)
-	{
-		return true;
-	}
-
-	if (typeof x !== 'object' || x === null || y === null)
-	{
-		typeof x === 'function' && _Debug_crash(5);
-		return false;
-	}
-
-	if (depth > 100)
-	{
-		stack.push(_Utils_Tuple2(x,y));
-		return true;
-	}
-
-	/**/
-	if (x.$ === 'Set_elm_builtin')
-	{
-		x = $elm$core$Set$toList(x);
-		y = $elm$core$Set$toList(y);
-	}
-	if (x.$ === 'RBNode_elm_builtin' || x.$ === 'RBEmpty_elm_builtin')
-	{
-		x = $elm$core$Dict$toList(x);
-		y = $elm$core$Dict$toList(y);
-	}
-	//*/
-
-	/**_UNUSED/
-	if (x.$ < 0)
-	{
-		x = $elm$core$Dict$toList(x);
-		y = $elm$core$Dict$toList(y);
-	}
-	//*/
-
-	for (var key in x)
-	{
-		if (!_Utils_eqHelp(x[key], y[key], depth + 1, stack))
-		{
-			return false;
-		}
-	}
-	return true;
-}
-
-var _Utils_equal = F2(_Utils_eq);
-var _Utils_notEqual = F2(function(a, b) { return !_Utils_eq(a,b); });
-
-
-
-// COMPARISONS
-
-// Code in Generate/JavaScript.hs, Basics.js, and List.js depends on
-// the particular integer values assigned to LT, EQ, and GT.
-
-function _Utils_cmp(x, y, ord)
-{
-	if (typeof x !== 'object')
-	{
-		return x === y ? /*EQ*/ 0 : x < y ? /*LT*/ -1 : /*GT*/ 1;
-	}
-
-	/**/
-	if (x instanceof String)
-	{
-		var a = x.valueOf();
-		var b = y.valueOf();
-		return a === b ? 0 : a < b ? -1 : 1;
-	}
-	//*/
-
-	/**_UNUSED/
-	if (typeof x.$ === 'undefined')
-	//*/
-	/**/
-	if (x.$[0] === '#')
-	//*/
-	{
-		return (ord = _Utils_cmp(x.a, y.a))
-			? ord
-			: (ord = _Utils_cmp(x.b, y.b))
-				? ord
-				: _Utils_cmp(x.c, y.c);
-	}
-
-	// traverse conses until end of a list or a mismatch
-	for (; x.b && y.b && !(ord = _Utils_cmp(x.a, y.a)); x = x.b, y = y.b) {} // WHILE_CONSES
-	return ord || (x.b ? /*GT*/ 1 : y.b ? /*LT*/ -1 : /*EQ*/ 0);
-}
-
-var _Utils_lt = F2(function(a, b) { return _Utils_cmp(a, b) < 0; });
-var _Utils_le = F2(function(a, b) { return _Utils_cmp(a, b) < 1; });
-var _Utils_gt = F2(function(a, b) { return _Utils_cmp(a, b) > 0; });
-var _Utils_ge = F2(function(a, b) { return _Utils_cmp(a, b) >= 0; });
-
-var _Utils_compare = F2(function(x, y)
-{
-	var n = _Utils_cmp(x, y);
-	return n < 0 ? $elm$core$Basics$LT : n ? $elm$core$Basics$GT : $elm$core$Basics$EQ;
-});
-
-
-// COMMON VALUES
-
-var _Utils_Tuple0_UNUSED = 0;
-var _Utils_Tuple0 = { $: '#0' };
-
-function _Utils_Tuple2_UNUSED(a, b) { return { a: a, b: b }; }
-function _Utils_Tuple2(a, b) { return { $: '#2', a: a, b: b }; }
-
-function _Utils_Tuple3_UNUSED(a, b, c) { return { a: a, b: b, c: c }; }
-function _Utils_Tuple3(a, b, c) { return { $: '#3', a: a, b: b, c: c }; }
-
-function _Utils_chr_UNUSED(c) { return c; }
-function _Utils_chr(c) { return new String(c); }
-
-
-// RECORDS
-
-function _Utils_update(oldRecord, updatedFields)
-{
-	var newRecord = {};
-
-	for (var key in oldRecord)
-	{
-		newRecord[key] = oldRecord[key];
-	}
-
-	for (var key in updatedFields)
-	{
-		newRecord[key] = updatedFields[key];
-	}
-
-	return newRecord;
-}
-
-
-// APPEND
-
-var _Utils_append = F2(_Utils_ap);
-
-function _Utils_ap(xs, ys)
-{
-	// append Strings
-	if (typeof xs === 'string')
-	{
-		return xs + ys;
-	}
-
-	// append Lists
-	if (!xs.b)
-	{
-		return ys;
-	}
-	var root = _List_Cons(xs.a, ys);
-	xs = xs.b
-	for (var curr = root; xs.b; xs = xs.b) // WHILE_CONS
-	{
-		curr = curr.b = _List_Cons(xs.a, ys);
-	}
-	return root;
-}
-
-
-
-var _List_Nil_UNUSED = { $: 0 };
-var _List_Nil = { $: '[]' };
-
-function _List_Cons_UNUSED(hd, tl) { return { $: 1, a: hd, b: tl }; }
-function _List_Cons(hd, tl) { return { $: '::', a: hd, b: tl }; }
-
-
-var _List_cons = F2(_List_Cons);
-
-function _List_fromArray(arr)
-{
-	var out = _List_Nil;
-	for (var i = arr.length; i--; )
-	{
-		out = _List_Cons(arr[i], out);
-	}
-	return out;
-}
-
-function _List_toArray(xs)
-{
-	for (var out = []; xs.b; xs = xs.b) // WHILE_CONS
-	{
-		out.push(xs.a);
-	}
-	return out;
-}
-
-var _List_map2 = F3(function(f, xs, ys)
-{
-	for (var arr = []; xs.b && ys.b; xs = xs.b, ys = ys.b) // WHILE_CONSES
-	{
-		arr.push(A2(f, xs.a, ys.a));
-	}
-	return _List_fromArray(arr);
-});
-
-var _List_map3 = F4(function(f, xs, ys, zs)
-{
-	for (var arr = []; xs.b && ys.b && zs.b; xs = xs.b, ys = ys.b, zs = zs.b) // WHILE_CONSES
-	{
-		arr.push(A3(f, xs.a, ys.a, zs.a));
-	}
-	return _List_fromArray(arr);
-});
-
-var _List_map4 = F5(function(f, ws, xs, ys, zs)
-{
-	for (var arr = []; ws.b && xs.b && ys.b && zs.b; ws = ws.b, xs = xs.b, ys = ys.b, zs = zs.b) // WHILE_CONSES
-	{
-		arr.push(A4(f, ws.a, xs.a, ys.a, zs.a));
-	}
-	return _List_fromArray(arr);
-});
-
-var _List_map5 = F6(function(f, vs, ws, xs, ys, zs)
-{
-	for (var arr = []; vs.b && ws.b && xs.b && ys.b && zs.b; vs = vs.b, ws = ws.b, xs = xs.b, ys = ys.b, zs = zs.b) // WHILE_CONSES
-	{
-		arr.push(A5(f, vs.a, ws.a, xs.a, ys.a, zs.a));
-	}
-	return _List_fromArray(arr);
-});
-
-var _List_sortBy = F2(function(f, xs)
-{
-	return _List_fromArray(_List_toArray(xs).sort(function(a, b) {
-		return _Utils_cmp(f(a), f(b));
-	}));
-});
-
-var _List_sortWith = F2(function(f, xs)
-{
-	return _List_fromArray(_List_toArray(xs).sort(function(a, b) {
-		var ord = A2(f, a, b);
-		return ord === $elm$core$Basics$EQ ? 0 : ord === $elm$core$Basics$LT ? -1 : 1;
-	}));
-});
-
-
-
 var _JsArray_empty = [];
 
 function _JsArray_singleton(value)
@@ -790,6 +525,271 @@ function _Debug_regionToString(region)
 	}
 	return 'on lines ' + region.start.line + ' through ' + region.end.line;
 }
+
+
+
+// EQUALITY
+
+function _Utils_eq(x, y)
+{
+	for (
+		var pair, stack = [], isEqual = _Utils_eqHelp(x, y, 0, stack);
+		isEqual && (pair = stack.pop());
+		isEqual = _Utils_eqHelp(pair.a, pair.b, 0, stack)
+		)
+	{}
+
+	return isEqual;
+}
+
+function _Utils_eqHelp(x, y, depth, stack)
+{
+	if (x === y)
+	{
+		return true;
+	}
+
+	if (typeof x !== 'object' || x === null || y === null)
+	{
+		typeof x === 'function' && _Debug_crash(5);
+		return false;
+	}
+
+	if (depth > 100)
+	{
+		stack.push(_Utils_Tuple2(x,y));
+		return true;
+	}
+
+	/**/
+	if (x.$ === 'Set_elm_builtin')
+	{
+		x = $elm$core$Set$toList(x);
+		y = $elm$core$Set$toList(y);
+	}
+	if (x.$ === 'RBNode_elm_builtin' || x.$ === 'RBEmpty_elm_builtin')
+	{
+		x = $elm$core$Dict$toList(x);
+		y = $elm$core$Dict$toList(y);
+	}
+	//*/
+
+	/**_UNUSED/
+	if (x.$ < 0)
+	{
+		x = $elm$core$Dict$toList(x);
+		y = $elm$core$Dict$toList(y);
+	}
+	//*/
+
+	for (var key in x)
+	{
+		if (!_Utils_eqHelp(x[key], y[key], depth + 1, stack))
+		{
+			return false;
+		}
+	}
+	return true;
+}
+
+var _Utils_equal = F2(_Utils_eq);
+var _Utils_notEqual = F2(function(a, b) { return !_Utils_eq(a,b); });
+
+
+
+// COMPARISONS
+
+// Code in Generate/JavaScript.hs, Basics.js, and List.js depends on
+// the particular integer values assigned to LT, EQ, and GT.
+
+function _Utils_cmp(x, y, ord)
+{
+	if (typeof x !== 'object')
+	{
+		return x === y ? /*EQ*/ 0 : x < y ? /*LT*/ -1 : /*GT*/ 1;
+	}
+
+	/**/
+	if (x instanceof String)
+	{
+		var a = x.valueOf();
+		var b = y.valueOf();
+		return a === b ? 0 : a < b ? -1 : 1;
+	}
+	//*/
+
+	/**_UNUSED/
+	if (typeof x.$ === 'undefined')
+	//*/
+	/**/
+	if (x.$[0] === '#')
+	//*/
+	{
+		return (ord = _Utils_cmp(x.a, y.a))
+			? ord
+			: (ord = _Utils_cmp(x.b, y.b))
+				? ord
+				: _Utils_cmp(x.c, y.c);
+	}
+
+	// traverse conses until end of a list or a mismatch
+	for (; x.b && y.b && !(ord = _Utils_cmp(x.a, y.a)); x = x.b, y = y.b) {} // WHILE_CONSES
+	return ord || (x.b ? /*GT*/ 1 : y.b ? /*LT*/ -1 : /*EQ*/ 0);
+}
+
+var _Utils_lt = F2(function(a, b) { return _Utils_cmp(a, b) < 0; });
+var _Utils_le = F2(function(a, b) { return _Utils_cmp(a, b) < 1; });
+var _Utils_gt = F2(function(a, b) { return _Utils_cmp(a, b) > 0; });
+var _Utils_ge = F2(function(a, b) { return _Utils_cmp(a, b) >= 0; });
+
+var _Utils_compare = F2(function(x, y)
+{
+	var n = _Utils_cmp(x, y);
+	return n < 0 ? $elm$core$Basics$LT : n ? $elm$core$Basics$GT : $elm$core$Basics$EQ;
+});
+
+
+// COMMON VALUES
+
+var _Utils_Tuple0_UNUSED = 0;
+var _Utils_Tuple0 = { $: '#0' };
+
+function _Utils_Tuple2_UNUSED(a, b) { return { a: a, b: b }; }
+function _Utils_Tuple2(a, b) { return { $: '#2', a: a, b: b }; }
+
+function _Utils_Tuple3_UNUSED(a, b, c) { return { a: a, b: b, c: c }; }
+function _Utils_Tuple3(a, b, c) { return { $: '#3', a: a, b: b, c: c }; }
+
+function _Utils_chr_UNUSED(c) { return c; }
+function _Utils_chr(c) { return new String(c); }
+
+
+// RECORDS
+
+function _Utils_update(oldRecord, updatedFields)
+{
+	var newRecord = {};
+
+	for (var key in oldRecord)
+	{
+		newRecord[key] = oldRecord[key];
+	}
+
+	for (var key in updatedFields)
+	{
+		newRecord[key] = updatedFields[key];
+	}
+
+	return newRecord;
+}
+
+
+// APPEND
+
+var _Utils_append = F2(_Utils_ap);
+
+function _Utils_ap(xs, ys)
+{
+	// append Strings
+	if (typeof xs === 'string')
+	{
+		return xs + ys;
+	}
+
+	// append Lists
+	if (!xs.b)
+	{
+		return ys;
+	}
+	var root = _List_Cons(xs.a, ys);
+	xs = xs.b
+	for (var curr = root; xs.b; xs = xs.b) // WHILE_CONS
+	{
+		curr = curr.b = _List_Cons(xs.a, ys);
+	}
+	return root;
+}
+
+
+
+var _List_Nil_UNUSED = { $: 0 };
+var _List_Nil = { $: '[]' };
+
+function _List_Cons_UNUSED(hd, tl) { return { $: 1, a: hd, b: tl }; }
+function _List_Cons(hd, tl) { return { $: '::', a: hd, b: tl }; }
+
+
+var _List_cons = F2(_List_Cons);
+
+function _List_fromArray(arr)
+{
+	var out = _List_Nil;
+	for (var i = arr.length; i--; )
+	{
+		out = _List_Cons(arr[i], out);
+	}
+	return out;
+}
+
+function _List_toArray(xs)
+{
+	for (var out = []; xs.b; xs = xs.b) // WHILE_CONS
+	{
+		out.push(xs.a);
+	}
+	return out;
+}
+
+var _List_map2 = F3(function(f, xs, ys)
+{
+	for (var arr = []; xs.b && ys.b; xs = xs.b, ys = ys.b) // WHILE_CONSES
+	{
+		arr.push(A2(f, xs.a, ys.a));
+	}
+	return _List_fromArray(arr);
+});
+
+var _List_map3 = F4(function(f, xs, ys, zs)
+{
+	for (var arr = []; xs.b && ys.b && zs.b; xs = xs.b, ys = ys.b, zs = zs.b) // WHILE_CONSES
+	{
+		arr.push(A3(f, xs.a, ys.a, zs.a));
+	}
+	return _List_fromArray(arr);
+});
+
+var _List_map4 = F5(function(f, ws, xs, ys, zs)
+{
+	for (var arr = []; ws.b && xs.b && ys.b && zs.b; ws = ws.b, xs = xs.b, ys = ys.b, zs = zs.b) // WHILE_CONSES
+	{
+		arr.push(A4(f, ws.a, xs.a, ys.a, zs.a));
+	}
+	return _List_fromArray(arr);
+});
+
+var _List_map5 = F6(function(f, vs, ws, xs, ys, zs)
+{
+	for (var arr = []; vs.b && ws.b && xs.b && ys.b && zs.b; vs = vs.b, ws = ws.b, xs = xs.b, ys = ys.b, zs = zs.b) // WHILE_CONSES
+	{
+		arr.push(A5(f, vs.a, ws.a, xs.a, ys.a, zs.a));
+	}
+	return _List_fromArray(arr);
+});
+
+var _List_sortBy = F2(function(f, xs)
+{
+	return _List_fromArray(_List_toArray(xs).sort(function(a, b) {
+		return _Utils_cmp(f(a), f(b));
+	}));
+});
+
+var _List_sortWith = F2(function(f, xs)
+{
+	return _List_fromArray(_List_toArray(xs).sort(function(a, b) {
+		var ord = A2(f, a, b);
+		return ord === $elm$core$Basics$EQ ? 0 : ord === $elm$core$Basics$LT ? -1 : 1;
+	}));
+});
 
 
 
@@ -4740,10 +4740,31 @@ var $author$project$Main$LinkClicked = function (a) {
 var $author$project$Main$UrlChanged = function (a) {
 	return {$: 'UrlChanged', a: a};
 };
-var $elm$core$Basics$EQ = {$: 'EQ'};
-var $elm$core$Basics$GT = {$: 'GT'};
-var $elm$core$Basics$LT = {$: 'LT'};
 var $elm$core$List$cons = _List_cons;
+var $elm$core$Elm$JsArray$foldr = _JsArray_foldr;
+var $elm$core$Array$foldr = F3(
+	function (func, baseCase, _v0) {
+		var tree = _v0.c;
+		var tail = _v0.d;
+		var helper = F2(
+			function (node, acc) {
+				if (node.$ === 'SubTree') {
+					var subTree = node.a;
+					return A3($elm$core$Elm$JsArray$foldr, helper, acc, subTree);
+				} else {
+					var values = node.a;
+					return A3($elm$core$Elm$JsArray$foldr, func, acc, values);
+				}
+			});
+		return A3(
+			$elm$core$Elm$JsArray$foldr,
+			helper,
+			A3($elm$core$Elm$JsArray$foldr, func, baseCase, tail),
+			tree);
+	});
+var $elm$core$Array$toList = function (array) {
+	return A3($elm$core$Array$foldr, $elm$core$List$cons, _List_Nil, array);
+};
 var $elm$core$Dict$foldr = F3(
 	function (func, acc, t) {
 		foldr:
@@ -4796,30 +4817,9 @@ var $elm$core$Set$toList = function (_v0) {
 	var dict = _v0.a;
 	return $elm$core$Dict$keys(dict);
 };
-var $elm$core$Elm$JsArray$foldr = _JsArray_foldr;
-var $elm$core$Array$foldr = F3(
-	function (func, baseCase, _v0) {
-		var tree = _v0.c;
-		var tail = _v0.d;
-		var helper = F2(
-			function (node, acc) {
-				if (node.$ === 'SubTree') {
-					var subTree = node.a;
-					return A3($elm$core$Elm$JsArray$foldr, helper, acc, subTree);
-				} else {
-					var values = node.a;
-					return A3($elm$core$Elm$JsArray$foldr, func, acc, values);
-				}
-			});
-		return A3(
-			$elm$core$Elm$JsArray$foldr,
-			helper,
-			A3($elm$core$Elm$JsArray$foldr, func, baseCase, tail),
-			tree);
-	});
-var $elm$core$Array$toList = function (array) {
-	return A3($elm$core$Array$foldr, $elm$core$List$cons, _List_Nil, array);
-};
+var $elm$core$Basics$EQ = {$: 'EQ'};
+var $elm$core$Basics$GT = {$: 'GT'};
+var $elm$core$Basics$LT = {$: 'LT'};
 var $elm$core$Result$Err = function (a) {
 	return {$: 'Err', a: a};
 };
@@ -5215,6 +5215,7 @@ var $elm$core$Result$isOk = function (result) {
 		return false;
 	}
 };
+var $elm$json$Json$Decode$andThen = _Json_andThen;
 var $elm$json$Json$Decode$map = _Json_map1;
 var $elm$json$Json$Decode$map2 = _Json_map2;
 var $elm$json$Json$Decode$succeed = _Json_succeed;
@@ -5529,6 +5530,7 @@ var $elm$core$Task$perform = F2(
 				A2($elm$core$Task$map, toMessage, task)));
 	});
 var $elm$browser$Browser$application = _Browser_application;
+var $elm$json$Json$Decode$field = _Json_decodeField;
 var $author$project$Main$GotItemShopMsg = function (a) {
 	return {$: 'GotItemShopMsg', a: a};
 };
@@ -5539,6 +5541,26 @@ var $author$project$Main$UrlPageInfo = F4(
 		return {key: key, page: page, route: route, url: url};
 	});
 var $elm$core$Platform$Cmd$batch = _Platform_batch;
+var $author$project$Interface$BigDesktop = {$: 'BigDesktop'};
+var $author$project$Interface$Desktop = {$: 'Desktop'};
+var $author$project$Interface$Landscape = {$: 'Landscape'};
+var $author$project$Interface$Phone = {$: 'Phone'};
+var $author$project$Interface$Portrait = {$: 'Portrait'};
+var $author$project$Interface$Tablet = {$: 'Tablet'};
+var $elm$core$Basics$min = F2(
+	function (x, y) {
+		return (_Utils_cmp(x, y) < 0) ? x : y;
+	});
+var $author$project$Interface$classifyDevice = function (window) {
+	return {
+		_class: function () {
+			var shortSide = A2($elm$core$Basics$min, window.width, window.height);
+			var longSide = A2($elm$core$Basics$max, window.width, window.height);
+			return (shortSide < 600) ? $author$project$Interface$Phone : ((longSide <= 1200) ? $author$project$Interface$Tablet : (((longSide > 1200) && (longSide <= 1920)) ? $author$project$Interface$Desktop : $author$project$Interface$BigDesktop));
+		}(),
+		orientation: (_Utils_cmp(window.width, window.height) < 0) ? $author$project$Interface$Portrait : $author$project$Interface$Landscape
+	};
+};
 var $author$project$ItemShop$Ascending = {$: 'Ascending'};
 var $author$project$ItemShop$AutomaticBPtoSP = function (a) {
 	return {$: 'AutomaticBPtoSP', a: a};
@@ -6591,8 +6613,8 @@ var $author$project$Battle$setStatCurVal = F2(
 			stat,
 			{curVal: newCurVal});
 	});
-var $author$project$Battle$init = F2(
-	function (_v0, spRefillAmount) {
+var $author$project$Battle$init = F3(
+	function (device, _v0, spRefillAmount) {
 		var held_blood = _v0.held_blood;
 		var held_gold = _v0.held_gold;
 		var locations = {
@@ -6621,7 +6643,7 @@ var $author$project$Battle$init = F2(
 			shouldShowLocationTypeMenu: false,
 			showExpandedLogs: false,
 			spRefillAmount: spRefillAmount,
-			uiOptions: {cachedTooltipOffsets: $elm$core$Dict$empty, hoveredTooltip: $author$project$Interface$NoHoveredTooltip}
+			uiOptions: {cachedTooltipOffsets: $elm$core$Dict$empty, device: device, hoveredTooltip: $author$project$Interface$NoHoveredTooltip}
 		};
 	});
 var $author$project$ItemShop$Spellbook = {$: 'Spellbook'};
@@ -7410,8 +7432,8 @@ var $author$project$ItemShop$initial_items_for_sale = function (item_db) {
 		_Debug_todo(
 			'ItemShop',
 			{
-				start: {line: 1785, column: 17},
-				end: {line: 1785, column: 27}
+				start: {line: 1818, column: 17},
+				end: {line: 1818, column: 27}
 			}),
 		'THERE WAS AN ERROR IN INITIAL ITEM SETUP!!!!',
 		$elm$core$Result$Err(''));
@@ -7475,8 +7497,8 @@ var $author$project$ItemShop$stringToTabType = function (hash) {
 			return $author$project$ItemShop$ShopTabType;
 	}
 };
-var $author$project$ItemShop$init = F2(
-	function (hash, key) {
+var $author$project$ItemShop$init = F3(
+	function (device, hash, key) {
 		var spRefillUpgradeLvl = 1;
 		var spRefillUpgrade = $author$project$ItemShop$AutomaticBPtoSP(spRefillUpgradeLvl);
 		var shop_base_char = A2(
@@ -7511,15 +7533,16 @@ var $author$project$ItemShop$init = F2(
 					party: $author$project$ItemShop$ShopParty
 				}));
 		var initial_tab_type = $author$project$ItemShop$stringToTabType(hash);
-		var initUiOptions = {cached_tooltip_offsets: $elm$core$Dict$empty, globalViewport: $elm$core$Maybe$Nothing, hoveredTooltip: $author$project$Interface$NoHoveredTooltip, hovered_item_in_character: $elm$core$Maybe$Nothing, hovered_trend_chart: _List_Nil, inventorySortDir: $author$project$ItemShop$Ascending, inventorySortType: $author$project$ItemShop$SortByName, shiftIsPressed: false, shop_trends_hovered: false, shouldDisplayShowDebugInventoriesOverlay: false, showDebugInventoriesElement: $elm$core$Maybe$Nothing, show_charts_in_hovered_item: false, show_debug_inventories: false, show_main_chart: true};
+		var initUiOptions = {cached_tooltip_offsets: $elm$core$Dict$empty, device: device, globalViewport: $elm$core$Maybe$Nothing, hoveredTooltip: $author$project$Interface$NoHoveredTooltip, hovered_item_in_character: $elm$core$Maybe$Nothing, hovered_trend_chart: _List_Nil, inventorySortDir: $author$project$ItemShop$Ascending, inventorySortType: $author$project$ItemShop$SortByName, shiftIsPressed: false, shop_trends_hovered: false, shouldDisplayShowDebugInventoriesOverlay: false, showDebugInventoriesElement: $elm$core$Maybe$Nothing, show_charts_in_hovered_item: false, show_debug_inventories: false, show_main_chart: true};
 		var characters = $author$project$ItemShop$Characters(
 			{
 				others: $author$project$ItemShop$initial_characters(item_db),
 				player: player,
 				shop: shop
 			});
-		var battleModel = A2(
+		var battleModel = A3(
 			$author$project$Battle$init,
+			device,
 			$author$project$ItemShop$getInnerPlayer(player),
 			spRefillUpgradeLvl);
 		var initModel = {
@@ -7535,7 +7558,7 @@ var $author$project$ItemShop$init = F2(
 				[$author$project$ItemShop$WelcomeMessageActionLog]),
 			historical_shop_trends: _List_Nil,
 			item_db: item_db,
-			player_upgrades: playerUpgrades,
+			playerUpgrades: playerUpgrades,
 			progressUnlocks: _List_Nil,
 			quests: _List_fromArray(
 				[
@@ -8271,7 +8294,7 @@ var $author$project$Main$parseUrl = function (url) {
 };
 var $elm$time$Time$utc = A2($elm$time$Time$Zone, 0, _List_Nil);
 var $author$project$Main$init = F3(
-	function (_v0, url, navKey) {
+	function (flags, url, navKey) {
 		var parsedRoute = $author$project$Main$parseUrl(url);
 		var page_info = A4($author$project$Main$UrlPageInfo, navKey, url, parsedRoute, $author$project$Main$UnsetPage);
 		var initial_tab = function () {
@@ -8292,12 +8315,14 @@ var $author$project$Main$init = F3(
 				return '';
 			}
 		}();
-		var _v1 = A2(
+		var device = $author$project$Interface$classifyDevice(flags.window);
+		var _v0 = A3(
 			$author$project$ItemShop$init,
+			device,
 			hash,
 			$elm$core$Maybe$Just(navKey));
-		var item_shop_model = _v1.a;
-		var item_shop_cmds = _v1.b;
+		var item_shop_model = _v0.a;
+		var item_shop_cmds = _v0.b;
 		var existingCmds = $elm$core$Platform$Cmd$batch(
 			_List_fromArray(
 				[
@@ -8307,6 +8332,7 @@ var $author$project$Main$init = F3(
 			content: 'ASD',
 			count: 0,
 			current_tab: initial_tab,
+			device: device,
 			item_shop_model: item_shop_model,
 			page_info: page_info,
 			sfxrModel: $author$project$Sfxr$init,
@@ -8316,48 +8342,46 @@ var $author$project$Main$init = F3(
 		return $author$project$Main$initCurrentPage(
 			_Utils_Tuple2(initial_model, existingCmds));
 	});
+var $elm$json$Json$Decode$int = _Json_decodeInt;
 var $author$project$Main$GotSfxrMsg = function (a) {
 	return {$: 'GotSfxrMsg', a: a};
 };
+var $author$project$Main$OnWindowResize = F2(
+	function (a, b) {
+		return {$: 'OnWindowResize', a: a, b: b};
+	});
 var $author$project$Main$RecvFromPort = function (a) {
 	return {$: 'RecvFromPort', a: a};
 };
 var $elm$core$Platform$Sub$batch = _Platform_batch;
 var $elm$core$Platform$Sub$map = _Platform_map;
-var $author$project$ItemShop$GotBattleMsg = function (a) {
-	return {$: 'GotBattleMsg', a: a};
+var $elm$browser$Browser$Events$Window = {$: 'Window'};
+var $elm$browser$Browser$Events$MySub = F3(
+	function (a, b, c) {
+		return {$: 'MySub', a: a, b: b, c: c};
+	});
+var $elm$browser$Browser$Events$State = F2(
+	function (subs, pids) {
+		return {pids: pids, subs: subs};
+	});
+var $elm$browser$Browser$Events$init = $elm$core$Task$succeed(
+	A2($elm$browser$Browser$Events$State, _List_Nil, $elm$core$Dict$empty));
+var $elm$browser$Browser$Events$nodeToKey = function (node) {
+	if (node.$ === 'Document') {
+		return 'd_';
+	} else {
+		return 'w_';
+	}
 };
-var $elm$time$Time$Every = F2(
-	function (a, b) {
-		return {$: 'Every', a: a, b: b};
-	});
-var $elm$time$Time$State = F2(
-	function (taggers, processes) {
-		return {processes: processes, taggers: taggers};
-	});
-var $elm$time$Time$init = $elm$core$Task$succeed(
-	A2($elm$time$Time$State, $elm$core$Dict$empty, $elm$core$Dict$empty));
-var $elm$time$Time$addMySub = F2(
-	function (_v0, state) {
-		var interval = _v0.a;
-		var tagger = _v0.b;
-		var _v1 = A2($elm$core$Dict$get, interval, state);
-		if (_v1.$ === 'Nothing') {
-			return A3(
-				$elm$core$Dict$insert,
-				interval,
-				_List_fromArray(
-					[tagger]),
-				state);
-		} else {
-			var taggers = _v1.a;
-			return A3(
-				$elm$core$Dict$insert,
-				interval,
-				A2($elm$core$List$cons, tagger, taggers),
-				state);
-		}
-	});
+var $elm$browser$Browser$Events$addKey = function (sub) {
+	var node = sub.a;
+	var name = sub.b;
+	return _Utils_Tuple2(
+		_Utils_ap(
+			$elm$browser$Browser$Events$nodeToKey(node),
+			name),
+		sub);
+};
 var $elm$core$Process$kill = _Scheduler_kill;
 var $elm$core$Dict$foldl = F3(
 	function (func, acc, dict) {
@@ -8445,7 +8469,199 @@ var $elm$core$Dict$merge = F6(
 			intermediateResult,
 			leftovers);
 	});
+var $elm$browser$Browser$Events$Event = F2(
+	function (key, event) {
+		return {event: event, key: key};
+	});
 var $elm$core$Platform$sendToSelf = _Platform_sendToSelf;
+var $elm$browser$Browser$Events$spawn = F3(
+	function (router, key, _v0) {
+		var node = _v0.a;
+		var name = _v0.b;
+		var actualNode = function () {
+			if (node.$ === 'Document') {
+				return _Browser_doc;
+			} else {
+				return _Browser_window;
+			}
+		}();
+		return A2(
+			$elm$core$Task$map,
+			function (value) {
+				return _Utils_Tuple2(key, value);
+			},
+			A3(
+				_Browser_on,
+				actualNode,
+				name,
+				function (event) {
+					return A2(
+						$elm$core$Platform$sendToSelf,
+						router,
+						A2($elm$browser$Browser$Events$Event, key, event));
+				}));
+	});
+var $elm$core$Dict$union = F2(
+	function (t1, t2) {
+		return A3($elm$core$Dict$foldl, $elm$core$Dict$insert, t2, t1);
+	});
+var $elm$browser$Browser$Events$onEffects = F3(
+	function (router, subs, state) {
+		var stepRight = F3(
+			function (key, sub, _v6) {
+				var deads = _v6.a;
+				var lives = _v6.b;
+				var news = _v6.c;
+				return _Utils_Tuple3(
+					deads,
+					lives,
+					A2(
+						$elm$core$List$cons,
+						A3($elm$browser$Browser$Events$spawn, router, key, sub),
+						news));
+			});
+		var stepLeft = F3(
+			function (_v4, pid, _v5) {
+				var deads = _v5.a;
+				var lives = _v5.b;
+				var news = _v5.c;
+				return _Utils_Tuple3(
+					A2($elm$core$List$cons, pid, deads),
+					lives,
+					news);
+			});
+		var stepBoth = F4(
+			function (key, pid, _v2, _v3) {
+				var deads = _v3.a;
+				var lives = _v3.b;
+				var news = _v3.c;
+				return _Utils_Tuple3(
+					deads,
+					A3($elm$core$Dict$insert, key, pid, lives),
+					news);
+			});
+		var newSubs = A2($elm$core$List$map, $elm$browser$Browser$Events$addKey, subs);
+		var _v0 = A6(
+			$elm$core$Dict$merge,
+			stepLeft,
+			stepBoth,
+			stepRight,
+			state.pids,
+			$elm$core$Dict$fromList(newSubs),
+			_Utils_Tuple3(_List_Nil, $elm$core$Dict$empty, _List_Nil));
+		var deadPids = _v0.a;
+		var livePids = _v0.b;
+		var makeNewPids = _v0.c;
+		return A2(
+			$elm$core$Task$andThen,
+			function (pids) {
+				return $elm$core$Task$succeed(
+					A2(
+						$elm$browser$Browser$Events$State,
+						newSubs,
+						A2(
+							$elm$core$Dict$union,
+							livePids,
+							$elm$core$Dict$fromList(pids))));
+			},
+			A2(
+				$elm$core$Task$andThen,
+				function (_v1) {
+					return $elm$core$Task$sequence(makeNewPids);
+				},
+				$elm$core$Task$sequence(
+					A2($elm$core$List$map, $elm$core$Process$kill, deadPids))));
+	});
+var $elm$browser$Browser$Events$onSelfMsg = F3(
+	function (router, _v0, state) {
+		var key = _v0.key;
+		var event = _v0.event;
+		var toMessage = function (_v2) {
+			var subKey = _v2.a;
+			var _v3 = _v2.b;
+			var node = _v3.a;
+			var name = _v3.b;
+			var decoder = _v3.c;
+			return _Utils_eq(subKey, key) ? A2(_Browser_decodeEvent, decoder, event) : $elm$core$Maybe$Nothing;
+		};
+		var messages = A2($elm$core$List$filterMap, toMessage, state.subs);
+		return A2(
+			$elm$core$Task$andThen,
+			function (_v1) {
+				return $elm$core$Task$succeed(state);
+			},
+			$elm$core$Task$sequence(
+				A2(
+					$elm$core$List$map,
+					$elm$core$Platform$sendToApp(router),
+					messages)));
+	});
+var $elm$browser$Browser$Events$subMap = F2(
+	function (func, _v0) {
+		var node = _v0.a;
+		var name = _v0.b;
+		var decoder = _v0.c;
+		return A3(
+			$elm$browser$Browser$Events$MySub,
+			node,
+			name,
+			A2($elm$json$Json$Decode$map, func, decoder));
+	});
+_Platform_effectManagers['Browser.Events'] = _Platform_createManager($elm$browser$Browser$Events$init, $elm$browser$Browser$Events$onEffects, $elm$browser$Browser$Events$onSelfMsg, 0, $elm$browser$Browser$Events$subMap);
+var $elm$browser$Browser$Events$subscription = _Platform_leaf('Browser.Events');
+var $elm$browser$Browser$Events$on = F3(
+	function (node, name, decoder) {
+		return $elm$browser$Browser$Events$subscription(
+			A3($elm$browser$Browser$Events$MySub, node, name, decoder));
+	});
+var $elm$browser$Browser$Events$onResize = function (func) {
+	return A3(
+		$elm$browser$Browser$Events$on,
+		$elm$browser$Browser$Events$Window,
+		'resize',
+		A2(
+			$elm$json$Json$Decode$field,
+			'target',
+			A3(
+				$elm$json$Json$Decode$map2,
+				func,
+				A2($elm$json$Json$Decode$field, 'innerWidth', $elm$json$Json$Decode$int),
+				A2($elm$json$Json$Decode$field, 'innerHeight', $elm$json$Json$Decode$int))));
+};
+var $author$project$ItemShop$GotBattleMsg = function (a) {
+	return {$: 'GotBattleMsg', a: a};
+};
+var $elm$time$Time$Every = F2(
+	function (a, b) {
+		return {$: 'Every', a: a, b: b};
+	});
+var $elm$time$Time$State = F2(
+	function (taggers, processes) {
+		return {processes: processes, taggers: taggers};
+	});
+var $elm$time$Time$init = $elm$core$Task$succeed(
+	A2($elm$time$Time$State, $elm$core$Dict$empty, $elm$core$Dict$empty));
+var $elm$time$Time$addMySub = F2(
+	function (_v0, state) {
+		var interval = _v0.a;
+		var tagger = _v0.b;
+		var _v1 = A2($elm$core$Dict$get, interval, state);
+		if (_v1.$ === 'Nothing') {
+			return A3(
+				$elm$core$Dict$insert,
+				interval,
+				_List_fromArray(
+					[tagger]),
+				state);
+		} else {
+			var taggers = _v1.a;
+			return A3(
+				$elm$core$Dict$insert,
+				interval,
+				A2($elm$core$List$cons, tagger, taggers),
+				state);
+		}
+	});
 var $elm$time$Time$setInterval = _Time_setInterval;
 var $elm$core$Process$spawn = _Scheduler_spawn;
 var $elm$time$Time$spawnHelp = F3(
@@ -8587,7 +8803,6 @@ var $elm$core$Basics$composeR = F3(
 		return g(
 			f(x));
 	});
-var $elm$json$Json$Decode$field = _Json_decodeField;
 var $elm$json$Json$Decode$string = _Json_decodeString;
 var $author$project$ItemShop$KeyEventAlt = {$: 'KeyEventAlt'};
 var $author$project$ItemShop$KeyEventControl = {$: 'KeyEventControl'};
@@ -8635,176 +8850,6 @@ var $author$project$ItemShop$keyReleasedDecoder = A2(
 var $elm$core$Platform$Sub$none = $elm$core$Platform$Sub$batch(_List_Nil);
 var $elm$core$Basics$not = _Basics_not;
 var $elm$browser$Browser$Events$Document = {$: 'Document'};
-var $elm$browser$Browser$Events$MySub = F3(
-	function (a, b, c) {
-		return {$: 'MySub', a: a, b: b, c: c};
-	});
-var $elm$browser$Browser$Events$State = F2(
-	function (subs, pids) {
-		return {pids: pids, subs: subs};
-	});
-var $elm$browser$Browser$Events$init = $elm$core$Task$succeed(
-	A2($elm$browser$Browser$Events$State, _List_Nil, $elm$core$Dict$empty));
-var $elm$browser$Browser$Events$nodeToKey = function (node) {
-	if (node.$ === 'Document') {
-		return 'd_';
-	} else {
-		return 'w_';
-	}
-};
-var $elm$browser$Browser$Events$addKey = function (sub) {
-	var node = sub.a;
-	var name = sub.b;
-	return _Utils_Tuple2(
-		_Utils_ap(
-			$elm$browser$Browser$Events$nodeToKey(node),
-			name),
-		sub);
-};
-var $elm$browser$Browser$Events$Event = F2(
-	function (key, event) {
-		return {event: event, key: key};
-	});
-var $elm$browser$Browser$Events$spawn = F3(
-	function (router, key, _v0) {
-		var node = _v0.a;
-		var name = _v0.b;
-		var actualNode = function () {
-			if (node.$ === 'Document') {
-				return _Browser_doc;
-			} else {
-				return _Browser_window;
-			}
-		}();
-		return A2(
-			$elm$core$Task$map,
-			function (value) {
-				return _Utils_Tuple2(key, value);
-			},
-			A3(
-				_Browser_on,
-				actualNode,
-				name,
-				function (event) {
-					return A2(
-						$elm$core$Platform$sendToSelf,
-						router,
-						A2($elm$browser$Browser$Events$Event, key, event));
-				}));
-	});
-var $elm$core$Dict$union = F2(
-	function (t1, t2) {
-		return A3($elm$core$Dict$foldl, $elm$core$Dict$insert, t2, t1);
-	});
-var $elm$browser$Browser$Events$onEffects = F3(
-	function (router, subs, state) {
-		var stepRight = F3(
-			function (key, sub, _v6) {
-				var deads = _v6.a;
-				var lives = _v6.b;
-				var news = _v6.c;
-				return _Utils_Tuple3(
-					deads,
-					lives,
-					A2(
-						$elm$core$List$cons,
-						A3($elm$browser$Browser$Events$spawn, router, key, sub),
-						news));
-			});
-		var stepLeft = F3(
-			function (_v4, pid, _v5) {
-				var deads = _v5.a;
-				var lives = _v5.b;
-				var news = _v5.c;
-				return _Utils_Tuple3(
-					A2($elm$core$List$cons, pid, deads),
-					lives,
-					news);
-			});
-		var stepBoth = F4(
-			function (key, pid, _v2, _v3) {
-				var deads = _v3.a;
-				var lives = _v3.b;
-				var news = _v3.c;
-				return _Utils_Tuple3(
-					deads,
-					A3($elm$core$Dict$insert, key, pid, lives),
-					news);
-			});
-		var newSubs = A2($elm$core$List$map, $elm$browser$Browser$Events$addKey, subs);
-		var _v0 = A6(
-			$elm$core$Dict$merge,
-			stepLeft,
-			stepBoth,
-			stepRight,
-			state.pids,
-			$elm$core$Dict$fromList(newSubs),
-			_Utils_Tuple3(_List_Nil, $elm$core$Dict$empty, _List_Nil));
-		var deadPids = _v0.a;
-		var livePids = _v0.b;
-		var makeNewPids = _v0.c;
-		return A2(
-			$elm$core$Task$andThen,
-			function (pids) {
-				return $elm$core$Task$succeed(
-					A2(
-						$elm$browser$Browser$Events$State,
-						newSubs,
-						A2(
-							$elm$core$Dict$union,
-							livePids,
-							$elm$core$Dict$fromList(pids))));
-			},
-			A2(
-				$elm$core$Task$andThen,
-				function (_v1) {
-					return $elm$core$Task$sequence(makeNewPids);
-				},
-				$elm$core$Task$sequence(
-					A2($elm$core$List$map, $elm$core$Process$kill, deadPids))));
-	});
-var $elm$browser$Browser$Events$onSelfMsg = F3(
-	function (router, _v0, state) {
-		var key = _v0.key;
-		var event = _v0.event;
-		var toMessage = function (_v2) {
-			var subKey = _v2.a;
-			var _v3 = _v2.b;
-			var node = _v3.a;
-			var name = _v3.b;
-			var decoder = _v3.c;
-			return _Utils_eq(subKey, key) ? A2(_Browser_decodeEvent, decoder, event) : $elm$core$Maybe$Nothing;
-		};
-		var messages = A2($elm$core$List$filterMap, toMessage, state.subs);
-		return A2(
-			$elm$core$Task$andThen,
-			function (_v1) {
-				return $elm$core$Task$succeed(state);
-			},
-			$elm$core$Task$sequence(
-				A2(
-					$elm$core$List$map,
-					$elm$core$Platform$sendToApp(router),
-					messages)));
-	});
-var $elm$browser$Browser$Events$subMap = F2(
-	function (func, _v0) {
-		var node = _v0.a;
-		var name = _v0.b;
-		var decoder = _v0.c;
-		return A3(
-			$elm$browser$Browser$Events$MySub,
-			node,
-			name,
-			A2($elm$json$Json$Decode$map, func, decoder));
-	});
-_Platform_effectManagers['Browser.Events'] = _Platform_createManager($elm$browser$Browser$Events$init, $elm$browser$Browser$Events$onEffects, $elm$browser$Browser$Events$onSelfMsg, 0, $elm$browser$Browser$Events$subMap);
-var $elm$browser$Browser$Events$subscription = _Platform_leaf('Browser.Events');
-var $elm$browser$Browser$Events$on = F3(
-	function (node, name, decoder) {
-		return $elm$browser$Browser$Events$subscription(
-			A3($elm$browser$Browser$Events$MySub, node, name, decoder));
-	});
 var $elm$browser$Browser$Events$onKeyDown = A2($elm$browser$Browser$Events$on, $elm$browser$Browser$Events$Document, 'keydown');
 var $elm$browser$Browser$Events$onKeyUp = A2($elm$browser$Browser$Events$on, $elm$browser$Browser$Events$Document, 'keyup');
 var $author$project$Battle$TickSecond = function (a) {
@@ -8850,7 +8895,8 @@ var $author$project$Main$subscriptions = function (model) {
 				A2(
 				$elm$core$Platform$Sub$map,
 				$author$project$Main$GotSfxrMsg,
-				$author$project$Sfxr$subscriptions(model.sfxrModel))
+				$author$project$Sfxr$subscriptions(model.sfxrModel)),
+				$elm$browser$Browser$Events$onResize($author$project$Main$OnWindowResize)
 			]));
 };
 var $elm$json$Json$Encode$string = _Json_wrap;
@@ -8858,6 +8904,28 @@ var $author$project$Main$exec_jsonp = _Platform_outgoingPort('exec_jsonp', $elm$
 var $elm$browser$Browser$Navigation$load = _Browser_load;
 var $elm$core$Debug$log = _Debug_log;
 var $elm$browser$Browser$Navigation$pushUrl = _Browser_pushUrl;
+var $author$project$Battle$setDevice = F2(
+	function (model, device) {
+		var uiOptions = model.uiOptions;
+		return _Utils_update(
+			model,
+			{
+				uiOptions: _Utils_update(
+					uiOptions,
+					{device: device})
+			});
+	});
+var $author$project$ItemShop$setDevice = F2(
+	function (model, device) {
+		var uiOptions = model.uiOptions;
+		return _Utils_update(
+			model,
+			{
+				uiOptions: _Utils_update(
+					uiOptions,
+					{device: device})
+			});
+	});
 var $author$project$Main$test_port_sending = _Platform_outgoingPort('test_port_sending', $elm$json$Json$Encode$string);
 var $elm$url$Url$addPort = F2(
 	function (maybePort, starter) {
@@ -8978,10 +9046,6 @@ var $author$project$ItemShop$mapIncompleteQuestType = F2(
 		} else {
 			return quest;
 		}
-	});
-var $elm$core$Basics$min = F2(
-	function (x, y) {
-		return (_Utils_cmp(x, y) < 0) ? x : y;
 	});
 var $author$project$ItemShop$minQuantity = F2(
 	function (qty, other_qty) {
@@ -9573,7 +9637,7 @@ var $author$project$ItemShop$transferToBattleModel = function (model) {
 				}
 			}),
 		0,
-		model.player_upgrades);
+		model.playerUpgrades);
 	var _v1 = model;
 	var battleModel = _v1.battleModel;
 	var battlePlayer = battleModel.player;
@@ -11479,8 +11543,8 @@ var $author$project$ItemShop$ai_buy_item_from_shop = F3(
 						return _Debug_todo(
 							'ItemShop',
 							{
-								start: {line: 3801, column: 25},
-								end: {line: 3801, column: 35}
+								start: {line: 3835, column: 25},
+								end: {line: 3835, column: 35}
 							})('');
 					}
 				}()
@@ -11674,8 +11738,8 @@ var $author$project$ItemShop$ai_sell_item_to_shop = F3(
 							_Debug_todo(
 								'ItemShop',
 								{
-									start: {line: 3896, column: 25},
-									end: {line: 3896, column: 35}
+									start: {line: 3930, column: 25},
+									end: {line: 3930, column: 35}
 								}),
 							'',
 							_List_Nil);
@@ -11939,7 +12003,7 @@ var $author$project$ItemShop$applyUpgrades = F2(
 			$elm$core$List$foldl,
 			$author$project$ItemShop$applyUpgrade,
 			_Utils_Tuple2(player, model),
-			model.player_upgrades);
+			model.playerUpgrades);
 		var new_player = _v0.a;
 		var new_model = _v0.b;
 		return new_model;
@@ -12250,13 +12314,13 @@ var $author$project$ItemShop$special_action_increase_income = function (model) {
 						return $elm$core$Maybe$Nothing;
 					}
 				},
-				model.player_upgrades)));
+				model.playerUpgrades)));
 	var upgradeCost = $author$project$ItemShop$scale_increase_income_cost(automaticGpmLevel);
 	return A2($author$project$ItemShop$hasEnoughGold, player, upgradeCost) ? function (m) {
 		return _Utils_update(
 			m,
 			{
-				player_upgrades: A2(
+				playerUpgrades: A2(
 					$elm$core$List$map,
 					function (upgrade) {
 						if (upgrade.$ === 'AutomaticGPM') {
@@ -12266,7 +12330,7 @@ var $author$project$ItemShop$special_action_increase_income = function (model) {
 							return upgrade;
 						}
 					},
-					m.player_upgrades)
+					m.playerUpgrades)
 			});
 	}(
 		A2(
@@ -13523,7 +13587,7 @@ var $author$project$Main$update = F2(
 						model,
 						{item_shop_model: sub_model}),
 					A2($elm$core$Platform$Cmd$map, $author$project$Main$GotItemShopMsg, sub_cmd));
-			default:
+			case 'GotSfxrMsg':
 				var sfxrMsg = msg.a;
 				var _v6 = A2($author$project$Sfxr$update, sfxrMsg, model.sfxrModel);
 				var sub_model = _v6.a;
@@ -13533,6 +13597,23 @@ var $author$project$Main$update = F2(
 						model,
 						{sfxrModel: sub_model}),
 					A2($elm$core$Platform$Cmd$map, $author$project$Main$GotSfxrMsg, sub_cmd));
+			default:
+				var width = msg.a;
+				var height = msg.b;
+				var newDevice = $author$project$Interface$classifyDevice(
+					{height: height, width: width});
+				var newBattleModel = A2($author$project$Battle$setDevice, model.item_shop_model.battleModel, newDevice);
+				var newItemShopModel = function (is) {
+					return _Utils_update(
+						is,
+						{battleModel: newBattleModel});
+				}(
+					A2($author$project$ItemShop$setDevice, model.item_shop_model, newDevice));
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{device: newDevice, item_shop_model: newItemShopModel}),
+					$elm$core$Platform$Cmd$none);
 		}
 	});
 var $elm$html$Html$div = _VirtualDom_node('div');
@@ -19480,8 +19561,8 @@ var $author$project$Interface$hex_to_color = function (hex_str) {
 			_Debug_todo(
 				'Interface',
 				{
-					start: {line: 224, column: 13},
-					end: {line: 224, column: 23}
+					start: {line: 278, column: 13},
+					end: {line: 278, column: 23}
 				}),
 			'NOOO',
 			A3($mdgriffith$elm_ui$Element$rgb255, 255, 0, 0));
@@ -19634,6 +19715,35 @@ var $mdgriffith$elm_ui$Element$padding = function (x) {
 			f,
 			f));
 };
+var $mdgriffith$elm_ui$Element$paddingXY = F2(
+	function (x, y) {
+		if (_Utils_eq(x, y)) {
+			var f = x;
+			return A2(
+				$mdgriffith$elm_ui$Internal$Model$StyleClass,
+				$mdgriffith$elm_ui$Internal$Flag$padding,
+				A5(
+					$mdgriffith$elm_ui$Internal$Model$PaddingStyle,
+					'p-' + $elm$core$String$fromInt(x),
+					f,
+					f,
+					f,
+					f));
+		} else {
+			var yFloat = y;
+			var xFloat = x;
+			return A2(
+				$mdgriffith$elm_ui$Internal$Model$StyleClass,
+				$mdgriffith$elm_ui$Internal$Flag$padding,
+				A5(
+					$mdgriffith$elm_ui$Internal$Model$PaddingStyle,
+					'p-' + ($elm$core$String$fromInt(x) + ('-' + $elm$core$String$fromInt(y))),
+					yFloat,
+					xFloat,
+					yFloat,
+					xFloat));
+		}
+	});
 var $author$project$Interface$Danger = {$: 'Danger'};
 var $author$project$Battle$Fight = {$: 'Fight'};
 var $author$project$Battle$FindNewEnemy = {$: 'FindNewEnemy'};
@@ -19918,7 +20028,6 @@ var $elm$html$Html$Events$onClick = function (msg) {
 		$elm$json$Json$Decode$succeed(msg));
 };
 var $mdgriffith$elm_ui$Element$Events$onClick = A2($elm$core$Basics$composeL, $mdgriffith$elm_ui$Internal$Model$Attr, $elm$html$Html$Events$onClick);
-var $elm$json$Json$Decode$andThen = _Json_andThen;
 var $elm$json$Json$Decode$fail = _Json_fail;
 var $elm$virtual_dom$VirtualDom$MayPreventDefault = function (a) {
 	return {$: 'MayPreventDefault', a: a};
@@ -20078,35 +20187,6 @@ var $mdgriffith$elm_ui$Element$column = F2(
 	});
 var $author$project$Battle$debugMode = true;
 var $mdgriffith$elm_ui$Element$fillPortion = $mdgriffith$elm_ui$Internal$Model$Fill;
-var $mdgriffith$elm_ui$Element$paddingXY = F2(
-	function (x, y) {
-		if (_Utils_eq(x, y)) {
-			var f = x;
-			return A2(
-				$mdgriffith$elm_ui$Internal$Model$StyleClass,
-				$mdgriffith$elm_ui$Internal$Flag$padding,
-				A5(
-					$mdgriffith$elm_ui$Internal$Model$PaddingStyle,
-					'p-' + $elm$core$String$fromInt(x),
-					f,
-					f,
-					f,
-					f));
-		} else {
-			var yFloat = y;
-			var xFloat = x;
-			return A2(
-				$mdgriffith$elm_ui$Internal$Model$StyleClass,
-				$mdgriffith$elm_ui$Internal$Flag$padding,
-				A5(
-					$mdgriffith$elm_ui$Internal$Model$PaddingStyle,
-					'p-' + ($elm$core$String$fromInt(x) + ('-' + $elm$core$String$fromInt(y))),
-					yFloat,
-					xFloat,
-					yFloat,
-					xFloat));
-		}
-	});
 var $mdgriffith$elm_ui$Internal$Model$AsRow = {$: 'AsRow'};
 var $mdgriffith$elm_ui$Internal$Model$asRow = $mdgriffith$elm_ui$Internal$Model$AsRow;
 var $mdgriffith$elm_ui$Element$row = F2(
@@ -22198,11 +22278,86 @@ var $author$project$ItemShop$playerInventoryControls = F3(
 					textLabel: 'Sacrifice'
 				}));
 	});
-var $author$project$Interface$blankChar = '\u2003';
+var $author$project$ItemShop$UnlockedUpgrades = {$: 'UnlockedUpgrades'};
 var $author$project$ItemShop$border_bottom = function (bord) {
 	return $mdgriffith$elm_ui$Element$Border$widthEach(
 		{bottom: bord, left: 0, right: 0, top: 0});
 };
+var $author$project$ItemShop$render_single_player_upgrade = F2(
+	function (colorTheme, player_upgrade) {
+		if (player_upgrade.$ === 'AutomaticGPM') {
+			var lvl = player_upgrade.a;
+			return A2(
+				$mdgriffith$elm_ui$Element$paragraph,
+				_List_Nil,
+				_List_fromArray(
+					[
+						$mdgriffith$elm_ui$Element$text('Income: '),
+						A2($author$project$Interface$renderGp, colorTheme, lvl),
+						$mdgriffith$elm_ui$Element$text('/sec')
+					]));
+		} else {
+			var lvl = player_upgrade.a;
+			return A2(
+				$mdgriffith$elm_ui$Element$paragraph,
+				_List_Nil,
+				_List_fromArray(
+					[
+						$mdgriffith$elm_ui$Element$text('Bloodfeed lv'),
+						$mdgriffith$elm_ui$Element$text(
+						$elm$core$String$fromInt(lvl)),
+						$mdgriffith$elm_ui$Element$text(': '),
+						A2($author$project$Interface$renderBlood, colorTheme, -lvl),
+						$mdgriffith$elm_ui$Element$text(
+						' +' + $elm$core$String$fromInt(lvl)),
+						A2(
+						$mdgriffith$elm_ui$Element$el,
+						_List_fromArray(
+							[
+								$mdgriffith$elm_ui$Element$Font$size(12)
+							]),
+						$mdgriffith$elm_ui$Element$text('stamina')),
+						$mdgriffith$elm_ui$Element$text('/5sec')
+					]));
+		}
+	});
+var $author$project$ItemShop$playerUpgrades_display = F3(
+	function (colorTheme, playerUpgrades, progressUnlocks) {
+		return A2($author$project$ItemShop$containsProgressUnlock, $author$project$ItemShop$UnlockedUpgrades, progressUnlocks) ? A2(
+			$mdgriffith$elm_ui$Element$column,
+			_List_fromArray(
+				[
+					$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$fill)
+				]),
+			_Utils_ap(
+				_List_fromArray(
+					[
+						A2(
+						$mdgriffith$elm_ui$Element$el,
+						_List_fromArray(
+							[
+								$author$project$Interface$font_scaled(2),
+								$author$project$ItemShop$border_bottom(2),
+								$mdgriffith$elm_ui$Element$alignTop
+							]),
+						$mdgriffith$elm_ui$Element$text('Upgrades'))
+					]),
+				_List_fromArray(
+					[
+						A2(
+						$mdgriffith$elm_ui$Element$column,
+						_List_fromArray(
+							[
+								A2($mdgriffith$elm_ui$Element$paddingXY, 0, 10),
+								$mdgriffith$elm_ui$Element$spacing(5)
+							]),
+						A2(
+							$elm$core$List$map,
+							$author$project$ItemShop$render_single_player_upgrade(colorTheme),
+							playerUpgrades))
+					]))) : $mdgriffith$elm_ui$Element$none;
+	});
+var $author$project$Interface$blankChar = '\u2003';
 var $author$project$ItemShop$render_single_player_action_log = F2(
 	function (item_db, player_action_log) {
 		return A2(
@@ -22299,81 +22454,6 @@ var $author$project$ItemShop$player_action_log_display = F2(
 									5,
 									$elm$core$List$reverse(player_action_logs)))))
 					])));
-	});
-var $author$project$ItemShop$UnlockedUpgrades = {$: 'UnlockedUpgrades'};
-var $author$project$ItemShop$render_single_player_upgrade = F2(
-	function (colorTheme, player_upgrade) {
-		if (player_upgrade.$ === 'AutomaticGPM') {
-			var lvl = player_upgrade.a;
-			return A2(
-				$mdgriffith$elm_ui$Element$paragraph,
-				_List_Nil,
-				_List_fromArray(
-					[
-						$mdgriffith$elm_ui$Element$text('Income: '),
-						A2($author$project$Interface$renderGp, colorTheme, lvl),
-						$mdgriffith$elm_ui$Element$text('/sec')
-					]));
-		} else {
-			var lvl = player_upgrade.a;
-			return A2(
-				$mdgriffith$elm_ui$Element$paragraph,
-				_List_Nil,
-				_List_fromArray(
-					[
-						$mdgriffith$elm_ui$Element$text('Bloodfeed lv'),
-						$mdgriffith$elm_ui$Element$text(
-						$elm$core$String$fromInt(lvl)),
-						$mdgriffith$elm_ui$Element$text(': '),
-						A2($author$project$Interface$renderBlood, colorTheme, -lvl),
-						$mdgriffith$elm_ui$Element$text(
-						' +' + $elm$core$String$fromInt(lvl)),
-						A2(
-						$mdgriffith$elm_ui$Element$el,
-						_List_fromArray(
-							[
-								$mdgriffith$elm_ui$Element$Font$size(12)
-							]),
-						$mdgriffith$elm_ui$Element$text('stamina')),
-						$mdgriffith$elm_ui$Element$text('/5sec')
-					]));
-		}
-	});
-var $author$project$ItemShop$player_upgrades_display = F3(
-	function (colorTheme, player_upgrades, progressUnlocks) {
-		return A2($author$project$ItemShop$containsProgressUnlock, $author$project$ItemShop$UnlockedUpgrades, progressUnlocks) ? A2(
-			$mdgriffith$elm_ui$Element$column,
-			_List_fromArray(
-				[
-					$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$fill)
-				]),
-			_Utils_ap(
-				_List_fromArray(
-					[
-						A2(
-						$mdgriffith$elm_ui$Element$el,
-						_List_fromArray(
-							[
-								$author$project$Interface$font_scaled(2),
-								$author$project$ItemShop$border_bottom(2),
-								$mdgriffith$elm_ui$Element$alignTop
-							]),
-						$mdgriffith$elm_ui$Element$text('Upgrades'))
-					]),
-				_List_fromArray(
-					[
-						A2(
-						$mdgriffith$elm_ui$Element$column,
-						_List_fromArray(
-							[
-								A2($mdgriffith$elm_ui$Element$paddingXY, 0, 10),
-								$mdgriffith$elm_ui$Element$spacing(5)
-							]),
-						A2(
-							$elm$core$List$map,
-							$author$project$ItemShop$render_single_player_upgrade(colorTheme),
-							player_upgrades))
-					]))) : $mdgriffith$elm_ui$Element$none;
 	});
 var $author$project$ItemShop$quantityToStr = A2($elm$core$Basics$composeR, $author$project$ItemShop$getQuantity, $elm$core$String$fromInt);
 var $author$project$ItemShop$questTitle = function (questType) {
@@ -31031,7 +31111,7 @@ var $author$project$ItemShop$build_special_action_button = F7(
 			hoveredTooltip);
 	});
 var $author$project$ItemShop$special_actions_display = F6(
-	function (colorTheme, progressUnlocks, player_upgrades, hoveredTooltip, player, ai_updates_paused) {
+	function (colorTheme, progressUnlocks, playerUpgrades, hoveredTooltip, player, ai_updates_paused) {
 		var button_unlock_item = A7(
 			$author$project$ItemShop$build_special_action_button,
 			colorTheme,
@@ -31082,7 +31162,7 @@ var $author$project$ItemShop$special_actions_display = F6(
 						}
 					}),
 				1,
-				player_upgrades);
+				playerUpgrades);
 			return A7(
 				$author$project$ItemShop$build_special_action_button,
 				colorTheme,
@@ -32054,7 +32134,7 @@ var $author$project$ItemShop$view_shop_tab_type = function (model) {
 										$mdgriffith$elm_ui$Element$fillPortion(6)),
 										$mdgriffith$elm_ui$Element$alignTop
 									]),
-								A4($mdgriffith$elm_ui$Element$Lazy$lazy3, $author$project$ItemShop$player_upgrades_display, model.colorTheme, model.player_upgrades, model.progressUnlocks)),
+								A4($mdgriffith$elm_ui$Element$Lazy$lazy3, $author$project$ItemShop$playerUpgrades_display, model.colorTheme, model.playerUpgrades, model.progressUnlocks)),
 								A2(
 								$mdgriffith$elm_ui$Element$el,
 								_List_fromArray(
@@ -32068,7 +32148,7 @@ var $author$project$ItemShop$view_shop_tab_type = function (model) {
 						function () {
 						var _v1 = $author$project$ItemShop$getPlayer(model.characters);
 						var player = _v1.a;
-						return A6($author$project$ItemShop$special_actions_display, model.colorTheme, model.progressUnlocks, model.player_upgrades, model.uiOptions.hoveredTooltip, player, model.ai_updates_paused);
+						return A6($author$project$ItemShop$special_actions_display, model.colorTheme, model.progressUnlocks, model.playerUpgrades, model.uiOptions.hoveredTooltip, player, model.ai_updates_paused);
 					}(),
 						A2($author$project$ItemShop$hasProgressUnlock, $author$project$ItemShop$UnlockedShopTrends, model) ? A6($author$project$ItemShop$trends_display, model.colorTheme, model.uiOptions.shiftIsPressed, model.item_db, model.shop_trends, model.characters, model.uiOptions.shop_trends_hovered) : $mdgriffith$elm_ui$Element$none,
 						A2(
@@ -32126,6 +32206,7 @@ var $author$project$ItemShop$view_shop_tab_type = function (model) {
 					]))));
 };
 var $author$project$ItemShop$view = function (model) {
+	var deviceClass = model.uiOptions.device._class;
 	return A3(
 		$mdgriffith$elm_ui$Element$layoutWith,
 		{
@@ -32155,7 +32236,7 @@ var $author$project$ItemShop$view = function (model) {
 					$elm$json$Json$Decode$succeed(
 						$author$project$ItemShop$GotUiOptionsMsg($author$project$ItemShop$ScrollViewport)))),
 				$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
-				$mdgriffith$elm_ui$Element$padding(20),
+				_Utils_eq(deviceClass, $author$project$Interface$Desktop) ? A2($mdgriffith$elm_ui$Element$paddingXY, 200, 20) : $mdgriffith$elm_ui$Element$padding(20),
 				$author$project$Interface$defaultBackgroundColor(model.colorTheme),
 				$author$project$Interface$defaultFontColor(model.colorTheme)
 			]),
@@ -32253,4 +32334,24 @@ var $author$project$Main$view = function (model) {
 var $author$project$Main$main = $elm$browser$Browser$application(
 	{init: $author$project$Main$init, onUrlChange: $author$project$Main$UrlChanged, onUrlRequest: $author$project$Main$LinkClicked, subscriptions: $author$project$Main$subscriptions, update: $author$project$Main$update, view: $author$project$Main$view});
 _Platform_export({'Main':{'init':$author$project$Main$main(
-	$elm$json$Json$Decode$succeed(_Utils_Tuple0))(0)}});}(this));
+	A2(
+		$elm$json$Json$Decode$andThen,
+		function (window) {
+			return $elm$json$Json$Decode$succeed(
+				{window: window});
+		},
+		A2(
+			$elm$json$Json$Decode$field,
+			'window',
+			A2(
+				$elm$json$Json$Decode$andThen,
+				function (width) {
+					return A2(
+						$elm$json$Json$Decode$andThen,
+						function (height) {
+							return $elm$json$Json$Decode$succeed(
+								{height: height, width: width});
+						},
+						A2($elm$json$Json$Decode$field, 'height', $elm$json$Json$Decode$int));
+				},
+				A2($elm$json$Json$Decode$field, 'width', $elm$json$Json$Decode$int)))))(0)}});}(this));
