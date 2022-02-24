@@ -5749,26 +5749,15 @@ var $author$project$Interface$BrightTheme = {$: 'BrightTheme'};
 var $author$project$ItemShop$Characters = function (a) {
 	return {$: 'Characters', a: a};
 };
-var $author$project$ItemShop$CompleteQuest = F2(
-	function (a, b) {
-		return {$: 'CompleteQuest', a: a, b: b};
-	});
-var $author$project$ItemShop$EarnGold = function (a) {
-	return {$: 'EarnGold', a: a};
-};
-var $author$project$ItemShop$IncompleteQuest = function (a) {
-	return {$: 'IncompleteQuest', a: a};
-};
+var $author$project$ItemShop$HighTitle = {$: 'HighTitle'};
+var $author$project$ItemShop$NoGoldAnimation = {$: 'NoGoldAnimation'};
 var $author$project$Interface$NoHoveredTooltip = {$: 'NoHoveredTooltip'};
+var $author$project$ItemShop$NoMineAnimation = {$: 'NoMineAnimation'};
 var $author$project$ItemShop$Player = function (a) {
 	return {$: 'Player', a: a};
 };
 var $author$project$ItemShop$PlayerParty = {$: 'PlayerParty'};
 var $author$project$ItemShop$PrepPhase = {$: 'PrepPhase'};
-var $author$project$ItemShop$QuestNotCashedIn = {$: 'QuestNotCashedIn'};
-var $author$project$ItemShop$SellAnyItem = function (a) {
-	return {$: 'SellAnyItem', a: a};
-};
 var $author$project$ItemShop$Shop = function (a) {
 	return {$: 'Shop', a: a};
 };
@@ -5778,6 +5767,7 @@ var $author$project$ItemShop$SortByName = {$: 'SortByName'};
 var $author$project$ItemShop$TickSecond = function (a) {
 	return {$: 'TickSecond', a: a};
 };
+var $author$project$ItemShop$TitleScreenTabType = {$: 'TitleScreenTabType'};
 var $author$project$ItemShop$WelcomeMessageActionLog = {$: 'WelcomeMessageActionLog'};
 var $author$project$ItemShop$CharacterParty = function (a) {
 	return {$: 'CharacterParty', a: a};
@@ -6710,12 +6700,42 @@ var $TSFoster$elm_uuid$UUID$forName = A2(
 	$elm$core$Basics$composeL,
 	A2($elm$core$Basics$composeL, $TSFoster$elm_uuid$UUID$forBytes, $elm$bytes$Bytes$Encode$encode),
 	$elm$bytes$Bytes$Encode$string);
-var $author$project$ItemShop$generateUuid = function (str) {
-	return A2($TSFoster$elm_uuid$UUID$forName, str, $TSFoster$elm_uuid$UUID$dnsNamespace);
-};
 var $author$project$ItemShop$getInnerPlayer = function (_v0) {
 	var player = _v0.a;
 	return player;
+};
+var $mdgriffith$elm_animator$Internal$Timeline$Timeline = function (a) {
+	return {$: 'Timeline', a: a};
+};
+var $mdgriffith$elm_animator$Internal$Timeline$Timetable = function (a) {
+	return {$: 'Timetable', a: a};
+};
+var $ianmackenzie$elm_units$Quantity$Quantity = function (a) {
+	return {$: 'Quantity', a: a};
+};
+var $elm$time$Time$posixToMillis = function (_v0) {
+	var millis = _v0.a;
+	return millis;
+};
+var $mdgriffith$elm_animator$Internal$Time$absolute = function (posix) {
+	return $ianmackenzie$elm_units$Quantity$Quantity(
+		$elm$time$Time$posixToMillis(posix));
+};
+var $elm$time$Time$Posix = function (a) {
+	return {$: 'Posix', a: a};
+};
+var $elm$time$Time$millisToPosix = $elm$time$Time$Posix;
+var $mdgriffith$elm_animator$Animator$init = function (first) {
+	return $mdgriffith$elm_animator$Internal$Timeline$Timeline(
+		{
+			events: $mdgriffith$elm_animator$Internal$Timeline$Timetable(_List_Nil),
+			initial: first,
+			interruption: _List_Nil,
+			now: $mdgriffith$elm_animator$Internal$Time$absolute(
+				$elm$time$Time$millisToPosix(0)),
+			queued: $elm$core$Maybe$Nothing,
+			running: true
+		});
 };
 var $author$project$Battle$DeliverItemToShop = {$: 'DeliverItemToShop'};
 var $author$project$Battle$Forest = {$: 'Forest'};
@@ -6954,6 +6974,9 @@ var $elm$core$Dict$fromList = function (assocs) {
 			}),
 		$elm$core$Dict$empty,
 		assocs);
+};
+var $author$project$ItemShop$generateUuid = function (str) {
+	return A2($TSFoster$elm_uuid$UUID$forName, str, $TSFoster$elm_uuid$UUID$dnsNamespace);
 };
 var $author$project$ItemShop$item_type_to_id = function (item_type) {
 	switch (item_type.$) {
@@ -7615,8 +7638,8 @@ var $author$project$ItemShop$initial_items_for_sale = F2(
 			_Debug_todo(
 				'ItemShop',
 				{
-					start: {line: 1900, column: 17},
-					end: {line: 1900, column: 27}
+					start: {line: 2004, column: 17},
+					end: {line: 2004, column: 27}
 				}),
 			'THERE WAS AN ERROR IN INITIAL ITEM SETUP!!!!',
 			$elm$core$Result$Err(''));
@@ -7648,6 +7671,39 @@ var $author$project$ItemShop$initial_shop_trends = {
 			_List_fromArray(
 				[$author$project$ItemShop$Weapon, $author$project$ItemShop$Armor, $author$project$ItemShop$Spellbook, $author$project$ItemShop$Furniture, $author$project$ItemShop$Food])))
 };
+var $elm$core$List$any = F2(
+	function (isOkay, list) {
+		any:
+		while (true) {
+			if (!list.b) {
+				return false;
+			} else {
+				var x = list.a;
+				var xs = list.b;
+				if (isOkay(x)) {
+					return true;
+				} else {
+					var $temp$isOkay = isOkay,
+						$temp$list = xs;
+					isOkay = $temp$isOkay;
+					list = $temp$list;
+					continue any;
+				}
+			}
+		}
+	});
+var $elm$core$List$member = F2(
+	function (x, xs) {
+		return A2(
+			$elm$core$List$any,
+			function (a) {
+				return _Utils_eq(a, x);
+			},
+			xs);
+	});
+var $author$project$ItemShop$minutesToMillis = function (minutes) {
+	return (minutes * 60) * 1000;
+};
 var $elm$time$Time$Name = function (a) {
 	return {$: 'Name', a: a};
 };
@@ -7659,14 +7715,12 @@ var $elm$time$Time$Zone = F2(
 		return {$: 'Zone', a: a, b: b};
 	});
 var $elm$time$Time$customZone = $elm$time$Time$Zone;
-var $elm$time$Time$Posix = function (a) {
-	return {$: 'Posix', a: a};
-};
-var $elm$time$Time$millisToPosix = $elm$time$Time$Posix;
 var $elm$time$Time$now = _Time_now($elm$time$Time$millisToPosix);
 var $author$project$ItemShop$ItemsUnlockedTabType = {$: 'ItemsUnlockedTabType'};
 var $author$project$ItemShop$stringToTabType = function (hash) {
 	switch (hash) {
+		case 'title':
+			return $author$project$ItemShop$TitleScreenTabType;
 		case 'shop':
 			return $author$project$ItemShop$ShopTabType;
 		case 'items':
@@ -7694,12 +7748,13 @@ var $author$project$ItemShop$init = F4(
 			_Utils_update(
 				player_base_char,
 				{
-					held_blood: 100,
+					held_blood: 0,
+					held_gems: 0,
 					held_gold: 25,
 					held_items: $author$project$ItemShop$initial_owned_items(item_db),
 					party: $author$project$ItemShop$PlayerParty
 				}));
-		var initial_tab_type = $author$project$ItemShop$stringToTabType(hash);
+		var initial_currentTabType = $author$project$ItemShop$stringToTabType(hash);
 		var initialPlayerUpgrades = _List_Nil;
 		var initUiOptions = {cached_tooltip_offsets: $elm$core$Dict$empty, device: device, globalViewport: $elm$core$Maybe$Nothing, hoveredTooltip: $author$project$Interface$NoHoveredTooltip, hovered_item_in_character: $elm$core$Maybe$Nothing, hovered_trend_chart: _List_Nil, inventorySortDir: $author$project$ItemShop$Ascending, inventorySortType: $author$project$ItemShop$SortByName, shiftIsPressed: false, shop_trends_hovered: false, shouldDisplayShowDebugInventoriesOverlay: false, showDebugInventoriesElement: $elm$core$Maybe$Nothing, show_charts_in_hovered_item: false, show_debug_inventories: false, show_main_chart: true};
 		var globalSeed = $elm$random$Random$initialSeed(4);
@@ -7724,51 +7779,39 @@ var $author$project$ItemShop$init = F4(
 			spRefillUpgradeLvl);
 		var initModel = {
 			ai_tick_time: timeNow,
-			ai_updates_paused: (_Utils_eq(initial_tab_type, $author$project$ItemShop$ShopTabType) || _Utils_eq(initial_tab_type, $author$project$ItemShop$BattleTabType)) ? false : true,
+			ai_updates_paused: A2(
+				$elm$core$List$member,
+				initial_currentTabType,
+				_List_fromArray(
+					[$author$project$ItemShop$ShopTabType, $author$project$ItemShop$BattleTabType, $author$project$ItemShop$TitleScreenTabType])) ? false : true,
 			battleModel: battleModel,
 			browserNavKey: key,
 			characters: characters,
 			colorTheme: $author$project$Interface$BrightTheme,
 			communityFund: 0,
+			currentTabType: initial_currentTabType,
 			globalSeed: globalSeed,
+			goldGainedTimeline: $mdgriffith$elm_animator$Animator$init($author$project$ItemShop$NoGoldAnimation),
+			hasHadAtLeastOneBlood: false,
+			hasHadAtLeastOneGem: false,
 			historical_player_actions: _List_fromArray(
 				[$author$project$ItemShop$WelcomeMessageActionLog]),
 			historical_shop_trends: _List_Nil,
 			item_db: item_db,
+			masterVol: 0.1,
 			numItemsToStartDayWith: 5,
 			playerUpgrades: initialPlayerUpgrades,
 			progressUnlocks: _List_Nil,
-			quests: {
-				dailyQuests: _List_fromArray(
-					[
-						$author$project$ItemShop$IncompleteQuest(
-						{
-							questId: $author$project$ItemShop$generateUuid('default sell quest'),
-							questType: $author$project$ItemShop$SellAnyItem(
-								{
-									current: $author$project$ItemShop$setQuantity(2),
-									target: $author$project$ItemShop$setQuantity(3)
-								})
-						}),
-						A2(
-						$author$project$ItemShop$CompleteQuest,
-						{
-							questId: $author$project$ItemShop$generateUuid('default earn quest'),
-							questType: $author$project$ItemShop$EarnGold(
-								{
-									current: $author$project$ItemShop$setQuantity(30),
-									target: $author$project$ItemShop$setQuantity(30)
-								})
-						},
-						$author$project$ItemShop$QuestNotCashedIn)
-					]),
-				persistentQuests: _List_Nil
-			},
+			quests: {dailyQuests: _List_Nil, persistentQuests: _List_Nil},
 			secondsWaitedSince: {lastSpRefill: 0},
 			shop_trends: $author$project$ItemShop$initial_shop_trends,
 			shouldViewGemUpgradesInPostPhase: false,
-			tab_type: initial_tab_type,
-			timeOfDay: {currentPhase: $author$project$ItemShop$PrepPhase, dayLengthInMs: 60000},
+			showMineGpGained: $mdgriffith$elm_animator$Animator$init($author$project$ItemShop$NoMineAnimation),
+			timeOfDay: {
+				currentPhase: $author$project$ItemShop$PrepPhase,
+				dayLengthInMs: $author$project$ItemShop$minutesToMillis(5)
+			},
+			titleScreenAnimationState: $mdgriffith$elm_animator$Animator$init($author$project$ItemShop$HighTitle),
 			uiOptions: initUiOptions
 		};
 		return _Utils_Tuple2(
@@ -8826,6 +8869,1329 @@ var $elm$browser$Browser$Events$onResize = function (func) {
 var $author$project$ItemShop$GotBattleMsg = function (a) {
 	return {$: 'GotBattleMsg', a: a};
 };
+var $author$project$ItemShop$RuntimeTriggeredAnimationStep = function (a) {
+	return {$: 'RuntimeTriggeredAnimationStep', a: a};
+};
+var $mdgriffith$elm_animator$Internal$Timeline$Animator = F2(
+	function (a, b) {
+		return {$: 'Animator', a: a, b: b};
+	});
+var $elm$core$Basics$always = F2(
+	function (a, _v0) {
+		return a;
+	});
+var $mdgriffith$elm_animator$Animator$animator = A2(
+	$mdgriffith$elm_animator$Internal$Timeline$Animator,
+	$elm$core$Basics$always(false),
+	F2(
+		function (now, model) {
+			return model;
+		}));
+var $mdgriffith$elm_animator$Internal$Timeline$Line = F3(
+	function (a, b, c) {
+		return {$: 'Line', a: a, b: b, c: c};
+	});
+var $mdgriffith$elm_animator$Internal$Timeline$Occurring = F3(
+	function (a, b, c) {
+		return {$: 'Occurring', a: a, b: b, c: c};
+	});
+var $ianmackenzie$elm_units$Duration$inSeconds = function (_v0) {
+	var numSeconds = _v0.a;
+	return numSeconds;
+};
+var $ianmackenzie$elm_units$Duration$inMilliseconds = function (duration) {
+	return $ianmackenzie$elm_units$Duration$inSeconds(duration) * 1000;
+};
+var $ianmackenzie$elm_units$Quantity$plus = F2(
+	function (_v0, _v1) {
+		var y = _v0.a;
+		var x = _v1.a;
+		return $ianmackenzie$elm_units$Quantity$Quantity(x + y);
+	});
+var $mdgriffith$elm_animator$Internal$Time$advanceBy = F2(
+	function (dur, time) {
+		return A2(
+			$ianmackenzie$elm_units$Quantity$plus,
+			time,
+			$ianmackenzie$elm_units$Quantity$Quantity(
+				$ianmackenzie$elm_units$Duration$inMilliseconds(dur)));
+	});
+var $ianmackenzie$elm_units$Quantity$greaterThan = F2(
+	function (_v0, _v1) {
+		var y = _v0.a;
+		var x = _v1.a;
+		return _Utils_cmp(x, y) > 0;
+	});
+var $mdgriffith$elm_animator$Internal$Time$inMilliseconds = function (_v0) {
+	var ms = _v0.a;
+	return ms;
+};
+var $ianmackenzie$elm_units$Duration$seconds = function (numSeconds) {
+	return $ianmackenzie$elm_units$Quantity$Quantity(numSeconds);
+};
+var $ianmackenzie$elm_units$Duration$milliseconds = function (numMilliseconds) {
+	return $ianmackenzie$elm_units$Duration$seconds(0.001 * numMilliseconds);
+};
+var $mdgriffith$elm_animator$Internal$Time$duration = F2(
+	function (one, two) {
+		return A2($ianmackenzie$elm_units$Quantity$greaterThan, two, one) ? $ianmackenzie$elm_units$Duration$milliseconds(
+			A2(
+				$elm$core$Basics$max,
+				0,
+				$mdgriffith$elm_animator$Internal$Time$inMilliseconds(one) - $mdgriffith$elm_animator$Internal$Time$inMilliseconds(two))) : $ianmackenzie$elm_units$Duration$milliseconds(
+			A2(
+				$elm$core$Basics$max,
+				0,
+				$mdgriffith$elm_animator$Internal$Time$inMilliseconds(two) - $mdgriffith$elm_animator$Internal$Time$inMilliseconds(one)));
+	});
+var $ianmackenzie$elm_units$Quantity$multiplyBy = F2(
+	function (scale, _v0) {
+		var value = _v0.a;
+		return $ianmackenzie$elm_units$Quantity$Quantity(scale * value);
+	});
+var $mdgriffith$elm_animator$Internal$Timeline$adjustTime = F4(
+	function (lookup, getPersonality, unmodified, upcomingOccurring) {
+		var event = unmodified.a;
+		var start = unmodified.b;
+		var eventEnd = unmodified.c;
+		if (!upcomingOccurring.b) {
+			return unmodified;
+		} else {
+			var _v1 = upcomingOccurring.a;
+			var next = _v1.a;
+			var nextStartTime = _v1.b;
+			var personality = getPersonality(
+				lookup(event));
+			if (!(!personality.departLate)) {
+				var totalDuration = A2($mdgriffith$elm_animator$Internal$Time$duration, eventEnd, nextStartTime);
+				var nextPersonality = getPersonality(
+					lookup(next));
+				var totalPortions = A2($elm$core$Basics$max, personality.departLate + nextPersonality.arriveEarly, 1);
+				var lateBy = A2($ianmackenzie$elm_units$Quantity$multiplyBy, personality.departLate / totalPortions, totalDuration);
+				return A3(
+					$mdgriffith$elm_animator$Internal$Timeline$Occurring,
+					event,
+					start,
+					A2($mdgriffith$elm_animator$Internal$Time$advanceBy, lateBy, eventEnd));
+			} else {
+				return unmodified;
+			}
+		}
+	});
+var $ianmackenzie$elm_units$Quantity$minus = F2(
+	function (_v0, _v1) {
+		var y = _v0.a;
+		var x = _v1.a;
+		return $ianmackenzie$elm_units$Quantity$Quantity(x - y);
+	});
+var $mdgriffith$elm_animator$Internal$Time$rollbackBy = F2(
+	function (dur, time) {
+		return A2(
+			$ianmackenzie$elm_units$Quantity$minus,
+			$ianmackenzie$elm_units$Quantity$Quantity(
+				$ianmackenzie$elm_units$Duration$inMilliseconds(dur)),
+			time);
+	});
+var $mdgriffith$elm_animator$Internal$Time$zeroDuration = function (_v0) {
+	var dur = _v0.a;
+	return !dur;
+};
+var $mdgriffith$elm_animator$Internal$Timeline$adjustTimeWithPrevious = F5(
+	function (lookup, getPersonality, _v0, unmodified, upcomingOccurring) {
+		var prev = _v0.a;
+		var prevStart = _v0.b;
+		var prevEnd = _v0.c;
+		var event = unmodified.a;
+		var start = unmodified.b;
+		var eventEnd = unmodified.c;
+		var totalPrevDuration = A2($mdgriffith$elm_animator$Internal$Time$duration, prevEnd, start);
+		var prevPersonality = getPersonality(
+			lookup(prev));
+		var personality = getPersonality(
+			lookup(event));
+		var totalPrevPortions = A2($elm$core$Basics$max, prevPersonality.departLate + personality.arriveEarly, 1);
+		var earlyBy = A2($ianmackenzie$elm_units$Quantity$multiplyBy, personality.arriveEarly / totalPrevPortions, totalPrevDuration);
+		if (!upcomingOccurring.b) {
+			return $mdgriffith$elm_animator$Internal$Time$zeroDuration(earlyBy) ? unmodified : A3(
+				$mdgriffith$elm_animator$Internal$Timeline$Occurring,
+				event,
+				A2($mdgriffith$elm_animator$Internal$Time$rollbackBy, earlyBy, start),
+				eventEnd);
+		} else {
+			var _v2 = upcomingOccurring.a;
+			var next = _v2.a;
+			var nextStartTime = _v2.b;
+			if (!(!personality.departLate)) {
+				var totalDuration = A2($mdgriffith$elm_animator$Internal$Time$duration, eventEnd, nextStartTime);
+				var nextPersonality = getPersonality(
+					lookup(next));
+				var totalPortions = A2($elm$core$Basics$max, personality.departLate + nextPersonality.arriveEarly, 1);
+				var lateBy = A2($ianmackenzie$elm_units$Quantity$multiplyBy, personality.departLate / totalPortions, totalDuration);
+				return A3(
+					$mdgriffith$elm_animator$Internal$Timeline$Occurring,
+					event,
+					A2($mdgriffith$elm_animator$Internal$Time$rollbackBy, earlyBy, start),
+					A2($mdgriffith$elm_animator$Internal$Time$advanceBy, lateBy, eventEnd));
+			} else {
+				if ($mdgriffith$elm_animator$Internal$Time$zeroDuration(earlyBy)) {
+					return unmodified;
+				} else {
+					return A3(
+						$mdgriffith$elm_animator$Internal$Timeline$Occurring,
+						event,
+						A2($mdgriffith$elm_animator$Internal$Time$rollbackBy, earlyBy, start),
+						eventEnd);
+				}
+			}
+		}
+	});
+var $mdgriffith$elm_animator$Internal$Timeline$getEvent = function (_v0) {
+	var ev = _v0.a;
+	return ev;
+};
+var $mdgriffith$elm_animator$Internal$Timeline$hasDwell = function (_v0) {
+	var start = _v0.b.a;
+	var end = _v0.c.a;
+	return !(!(start - end));
+};
+var $mdgriffith$elm_animator$Internal$Timeline$startTime = function (_v0) {
+	var time = _v0.b;
+	return time;
+};
+var $mdgriffith$elm_animator$Internal$Timeline$createLookAhead = F4(
+	function (fn, lookup, currentEvent, upcomingEvents) {
+		if (!upcomingEvents.b) {
+			return $elm$core$Maybe$Nothing;
+		} else {
+			var unadjustedUpcoming = upcomingEvents.a;
+			var remain = upcomingEvents.b;
+			var upcomingOccurring = A5($mdgriffith$elm_animator$Internal$Timeline$adjustTimeWithPrevious, lookup, fn.adjustor, currentEvent, unadjustedUpcoming, remain);
+			return $elm$core$Maybe$Just(
+				{
+					anchor: lookup(
+						$mdgriffith$elm_animator$Internal$Timeline$getEvent(upcomingOccurring)),
+					resting: $mdgriffith$elm_animator$Internal$Timeline$hasDwell(upcomingOccurring),
+					time: $mdgriffith$elm_animator$Internal$Time$inMilliseconds(
+						$mdgriffith$elm_animator$Internal$Timeline$startTime(upcomingOccurring))
+				});
+		}
+	});
+var $mdgriffith$elm_animator$Internal$Timeline$endTime = function (_v0) {
+	var end = _v0.c;
+	return end;
+};
+var $mdgriffith$elm_animator$Internal$Time$thisBeforeOrEqualThat = F2(
+	function (_v0, _v1) {
+		var _this = _v0.a;
+		var that = _v1.a;
+		return (_this - that) <= 0;
+	});
+var $mdgriffith$elm_animator$Internal$Time$thisBeforeThat = F2(
+	function (_v0, _v1) {
+		var _this = _v0.a;
+		var that = _v1.a;
+		return (_this - that) < 0;
+	});
+var $mdgriffith$elm_animator$Internal$Timeline$overLines = F7(
+	function (fn, lookup, details, maybePreviousEvent, _v0, futureLines, state) {
+		overLines:
+		while (true) {
+			var lineStart = _v0.a;
+			var unadjustedStartEvent = _v0.b;
+			var lineRemain = _v0.c;
+			var transition = function (newState) {
+				if (!futureLines.b) {
+					return newState;
+				} else {
+					var future = futureLines.a;
+					var futureStart = future.a;
+					var futureStartEv = future.b;
+					var futureRemain = future.c;
+					var restOfFuture = futureLines.b;
+					return A2($mdgriffith$elm_animator$Internal$Time$thisBeforeOrEqualThat, futureStart, details.now) ? A7($mdgriffith$elm_animator$Internal$Timeline$overLines, fn, lookup, details, $elm$core$Maybe$Nothing, future, restOfFuture, newState) : newState;
+				}
+			};
+			var now = function () {
+				if (!futureLines.b) {
+					return details.now;
+				} else {
+					var _v5 = futureLines.a;
+					var futureStart = _v5.a;
+					var futureStartEv = _v5.b;
+					var futureRemain = _v5.c;
+					var restOfFuture = futureLines.b;
+					return A2($mdgriffith$elm_animator$Internal$Time$thisBeforeThat, futureStart, details.now) ? futureStart : details.now;
+				}
+			}();
+			var lineStartEv = function () {
+				if (maybePreviousEvent.$ === 'Nothing') {
+					return A4($mdgriffith$elm_animator$Internal$Timeline$adjustTime, lookup, fn.adjustor, unadjustedStartEvent, lineRemain);
+				} else {
+					var prev = maybePreviousEvent.a;
+					return A5($mdgriffith$elm_animator$Internal$Timeline$adjustTimeWithPrevious, lookup, fn.adjustor, prev, unadjustedStartEvent, lineRemain);
+				}
+			}();
+			if (A2(
+				$mdgriffith$elm_animator$Internal$Time$thisBeforeThat,
+				now,
+				$mdgriffith$elm_animator$Internal$Timeline$startTime(lineStartEv))) {
+				return transition(
+					A7(
+						fn.lerp,
+						$mdgriffith$elm_animator$Internal$Time$inMilliseconds(lineStart),
+						$elm$core$Maybe$Just(
+							lookup(details.initial)),
+						lookup(
+							$mdgriffith$elm_animator$Internal$Timeline$getEvent(lineStartEv)),
+						$mdgriffith$elm_animator$Internal$Time$inMilliseconds(
+							$mdgriffith$elm_animator$Internal$Timeline$startTime(lineStartEv)),
+						$mdgriffith$elm_animator$Internal$Time$inMilliseconds(now),
+						A4($mdgriffith$elm_animator$Internal$Timeline$createLookAhead, fn, lookup, unadjustedStartEvent, lineRemain),
+						state));
+			} else {
+				if (A2(
+					$mdgriffith$elm_animator$Internal$Time$thisBeforeThat,
+					now,
+					$mdgriffith$elm_animator$Internal$Timeline$endTime(lineStartEv))) {
+					return transition(
+						A5(
+							fn.visit,
+							lookup,
+							lineStartEv,
+							now,
+							A4($mdgriffith$elm_animator$Internal$Timeline$createLookAhead, fn, lookup, unadjustedStartEvent, lineRemain),
+							state));
+				} else {
+					if (!lineRemain.b) {
+						return transition(
+							A5(fn.visit, lookup, lineStartEv, now, $elm$core$Maybe$Nothing, state));
+					} else {
+						var unadjustedNext = lineRemain.a;
+						var lineRemain2 = lineRemain.b;
+						var next = A5($mdgriffith$elm_animator$Internal$Timeline$adjustTimeWithPrevious, lookup, fn.adjustor, unadjustedStartEvent, unadjustedNext, lineRemain2);
+						if (A2(
+							$mdgriffith$elm_animator$Internal$Time$thisBeforeThat,
+							now,
+							$mdgriffith$elm_animator$Internal$Timeline$startTime(next))) {
+							return transition(
+								A7(
+									fn.lerp,
+									$mdgriffith$elm_animator$Internal$Time$inMilliseconds(
+										$mdgriffith$elm_animator$Internal$Timeline$endTime(lineStartEv)),
+									$elm$core$Maybe$Just(
+										lookup(
+											$mdgriffith$elm_animator$Internal$Timeline$getEvent(lineStartEv))),
+									lookup(
+										$mdgriffith$elm_animator$Internal$Timeline$getEvent(next)),
+									$mdgriffith$elm_animator$Internal$Time$inMilliseconds(
+										$mdgriffith$elm_animator$Internal$Timeline$startTime(next)),
+									$mdgriffith$elm_animator$Internal$Time$inMilliseconds(now),
+									A4($mdgriffith$elm_animator$Internal$Timeline$createLookAhead, fn, lookup, unadjustedNext, lineRemain2),
+									A5(
+										fn.visit,
+										lookup,
+										lineStartEv,
+										now,
+										A4($mdgriffith$elm_animator$Internal$Timeline$createLookAhead, fn, lookup, unadjustedStartEvent, lineRemain),
+										state)));
+						} else {
+							if (A2(
+								$mdgriffith$elm_animator$Internal$Time$thisBeforeThat,
+								now,
+								$mdgriffith$elm_animator$Internal$Timeline$endTime(next))) {
+								return transition(
+									A5(
+										fn.visit,
+										lookup,
+										next,
+										now,
+										A4($mdgriffith$elm_animator$Internal$Timeline$createLookAhead, fn, lookup, unadjustedNext, lineRemain2),
+										state));
+							} else {
+								if (!lineRemain2.b) {
+									return transition(
+										A5(fn.visit, lookup, next, now, $elm$core$Maybe$Nothing, state));
+								} else {
+									var unadjustedNext2 = lineRemain2.a;
+									var lineRemain3 = lineRemain2.b;
+									var next2 = A5($mdgriffith$elm_animator$Internal$Timeline$adjustTimeWithPrevious, lookup, fn.adjustor, unadjustedNext, unadjustedNext2, lineRemain3);
+									if (A2(
+										$mdgriffith$elm_animator$Internal$Time$thisBeforeThat,
+										now,
+										$mdgriffith$elm_animator$Internal$Timeline$startTime(next2))) {
+										var after = A5(
+											fn.visit,
+											lookup,
+											next,
+											now,
+											A4($mdgriffith$elm_animator$Internal$Timeline$createLookAhead, fn, lookup, unadjustedNext, lineRemain2),
+											state);
+										return transition(
+											A7(
+												fn.lerp,
+												$mdgriffith$elm_animator$Internal$Time$inMilliseconds(
+													$mdgriffith$elm_animator$Internal$Timeline$endTime(next)),
+												$elm$core$Maybe$Just(
+													lookup(
+														$mdgriffith$elm_animator$Internal$Timeline$getEvent(next))),
+												lookup(
+													$mdgriffith$elm_animator$Internal$Timeline$getEvent(next2)),
+												$mdgriffith$elm_animator$Internal$Time$inMilliseconds(
+													$mdgriffith$elm_animator$Internal$Timeline$startTime(next2)),
+												$mdgriffith$elm_animator$Internal$Time$inMilliseconds(now),
+												A4($mdgriffith$elm_animator$Internal$Timeline$createLookAhead, fn, lookup, unadjustedNext2, lineRemain3),
+												after));
+									} else {
+										if (A2(
+											$mdgriffith$elm_animator$Internal$Time$thisBeforeThat,
+											now,
+											$mdgriffith$elm_animator$Internal$Timeline$endTime(next2))) {
+											return transition(
+												A5(
+													fn.visit,
+													lookup,
+													next2,
+													now,
+													A4($mdgriffith$elm_animator$Internal$Timeline$createLookAhead, fn, lookup, unadjustedNext2, lineRemain3),
+													state));
+										} else {
+											var after = A5(
+												fn.visit,
+												lookup,
+												next2,
+												now,
+												A4($mdgriffith$elm_animator$Internal$Timeline$createLookAhead, fn, lookup, unadjustedNext2, lineRemain3),
+												state);
+											var $temp$fn = fn,
+												$temp$lookup = lookup,
+												$temp$details = details,
+												$temp$maybePreviousEvent = $elm$core$Maybe$Just(next),
+												$temp$_v0 = A3(
+												$mdgriffith$elm_animator$Internal$Timeline$Line,
+												$mdgriffith$elm_animator$Internal$Timeline$endTime(next),
+												unadjustedNext2,
+												lineRemain3),
+												$temp$futureLines = futureLines,
+												$temp$state = after;
+											fn = $temp$fn;
+											lookup = $temp$lookup;
+											details = $temp$details;
+											maybePreviousEvent = $temp$maybePreviousEvent;
+											_v0 = $temp$_v0;
+											futureLines = $temp$futureLines;
+											state = $temp$state;
+											continue overLines;
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	});
+var $mdgriffith$elm_animator$Internal$Timeline$foldp = F3(
+	function (lookup, fn, _v0) {
+		var timelineDetails = _v0.a;
+		var _v1 = timelineDetails.events;
+		var timetable = _v1.a;
+		var start = fn.start(
+			lookup(timelineDetails.initial));
+		if (!timetable.b) {
+			return start;
+		} else {
+			var firstLine = timetable.a;
+			var remainingLines = timetable.b;
+			return A7($mdgriffith$elm_animator$Internal$Timeline$overLines, fn, lookup, timelineDetails, $elm$core$Maybe$Nothing, firstLine, remainingLines, start);
+		}
+	});
+var $mdgriffith$elm_animator$Internal$Timeline$linearDefault = {arriveEarly: 0, arriveSlowly: 0, departLate: 0, departSlowly: 0, wobbliness: 0};
+var $mdgriffith$elm_animator$Internal$Timeline$current = function (timeline) {
+	var details = timeline.a;
+	return A3(
+		$mdgriffith$elm_animator$Internal$Timeline$foldp,
+		$elm$core$Basics$identity,
+		{
+			adjustor: function (_v0) {
+				return $mdgriffith$elm_animator$Internal$Timeline$linearDefault;
+			},
+			dwellPeriod: function (_v1) {
+				return $elm$core$Maybe$Nothing;
+			},
+			lerp: F7(
+				function (_v2, _v3, target, _v4, _v5, _v6, _v7) {
+					return target;
+				}),
+			start: function (_v8) {
+				return details.initial;
+			},
+			visit: F5(
+				function (lookup, target, targetTime, maybeLookAhead, state) {
+					return $mdgriffith$elm_animator$Internal$Timeline$getEvent(target);
+				})
+		},
+		timeline);
+};
+var $mdgriffith$elm_animator$Internal$Timeline$needsUpdate = function (tl) {
+	var timeline = tl.a;
+	var _v0 = timeline.queued;
+	if (_v0.$ === 'Nothing') {
+		var _v1 = timeline.interruption;
+		if (!_v1.b) {
+			return timeline.running;
+		} else {
+			return true;
+		}
+	} else {
+		return true;
+	}
+};
+var $elm$core$Tuple$second = function (_v0) {
+	var y = _v0.b;
+	return y;
+};
+var $mdgriffith$elm_animator$Internal$Timeline$toOccurring = F2(
+	function (_v0, _v1) {
+		var duration = _v0.a;
+		var event = _v0.b;
+		var maybeDwell = _v0.c;
+		var now = _v1.a;
+		var events = _v1.b;
+		var occursAt = A2($mdgriffith$elm_animator$Internal$Time$advanceBy, duration, now);
+		var endsAt = function () {
+			if (maybeDwell.$ === 'Nothing') {
+				return occursAt;
+			} else {
+				var dwell = maybeDwell.a;
+				return A2($mdgriffith$elm_animator$Internal$Time$advanceBy, dwell, occursAt);
+			}
+		}();
+		return _Utils_Tuple2(
+			endsAt,
+			A2(
+				$elm$core$List$cons,
+				A3($mdgriffith$elm_animator$Internal$Timeline$Occurring, event, occursAt, endsAt),
+				events));
+	});
+var $mdgriffith$elm_animator$Internal$Timeline$createLine = F2(
+	function (now, scheduled) {
+		var _v0 = scheduled.b;
+		var dur = _v0.a;
+		var startEvent = _v0.b;
+		var maybeDwell = _v0.c;
+		var reverseQueued = scheduled.c;
+		var start = A2($mdgriffith$elm_animator$Internal$Time$advanceBy, dur, now);
+		var startNextEvent = function () {
+			if (maybeDwell.$ === 'Nothing') {
+				return start;
+			} else {
+				var dwell = maybeDwell.a;
+				return A2($mdgriffith$elm_animator$Internal$Time$advanceBy, dwell, start);
+			}
+		}();
+		var events = $elm$core$List$reverse(
+			A3(
+				$elm$core$List$foldl,
+				$mdgriffith$elm_animator$Internal$Timeline$toOccurring,
+				_Utils_Tuple2(startNextEvent, _List_Nil),
+				$elm$core$List$reverse(reverseQueued)).b);
+		return A3(
+			$mdgriffith$elm_animator$Internal$Timeline$Line,
+			now,
+			A3($mdgriffith$elm_animator$Internal$Timeline$Occurring, startEvent, start, startNextEvent),
+			events);
+	});
+var $mdgriffith$elm_animator$Internal$Time$latest = F2(
+	function (oneQty, twoQty) {
+		var one = oneQty.a;
+		var two = twoQty.a;
+		return ((one - two) <= 0) ? twoQty : oneQty;
+	});
+var $mdgriffith$elm_animator$Internal$Time$thisAfterThat = F2(
+	function (_v0, _v1) {
+		var _this = _v0.a;
+		var that = _v1.a;
+		return (_this - that) > 0;
+	});
+var $mdgriffith$elm_animator$Internal$Timeline$addEventsToLine = F4(
+	function (now, scheduled, existing, lines) {
+		var delay = scheduled.a;
+		var scheduledStartingEvent = scheduled.b;
+		var reverseQueued = scheduled.c;
+		var startLineAt = existing.a;
+		var startingEvent = existing.b;
+		var events = existing.c;
+		var start = A2($mdgriffith$elm_animator$Internal$Time$advanceBy, delay, now);
+		var _v0 = $elm$core$List$reverse(events);
+		if (!_v0.b) {
+			var startingEventWithDwell = function () {
+				var ev = startingEvent.a;
+				var lastEventTime = startingEvent.b;
+				return A2($mdgriffith$elm_animator$Internal$Time$thisAfterThat, start, lastEventTime) ? A3($mdgriffith$elm_animator$Internal$Timeline$Occurring, ev, lastEventTime, start) : A3($mdgriffith$elm_animator$Internal$Timeline$Occurring, ev, lastEventTime, lastEventTime);
+			}();
+			var startNewEventsAt = A2(
+				$mdgriffith$elm_animator$Internal$Time$latest,
+				A2(
+					$mdgriffith$elm_animator$Internal$Time$advanceBy,
+					delay,
+					$mdgriffith$elm_animator$Internal$Timeline$endTime(startingEvent)),
+				start);
+			var newLine = A2($mdgriffith$elm_animator$Internal$Timeline$createLine, startNewEventsAt, scheduled);
+			return A2(
+				$elm$core$List$cons,
+				A3($mdgriffith$elm_animator$Internal$Timeline$Line, startLineAt, startingEventWithDwell, _List_Nil),
+				A2($elm$core$List$cons, newLine, lines));
+		} else {
+			var _v2 = _v0.a;
+			var lastEvent = _v2.a;
+			var lastEventTime = _v2.b;
+			var lastEventFinish = _v2.c;
+			var eventTail = _v0.b;
+			var startNewEventsAt = A2(
+				$mdgriffith$elm_animator$Internal$Time$latest,
+				A2($mdgriffith$elm_animator$Internal$Time$advanceBy, delay, lastEventFinish),
+				start);
+			var newLine = A2($mdgriffith$elm_animator$Internal$Timeline$createLine, startNewEventsAt, scheduled);
+			var newLastEvent = A3($mdgriffith$elm_animator$Internal$Timeline$Occurring, lastEvent, lastEventTime, startNewEventsAt);
+			return A2(
+				$elm$core$List$cons,
+				A3(
+					$mdgriffith$elm_animator$Internal$Timeline$Line,
+					startLineAt,
+					startingEvent,
+					$elm$core$List$reverse(
+						A2($elm$core$List$cons, newLastEvent, eventTail))),
+				A2($elm$core$List$cons, newLine, lines));
+		}
+	});
+var $elm$core$Basics$ge = _Utils_ge;
+var $mdgriffith$elm_animator$Internal$Time$thisAfterOrEqualThat = F2(
+	function (_v0, _v1) {
+		var _this = _v0.a;
+		var that = _v1.a;
+		return (_this - that) >= 0;
+	});
+var $mdgriffith$elm_animator$Internal$Timeline$addToCurrentLine = F3(
+	function (now, scheduled, lines) {
+		if (!lines.b) {
+			return _List_fromArray(
+				[
+					A2($mdgriffith$elm_animator$Internal$Timeline$createLine, now, scheduled)
+				]);
+		} else {
+			if (!lines.b.b) {
+				var line = lines.a;
+				return A4($mdgriffith$elm_animator$Internal$Timeline$addEventsToLine, now, scheduled, line, _List_Nil);
+			} else {
+				var _v1 = lines.a;
+				var startOne = _v1.a;
+				var startEventOne = _v1.b;
+				var one = _v1.c;
+				var _v2 = lines.b;
+				var _v3 = _v2.a;
+				var startTwo = _v3.a;
+				var startEventTwo = _v3.b;
+				var two = _v3.c;
+				var remaining = _v2.b;
+				return (A2($mdgriffith$elm_animator$Internal$Time$thisAfterOrEqualThat, now, startOne) && A2($mdgriffith$elm_animator$Internal$Time$thisBeforeOrEqualThat, now, startTwo)) ? A4(
+					$mdgriffith$elm_animator$Internal$Timeline$addEventsToLine,
+					now,
+					scheduled,
+					A3($mdgriffith$elm_animator$Internal$Timeline$Line, startOne, startEventOne, one),
+					A2(
+						$elm$core$List$cons,
+						A3($mdgriffith$elm_animator$Internal$Timeline$Line, startTwo, startEventTwo, two),
+						remaining)) : A2(
+					$elm$core$List$cons,
+					A3($mdgriffith$elm_animator$Internal$Timeline$Line, startOne, startEventOne, one),
+					A3(
+						$mdgriffith$elm_animator$Internal$Timeline$addToCurrentLine,
+						now,
+						scheduled,
+						A2(
+							$elm$core$List$cons,
+							A3($mdgriffith$elm_animator$Internal$Timeline$Line, startTwo, startEventTwo, two),
+							remaining)));
+			}
+		}
+	});
+var $mdgriffith$elm_animator$Internal$Timeline$enqueue = F3(
+	function (timeline, now, scheduled) {
+		var _v0 = timeline.events;
+		var lines = _v0.a;
+		return $mdgriffith$elm_animator$Internal$Timeline$Timetable(
+			A3($mdgriffith$elm_animator$Internal$Timeline$addToCurrentLine, now, scheduled, lines));
+	});
+var $mdgriffith$elm_animator$Internal$Timeline$LastTwoEvents = F4(
+	function (a, b, c, d) {
+		return {$: 'LastTwoEvents', a: a, b: b, c: c, d: d};
+	});
+var $mdgriffith$elm_animator$Internal$Timeline$beforeEventEnd = F2(
+	function (time, events) {
+		beforeEventEnd:
+		while (true) {
+			if (!events.b) {
+				return false;
+			} else {
+				var top = events.a;
+				var remain = events.b;
+				if (A2(
+					$mdgriffith$elm_animator$Internal$Time$thisBeforeThat,
+					time,
+					$mdgriffith$elm_animator$Internal$Timeline$endTime(top))) {
+					return true;
+				} else {
+					var $temp$time = time,
+						$temp$events = remain;
+					time = $temp$time;
+					events = $temp$events;
+					continue beforeEventEnd;
+				}
+			}
+		}
+	});
+var $mdgriffith$elm_animator$Internal$Timeline$beforeLineEnd = F2(
+	function (time, _v0) {
+		var lineStartAt = _v0.a;
+		var startingEvent = _v0.b;
+		var trailing = _v0.c;
+		if (A2($mdgriffith$elm_animator$Internal$Time$thisBeforeOrEqualThat, time, lineStartAt)) {
+			return true;
+		} else {
+			if (!trailing.b) {
+				return A2(
+					$mdgriffith$elm_animator$Internal$Time$thisBeforeThat,
+					time,
+					$mdgriffith$elm_animator$Internal$Timeline$endTime(startingEvent));
+			} else {
+				return A2($mdgriffith$elm_animator$Internal$Timeline$beforeEventEnd, time, trailing);
+			}
+		}
+	});
+var $mdgriffith$elm_animator$Internal$Timeline$getTransitionAt = F3(
+	function (interruptionTime, prev, trailing) {
+		getTransitionAt:
+		while (true) {
+			if (!trailing.b) {
+				return $elm$core$Maybe$Nothing;
+			} else {
+				var next = trailing.a;
+				var remain = trailing.b;
+				if (A2(
+					$mdgriffith$elm_animator$Internal$Time$thisAfterOrEqualThat,
+					interruptionTime,
+					$mdgriffith$elm_animator$Internal$Timeline$endTime(prev)) && A2(
+					$mdgriffith$elm_animator$Internal$Time$thisBeforeThat,
+					interruptionTime,
+					$mdgriffith$elm_animator$Internal$Timeline$startTime(next))) {
+					return $elm$core$Maybe$Just(
+						A4(
+							$mdgriffith$elm_animator$Internal$Timeline$LastTwoEvents,
+							$mdgriffith$elm_animator$Internal$Timeline$endTime(prev),
+							$mdgriffith$elm_animator$Internal$Timeline$getEvent(prev),
+							$mdgriffith$elm_animator$Internal$Timeline$startTime(next),
+							$mdgriffith$elm_animator$Internal$Timeline$getEvent(next)));
+				} else {
+					var $temp$interruptionTime = interruptionTime,
+						$temp$prev = next,
+						$temp$trailing = remain;
+					interruptionTime = $temp$interruptionTime;
+					prev = $temp$prev;
+					trailing = $temp$trailing;
+					continue getTransitionAt;
+				}
+			}
+		}
+	});
+var $mdgriffith$elm_animator$Internal$Timeline$Schedule = F3(
+	function (a, b, c) {
+		return {$: 'Schedule', a: a, b: b, c: c};
+	});
+var $mdgriffith$elm_animator$Internal$Timeline$Event = F3(
+	function (a, b, c) {
+		return {$: 'Event', a: a, b: b, c: c};
+	});
+var $mdgriffith$elm_animator$Internal$Timeline$adjustScheduledDuration = F2(
+	function (fn, _v0) {
+		var dur = _v0.a;
+		var ev = _v0.b;
+		var maybeDwell = _v0.c;
+		return A3(
+			$mdgriffith$elm_animator$Internal$Timeline$Event,
+			fn(dur),
+			ev,
+			maybeDwell);
+	});
+var $mdgriffith$elm_animator$Internal$Timeline$getScheduledEvent = function (_v0) {
+	var ev = _v0.b;
+	return ev;
+};
+var $elm$core$Basics$negate = function (n) {
+	return -n;
+};
+var $elm$core$Basics$abs = function (n) {
+	return (n < 0) ? (-n) : n;
+};
+var $mdgriffith$elm_animator$Internal$Time$progress = F3(
+	function (_v0, _v1, _v2) {
+		var start = _v0.a;
+		var end = _v1.a;
+		var current = _v2.a;
+		var total = $elm$core$Basics$abs(end - start);
+		return (!total) ? 0 : A2(
+			$elm$core$Basics$min,
+			1,
+			A2($elm$core$Basics$max, 0, (current - start) / total));
+	});
+var $mdgriffith$elm_animator$Internal$Timeline$interruptAtExactly = F3(
+	function (startInterruption, scheduled, last) {
+		var penultimateTime = last.a;
+		var penultimate = last.b;
+		var lastEventTime = last.c;
+		var lastEvent = last.d;
+		var delay_ = scheduled.a;
+		var startingEvent = scheduled.b;
+		var reverseQueued = scheduled.c;
+		var amountProgress = A3($mdgriffith$elm_animator$Internal$Time$progress, penultimateTime, lastEventTime, startInterruption);
+		var newStartingEvent = _Utils_eq(
+			penultimate,
+			$mdgriffith$elm_animator$Internal$Timeline$getScheduledEvent(startingEvent)) ? A2(
+			$mdgriffith$elm_animator$Internal$Timeline$adjustScheduledDuration,
+			$ianmackenzie$elm_units$Quantity$multiplyBy(amountProgress),
+			startingEvent) : startingEvent;
+		return A2(
+			$mdgriffith$elm_animator$Internal$Timeline$createLine,
+			startInterruption,
+			A3($mdgriffith$elm_animator$Internal$Timeline$Schedule, delay_, newStartingEvent, reverseQueued));
+	});
+var $mdgriffith$elm_animator$Internal$Timeline$interruptLine = F4(
+	function (startInterruption, scheduled, line, future) {
+		var start = line.a;
+		var startEvent = line.b;
+		var trailing = line.c;
+		if (A2($mdgriffith$elm_animator$Internal$Time$thisAfterOrEqualThat, startInterruption, start)) {
+			if (!future.b) {
+				var _v2 = A3($mdgriffith$elm_animator$Internal$Timeline$getTransitionAt, startInterruption, startEvent, trailing);
+				if (_v2.$ === 'Nothing') {
+					return A2($mdgriffith$elm_animator$Internal$Timeline$beforeLineEnd, startInterruption, line) ? $elm$core$Maybe$Just(
+						_List_fromArray(
+							[
+								A2($mdgriffith$elm_animator$Internal$Timeline$createLine, startInterruption, scheduled)
+							])) : $elm$core$Maybe$Nothing;
+				} else {
+					var last2Events = _v2.a;
+					return $elm$core$Maybe$Just(
+						_List_fromArray(
+							[
+								A3($mdgriffith$elm_animator$Internal$Timeline$interruptAtExactly, startInterruption, scheduled, last2Events)
+							]));
+				}
+			} else {
+				var _v3 = future.a;
+				var nextStart = _v3.a;
+				var next = _v3.b;
+				var nextEvents = _v3.c;
+				var futureRemaining = future.b;
+				return (A2($mdgriffith$elm_animator$Internal$Time$thisAfterOrEqualThat, startInterruption, nextStart) && A2(
+					$mdgriffith$elm_animator$Internal$Time$thisBeforeOrEqualThat,
+					startInterruption,
+					$mdgriffith$elm_animator$Internal$Timeline$startTime(next))) ? $elm$core$Maybe$Just(
+					A2(
+						$elm$core$List$cons,
+						A3($mdgriffith$elm_animator$Internal$Timeline$Line, nextStart, next, nextEvents),
+						A2(
+							$elm$core$List$cons,
+							A3(
+								$mdgriffith$elm_animator$Internal$Timeline$interruptAtExactly,
+								startInterruption,
+								scheduled,
+								A4(
+									$mdgriffith$elm_animator$Internal$Timeline$LastTwoEvents,
+									$mdgriffith$elm_animator$Internal$Timeline$endTime(startEvent),
+									$mdgriffith$elm_animator$Internal$Timeline$getEvent(startEvent),
+									$mdgriffith$elm_animator$Internal$Timeline$startTime(next),
+									$mdgriffith$elm_animator$Internal$Timeline$getEvent(next))),
+							futureRemaining))) : $elm$core$Maybe$Nothing;
+			}
+		} else {
+			return $elm$core$Maybe$Nothing;
+		}
+	});
+var $mdgriffith$elm_animator$Internal$Timeline$lineStartTime = function (_v0) {
+	var start = _v0.a;
+	return start;
+};
+var $mdgriffith$elm_animator$Internal$Timeline$interruptionHappensLater = F2(
+	function (startInterruption, remaining) {
+		if (!remaining.b) {
+			return false;
+		} else {
+			var top = remaining.a;
+			return A2(
+				$mdgriffith$elm_animator$Internal$Time$thisAfterOrEqualThat,
+				startInterruption,
+				$mdgriffith$elm_animator$Internal$Timeline$lineStartTime(top));
+		}
+	});
+var $mdgriffith$elm_animator$Internal$Timeline$interruptLines = F5(
+	function (now, startInterruption, scheduled, pastLines, lines) {
+		interruptLines:
+		while (true) {
+			if (!lines.b) {
+				return $elm$core$Maybe$Nothing;
+			} else {
+				var startLine = lines.a;
+				var remaining = lines.b;
+				if (A2($mdgriffith$elm_animator$Internal$Timeline$interruptionHappensLater, startInterruption, remaining)) {
+					var $temp$now = now,
+						$temp$startInterruption = startInterruption,
+						$temp$scheduled = scheduled,
+						$temp$pastLines = A2($elm$core$List$cons, startLine, pastLines),
+						$temp$lines = remaining;
+					now = $temp$now;
+					startInterruption = $temp$startInterruption;
+					scheduled = $temp$scheduled;
+					pastLines = $temp$pastLines;
+					lines = $temp$lines;
+					continue interruptLines;
+				} else {
+					var _v1 = A4($mdgriffith$elm_animator$Internal$Timeline$interruptLine, startInterruption, scheduled, startLine, remaining);
+					if (_v1.$ === 'Nothing') {
+						var $temp$now = now,
+							$temp$startInterruption = startInterruption,
+							$temp$scheduled = scheduled,
+							$temp$pastLines = A2($elm$core$List$cons, startLine, pastLines),
+							$temp$lines = remaining;
+						now = $temp$now;
+						startInterruption = $temp$startInterruption;
+						scheduled = $temp$scheduled;
+						pastLines = $temp$pastLines;
+						lines = $temp$lines;
+						continue interruptLines;
+					} else {
+						var interruption = _v1.a;
+						return (_Utils_eq(
+							startInterruption,
+							$mdgriffith$elm_animator$Internal$Timeline$lineStartTime(startLine)) && A2($mdgriffith$elm_animator$Internal$Time$thisAfterThat, startInterruption, now)) ? $elm$core$Maybe$Just(
+							_Utils_ap(
+								$elm$core$List$reverse(pastLines),
+								interruption)) : $elm$core$Maybe$Just(
+							_Utils_ap(
+								$elm$core$List$reverse(pastLines),
+								A2($elm$core$List$cons, startLine, interruption)));
+					}
+				}
+			}
+		}
+	});
+var $mdgriffith$elm_animator$Internal$Timeline$interrupt = F3(
+	function (details, startAt, scheduled) {
+		var _v0 = details.events;
+		var lines = _v0.a;
+		var _v1 = A5($mdgriffith$elm_animator$Internal$Timeline$interruptLines, details.now, startAt, scheduled, _List_Nil, lines);
+		if (_v1.$ === 'Nothing') {
+			return A3($mdgriffith$elm_animator$Internal$Timeline$enqueue, details, startAt, scheduled);
+		} else {
+			var interrupted = _v1.a;
+			return $mdgriffith$elm_animator$Internal$Timeline$Timetable(interrupted);
+		}
+	});
+var $mdgriffith$elm_animator$Internal$Timeline$applyInterruptionHelper = F2(
+	function (interrupts, timeline) {
+		applyInterruptionHelper:
+		while (true) {
+			if (!interrupts.b) {
+				return timeline;
+			} else {
+				var inter = interrupts.a;
+				var remaining = interrupts.b;
+				var delay = function () {
+					var d = inter.a;
+					return d;
+				}();
+				var newEvents = A3(
+					$mdgriffith$elm_animator$Internal$Timeline$interrupt,
+					timeline,
+					A2($mdgriffith$elm_animator$Internal$Time$advanceBy, delay, timeline.now),
+					inter);
+				var $temp$interrupts = remaining,
+					$temp$timeline = _Utils_update(
+					timeline,
+					{events: newEvents});
+				interrupts = $temp$interrupts;
+				timeline = $temp$timeline;
+				continue applyInterruptionHelper;
+			}
+		}
+	});
+var $mdgriffith$elm_animator$Internal$Timeline$applyInterruptions = function (timeline) {
+	var _v0 = timeline.interruption;
+	if (!_v0.b) {
+		return timeline;
+	} else {
+		return A2(
+			$mdgriffith$elm_animator$Internal$Timeline$applyInterruptionHelper,
+			$elm$core$List$reverse(timeline.interruption),
+			_Utils_update(
+				timeline,
+				{interruption: _List_Nil}));
+	}
+};
+var $mdgriffith$elm_animator$Internal$Timeline$applyQueued = function (timeline) {
+	var _v0 = timeline.queued;
+	if (_v0.$ === 'Nothing') {
+		return timeline;
+	} else {
+		var queued = _v0.a;
+		return _Utils_update(
+			timeline,
+			{
+				events: A3($mdgriffith$elm_animator$Internal$Timeline$enqueue, timeline, timeline.now, queued),
+				queued: $elm$core$Maybe$Nothing
+			});
+	}
+};
+var $mdgriffith$elm_animator$Internal$Timeline$dwellingAt = F2(
+	function (now, event) {
+		var eventStartTime = $mdgriffith$elm_animator$Internal$Timeline$startTime(event);
+		var eventEndTime = $mdgriffith$elm_animator$Internal$Timeline$endTime(event);
+		return A2($mdgriffith$elm_animator$Internal$Time$thisAfterOrEqualThat, now, eventStartTime) && A2($mdgriffith$elm_animator$Internal$Time$thisBeforeOrEqualThat, now, eventEndTime);
+	});
+var $elm$core$List$head = function (list) {
+	if (list.b) {
+		var x = list.a;
+		var xs = list.b;
+		return $elm$core$Maybe$Just(x);
+	} else {
+		return $elm$core$Maybe$Nothing;
+	}
+};
+var $mdgriffith$elm_animator$Internal$Timeline$Captured = function (a) {
+	return {$: 'Captured', a: a};
+};
+var $mdgriffith$elm_animator$Internal$Timeline$NothingCaptured = {$: 'NothingCaptured'};
+var $mdgriffith$elm_animator$Internal$Timeline$hewLine = F2(
+	function (now, events) {
+		hewLine:
+		while (true) {
+			if (!events.b) {
+				return $mdgriffith$elm_animator$Internal$Timeline$NothingCaptured;
+			} else {
+				var top = events.a;
+				var remaining = events.b;
+				if (A2($mdgriffith$elm_animator$Internal$Timeline$dwellingAt, now, top)) {
+					return $mdgriffith$elm_animator$Internal$Timeline$Captured(
+						A3(
+							$mdgriffith$elm_animator$Internal$Timeline$Line,
+							$mdgriffith$elm_animator$Internal$Timeline$startTime(top),
+							top,
+							remaining));
+				} else {
+					if (A2(
+						$mdgriffith$elm_animator$Internal$Time$thisAfterThat,
+						now,
+						$mdgriffith$elm_animator$Internal$Timeline$endTime(top))) {
+						var $temp$now = now,
+							$temp$events = remaining;
+						now = $temp$now;
+						events = $temp$events;
+						continue hewLine;
+					} else {
+						return $mdgriffith$elm_animator$Internal$Timeline$NothingCaptured;
+					}
+				}
+			}
+		}
+	});
+var $elm$core$Maybe$map = F2(
+	function (f, maybe) {
+		if (maybe.$ === 'Just') {
+			var value = maybe.a;
+			return $elm$core$Maybe$Just(
+				f(value));
+		} else {
+			return $elm$core$Maybe$Nothing;
+		}
+	});
+var $mdgriffith$elm_animator$Internal$Timeline$garbageCollectOldEvents = F3(
+	function (now, droppable, lines) {
+		garbageCollectOldEvents:
+		while (true) {
+			if (!lines.b) {
+				return $elm$core$List$reverse(droppable);
+			} else {
+				var _v1 = lines.a;
+				var startAt = _v1.a;
+				var startingEvent = _v1.b;
+				var events = _v1.c;
+				var remaining = lines.b;
+				if (A2($mdgriffith$elm_animator$Internal$Time$thisAfterOrEqualThat, startAt, now)) {
+					return _Utils_ap(
+						$elm$core$List$reverse(droppable),
+						lines);
+				} else {
+					if (A2($mdgriffith$elm_animator$Internal$Timeline$dwellingAt, now, startingEvent)) {
+						return lines;
+					} else {
+						var maybeInterruptionTime = A2(
+							$elm$core$Maybe$map,
+							$mdgriffith$elm_animator$Internal$Timeline$lineStartTime,
+							$elm$core$List$head(remaining));
+						var interrupted = function () {
+							if (maybeInterruptionTime.$ === 'Nothing') {
+								return false;
+							} else {
+								var interruptionTime = maybeInterruptionTime.a;
+								return A2($mdgriffith$elm_animator$Internal$Time$thisAfterOrEqualThat, now, interruptionTime);
+							}
+						}();
+						if (interrupted) {
+							var $temp$now = now,
+								$temp$droppable = A2(
+								$elm$core$List$cons,
+								A3($mdgriffith$elm_animator$Internal$Timeline$Line, startAt, startingEvent, events),
+								droppable),
+								$temp$lines = remaining;
+							now = $temp$now;
+							droppable = $temp$droppable;
+							lines = $temp$lines;
+							continue garbageCollectOldEvents;
+						} else {
+							var _v2 = A2($mdgriffith$elm_animator$Internal$Timeline$hewLine, now, events);
+							if (_v2.$ === 'NothingCaptured') {
+								return _Utils_ap(
+									$elm$core$List$reverse(droppable),
+									lines);
+							} else {
+								var capturedLine = _v2.a;
+								return A2($elm$core$List$cons, capturedLine, remaining);
+							}
+						}
+					}
+				}
+			}
+		}
+	});
+var $mdgriffith$elm_animator$Internal$Timeline$linesAreActive = F2(
+	function (now, lines) {
+		linesAreActive:
+		while (true) {
+			if (!lines.b) {
+				return false;
+			} else {
+				var _v1 = lines.a;
+				var startAt = _v1.a;
+				var startingEvent = _v1.b;
+				var events = _v1.c;
+				var remaining = lines.b;
+				if (A2($mdgriffith$elm_animator$Internal$Time$thisAfterOrEqualThat, startAt, now)) {
+					return true;
+				} else {
+					var maybeInterruption = function () {
+						var _v5 = $elm$core$List$head(remaining);
+						if (_v5.$ === 'Nothing') {
+							return $elm$core$Maybe$Nothing;
+						} else {
+							var _v6 = _v5.a;
+							var interruptionTime = _v6.a;
+							return $elm$core$Maybe$Just(interruptionTime);
+						}
+					}();
+					var last = A2(
+						$elm$core$Maybe$withDefault,
+						startingEvent,
+						$elm$core$List$head(
+							$elm$core$List$reverse(events)));
+					if (maybeInterruption.$ === 'Just') {
+						var interruptTime = maybeInterruption.a;
+						if (A2($mdgriffith$elm_animator$Internal$Time$thisAfterOrEqualThat, interruptTime, now)) {
+							return true;
+						} else {
+							var time = last.b;
+							if (A2($mdgriffith$elm_animator$Internal$Time$thisAfterOrEqualThat, time, now)) {
+								return true;
+							} else {
+								var $temp$now = now,
+									$temp$lines = remaining;
+								now = $temp$now;
+								lines = $temp$lines;
+								continue linesAreActive;
+							}
+						}
+					} else {
+						var time = last.b;
+						if (A2($mdgriffith$elm_animator$Internal$Time$thisAfterOrEqualThat, time, now)) {
+							return true;
+						} else {
+							var $temp$now = now,
+								$temp$lines = remaining;
+							now = $temp$now;
+							lines = $temp$lines;
+							continue linesAreActive;
+						}
+					}
+				}
+			}
+		}
+	});
+var $mdgriffith$elm_animator$Internal$Timeline$clean = F2(
+	function (runGC, details) {
+		var running = function () {
+			var _v1 = details.events;
+			var lines = _v1.a;
+			return A2($mdgriffith$elm_animator$Internal$Timeline$linesAreActive, details.now, lines);
+		}();
+		var events = function () {
+			var _v0 = details.events;
+			var evs = _v0.a;
+			return evs;
+		}();
+		return _Utils_update(
+			details,
+			{
+				events: runGC ? $mdgriffith$elm_animator$Internal$Timeline$Timetable(
+					A3($mdgriffith$elm_animator$Internal$Timeline$garbageCollectOldEvents, details.now, _List_Nil, events)) : details.events,
+				running: running
+			});
+	});
+var $ianmackenzie$elm_units$Quantity$max = F2(
+	function (_v0, _v1) {
+		var x = _v0.a;
+		var y = _v1.a;
+		return $ianmackenzie$elm_units$Quantity$Quantity(
+			A2($elm$core$Basics$max, x, y));
+	});
+var $mdgriffith$elm_animator$Internal$Timeline$updateWith = F3(
+	function (withGC, possiblyNow, _v0) {
+		var timeline = _v0.a;
+		var now = A2(
+			$ianmackenzie$elm_units$Quantity$max,
+			$mdgriffith$elm_animator$Internal$Time$absolute(possiblyNow),
+			timeline.now);
+		return _Utils_eq(
+			timeline.events,
+			$mdgriffith$elm_animator$Internal$Timeline$Timetable(_List_Nil)) ? $mdgriffith$elm_animator$Internal$Timeline$Timeline(
+			A2(
+				$mdgriffith$elm_animator$Internal$Timeline$clean,
+				withGC,
+				$mdgriffith$elm_animator$Internal$Timeline$applyInterruptions(
+					$mdgriffith$elm_animator$Internal$Timeline$applyQueued(
+						_Utils_update(
+							timeline,
+							{
+								events: function () {
+									var firstOccurring = A3($mdgriffith$elm_animator$Internal$Timeline$Occurring, timeline.initial, now, now);
+									return $mdgriffith$elm_animator$Internal$Timeline$Timetable(
+										_List_fromArray(
+											[
+												A3($mdgriffith$elm_animator$Internal$Timeline$Line, now, firstOccurring, _List_Nil)
+											]));
+								}(),
+								now: now
+							}))))) : $mdgriffith$elm_animator$Internal$Timeline$Timeline(
+			A2(
+				$mdgriffith$elm_animator$Internal$Timeline$clean,
+				withGC,
+				$mdgriffith$elm_animator$Internal$Timeline$applyInterruptions(
+					$mdgriffith$elm_animator$Internal$Timeline$applyQueued(
+						_Utils_update(
+							timeline,
+							{now: now})))));
+	});
+var $mdgriffith$elm_animator$Internal$Timeline$update = $mdgriffith$elm_animator$Internal$Timeline$updateWith(true);
+var $mdgriffith$elm_animator$Animator$watchingWith = F4(
+	function (get, set, eventIsRestable, _v0) {
+		var isRunning = _v0.a;
+		var updateModel = _v0.b;
+		return A2(
+			$mdgriffith$elm_animator$Internal$Timeline$Animator,
+			function (model) {
+				if (isRunning(model)) {
+					return true;
+				} else {
+					var timeline = get(model);
+					return $mdgriffith$elm_animator$Internal$Timeline$needsUpdate(timeline) ? true : eventIsRestable(
+						$mdgriffith$elm_animator$Internal$Timeline$current(timeline));
+				}
+			},
+			F2(
+				function (now, model) {
+					var newModel = A2(updateModel, now, model);
+					return A2(
+						set,
+						A2(
+							$mdgriffith$elm_animator$Internal$Timeline$update,
+							now,
+							get(newModel)),
+						newModel);
+				}));
+	});
+var $author$project$ItemShop$animator = A4(
+	$mdgriffith$elm_animator$Animator$watchingWith,
+	function ($) {
+		return $.goldGainedTimeline;
+	},
+	F2(
+		function (newState, model) {
+			return _Utils_update(
+				model,
+				{goldGainedTimeline: newState});
+		}),
+	function (state) {
+		switch (state.$) {
+			case 'ShowGoldGainedAnimation':
+				var seed = state.a;
+				return false;
+			case 'HideGoldAnimation':
+				var seed = state.a;
+				return false;
+			default:
+				return true;
+		}
+	},
+	A4(
+		$mdgriffith$elm_animator$Animator$watchingWith,
+		function ($) {
+			return $.showMineGpGained;
+		},
+		F2(
+			function (newState, model) {
+				return _Utils_update(
+					model,
+					{showMineGpGained: newState});
+			}),
+		function (state) {
+			switch (state.$) {
+				case 'ShowMineAnimation':
+					var seed = state.a;
+					return false;
+				case 'HideMineAnimation':
+					var seed = state.a;
+					return true;
+				default:
+					return true;
+			}
+		},
+		A4(
+			$mdgriffith$elm_animator$Animator$watchingWith,
+			function ($) {
+				return $.titleScreenAnimationState;
+			},
+			F2(
+				function (newState, model) {
+					return _Utils_update(
+						model,
+						{titleScreenAnimationState: newState});
+				}),
+			function (state) {
+				if (state.$ === 'HighTitle') {
+					return false;
+				} else {
+					return true;
+				}
+			},
+			$mdgriffith$elm_animator$Animator$animator)));
 var $elm$time$Time$Every = F2(
 	function (a, b) {
 		return {$: 'Every', a: a, b: b};
@@ -9053,6 +10419,133 @@ var $author$project$Battle$TickSecond = function (a) {
 var $author$project$Battle$subscriptions = function (model) {
 	return A2($elm$time$Time$every, 1000, $author$project$Battle$TickSecond);
 };
+var $elm$browser$Browser$AnimationManager$Time = function (a) {
+	return {$: 'Time', a: a};
+};
+var $elm$browser$Browser$AnimationManager$State = F3(
+	function (subs, request, oldTime) {
+		return {oldTime: oldTime, request: request, subs: subs};
+	});
+var $elm$browser$Browser$AnimationManager$init = $elm$core$Task$succeed(
+	A3($elm$browser$Browser$AnimationManager$State, _List_Nil, $elm$core$Maybe$Nothing, 0));
+var $elm$browser$Browser$AnimationManager$now = _Browser_now(_Utils_Tuple0);
+var $elm$browser$Browser$AnimationManager$rAF = _Browser_rAF(_Utils_Tuple0);
+var $elm$browser$Browser$AnimationManager$onEffects = F3(
+	function (router, subs, _v0) {
+		var request = _v0.request;
+		var oldTime = _v0.oldTime;
+		var _v1 = _Utils_Tuple2(request, subs);
+		if (_v1.a.$ === 'Nothing') {
+			if (!_v1.b.b) {
+				var _v2 = _v1.a;
+				return $elm$browser$Browser$AnimationManager$init;
+			} else {
+				var _v4 = _v1.a;
+				return A2(
+					$elm$core$Task$andThen,
+					function (pid) {
+						return A2(
+							$elm$core$Task$andThen,
+							function (time) {
+								return $elm$core$Task$succeed(
+									A3(
+										$elm$browser$Browser$AnimationManager$State,
+										subs,
+										$elm$core$Maybe$Just(pid),
+										time));
+							},
+							$elm$browser$Browser$AnimationManager$now);
+					},
+					$elm$core$Process$spawn(
+						A2(
+							$elm$core$Task$andThen,
+							$elm$core$Platform$sendToSelf(router),
+							$elm$browser$Browser$AnimationManager$rAF)));
+			}
+		} else {
+			if (!_v1.b.b) {
+				var pid = _v1.a.a;
+				return A2(
+					$elm$core$Task$andThen,
+					function (_v3) {
+						return $elm$browser$Browser$AnimationManager$init;
+					},
+					$elm$core$Process$kill(pid));
+			} else {
+				return $elm$core$Task$succeed(
+					A3($elm$browser$Browser$AnimationManager$State, subs, request, oldTime));
+			}
+		}
+	});
+var $elm$browser$Browser$AnimationManager$onSelfMsg = F3(
+	function (router, newTime, _v0) {
+		var subs = _v0.subs;
+		var oldTime = _v0.oldTime;
+		var send = function (sub) {
+			if (sub.$ === 'Time') {
+				var tagger = sub.a;
+				return A2(
+					$elm$core$Platform$sendToApp,
+					router,
+					tagger(
+						$elm$time$Time$millisToPosix(newTime)));
+			} else {
+				var tagger = sub.a;
+				return A2(
+					$elm$core$Platform$sendToApp,
+					router,
+					tagger(newTime - oldTime));
+			}
+		};
+		return A2(
+			$elm$core$Task$andThen,
+			function (pid) {
+				return A2(
+					$elm$core$Task$andThen,
+					function (_v1) {
+						return $elm$core$Task$succeed(
+							A3(
+								$elm$browser$Browser$AnimationManager$State,
+								subs,
+								$elm$core$Maybe$Just(pid),
+								newTime));
+					},
+					$elm$core$Task$sequence(
+						A2($elm$core$List$map, send, subs)));
+			},
+			$elm$core$Process$spawn(
+				A2(
+					$elm$core$Task$andThen,
+					$elm$core$Platform$sendToSelf(router),
+					$elm$browser$Browser$AnimationManager$rAF)));
+	});
+var $elm$browser$Browser$AnimationManager$Delta = function (a) {
+	return {$: 'Delta', a: a};
+};
+var $elm$browser$Browser$AnimationManager$subMap = F2(
+	function (func, sub) {
+		if (sub.$ === 'Time') {
+			var tagger = sub.a;
+			return $elm$browser$Browser$AnimationManager$Time(
+				A2($elm$core$Basics$composeL, func, tagger));
+		} else {
+			var tagger = sub.a;
+			return $elm$browser$Browser$AnimationManager$Delta(
+				A2($elm$core$Basics$composeL, func, tagger));
+		}
+	});
+_Platform_effectManagers['Browser.AnimationManager'] = _Platform_createManager($elm$browser$Browser$AnimationManager$init, $elm$browser$Browser$AnimationManager$onEffects, $elm$browser$Browser$AnimationManager$onSelfMsg, 0, $elm$browser$Browser$AnimationManager$subMap);
+var $elm$browser$Browser$AnimationManager$subscription = _Platform_leaf('Browser.AnimationManager');
+var $elm$browser$Browser$AnimationManager$onAnimationFrame = function (tagger) {
+	return $elm$browser$Browser$AnimationManager$subscription(
+		$elm$browser$Browser$AnimationManager$Time(tagger));
+};
+var $elm$browser$Browser$Events$onAnimationFrame = $elm$browser$Browser$AnimationManager$onAnimationFrame;
+var $mdgriffith$elm_animator$Animator$toSubscription = F3(
+	function (toMsg, model, _v0) {
+		var isRunning = _v0.a;
+		return isRunning(model) ? $elm$browser$Browser$Events$onAnimationFrame(toMsg) : $elm$core$Platform$Sub$none;
+	});
 var $author$project$ItemShop$subscriptions = function (model) {
 	return $elm$core$Platform$Sub$batch(
 		_List_fromArray(
@@ -9063,7 +10556,8 @@ var $author$project$ItemShop$subscriptions = function (model) {
 				A2(
 				$elm$core$Platform$Sub$map,
 				$author$project$ItemShop$GotBattleMsg,
-				$author$project$Battle$subscriptions(model.battleModel))
+				$author$project$Battle$subscriptions(model.battleModel)),
+				A3($mdgriffith$elm_animator$Animator$toSubscription, $author$project$ItemShop$RuntimeTriggeredAnimationStep, model, $author$project$ItemShop$animator)
 			]));
 };
 var $author$project$Sfxr$FromPort = function (a) {
@@ -9167,11 +10661,218 @@ var $elm$url$Url$toString = function (url) {
 				url.path)));
 };
 var $author$project$Interface$DarkTheme = {$: 'DarkTheme'};
+var $author$project$ItemShop$LowTitle = {$: 'LowTitle'};
+var $author$project$ItemShop$HideGoldAnimation = F2(
+	function (a, b) {
+		return {$: 'HideGoldAnimation', a: a, b: b};
+	});
+var $author$project$ItemShop$ShowGoldGainedAnimation = F2(
+	function (a, b) {
+		return {$: 'ShowGoldGainedAnimation', a: a, b: b};
+	});
+var $mdgriffith$elm_animator$Animator$TransitionTo = F2(
+	function (a, b) {
+		return {$: 'TransitionTo', a: a, b: b};
+	});
+var $mdgriffith$elm_animator$Animator$event = $mdgriffith$elm_animator$Animator$TransitionTo;
+var $mdgriffith$elm_animator$Animator$millis = $ianmackenzie$elm_units$Duration$milliseconds;
+var $mdgriffith$elm_animator$Animator$immediately = $mdgriffith$elm_animator$Animator$millis(0);
+var $mdgriffith$elm_animator$Animator$initializeSchedule = F2(
+	function (waiting, steps) {
+		initializeSchedule:
+		while (true) {
+			if (!steps.b) {
+				return $elm$core$Maybe$Nothing;
+			} else {
+				if (steps.a.$ === 'Wait') {
+					var additionalWait = steps.a.a;
+					var moreSteps = steps.b;
+					var $temp$waiting = A2($ianmackenzie$elm_units$Quantity$plus, waiting, additionalWait),
+						$temp$steps = moreSteps;
+					waiting = $temp$waiting;
+					steps = $temp$steps;
+					continue initializeSchedule;
+				} else {
+					var _v1 = steps.a;
+					var dur = _v1.a;
+					var checkpoint = _v1.b;
+					var moreSteps = steps.b;
+					return $elm$core$Maybe$Just(
+						_Utils_Tuple2(
+							A3(
+								$mdgriffith$elm_animator$Internal$Timeline$Schedule,
+								waiting,
+								A3($mdgriffith$elm_animator$Internal$Timeline$Event, dur, checkpoint, $elm$core$Maybe$Nothing),
+								_List_Nil),
+							moreSteps));
+				}
+			}
+		}
+	});
+var $mdgriffith$elm_animator$Internal$Timeline$addToDwell = F2(
+	function (duration, maybeDwell) {
+		if (!$ianmackenzie$elm_units$Duration$inMilliseconds(duration)) {
+			return maybeDwell;
+		} else {
+			if (maybeDwell.$ === 'Nothing') {
+				return $elm$core$Maybe$Just(duration);
+			} else {
+				var existing = maybeDwell.a;
+				return $elm$core$Maybe$Just(
+					A2($ianmackenzie$elm_units$Quantity$plus, duration, existing));
+			}
+		}
+	});
+var $mdgriffith$elm_animator$Internal$Timeline$extendEventDwell = F2(
+	function (extendBy, thisEvent) {
+		var at = thisEvent.a;
+		var ev = thisEvent.b;
+		var maybeDwell = thisEvent.c;
+		return (!$ianmackenzie$elm_units$Duration$inMilliseconds(extendBy)) ? thisEvent : A3(
+			$mdgriffith$elm_animator$Internal$Timeline$Event,
+			at,
+			ev,
+			A2($mdgriffith$elm_animator$Internal$Timeline$addToDwell, extendBy, maybeDwell));
+	});
+var $mdgriffith$elm_animator$Animator$stepsToEvents = F2(
+	function (currentStep, _v0) {
+		var delay = _v0.a;
+		var startEvent = _v0.b;
+		var events = _v0.c;
+		if (!events.b) {
+			if (currentStep.$ === 'Wait') {
+				var waiting = currentStep.a;
+				return A3(
+					$mdgriffith$elm_animator$Internal$Timeline$Schedule,
+					delay,
+					A2($mdgriffith$elm_animator$Internal$Timeline$extendEventDwell, waiting, startEvent),
+					events);
+			} else {
+				var dur = currentStep.a;
+				var checkpoint = currentStep.b;
+				return A3(
+					$mdgriffith$elm_animator$Internal$Timeline$Schedule,
+					delay,
+					startEvent,
+					_List_fromArray(
+						[
+							A3($mdgriffith$elm_animator$Internal$Timeline$Event, dur, checkpoint, $elm$core$Maybe$Nothing)
+						]));
+			}
+		} else {
+			var _v3 = events.a;
+			var durationTo = _v3.a;
+			var recentEvent = _v3.b;
+			var maybeDwell = _v3.c;
+			var remaining = events.b;
+			if (currentStep.$ === 'Wait') {
+				var dur = currentStep.a;
+				return A3(
+					$mdgriffith$elm_animator$Internal$Timeline$Schedule,
+					delay,
+					startEvent,
+					A2(
+						$elm$core$List$cons,
+						A3(
+							$mdgriffith$elm_animator$Internal$Timeline$Event,
+							durationTo,
+							recentEvent,
+							A2($mdgriffith$elm_animator$Internal$Timeline$addToDwell, dur, maybeDwell)),
+						remaining));
+			} else {
+				var dur = currentStep.a;
+				var checkpoint = currentStep.b;
+				return _Utils_eq(checkpoint, recentEvent) ? A3(
+					$mdgriffith$elm_animator$Internal$Timeline$Schedule,
+					delay,
+					startEvent,
+					A2(
+						$elm$core$List$cons,
+						A3(
+							$mdgriffith$elm_animator$Internal$Timeline$Event,
+							durationTo,
+							recentEvent,
+							A2($mdgriffith$elm_animator$Internal$Timeline$addToDwell, dur, maybeDwell)),
+						remaining)) : A3(
+					$mdgriffith$elm_animator$Internal$Timeline$Schedule,
+					delay,
+					startEvent,
+					A2(
+						$elm$core$List$cons,
+						A3($mdgriffith$elm_animator$Internal$Timeline$Event, dur, checkpoint, $elm$core$Maybe$Nothing),
+						events));
+			}
+		}
+	});
+var $mdgriffith$elm_animator$Animator$interrupt = F2(
+	function (steps, _v0) {
+		var tl = _v0.a;
+		return $mdgriffith$elm_animator$Internal$Timeline$Timeline(
+			_Utils_update(
+				tl,
+				{
+					interruption: function () {
+						var _v1 = A2(
+							$mdgriffith$elm_animator$Animator$initializeSchedule,
+							$mdgriffith$elm_animator$Animator$millis(0),
+							steps);
+						if (_v1.$ === 'Nothing') {
+							return tl.interruption;
+						} else {
+							var _v2 = _v1.a;
+							var schedule = _v2.a;
+							var otherSteps = _v2.b;
+							return A2(
+								$elm$core$List$cons,
+								A3($elm$core$List$foldl, $mdgriffith$elm_animator$Animator$stepsToEvents, schedule, otherSteps),
+								tl.interruption);
+						}
+					}(),
+					running: true
+				}));
+	});
+var $mdgriffith$elm_animator$Animator$seconds = $ianmackenzie$elm_units$Duration$seconds;
+var $mdgriffith$elm_animator$Animator$slowly = $mdgriffith$elm_animator$Animator$millis(400);
+var $mdgriffith$elm_animator$Animator$veryQuickly = $mdgriffith$elm_animator$Animator$millis(100);
+var $mdgriffith$elm_animator$Animator$Wait = function (a) {
+	return {$: 'Wait', a: a};
+};
+var $mdgriffith$elm_animator$Animator$wait = $mdgriffith$elm_animator$Animator$Wait;
+var $author$project$ItemShop$animateGoldGained = F3(
+	function (timeline, seed, goldGained) {
+		return A2(
+			$mdgriffith$elm_animator$Animator$interrupt,
+			_List_fromArray(
+				[
+					A2($mdgriffith$elm_animator$Animator$event, $mdgriffith$elm_animator$Animator$immediately, $author$project$ItemShop$NoGoldAnimation),
+					A2(
+					$mdgriffith$elm_animator$Animator$event,
+					$mdgriffith$elm_animator$Animator$veryQuickly,
+					A2($author$project$ItemShop$ShowGoldGainedAnimation, seed, goldGained)),
+					$mdgriffith$elm_animator$Animator$wait(
+					$mdgriffith$elm_animator$Animator$seconds(1)),
+					A2(
+					$mdgriffith$elm_animator$Animator$event,
+					$mdgriffith$elm_animator$Animator$slowly,
+					A2($author$project$ItemShop$HideGoldAnimation, seed, goldGained)),
+					A2($mdgriffith$elm_animator$Animator$event, $mdgriffith$elm_animator$Animator$immediately, $author$project$ItemShop$NoGoldAnimation)
+				]),
+			timeline);
+	});
+var $mdgriffith$elm_animator$Animator$current = $mdgriffith$elm_animator$Internal$Timeline$current;
 var $author$project$ItemShop$getPlayer = function (_v0) {
 	var player = _v0.a.player;
 	var shop = _v0.a.shop;
 	var others = _v0.a.others;
 	return player;
+};
+var $author$project$ItemShop$getPrice = function (qty) {
+	if (qty.$ === 'Price') {
+		var val = qty.a;
+		return val;
+	} else {
+		return 0;
+	}
 };
 var $author$project$ItemShop$getQuantity = function (qty) {
 	var val = qty.a;
@@ -9215,6 +10916,16 @@ var $author$project$ItemShop$get_adjusted_item_cost = F3(
 				$author$project$ItemShop$item_type_to_id(item_type),
 				shop_trends.item_type_sentiment));
 		return $elm$core$Basics$round(scaled_raw_cost * item_sentiment);
+	});
+var $mdgriffith$elm_animator$Animator$go = F3(
+	function (duration, ev, timeline) {
+		return A2(
+			$mdgriffith$elm_animator$Animator$interrupt,
+			_List_fromArray(
+				[
+					A2($mdgriffith$elm_animator$Animator$event, duration, ev)
+				]),
+			timeline);
 	});
 var $author$project$ItemShop$isQuestTrackerComplete = function (questTracker) {
 	return _Utils_eq(questTracker.current, questTracker.target);
@@ -9283,6 +10994,10 @@ var $author$project$ItemShop$getQuestData = function (quest) {
 		return questData;
 	}
 };
+var $author$project$ItemShop$CompleteQuest = F2(
+	function (a, b) {
+		return {$: 'CompleteQuest', a: a, b: b};
+	});
 var $author$project$ItemShop$QuestCashedIn = {$: 'QuestCashedIn'};
 var $author$project$ItemShop$markAsCashedIn = function (quest) {
 	if (quest.$ === 'IncompleteQuest') {
@@ -9325,15 +11040,6 @@ var $author$project$ItemShop$charactersToList = function (_v0) {
 			$elm$core$List$cons,
 			$author$project$ItemShop$getInnerShop(shop),
 			others));
-};
-var $elm$core$List$head = function (list) {
-	if (list.b) {
-		var x = list.a;
-		var xs = list.b;
-		return $elm$core$Maybe$Just(x);
-	} else {
-		return $elm$core$Maybe$Nothing;
-	}
 };
 var $author$project$ItemShop$mapCharacters = F2(
 	function (mapFunc, characters) {
@@ -9437,35 +11143,41 @@ var $author$project$ItemShop$onCashInQuest = F2(
 				function (m) {
 					return _Utils_update(
 						m,
-						{quests: newQuests});
+						{hasHadAtLeastOneGem: true, quests: newQuests});
 				}(model));
 		}
 	});
+var $author$project$ItemShop$EarnGold = function (a) {
+	return {$: 'EarnGold', a: a};
+};
+var $author$project$ItemShop$IncompleteQuest = function (a) {
+	return {$: 'IncompleteQuest', a: a};
+};
 var $author$project$ItemShop$addQuantity = F2(
 	function (qty, other_qty) {
 		var orig_val = qty.a;
 		return $author$project$ItemShop$Quantity(
 			orig_val + $author$project$ItemShop$getQuantity(other_qty));
 	});
-var $author$project$ItemShop$add_to_average = F4(
-	function (old_avg, old_count, new_value, new_count) {
-		return (((old_count * old_avg) + new_value) / (old_count + new_count)) | 0;
+var $author$project$ItemShop$addAverage = F2(
+	function (old, _new) {
+		var old_price = $author$project$ItemShop$getPrice(old.price);
+		var old_count = $author$project$ItemShop$getQuantity(old.count);
+		var new_price = $author$project$ItemShop$getPrice(_new.price);
+		var new_count = $author$project$ItemShop$getQuantity(_new.count);
+		return {
+			count: A2($author$project$ItemShop$addQuantity, old.count, _new.count),
+			price: $author$project$ItemShop$setPrice((((old_count * old_price) + new_price) / (old_count + new_count)) | 0)
+		};
 	});
 var $author$project$ItemShop$find_matching_records = F2(
 	function (to_match, _v0) {
 		var item = _v0.item;
 		return _Utils_eq(to_match, item);
 	});
-var $author$project$ItemShop$getPrice = function (qty) {
-	if (qty.$ === 'Price') {
-		var val = qty.a;
-		return val;
-	} else {
-		return 0;
-	}
-};
 var $author$project$ItemShop$add_item_to_inventory_records = F4(
 	function (records, item, qty, total_cost) {
+		var single_cost = (total_cost / $author$project$ItemShop$getQuantity(qty)) | 0;
 		var _v0 = A2(
 			$elm$core$List$filter,
 			$author$project$ItemShop$find_matching_records(item),
@@ -9476,13 +11188,7 @@ var $author$project$ItemShop$add_item_to_inventory_records = F4(
 				_List_fromArray(
 					[
 						{
-						avg_price: $author$project$ItemShop$setPrice(
-							A4(
-								$author$project$ItemShop$add_to_average,
-								0,
-								0,
-								total_cost,
-								$author$project$ItemShop$getQuantity(qty))),
+						avg_price: $author$project$ItemShop$setPrice(single_cost),
 						item: item,
 						quantity: qty
 					}
@@ -9495,14 +11201,13 @@ var $author$project$ItemShop$add_item_to_inventory_records = F4(
 					var quantity = ir.quantity;
 					var avg_price = ir.avg_price;
 					return {
-						avg_price: $author$project$ItemShop$setPrice(
-							A4(
-								$author$project$ItemShop$add_to_average,
-								$author$project$ItemShop$getPrice(avg_price),
-								$author$project$ItemShop$getQuantity(quantity),
-								total_cost,
-								$author$project$ItemShop$getQuantity(
-									A2($author$project$ItemShop$addQuantity, quantity, qty)))),
+						avg_price: A2(
+							$author$project$ItemShop$addAverage,
+							{count: quantity, price: avg_price},
+							{
+								count: qty,
+								price: $author$project$ItemShop$setPrice(single_cost)
+							}).price,
 						item: ir.item,
 						quantity: A2($author$project$ItemShop$addQuantity, quantity, qty)
 					};
@@ -9573,9 +11278,6 @@ var $elm$random$Random$map4 = F5(
 					seed4);
 			});
 	});
-var $elm$core$Basics$negate = function (n) {
-	return -n;
-};
 var $elm$random$Random$peel = function (_v0) {
 	var state = _v0.a;
 	var word = (state ^ (state >>> ((state >>> 28) + 4))) * 277803737;
@@ -9817,16 +11519,6 @@ var $elm_community$random_extra$Random$List$choose = function (list) {
 			gen);
 	}
 };
-var $elm$core$Maybe$map = F2(
-	function (f, maybe) {
-		if (maybe.$ === 'Just') {
-			var value = maybe.a;
-			return $elm$core$Maybe$Just(
-				f(value));
-		} else {
-			return $elm$core$Maybe$Nothing;
-		}
-	});
 var $elm$random$Random$step = F2(
 	function (_v0, seed) {
 		var generator = _v0.a;
@@ -9959,10 +11651,6 @@ var $author$project$ItemShop$onEndCurrentDay = function (model) {
 var $author$project$ItemShop$PostPhase = function (a) {
 	return {$: 'PostPhase', a: a};
 };
-var $elm$time$Time$posixToMillis = function (_v0) {
-	var millis = _v0.a;
-	return millis;
-};
 var $author$project$ItemShop$updateActiveTimeOfDay = F2(
 	function (newTime, model) {
 		var ai_tick_time = model.ai_tick_time;
@@ -10011,10 +11699,6 @@ var $author$project$ItemShop$WantedButCouldntTrade = function (a) {
 	return {$: 'WantedButCouldntTrade', a: a};
 };
 var $author$project$ItemShop$WantedToBuy = {$: 'WantedToBuy'};
-var $elm$core$Basics$always = F2(
-	function (a, _v0) {
-		return a;
-	});
 var $elm$core$Maybe$andThen = F2(
 	function (callback, maybeValue) {
 		if (maybeValue.$ === 'Just') {
@@ -10053,7 +11737,6 @@ var $author$project$ItemShop$get_sentiment_for_item_type = F2(
 				$author$project$ItemShop$item_type_to_id(item_type),
 				item_type_sentiment));
 	});
-var $elm$core$Basics$ge = _Utils_ge;
 var $author$project$ItemShop$can_afford_item = F3(
 	function (shop_trends, held_gold, _v0) {
 		var item = _v0.item;
@@ -10108,10 +11791,6 @@ var $elm_community$list_extra$List$Extra$greedyGroupsOf = F2(
 	function (size, xs) {
 		return A3($elm_community$list_extra$List$Extra$greedyGroupsOfWithStep, size, size, xs);
 	});
-var $elm$core$Tuple$second = function (_v0) {
-	var y = _v0.b;
-	return y;
-};
 var $elm_community$random_extra$Random$List$anyInt = A2($elm$random$Random$int, $elm$random$Random$minInt, $elm$random$Random$maxInt);
 var $elm$random$Random$map3 = F4(
 	function (func, _v0, _v1, _v2) {
@@ -10541,8 +12220,8 @@ var $author$project$ItemShop$ai_buy_item_from_shop = F3(
 						return _Debug_todo(
 							'ItemShop',
 							{
-								start: {line: 4290, column: 25},
-								end: {line: 4290, column: 35}
+								start: {line: 4699, column: 25},
+								end: {line: 4699, column: 35}
 							})('');
 					}
 				}()
@@ -10731,8 +12410,8 @@ var $author$project$ItemShop$ai_sell_item_to_shop = F3(
 							_Debug_todo(
 								'ItemShop',
 								{
-									start: {line: 4387, column: 25},
-									end: {line: 4387, column: 35}
+									start: {line: 4796, column: 25},
+									end: {line: 4796, column: 35}
 								}),
 							'',
 							_List_Nil);
@@ -11133,6 +12812,418 @@ var $author$project$ItemShop$onTickSecond = F2(
 			return noop;
 		}
 	});
+var $author$project$Sfxr$Noise = {$: 'Noise'};
+var $author$project$Sfxr$Sawtooth = {$: 'Sawtooth'};
+var $author$project$Sfxr$Sine = {$: 'Sine'};
+var $author$project$Sfxr$decodeShape = function (shapeInt) {
+	switch (shapeInt) {
+		case 0:
+			return $author$project$Sfxr$Square;
+		case 1:
+			return $author$project$Sfxr$Sawtooth;
+		case 2:
+			return $author$project$Sfxr$Sine;
+		case 3:
+			return $author$project$Sfxr$Noise;
+		default:
+			return $author$project$Sfxr$Square;
+	}
+};
+var $author$project$Sfxr$combinePartialsIntoSoundConfig = F2(
+	function (partialA, partialB) {
+		return {
+			arpeggiation: partialA.arpeggiation,
+			duty: partialA.duty,
+			envelope: partialA.envelope,
+			flanger: partialA.flanger,
+			frequency: partialA.frequency,
+			highPassFilter: partialB.highPassFilter,
+			lowPassFilter: partialB.lowPassFilter,
+			misc: partialB.misc,
+			retrigger: partialA.retrigger,
+			shape: $author$project$Sfxr$decodeShape(partialA.shape),
+			vibrato: partialA.vibrato
+		};
+	});
+var $author$project$Sfxr$PartialSoundConfigA = F8(
+	function (shape, envelope, frequency, vibrato, arpeggiation, duty, retrigger, flanger) {
+		return {arpeggiation: arpeggiation, duty: duty, envelope: envelope, flanger: flanger, frequency: frequency, retrigger: retrigger, shape: shape, vibrato: vibrato};
+	});
+var $author$project$Sfxr$Arpeggiation = F2(
+	function (mod, speed) {
+		return {mod: mod, speed: speed};
+	});
+var $elm$json$Json$Decode$float = _Json_decodeFloat;
+var $author$project$Sfxr$decodeArpeggiation = A3(
+	$elm$json$Json$Decode$map2,
+	$author$project$Sfxr$Arpeggiation,
+	A2($elm$json$Json$Decode$field, 'p_arp_mod', $elm$json$Json$Decode$float),
+	A2($elm$json$Json$Decode$field, 'p_arp_speed', $elm$json$Json$Decode$float));
+var $author$project$Sfxr$Duty = F2(
+	function (duty, ramp) {
+		return {duty: duty, ramp: ramp};
+	});
+var $author$project$Sfxr$decodeDuty = A3(
+	$elm$json$Json$Decode$map2,
+	$author$project$Sfxr$Duty,
+	A2($elm$json$Json$Decode$field, 'p_duty', $elm$json$Json$Decode$float),
+	A2($elm$json$Json$Decode$field, 'p_duty_ramp', $elm$json$Json$Decode$float));
+var $author$project$Sfxr$Envelope = F4(
+	function (attack, sustain, punch, decay) {
+		return {attack: attack, decay: decay, punch: punch, sustain: sustain};
+	});
+var $elm$json$Json$Decode$map4 = _Json_map4;
+var $author$project$Sfxr$decodeEnvelope = A5(
+	$elm$json$Json$Decode$map4,
+	$author$project$Sfxr$Envelope,
+	A2($elm$json$Json$Decode$field, 'p_env_attack', $elm$json$Json$Decode$float),
+	A2($elm$json$Json$Decode$field, 'p_env_sustain', $elm$json$Json$Decode$float),
+	A2($elm$json$Json$Decode$field, 'p_env_punch', $elm$json$Json$Decode$float),
+	A2($elm$json$Json$Decode$field, 'p_env_decay', $elm$json$Json$Decode$float));
+var $author$project$Sfxr$Flanger = F2(
+	function (offset, ramp) {
+		return {offset: offset, ramp: ramp};
+	});
+var $author$project$Sfxr$decodeFlanger = A3(
+	$elm$json$Json$Decode$map2,
+	$author$project$Sfxr$Flanger,
+	A2($elm$json$Json$Decode$field, 'p_pha_offset', $elm$json$Json$Decode$float),
+	A2($elm$json$Json$Decode$field, 'p_pha_ramp', $elm$json$Json$Decode$float));
+var $author$project$Sfxr$Frequency = F4(
+	function (base, limit, ramp, dramp) {
+		return {base: base, dramp: dramp, limit: limit, ramp: ramp};
+	});
+var $author$project$Sfxr$decodeFrequency = A5(
+	$elm$json$Json$Decode$map4,
+	$author$project$Sfxr$Frequency,
+	A2($elm$json$Json$Decode$field, 'p_base_freq', $elm$json$Json$Decode$float),
+	A2($elm$json$Json$Decode$field, 'p_freq_limit', $elm$json$Json$Decode$float),
+	A2($elm$json$Json$Decode$field, 'p_freq_ramp', $elm$json$Json$Decode$float),
+	A2($elm$json$Json$Decode$field, 'p_freq_dramp', $elm$json$Json$Decode$float));
+var $author$project$Sfxr$Retrigger = function (repeatSpeed) {
+	return {repeatSpeed: repeatSpeed};
+};
+var $author$project$Sfxr$decodeRetrigger = A2(
+	$elm$json$Json$Decode$map,
+	$author$project$Sfxr$Retrigger,
+	A2($elm$json$Json$Decode$field, 'p_repeat_speed', $elm$json$Json$Decode$float));
+var $author$project$Sfxr$Vibrato = F2(
+	function (strength, speed) {
+		return {speed: speed, strength: strength};
+	});
+var $author$project$Sfxr$decodeVibrato = A3(
+	$elm$json$Json$Decode$map2,
+	$author$project$Sfxr$Vibrato,
+	A2($elm$json$Json$Decode$field, 'p_vib_strength', $elm$json$Json$Decode$float),
+	A2($elm$json$Json$Decode$field, 'p_vib_speed', $elm$json$Json$Decode$float));
+var $elm$json$Json$Decode$map8 = _Json_map8;
+var $author$project$Sfxr$decodeSoundConfigA = A9(
+	$elm$json$Json$Decode$map8,
+	$author$project$Sfxr$PartialSoundConfigA,
+	A2($elm$json$Json$Decode$field, 'wave_type', $elm$json$Json$Decode$int),
+	$author$project$Sfxr$decodeEnvelope,
+	$author$project$Sfxr$decodeFrequency,
+	$author$project$Sfxr$decodeVibrato,
+	$author$project$Sfxr$decodeArpeggiation,
+	$author$project$Sfxr$decodeDuty,
+	$author$project$Sfxr$decodeRetrigger,
+	$author$project$Sfxr$decodeFlanger);
+var $author$project$Sfxr$PartialSoundConfigB = F3(
+	function (lowPassFilter, highPassFilter, misc) {
+		return {highPassFilter: highPassFilter, lowPassFilter: lowPassFilter, misc: misc};
+	});
+var $author$project$Sfxr$HighPassFilter = F2(
+	function (frequency, ramp) {
+		return {frequency: frequency, ramp: ramp};
+	});
+var $author$project$Sfxr$decodeHighPassFilter = A3(
+	$elm$json$Json$Decode$map2,
+	$author$project$Sfxr$HighPassFilter,
+	A2($elm$json$Json$Decode$field, 'p_hpf_freq', $elm$json$Json$Decode$float),
+	A2($elm$json$Json$Decode$field, 'p_hpf_ramp', $elm$json$Json$Decode$float));
+var $author$project$Sfxr$LowPassFilter = F3(
+	function (frequency, ramp, resonance) {
+		return {frequency: frequency, ramp: ramp, resonance: resonance};
+	});
+var $elm$json$Json$Decode$map3 = _Json_map3;
+var $author$project$Sfxr$decodeLowPassFilter = A4(
+	$elm$json$Json$Decode$map3,
+	$author$project$Sfxr$LowPassFilter,
+	A2($elm$json$Json$Decode$field, 'p_lpf_freq', $elm$json$Json$Decode$float),
+	A2($elm$json$Json$Decode$field, 'p_lpf_ramp', $elm$json$Json$Decode$float),
+	A2($elm$json$Json$Decode$field, 'p_lpf_resonance', $elm$json$Json$Decode$float));
+var $author$project$Sfxr$Misc = F3(
+	function (volume, sampleRate, sampleSize) {
+		return {sampleRate: sampleRate, sampleSize: sampleSize, volume: volume};
+	});
+var $author$project$Sfxr$decodeMisc = A4(
+	$elm$json$Json$Decode$map3,
+	$author$project$Sfxr$Misc,
+	A2($elm$json$Json$Decode$field, 'sound_vol', $elm$json$Json$Decode$float),
+	A2($elm$json$Json$Decode$field, 'sample_rate', $elm$json$Json$Decode$int),
+	A2($elm$json$Json$Decode$field, 'sample_size', $elm$json$Json$Decode$int));
+var $author$project$Sfxr$decodeSoundConfigB = A4($elm$json$Json$Decode$map3, $author$project$Sfxr$PartialSoundConfigB, $author$project$Sfxr$decodeLowPassFilter, $author$project$Sfxr$decodeHighPassFilter, $author$project$Sfxr$decodeMisc);
+var $author$project$Sfxr$decodeSoundConfig = A3($elm$json$Json$Decode$map2, $author$project$Sfxr$combinePartialsIntoSoundConfig, $author$project$Sfxr$decodeSoundConfigA, $author$project$Sfxr$decodeSoundConfigB);
+var $elm$json$Json$Decode$decodeString = _Json_runOnString;
+var $author$project$Sfxr$decodeSoundConfigStr = function (soundConfigStr) {
+	return A2($elm$json$Json$Decode$decodeString, $author$project$Sfxr$decodeSoundConfig, soundConfigStr);
+};
+var $elm$core$Result$map = F2(
+	function (func, ra) {
+		if (ra.$ === 'Ok') {
+			var a = ra.a;
+			return $elm$core$Result$Ok(
+				func(a));
+		} else {
+			var e = ra.a;
+			return $elm$core$Result$Err(e);
+		}
+	});
+var $elm$json$Json$Encode$bool = _Json_wrap;
+var $elm$json$Json$Encode$float = _Json_wrap;
+var $author$project$Sfxr$encodeArpeggiation = function (arpeggiation) {
+	return _List_fromArray(
+		[
+			_Utils_Tuple2(
+			'p_arp_mod',
+			$elm$json$Json$Encode$float(arpeggiation.mod)),
+			_Utils_Tuple2(
+			'p_arp_speed',
+			$elm$json$Json$Encode$float(arpeggiation.speed))
+		]);
+};
+var $author$project$Sfxr$encodeDuty = function (duty) {
+	return _List_fromArray(
+		[
+			_Utils_Tuple2(
+			'p_duty',
+			$elm$json$Json$Encode$float(duty.duty)),
+			_Utils_Tuple2(
+			'p_duty_ramp',
+			$elm$json$Json$Encode$float(duty.ramp))
+		]);
+};
+var $author$project$Sfxr$encodeEnvelope = function (envelope) {
+	return _List_fromArray(
+		[
+			_Utils_Tuple2(
+			'p_env_attack',
+			$elm$json$Json$Encode$float(envelope.attack)),
+			_Utils_Tuple2(
+			'p_env_sustain',
+			$elm$json$Json$Encode$float(envelope.sustain)),
+			_Utils_Tuple2(
+			'p_env_punch',
+			$elm$json$Json$Encode$float(envelope.punch)),
+			_Utils_Tuple2(
+			'p_env_decay',
+			$elm$json$Json$Encode$float(envelope.decay))
+		]);
+};
+var $author$project$Sfxr$encodeFlanger = function (flanger) {
+	return _List_fromArray(
+		[
+			_Utils_Tuple2(
+			'p_pha_offset',
+			$elm$json$Json$Encode$float(flanger.offset)),
+			_Utils_Tuple2(
+			'p_pha_ramp',
+			$elm$json$Json$Encode$float(flanger.ramp))
+		]);
+};
+var $author$project$Sfxr$encodeFrequency = function (frequency) {
+	return _List_fromArray(
+		[
+			_Utils_Tuple2(
+			'p_base_freq',
+			$elm$json$Json$Encode$float(frequency.base)),
+			_Utils_Tuple2(
+			'p_freq_limit',
+			$elm$json$Json$Encode$float(frequency.limit)),
+			_Utils_Tuple2(
+			'p_freq_ramp',
+			$elm$json$Json$Encode$float(frequency.ramp)),
+			_Utils_Tuple2(
+			'p_freq_dramp',
+			$elm$json$Json$Encode$float(frequency.dramp))
+		]);
+};
+var $author$project$Sfxr$encodeHighPassFilter = function (highPassFilter) {
+	return _List_fromArray(
+		[
+			_Utils_Tuple2(
+			'p_hpf_freq',
+			$elm$json$Json$Encode$float(highPassFilter.frequency)),
+			_Utils_Tuple2(
+			'p_hpf_ramp',
+			$elm$json$Json$Encode$float(highPassFilter.ramp))
+		]);
+};
+var $author$project$Sfxr$encodeLowPassFilter = function (lowPassFilter) {
+	return _List_fromArray(
+		[
+			_Utils_Tuple2(
+			'p_lpf_freq',
+			$elm$json$Json$Encode$float(lowPassFilter.frequency)),
+			_Utils_Tuple2(
+			'p_lpf_ramp',
+			$elm$json$Json$Encode$float(lowPassFilter.ramp)),
+			_Utils_Tuple2(
+			'p_lpf_resonance',
+			$elm$json$Json$Encode$float(lowPassFilter.resonance))
+		]);
+};
+var $elm$json$Json$Encode$int = _Json_wrap;
+var $author$project$Sfxr$encodeMisc = function (misc) {
+	return _List_fromArray(
+		[
+			_Utils_Tuple2(
+			'sound_vol',
+			$elm$json$Json$Encode$float(misc.volume)),
+			_Utils_Tuple2(
+			'sample_rate',
+			$elm$json$Json$Encode$int(misc.sampleRate)),
+			_Utils_Tuple2(
+			'sample_size',
+			$elm$json$Json$Encode$int(misc.sampleSize))
+		]);
+};
+var $author$project$Sfxr$encodeRetrigger = function (retrigger) {
+	return _List_fromArray(
+		[
+			_Utils_Tuple2(
+			'p_repeat_speed',
+			$elm$json$Json$Encode$float(retrigger.repeatSpeed))
+		]);
+};
+var $author$project$Sfxr$encodeShape = function (shape) {
+	return _Utils_Tuple2(
+		'wave_type',
+		$elm$json$Json$Encode$int(
+			function () {
+				switch (shape.$) {
+					case 'Square':
+						return 0;
+					case 'Sawtooth':
+						return 1;
+					case 'Sine':
+						return 2;
+					default:
+						return 3;
+				}
+			}()));
+};
+var $author$project$Sfxr$encodeVibrato = function (vibrato) {
+	return _List_fromArray(
+		[
+			_Utils_Tuple2(
+			'p_vib_strength',
+			$elm$json$Json$Encode$float(vibrato.strength)),
+			_Utils_Tuple2(
+			'p_vib_speed',
+			$elm$json$Json$Encode$float(vibrato.speed))
+		]);
+};
+var $elm$json$Json$Encode$object = function (pairs) {
+	return _Json_wrap(
+		A3(
+			$elm$core$List$foldl,
+			F2(
+				function (_v0, obj) {
+					var k = _v0.a;
+					var v = _v0.b;
+					return A3(_Json_addField, k, v, obj);
+				}),
+			_Json_emptyObject(_Utils_Tuple0),
+			pairs));
+};
+var $author$project$Sfxr$encodeSoundConfig = function (soundConfig) {
+	return $elm$json$Json$Encode$object(
+		_Utils_ap(
+			_List_fromArray(
+				[
+					_Utils_Tuple2(
+					'oldParams',
+					$elm$json$Json$Encode$bool(true))
+				]),
+			_Utils_ap(
+				_List_fromArray(
+					[
+						$author$project$Sfxr$encodeShape(soundConfig.shape)
+					]),
+				_Utils_ap(
+					$author$project$Sfxr$encodeEnvelope(soundConfig.envelope),
+					_Utils_ap(
+						$author$project$Sfxr$encodeFrequency(soundConfig.frequency),
+						_Utils_ap(
+							$author$project$Sfxr$encodeVibrato(soundConfig.vibrato),
+							_Utils_ap(
+								$author$project$Sfxr$encodeArpeggiation(soundConfig.arpeggiation),
+								_Utils_ap(
+									$author$project$Sfxr$encodeDuty(soundConfig.duty),
+									_Utils_ap(
+										$author$project$Sfxr$encodeRetrigger(soundConfig.retrigger),
+										_Utils_ap(
+											$author$project$Sfxr$encodeFlanger(soundConfig.flanger),
+											_Utils_ap(
+												$author$project$Sfxr$encodeLowPassFilter(soundConfig.lowPassFilter),
+												_Utils_ap(
+													$author$project$Sfxr$encodeHighPassFilter(soundConfig.highPassFilter),
+													$author$project$Sfxr$encodeMisc(soundConfig.misc)))))))))))));
+};
+var $author$project$Sfxr$sfxrOut = _Platform_outgoingPort('sfxrOut', $elm$core$Basics$identity);
+var $author$project$Sfxr$playSoundConfig = A2($elm$core$Basics$composeR, $author$project$Sfxr$encodeSoundConfig, $author$project$Sfxr$sfxrOut);
+var $author$project$Sfxr$setMisc = F2(
+	function (misc, sc) {
+		return _Utils_update(
+			sc,
+			{misc: misc});
+	});
+var $author$project$Sfxr$setMiscVol = F2(
+	function (vol, misc) {
+		return _Utils_update(
+			misc,
+			{volume: vol});
+	});
+var $author$project$Sfxr$playSoundConfigWithVol = F2(
+	function (vol, soundConfig) {
+		return $author$project$Sfxr$playSoundConfig(
+			function (misc) {
+				return A2($author$project$Sfxr$setMisc, misc, soundConfig);
+			}(
+				A2($author$project$Sfxr$setMiscVol, vol, soundConfig.misc)));
+	});
+var $elm$core$Result$withDefault = F2(
+	function (def, result) {
+		if (result.$ === 'Ok') {
+			var a = result.a;
+			return a;
+		} else {
+			return def;
+		}
+	});
+var $author$project$ItemShop$decodeAndPlaySoundWithVol = F2(
+	function (volume, soundConfigStr) {
+		return A2(
+			$elm$core$Result$withDefault,
+			$elm$core$Platform$Cmd$none,
+			A2(
+				$elm$core$Result$map,
+				$author$project$Sfxr$playSoundConfigWithVol(volume),
+				$author$project$Sfxr$decodeSoundConfigStr(soundConfigStr)));
+	});
+var $author$project$Sfxr$playerBuyItemConfig = '{\n        "oldParams": true,\n        "wave_type": 3,\n        "p_env_attack": 0,\n        "p_env_sustain": 0.1357751877591863,\n        "p_env_punch": 0.34816257172351917,\n        "p_env_decay": 0.32212685425846066,\n        "p_base_freq": 0.1324089488641189,\n        "p_freq_limit": 0,\n        "p_freq_ramp": 0.08208099951276279,\n        "p_freq_dramp": 0,\n        "p_vib_strength": 0,\n        "p_vib_speed": 0,\n        "p_arp_mod": 0.6947792357772979,\n        "p_arp_speed": 0.7669783818637563,\n        "p_duty": 0,\n        "p_duty_ramp": 0,\n        "p_repeat_speed": 0,\n        "p_pha_offset": 0,\n        "p_pha_ramp": 0,\n        "p_lpf_freq": 1,\n        "p_lpf_ramp": 0,\n        "p_lpf_resonance": 0,\n        "p_hpf_freq": 0,\n        "p_hpf_ramp": 0,\n        "sound_vol": 0.25,\n        "sample_rate": 44100,\n        "sample_size": 8\n}';
+var $author$project$ItemShop$playPlayerBuyItemSound = function (vol) {
+	return A2($author$project$ItemShop$decodeAndPlaySoundWithVol, vol, $author$project$Sfxr$playerBuyItemConfig);
+};
+var $author$project$Sfxr$playerSellItemConfig = '{\n        "oldParams": true,\n        "wave_type": 2,\n        "p_env_attack": 0,\n        "p_env_sustain": 0.12764099232804377,\n        "p_env_punch": 0.016136560198250913,\n        "p_env_decay": 0.19344197841389166,\n        "p_base_freq": 0.5751323195597562,\n        "p_freq_limit": 0.2,\n        "p_freq_ramp": -0.2117360101355858,\n        "p_freq_dramp": 0,\n        "p_vib_strength": 0,\n        "p_vib_speed": 0,\n        "p_arp_mod": 0,\n        "p_arp_speed": 0,\n        "p_duty": 0.44162522752470157,\n        "p_duty_ramp": -0.024945093628069535,\n        "p_repeat_speed": 0,\n        "p_pha_offset": 0,\n        "p_pha_ramp": 0,\n        "p_lpf_freq": 1,\n        "p_lpf_ramp": 0,\n        "p_lpf_resonance": 0,\n        "p_hpf_freq": 0.25405481328401497,\n        "p_hpf_ramp": 0,\n        "sound_vol": 0.25,\n        "sample_rate": 44100,\n        "sample_size": 8\n}';
+var $author$project$ItemShop$playPlayerSellItemSound = function (vol) {
+	return A2($author$project$ItemShop$decodeAndPlaySoundWithVol, vol, $author$project$Sfxr$playerSellItemConfig);
+};
+var $author$project$Sfxr$buyGemConfig = '{\n        "oldParams": true,\n        "wave_type": 1,\n        "p_env_attack": 0,\n        "p_env_sustain": 0.07123201569087177,\n        "p_env_punch": 0.35340249223785863,\n        "p_env_decay": 0.27920650262224056,\n        "p_base_freq": 0.4079818424492134,\n        "p_freq_limit": 0,\n        "p_freq_ramp": 0,\n        "p_freq_dramp": 0,\n        "p_vib_strength": 0,\n        "p_vib_speed": 0,\n        "p_arp_mod": 0.2432028758496764,\n        "p_arp_speed": 0.5312062695281261,\n        "p_duty": 0,\n        "p_duty_ramp": 0,\n        "p_repeat_speed": 0,\n        "p_pha_offset": 0,\n        "p_pha_ramp": 0,\n        "p_lpf_freq": 1,\n        "p_lpf_ramp": 0,\n        "p_lpf_resonance": 0,\n        "p_hpf_freq": 0,\n        "p_hpf_ramp": 0,\n        "sound_vol": 0.25,\n        "sample_rate": 44100,\n        "sample_size": 8\n}';
+var $author$project$ItemShop$playUnlockProgressUnlock = function (vol) {
+	return A2($author$project$ItemShop$decodeAndPlaySoundWithVol, vol, $author$project$Sfxr$buyGemConfig);
+};
 var $author$project$ItemShop$mapIncompleteQuestType = F2(
 	function (mapper, quest) {
 		if (quest.$ === 'IncompleteQuest') {
@@ -11143,6 +13234,7 @@ var $author$project$ItemShop$mapIncompleteQuestType = F2(
 			return quest;
 		}
 	});
+var $author$project$ItemShop$QuestNotCashedIn = {$: 'QuestNotCashedIn'};
 var $author$project$ItemShop$minQuantity = F2(
 	function (qty, other_qty) {
 		var orig_val = qty.a;
@@ -11189,6 +13281,9 @@ var $author$project$ItemShop$playerEarnedGold = F2(
 			persistentQuests: A2($elm$core$List$map, questUpdater, persistentQuests)
 		};
 	});
+var $author$project$ItemShop$SellAnyItem = function (a) {
+	return {$: 'SellAnyItem', a: a};
+};
 var $author$project$ItemShop$onSellAnyItem = F3(
 	function (_v0, questId, soldQty) {
 		var current = _v0.current;
@@ -11226,6 +13321,13 @@ var $author$project$ItemShop$playerSoldItem = F2(
 			persistentQuests: A2($elm$core$List$map, questUpdater, persistentQuests)
 		};
 	});
+var $mdgriffith$elm_animator$Animator$quickly = $mdgriffith$elm_animator$Animator$millis(200);
+var $author$project$ItemShop$setCharacters = F2(
+	function (model, newCharacters) {
+		return _Utils_update(
+			model,
+			{characters: newCharacters});
+	});
 var $author$project$ItemShop$setTimeOfDay = F2(
 	function (model, newTimeOfDay) {
 		return _Utils_update(
@@ -11234,12 +13336,16 @@ var $author$project$ItemShop$setTimeOfDay = F2(
 	});
 var $author$project$ItemShop$tabTypeToString = function (tabType) {
 	switch (tabType.$) {
+		case 'TitleScreenTabType':
+			return 'title';
 		case 'ShopTabType':
 			return 'shop';
 		case 'ItemsUnlockedTabType':
 			return 'items';
-		default:
+		case 'BattleTabType':
 			return 'battle';
+		default:
+			return 'settings';
 	}
 };
 var $author$project$ItemShop$setBattleModel = F2(
@@ -11247,12 +13353,6 @@ var $author$project$ItemShop$setBattleModel = F2(
 		return _Utils_update(
 			model,
 			{battleModel: battleModel});
-	});
-var $author$project$ItemShop$setCharacters = F2(
-	function (model, newCharacters) {
-		return _Utils_update(
-			model,
-			{characters: newCharacters});
 	});
 var $author$project$ItemShop$transferFromBattleModel = F2(
 	function (model, newBattleModel) {
@@ -11293,6 +13393,11 @@ var $author$project$ItemShop$transferToBattleModel = function (model) {
 		battleModel,
 		{player: newPlayer, spRefillAmount: spRefillAmount});
 };
+var $mdgriffith$elm_animator$Animator$update = F3(
+	function (newTime, _v0, model) {
+		var updateModel = _v0.b;
+		return A2(updateModel, newTime, model);
+	});
 var $author$project$Battle$FoundNewMonster = function (a) {
 	return {$: 'FoundNewMonster', a: a};
 };
@@ -11313,9 +13418,6 @@ var $author$project$Battle$PlayerHealedGolem = function (a) {
 	return {$: 'PlayerHealedGolem', a: a};
 };
 var $author$project$Battle$PlayerRevivedGolem = {$: 'PlayerRevivedGolem'};
-var $elm$core$Basics$abs = function (n) {
-	return (n < 0) ? (-n) : n;
-};
 var $author$project$Battle$addMonsterXp = F2(
 	function (toAdd, monster) {
 		return _Utils_update(
@@ -12095,7 +14197,7 @@ var $author$project$ItemShop$updateBattleOutMsg = F2(
 					return _Utils_Tuple2(
 						_Utils_update(
 							model,
-							{tab_type: $author$project$ItemShop$ShopTabType}),
+							{currentTabType: $author$project$ItemShop$ShopTabType}),
 						A2(
 							$elm$browser$Browser$Navigation$pushUrl,
 							key,
@@ -12138,6 +14240,590 @@ var $author$project$ItemShop$updateItemDbFromTradeRecord = F3(
 						};
 					}(item_trade_log)));
 		}
+	});
+var $elm$core$Basics$clamp = F3(
+	function (low, high, number) {
+		return (_Utils_cmp(number, low) < 0) ? low : ((_Utils_cmp(number, high) > 0) ? high : number);
+	});
+var $author$project$ItemShop$updateSettings = F2(
+	function (settingsMsg, model) {
+		var newVol = settingsMsg.a;
+		return _Utils_update(
+			model,
+			{
+				masterVol: A3($elm$core$Basics$clamp, 0.0, 1.0, newVol)
+			});
+	});
+var $author$project$ItemShop$TookSpecialActionTogglePauseAi = {$: 'TookSpecialActionTogglePauseAi'};
+var $author$project$ItemShop$TookSpecialActionInviteTrader = {$: 'TookSpecialActionInviteTrader'};
+var $author$project$ItemShop$addOther = F2(
+	function (_v0, newOther) {
+		var player = _v0.a.player;
+		var shop = _v0.a.shop;
+		var others = _v0.a.others;
+		return $author$project$ItemShop$Characters(
+			{
+				others: A2(
+					$elm$core$List$append,
+					others,
+					_List_fromArray(
+						[newOther])),
+				player: player,
+				shop: shop
+			});
+	});
+var $author$project$ItemShop$addQuantityInt = F2(
+	function (qty, val) {
+		var orig_val = qty.a;
+		return $author$project$ItemShop$Quantity(orig_val + val);
+	});
+var $author$project$ItemShop$charactersLength = function (_v0) {
+	var player = _v0.a.player;
+	var shop = _v0.a.shop;
+	var others = _v0.a.others;
+	return 2 + $elm$core$List$length(others);
+};
+var $author$project$ItemShop$pick_item = F3(
+	function (item_db, _v0, _v1) {
+		var prev_seed = _v1.a;
+		var folded_items = _v1.b;
+		var _v2 = A2($author$project$ItemShop$pick_random_unlocked_item_from_db, item_db, prev_seed);
+		var maybe_item = _v2.a;
+		var seed_ = _v2.b;
+		var result = A2(
+			$elm$core$Maybe$map,
+			function (item) {
+				return {
+					avg_price: $author$project$ItemShop$setPrice(item.raw_gold_cost),
+					item: item,
+					quantity: $author$project$ItemShop$Quantity(1)
+				};
+			},
+			maybe_item);
+		return _Utils_Tuple2(
+			seed_,
+			A2($elm$core$List$cons, result, folded_items));
+	});
+var $author$project$ItemShop$handleInviteTrader = function (model) {
+	var name = 'Character ' + $elm$core$String$fromInt(
+		$author$project$ItemShop$charactersLength(model.characters) + 1);
+	var invited_character = A2(
+		$author$project$ItemShop$createCharacter,
+		$author$project$ItemShop$generateUuid(name),
+		name);
+	var incr_if_matches = F2(
+		function (item, ir) {
+			return _Utils_eq(ir.item.id, item.id) ? {
+				avg_price: ir.avg_price,
+				item: ir.item,
+				quantity: A2($author$project$ItemShop$addQuantityInt, ir.quantity, 1)
+			} : {avg_price: ir.avg_price, item: ir.item, quantity: ir.quantity};
+		});
+	var _v0 = model;
+	var characters = _v0.characters;
+	var item_db = _v0.item_db;
+	var globalSeed = _v0.globalSeed;
+	var _v1 = A2(
+		$elm$random$Random$step,
+		A2($elm$random$Random$int, 1, 5),
+		globalSeed);
+	var num_items = _v1.a;
+	var _v2 = A3(
+		$elm$core$List$foldl,
+		$author$project$ItemShop$pick_item(item_db),
+		_Utils_Tuple2(globalSeed, _List_Nil),
+		A2($elm$core$List$repeat, num_items, _Utils_Tuple0));
+	var new_globalSeed = _v2.a;
+	var held_maybe_item_frames = _v2.b;
+	var held_items = A3(
+		$elm$core$List$foldl,
+		F2(
+			function (_v3, prev_items) {
+				var item = _v3.item;
+				var quantity = _v3.quantity;
+				var avg_price = _v3.avg_price;
+				return A2(
+					$elm$core$List$any,
+					A2(
+						$elm$core$Basics$composeR,
+						function ($) {
+							return $.item;
+						},
+						A2(
+							$elm$core$Basics$composeR,
+							function ($) {
+								return $.id;
+							},
+							$elm$core$Basics$eq(item.id))),
+					prev_items) ? A2(
+					$elm$core$List$map,
+					incr_if_matches(item),
+					prev_items) : A2(
+					$elm$core$List$cons,
+					{avg_price: avg_price, item: item, quantity: quantity},
+					prev_items);
+			}),
+		_List_Nil,
+		A2($elm$core$List$filterMap, $elm$core$Basics$identity, held_maybe_item_frames));
+	return A2(
+		$author$project$ItemShop$append_player_action_log,
+		$author$project$ItemShop$TookSpecialActionInviteTrader,
+		_Utils_update(
+			model,
+			{
+				characters: A2(
+					$author$project$ItemShop$addOther,
+					characters,
+					_Utils_update(
+						invited_character,
+						{held_gold: 50, held_items: held_items})),
+				globalSeed: new_globalSeed
+			}));
+};
+var $author$project$ItemShop$EventLeastDesiredItemType = function (a) {
+	return {$: 'EventLeastDesiredItemType', a: a};
+};
+var $author$project$ItemShop$EventVeryDesiredItemType = function (a) {
+	return {$: 'EventVeryDesiredItemType', a: a};
+};
+var $author$project$ItemShop$TookSpecialActionTriggerEvent = function (a) {
+	return {$: 'TookSpecialActionTriggerEvent', a: a};
+};
+var $author$project$ItemShop$setGlobalSeed = F2(
+	function (new_seed, model) {
+		return _Utils_update(
+			model,
+			{globalSeed: new_seed});
+	});
+var $author$project$ItemShop$set_item_type_sentiment = F3(
+	function (item_type_sentiment, item_type, new_val) {
+		return A3(
+			$elm$core$Dict$update,
+			$author$project$ItemShop$item_type_to_id(item_type),
+			$elm$core$Basics$always(
+				$elm$core$Maybe$Just(new_val)),
+			item_type_sentiment);
+	});
+var $author$project$ItemShop$update_shop_trends = F2(
+	function (model, update_st_func) {
+		var new_shop_trends = update_st_func(model.shop_trends);
+		var new_historical_shop_trends = A2(
+			$elm$core$List$append,
+			model.historical_shop_trends,
+			_List_fromArray(
+				[new_shop_trends]));
+		return _Utils_update(
+			model,
+			{historical_shop_trends: new_historical_shop_trends, shop_trends: new_shop_trends});
+	});
+var $author$project$ItemShop$handleSpecialEvent = F2(
+	function (model, spec_event) {
+		var choose_item_type = function (seed) {
+			return A2(
+				$elm$random$Random$step,
+				$elm_community$random_extra$Random$List$choose(
+					_Utils_ap(
+						A2($elm$core$List$repeat, 10, $author$project$ItemShop$Weapon),
+						_Utils_ap(
+							A2($elm$core$List$repeat, 10, $author$project$ItemShop$Armor),
+							A2($elm$core$List$repeat, 10, $author$project$ItemShop$Spellbook)))),
+				seed);
+		};
+		var _v0 = model;
+		var shop_trends = _v0.shop_trends;
+		var historical_shop_trends = _v0.historical_shop_trends;
+		var _v1 = shop_trends;
+		var item_type_sentiment = _v1.item_type_sentiment;
+		if (spec_event.$ === 'EventVeryDesiredItemType') {
+			var item_type = spec_event.a;
+			var _v3 = choose_item_type(model.globalSeed);
+			var _v4 = _v3.a;
+			var maybe_chosen_item_type = _v4.a;
+			var new_seed = _v3.b;
+			return A2(
+				$author$project$ItemShop$append_player_action_log,
+				$author$project$ItemShop$TookSpecialActionTriggerEvent(
+					$author$project$ItemShop$EventVeryDesiredItemType(maybe_chosen_item_type)),
+				A2(
+					$author$project$ItemShop$setGlobalSeed,
+					new_seed,
+					A2(
+						$author$project$ItemShop$update_shop_trends,
+						model,
+						function (st) {
+							return _Utils_update(
+								st,
+								{
+									item_type_sentiment: A3(
+										$author$project$ItemShop$set_item_type_sentiment,
+										st.item_type_sentiment,
+										A2($elm$core$Maybe$withDefault, $author$project$ItemShop$Weapon, maybe_chosen_item_type),
+										1.5)
+								});
+						})));
+		} else {
+			var _v5 = choose_item_type(model.globalSeed);
+			var _v6 = _v5.a;
+			var maybe_chosen_item_type = _v6.a;
+			var new_seed = _v5.b;
+			return A2(
+				$author$project$ItemShop$append_player_action_log,
+				$author$project$ItemShop$TookSpecialActionTriggerEvent(
+					$author$project$ItemShop$EventLeastDesiredItemType(maybe_chosen_item_type)),
+				A2(
+					$author$project$ItemShop$setGlobalSeed,
+					new_seed,
+					A2(
+						$author$project$ItemShop$update_shop_trends,
+						model,
+						function (st) {
+							return _Utils_update(
+								st,
+								{
+									item_type_sentiment: A3(
+										$author$project$ItemShop$set_item_type_sentiment,
+										st.item_type_sentiment,
+										A2($elm$core$Maybe$withDefault, $author$project$ItemShop$Weapon, maybe_chosen_item_type),
+										0.5)
+								});
+						})));
+		}
+	});
+var $author$project$ItemShop$hasEnoughGold = F2(
+	function (character, price) {
+		return _Utils_cmp(
+			character.held_gold,
+			$author$project$ItemShop$getPrice(price)) > -1;
+	});
+var $author$project$ItemShop$communityFundCost = $author$project$ItemShop$setPrice(25);
+var $author$project$ItemShop$specialActionCommunityFund = function (model) {
+	var price = $author$project$ItemShop$communityFundCost;
+	return function (_v0) {
+		var player = _v0.a;
+		return A2($author$project$ItemShop$hasEnoughGold, player, price) ? function (m) {
+			return _Utils_update(
+				m,
+				{
+					communityFund: m.communityFund + $author$project$ItemShop$getPrice(price)
+				});
+		}(
+			A2(
+				$author$project$ItemShop$replaceCharacter,
+				A2($author$project$ItemShop$subGold, player, price),
+				model)) : model;
+	}(
+		$author$project$ItemShop$getPlayer(model.characters));
+};
+var $author$project$ItemShop$scale_increase_bp_to_sp_cost = function (current_level) {
+	return $author$project$ItemShop$setPrice(60 + (((5 * current_level) * current_level) * 2));
+};
+var $author$project$ItemShop$specialActionIncreaseBpToSp = function (model) {
+	var _v0 = $author$project$ItemShop$getPlayer(model.characters);
+	var player = _v0.a;
+	var doUpgrade = function (upgrade) {
+		if (upgrade.$ === 'AutomaticBPtoSP') {
+			var level = upgrade.a;
+			return $author$project$ItemShop$AutomaticBPtoSP(level + 1);
+		} else {
+			return upgrade;
+		}
+	};
+	var automaticBPtoSPLevel = A2(
+		$elm$core$Maybe$withDefault,
+		1,
+		$elm$core$List$head(
+			A2(
+				$elm$core$List$filterMap,
+				function (upgrade) {
+					if (upgrade.$ === 'AutomaticBPtoSP') {
+						var level = upgrade.a;
+						return $elm$core$Maybe$Just(level);
+					} else {
+						return $elm$core$Maybe$Nothing;
+					}
+				},
+				model.playerUpgrades)));
+	var upgradeCost = $author$project$ItemShop$scale_increase_bp_to_sp_cost(automaticBPtoSPLevel);
+	return A2($author$project$ItemShop$hasEnoughGold, player, upgradeCost) ? function (m) {
+		return _Utils_update(
+			m,
+			{
+				playerUpgrades: A2($elm$core$List$map, doUpgrade, m.playerUpgrades)
+			});
+	}(
+		A2(
+			$author$project$ItemShop$replaceCharacter,
+			A2($author$project$ItemShop$subGold, player, upgradeCost),
+			model)) : model;
+};
+var $author$project$ItemShop$AutomaticGPM = function (a) {
+	return {$: 'AutomaticGPM', a: a};
+};
+var $author$project$ItemShop$scale_increase_income_cost = function (current_level) {
+	return $author$project$ItemShop$setPrice(20 + (((5 * current_level) * current_level) * 2));
+};
+var $author$project$ItemShop$specialActionIncreaseIncome = function (model) {
+	var _v0 = $author$project$ItemShop$getPlayer(model.characters);
+	var player = _v0.a;
+	var automaticGpmLevel = A2(
+		$elm$core$Maybe$withDefault,
+		1,
+		$elm$core$List$head(
+			A2(
+				$elm$core$List$filterMap,
+				function (upgrade) {
+					if (upgrade.$ === 'AutomaticGPM') {
+						var level = upgrade.a;
+						return $elm$core$Maybe$Just(level);
+					} else {
+						return $elm$core$Maybe$Nothing;
+					}
+				},
+				model.playerUpgrades)));
+	var upgradeCost = $author$project$ItemShop$scale_increase_income_cost(automaticGpmLevel);
+	return A2($author$project$ItemShop$hasEnoughGold, player, upgradeCost) ? function (m) {
+		return _Utils_update(
+			m,
+			{
+				playerUpgrades: A2(
+					$elm$core$List$map,
+					function (upgrade) {
+						if (upgrade.$ === 'AutomaticGPM') {
+							var level = upgrade.a;
+							return $author$project$ItemShop$AutomaticGPM(level + 1);
+						} else {
+							return upgrade;
+						}
+					},
+					m.playerUpgrades)
+			});
+	}(
+		A2(
+			$author$project$ItemShop$replaceCharacter,
+			A2($author$project$ItemShop$subGold, player, upgradeCost),
+			model)) : model;
+};
+var $author$project$ItemShop$TookSpecialActionUnlockItem = function (a) {
+	return {$: 'TookSpecialActionUnlockItem', a: a};
+};
+var $author$project$ItemShop$pick_random_locked_item_from_db = F2(
+	function (item_db, seed) {
+		var _v0 = function (gen) {
+			return A2($elm$random$Random$step, gen, seed);
+		}(
+			$elm_community$random_extra$Random$List$choose(
+				A2(
+					$elm$core$List$filter,
+					A2(
+						$elm$core$Basics$composeL,
+						$elm$core$Basics$not,
+						function ($) {
+							return $.is_unlocked;
+						}),
+					$elm$core$Dict$values(item_db))));
+		var _v1 = _v0.a;
+		var maybe_item = _v1.a;
+		var new_seed = _v0.b;
+		return _Utils_Tuple2(
+			A2(
+				$elm$core$Maybe$map,
+				function ($) {
+					return $.item;
+				},
+				maybe_item),
+			new_seed);
+	});
+var $author$project$ItemShop$specialActionUnlockItem = function (model) {
+	var _v0 = model;
+	var item_db = _v0.item_db;
+	var globalSeed = _v0.globalSeed;
+	var _v1 = A2($author$project$ItemShop$pick_random_locked_item_from_db, item_db, globalSeed);
+	var mb_item_to_unlock = _v1.a;
+	var new_seed = _v1.b;
+	return function () {
+		if (mb_item_to_unlock.$ === 'Just') {
+			var item_to_unlock = mb_item_to_unlock.a;
+			return $author$project$ItemShop$append_player_action_log(
+				$author$project$ItemShop$TookSpecialActionUnlockItem(item_to_unlock.id));
+		} else {
+			return $elm$core$Basics$identity;
+		}
+	}()(
+		_Utils_update(
+			model,
+			{
+				globalSeed: new_seed,
+				item_db: function () {
+					if (mb_item_to_unlock.$ === 'Just') {
+						var item_to_unlock = mb_item_to_unlock.a;
+						return A3(
+							$author$project$ItemShop$update_item_db,
+							item_db,
+							item_to_unlock.id,
+							$elm$core$Maybe$map(
+								function (idbr) {
+									return _Utils_update(
+										idbr,
+										{is_unlocked: true});
+								}));
+					} else {
+						return item_db;
+					}
+				}()
+			}));
+};
+var $author$project$ItemShop$mapPlayerIf = F3(
+	function (shouldUpdate, callback, characters) {
+		var player = characters.a.player;
+		var shop = characters.a.shop;
+		var others = characters.a.others;
+		return shouldUpdate ? A2($author$project$ItemShop$mapPlayer, callback, characters) : characters;
+	});
+var $author$project$ItemShop$HideMineAnimation = function (a) {
+	return {$: 'HideMineAnimation', a: a};
+};
+var $author$project$ItemShop$ShowMineAnimation = function (a) {
+	return {$: 'ShowMineAnimation', a: a};
+};
+var $author$project$ItemShop$mineSuccessAnimation = F2(
+	function (timeline, seed) {
+		return A2(
+			$mdgriffith$elm_animator$Animator$interrupt,
+			_List_fromArray(
+				[
+					A2($mdgriffith$elm_animator$Animator$event, $mdgriffith$elm_animator$Animator$immediately, $author$project$ItemShop$NoMineAnimation),
+					A2(
+					$mdgriffith$elm_animator$Animator$event,
+					$mdgriffith$elm_animator$Animator$veryQuickly,
+					$author$project$ItemShop$ShowMineAnimation(seed)),
+					$mdgriffith$elm_animator$Animator$wait(
+					$mdgriffith$elm_animator$Animator$seconds(1)),
+					A2(
+					$mdgriffith$elm_animator$Animator$event,
+					$mdgriffith$elm_animator$Animator$slowly,
+					$author$project$ItemShop$HideMineAnimation(seed)),
+					A2($mdgriffith$elm_animator$Animator$event, $mdgriffith$elm_animator$Animator$immediately, $author$project$ItemShop$NoMineAnimation)
+				]),
+			timeline);
+	});
+var $elm$core$String$replace = F3(
+	function (before, after, string) {
+		return A2(
+			$elm$core$String$join,
+			after,
+			A2($elm$core$String$split, before, string));
+	});
+var $author$project$Sfxr$mineHitConfig = A3($elm$core$String$replace, '\u000D', '', '{\n    "oldParams": true,\n    "wave_type": 3,\n    "p_env_attack": -0.08825428594604155,\n    "p_env_sustain": 0.19439443835332876,\n    "p_env_punch": 0.24703231352248575,\n    "p_env_decay": 0.1013850347929815,\n    "p_base_freq": 0.004936297904265606,\n    "p_freq_limit": 0,\n    "p_freq_ramp": 0.26082053372445696,\n    "p_freq_dramp": 0.015424982611428356,\n    "p_vib_strength": 0.005080452919057031,\n    "p_vib_speed": -0.03762815578122818,\n    "p_arp_mod": -0.000428117793670052,\n    "p_arp_speed": 0.6532063218490077,\n    "p_duty": -0.0013428259102489098,\n    "p_duty_ramp": 0.03117420110540306,\n    "p_repeat_speed": -0.028490467015625364,\n    "p_pha_offset": -0.41036034773065005,\n    "p_pha_ramp": -0.31812263856791906,\n    "p_lpf_freq": 1.0079780945733983,\n    "p_lpf_ramp": -0.028497531140068966,\n    "p_lpf_resonance": 0.07894783133324781,\n    "p_hpf_freq": -0.07815351043791481,\n    "p_hpf_ramp": 0.007977817518140522,\n    "sound_vol": 0.25,\n    "sample_rate": 44100,\n    "sample_size": 8,\n    "p_vib_delay": null\n}');
+var $author$project$ItemShop$playMineSound = function (vol) {
+	return A2($author$project$ItemShop$decodeAndPlaySoundWithVol, vol, $author$project$Sfxr$mineHitConfig);
+};
+var $author$project$Sfxr$mineSuccessConfig = '{\n        "oldParams": true,\n        "wave_type": 3,\n        "p_env_attack": 0,\n        "p_env_sustain": 0.16186390848649984,\n        "p_env_punch": 0.4728053914714515,\n        "p_env_decay": 0.42240462565191794,\n        "p_base_freq": 0.7676323818156369,\n        "p_freq_limit": 0,\n        "p_freq_ramp": -0.34196388258256694,\n        "p_freq_dramp": 0,\n        "p_vib_strength": 0,\n        "p_vib_speed": 0,\n        "p_arp_mod": 0,\n        "p_arp_speed": 0,\n        "p_duty": 0,\n        "p_duty_ramp": 0,\n        "p_repeat_speed": 0.44127789301750314,\n        "p_pha_offset": 0,\n        "p_pha_ramp": 0,\n        "p_lpf_freq": 1,\n        "p_lpf_ramp": 0,\n        "p_lpf_resonance": 0,\n        "p_hpf_freq": 0.9801920618075308,\n        "p_hpf_ramp": 0,\n        "sound_vol": 0.25,\n        "sample_rate": 44100,\n        "sample_size": 8\n}';
+var $author$project$ItemShop$playMineSuccessSound = function (vol) {
+	return A2($author$project$ItemShop$decodeAndPlaySoundWithVol, vol, $author$project$Sfxr$mineSuccessConfig);
+};
+var $author$project$ItemShop$withCharacters = F2(
+	function (newCharacters, model) {
+		return _Utils_update(
+			model,
+			{characters: newCharacters});
+	});
+var $author$project$ItemShop$updateMine = function (model) {
+	var globalSeed = model.globalSeed;
+	var masterVol = model.masterVol;
+	var gpEarned = 1;
+	var _v0 = A2(
+		$elm$random$Random$step,
+		A2(
+			$elm$random$Random$map,
+			function (rnd) {
+				return rnd <= 15;
+			},
+			A2($elm$random$Random$int, 0, 100)),
+		globalSeed);
+	var shouldEarnGp = _v0.a;
+	var newSeed = _v0.b;
+	var mineCmd = (!shouldEarnGp) ? $author$project$ItemShop$playMineSound(masterVol) : $author$project$ItemShop$playMineSuccessSound(masterVol);
+	var newCharacters = A3(
+		$author$project$ItemShop$mapPlayerIf,
+		shouldEarnGp,
+		function (p) {
+			return _Utils_update(
+				p,
+				{held_gold: p.held_gold + gpEarned});
+		},
+		model.characters);
+	return _Utils_Tuple2(
+		A2(
+			$author$project$ItemShop$withCharacters,
+			newCharacters,
+			A2(
+				$author$project$ItemShop$setGlobalSeed,
+				newSeed,
+				function (m) {
+					return shouldEarnGp ? _Utils_update(
+						m,
+						{
+							goldGainedTimeline: A3($author$project$ItemShop$animateGoldGained, m.goldGainedTimeline, m.globalSeed, gpEarned),
+							showMineGpGained: A2($author$project$ItemShop$mineSuccessAnimation, m.showMineGpGained, m.globalSeed)
+						}) : m;
+				}(model))),
+		mineCmd);
+};
+var $author$project$ItemShop$updateSpecialAction = F3(
+	function (special_action, price, origModel) {
+		var _v0 = $author$project$ItemShop$getPlayer(origModel.characters);
+		var player = _v0.a;
+		return A2($author$project$ItemShop$hasEnoughGold, player, price) ? function (model) {
+			switch (special_action.$) {
+				case 'InviteTrader':
+					return _Utils_Tuple2(
+						$author$project$ItemShop$handleInviteTrader(
+							$author$project$ItemShop$handleInviteTrader(
+								$author$project$ItemShop$handleInviteTrader(
+									$author$project$ItemShop$handleInviteTrader(
+										$author$project$ItemShop$handleInviteTrader(
+											$author$project$ItemShop$handleInviteTrader(
+												$author$project$ItemShop$handleInviteTrader(
+													$author$project$ItemShop$handleInviteTrader(model)))))))),
+						$elm$core$Platform$Cmd$none);
+				case 'Mine':
+					return $author$project$ItemShop$updateMine(model);
+				case 'TriggerEvent':
+					var event = special_action.a;
+					return _Utils_Tuple2(
+						A2($author$project$ItemShop$handleSpecialEvent, model, event),
+						$elm$core$Platform$Cmd$none);
+				case 'TogglePauseAi':
+					return _Utils_Tuple2(
+						A2(
+							$author$project$ItemShop$append_player_action_log,
+							$author$project$ItemShop$TookSpecialActionTogglePauseAi,
+							_Utils_update(
+								model,
+								{ai_updates_paused: !model.ai_updates_paused})),
+						$elm$core$Platform$Cmd$none);
+				case 'UnlockItem':
+					return _Utils_Tuple2(
+						$author$project$ItemShop$specialActionUnlockItem(model),
+						$elm$core$Platform$Cmd$none);
+				case 'IncreaseIncome':
+					return _Utils_Tuple2(
+						$author$project$ItemShop$specialActionIncreaseIncome(model),
+						$elm$core$Platform$Cmd$none);
+				case 'IncreaseBPtoSP':
+					return _Utils_Tuple2(
+						$author$project$ItemShop$specialActionIncreaseBpToSp(model),
+						$elm$core$Platform$Cmd$none);
+				default:
+					return _Utils_Tuple2(
+						$author$project$ItemShop$specialActionCommunityFund(model),
+						$elm$core$Platform$Cmd$none);
+			}
+		}(
+			A2(
+				$author$project$ItemShop$replaceCharacter,
+				A2($author$project$ItemShop$subGold, player, price),
+				origModel)) : _Utils_Tuple2(origModel, $elm$core$Platform$Cmd$none);
 	});
 var $author$project$ItemShop$updateTimesYouBought = F2(
 	function (item_db_record_trades, new_times_you_bought) {
@@ -12209,6 +14895,14 @@ var $author$project$ItemShop$isElementOnScreen = F2(
 		var height = _v1.height;
 		return _Utils_cmp(y, element.y + element.height) > 0;
 	});
+var $author$project$Sfxr$mouseoverUIBeepConfig = '{\n        "oldParams": true,\n        "wave_type": 2,\n        "p_env_attack": 0,\n        "p_env_sustain": 0.03407718326590583,\n        "p_env_punch": 0.412591129522269,\n        "p_env_decay": 0.1463410021953723,\n        "p_base_freq": 0.42253532283411077,\n        "p_freq_limit": 0,\n        "p_freq_ramp": 0,\n        "p_freq_dramp": 0,\n        "p_vib_strength": 0,\n        "p_vib_speed": 0,\n        "p_arp_mod": 0.2937877556257969,\n        "p_arp_speed": 0.5039859435452139,\n        "p_duty": 0,\n        "p_duty_ramp": 0,\n        "p_repeat_speed": 0,\n        "p_pha_offset": 0,\n        "p_pha_ramp": 0,\n        "p_lpf_freq": 1,\n        "p_lpf_ramp": 0,\n        "p_lpf_resonance": 0,\n        "p_hpf_freq": 0,\n        "p_hpf_ramp": 0,\n        "sound_vol": 0.25,\n        "sample_rate": 44100,\n        "sample_size": 8\n}';
+var $author$project$ItemShop$playMouseOverButtonSound = function (vol) {
+	return A2($author$project$ItemShop$decodeAndPlaySoundWithVol, vol, $author$project$Sfxr$mouseoverUIBeepConfig);
+};
+var $author$project$Sfxr$mouseoverUIBeepLowConfig = '{\n        "oldParams": true,\n        "wave_type": 2,\n        "p_env_attack": -0.050338515708570356,\n        "p_env_sustain": 0.03407718326590583,\n        "p_env_punch": 0.37578879716883257,\n        "p_env_decay": 0.12103057820845771,\n        "p_base_freq": 0.4080977945366259,\n        "p_freq_limit": 0,\n        "p_freq_ramp": 0.01015985247170672,\n        "p_freq_dramp": 0.022564213165965963,\n        "p_vib_strength": 0.00539553731918796,\n        "p_vib_speed": 0.06970080280492233,\n        "p_arp_mod": 0.29339667355214183,\n        "p_arp_speed": 0.4614275713614929,\n        "p_duty": 0.03363205994984342,\n        "p_duty_ramp": 0.034488032276534325,\n        "p_repeat_speed": -0.0024615255697144622,\n        "p_pha_offset": 0.03658644419248831,\n        "p_pha_ramp": 0.04674177467755132,\n        "p_lpf_freq": 1.0431990620392029,\n        "p_lpf_ramp": 0.006201476192648568,\n        "p_lpf_resonance": -0.00570808713924089,\n        "p_hpf_freq": -0.006867311274713746,\n        "p_hpf_ramp": -0.03622855880558651,\n        "sound_vol": 0.25,\n        "sample_rate": 44100,\n        "sample_size": 8,\n        "p_vib_delay": null\n} ';
+var $author$project$ItemShop$playMouseOverLeaveButtonSound = function (vol) {
+	return A2($author$project$ItemShop$decodeAndPlaySoundWithVol, vol, $author$project$Sfxr$mouseoverUIBeepLowConfig);
+};
 var $author$project$ItemShop$updateUiOption = F2(
 	function (updater, m) {
 		return _Utils_update(
@@ -12268,10 +14962,15 @@ var $author$project$ItemShop$updateUiOptions = F2(
 									});
 							},
 							model),
-						A2(
-							$elm$core$Task$attempt,
-							A2($elm$core$Basics$composeL, $author$project$ItemShop$GotUiOptionsMsg, $author$project$ItemShop$GotTooltipSize),
-							$elm$browser$Browser$Dom$getElement('tooltip__' + tooltip_id)));
+						$elm$core$Platform$Cmd$batch(
+							_List_fromArray(
+								[
+									A2(
+									$elm$core$Task$attempt,
+									A2($elm$core$Basics$composeL, $author$project$ItemShop$GotUiOptionsMsg, $author$project$ItemShop$GotTooltipSize),
+									$elm$browser$Browser$Dom$getElement('tooltip__' + tooltip_id)),
+									$author$project$ItemShop$playMouseOverButtonSound(model.masterVol)
+								])));
 				} else {
 					var tooltip_id = tooltipMsg.a;
 					return _Utils_Tuple2(
@@ -12283,7 +14982,7 @@ var $author$project$ItemShop$updateUiOptions = F2(
 									{hoveredTooltip: $author$project$Interface$NoHoveredTooltip});
 							},
 							model),
-						$elm$core$Platform$Cmd$none);
+						$author$project$ItemShop$playMouseOverLeaveButtonSound(model.masterVol));
 				}
 			case 'GotTooltipSize':
 				var tooltip_size_result = uiOptMsg.a;
@@ -12523,7 +15222,7 @@ var $author$project$ItemShop$updateUiOptions = F2(
 						$elm$core$Task$attempt,
 						A2($elm$core$Basics$composeL, $author$project$ItemShop$GotUiOptionsMsg, $author$project$ItemShop$GotShowDebugElement),
 						$elm$browser$Browser$Dom$getElement('show_debug_inventories')));
-			default:
+			case 'GotShowDebugElement':
 				var attemptedElement = uiOptMsg.a;
 				return _Utils_Tuple2(
 					A2(
@@ -12556,500 +15255,15 @@ var $author$project$ItemShop$updateUiOptions = F2(
 						},
 						model),
 					$elm$core$Platform$Cmd$none);
+			case 'MouseEntersButton':
+				return _Utils_Tuple2(
+					model,
+					$author$project$ItemShop$playMouseOverButtonSound(model.masterVol));
+			default:
+				return _Utils_Tuple2(
+					model,
+					$author$project$ItemShop$playMouseOverLeaveButtonSound(model.masterVol));
 		}
-	});
-var $author$project$ItemShop$TookSpecialActionTogglePauseAi = {$: 'TookSpecialActionTogglePauseAi'};
-var $author$project$ItemShop$TookSpecialActionInviteTrader = {$: 'TookSpecialActionInviteTrader'};
-var $author$project$ItemShop$addOther = F2(
-	function (_v0, newOther) {
-		var player = _v0.a.player;
-		var shop = _v0.a.shop;
-		var others = _v0.a.others;
-		return $author$project$ItemShop$Characters(
-			{
-				others: A2(
-					$elm$core$List$append,
-					others,
-					_List_fromArray(
-						[newOther])),
-				player: player,
-				shop: shop
-			});
-	});
-var $author$project$ItemShop$addQuantityInt = F2(
-	function (qty, val) {
-		var orig_val = qty.a;
-		return $author$project$ItemShop$Quantity(orig_val + val);
-	});
-var $elm$core$List$any = F2(
-	function (isOkay, list) {
-		any:
-		while (true) {
-			if (!list.b) {
-				return false;
-			} else {
-				var x = list.a;
-				var xs = list.b;
-				if (isOkay(x)) {
-					return true;
-				} else {
-					var $temp$isOkay = isOkay,
-						$temp$list = xs;
-					isOkay = $temp$isOkay;
-					list = $temp$list;
-					continue any;
-				}
-			}
-		}
-	});
-var $author$project$ItemShop$charactersLength = function (_v0) {
-	var player = _v0.a.player;
-	var shop = _v0.a.shop;
-	var others = _v0.a.others;
-	return 2 + $elm$core$List$length(others);
-};
-var $author$project$ItemShop$pick_item = F3(
-	function (item_db, _v0, _v1) {
-		var prev_seed = _v1.a;
-		var folded_items = _v1.b;
-		var _v2 = A2($author$project$ItemShop$pick_random_unlocked_item_from_db, item_db, prev_seed);
-		var maybe_item = _v2.a;
-		var seed_ = _v2.b;
-		var result = A2(
-			$elm$core$Maybe$map,
-			function (item) {
-				return {
-					avg_price: $author$project$ItemShop$setPrice(item.raw_gold_cost),
-					item: item,
-					quantity: $author$project$ItemShop$Quantity(1)
-				};
-			},
-			maybe_item);
-		return _Utils_Tuple2(
-			seed_,
-			A2($elm$core$List$cons, result, folded_items));
-	});
-var $author$project$ItemShop$handle_invite_trader = function (model) {
-	var name = 'Character ' + $elm$core$String$fromInt(
-		$author$project$ItemShop$charactersLength(model.characters) + 1);
-	var invited_character = A2(
-		$author$project$ItemShop$createCharacter,
-		$author$project$ItemShop$generateUuid(name),
-		name);
-	var incr_if_matches = F2(
-		function (item, ir) {
-			return _Utils_eq(ir.item.id, item.id) ? {
-				avg_price: ir.avg_price,
-				item: ir.item,
-				quantity: A2($author$project$ItemShop$addQuantityInt, ir.quantity, 1)
-			} : {avg_price: ir.avg_price, item: ir.item, quantity: ir.quantity};
-		});
-	var _v0 = model;
-	var characters = _v0.characters;
-	var item_db = _v0.item_db;
-	var globalSeed = _v0.globalSeed;
-	var _v1 = A2(
-		$elm$random$Random$step,
-		A2($elm$random$Random$int, 1, 5),
-		globalSeed);
-	var num_items = _v1.a;
-	var _v2 = A3(
-		$elm$core$List$foldl,
-		$author$project$ItemShop$pick_item(item_db),
-		_Utils_Tuple2(globalSeed, _List_Nil),
-		A2($elm$core$List$repeat, num_items, _Utils_Tuple0));
-	var new_globalSeed = _v2.a;
-	var held_maybe_item_frames = _v2.b;
-	var held_items = A3(
-		$elm$core$List$foldl,
-		F2(
-			function (_v3, prev_items) {
-				var item = _v3.item;
-				var quantity = _v3.quantity;
-				var avg_price = _v3.avg_price;
-				return A2(
-					$elm$core$List$any,
-					A2(
-						$elm$core$Basics$composeR,
-						function ($) {
-							return $.item;
-						},
-						A2(
-							$elm$core$Basics$composeR,
-							function ($) {
-								return $.id;
-							},
-							$elm$core$Basics$eq(item.id))),
-					prev_items) ? A2(
-					$elm$core$List$map,
-					incr_if_matches(item),
-					prev_items) : A2(
-					$elm$core$List$cons,
-					{avg_price: avg_price, item: item, quantity: quantity},
-					prev_items);
-			}),
-		_List_Nil,
-		A2($elm$core$List$filterMap, $elm$core$Basics$identity, held_maybe_item_frames));
-	return A2(
-		$author$project$ItemShop$append_player_action_log,
-		$author$project$ItemShop$TookSpecialActionInviteTrader,
-		_Utils_update(
-			model,
-			{
-				characters: A2(
-					$author$project$ItemShop$addOther,
-					characters,
-					_Utils_update(
-						invited_character,
-						{held_gold: 50, held_items: held_items})),
-				globalSeed: new_globalSeed
-			}));
-};
-var $author$project$ItemShop$EventLeastDesiredItemType = function (a) {
-	return {$: 'EventLeastDesiredItemType', a: a};
-};
-var $author$project$ItemShop$EventVeryDesiredItemType = function (a) {
-	return {$: 'EventVeryDesiredItemType', a: a};
-};
-var $author$project$ItemShop$TookSpecialActionTriggerEvent = function (a) {
-	return {$: 'TookSpecialActionTriggerEvent', a: a};
-};
-var $author$project$ItemShop$setGlobalSeed = F2(
-	function (new_seed, model) {
-		return _Utils_update(
-			model,
-			{globalSeed: new_seed});
-	});
-var $author$project$ItemShop$set_item_type_sentiment = F3(
-	function (item_type_sentiment, item_type, new_val) {
-		return A3(
-			$elm$core$Dict$update,
-			$author$project$ItemShop$item_type_to_id(item_type),
-			$elm$core$Basics$always(
-				$elm$core$Maybe$Just(new_val)),
-			item_type_sentiment);
-	});
-var $author$project$ItemShop$update_shop_trends = F2(
-	function (model, update_st_func) {
-		var new_shop_trends = update_st_func(model.shop_trends);
-		var new_historical_shop_trends = A2(
-			$elm$core$List$append,
-			model.historical_shop_trends,
-			_List_fromArray(
-				[new_shop_trends]));
-		return _Utils_update(
-			model,
-			{historical_shop_trends: new_historical_shop_trends, shop_trends: new_shop_trends});
-	});
-var $author$project$ItemShop$handle_special_event = F2(
-	function (model, spec_event) {
-		var choose_item_type = function (seed) {
-			return A2(
-				$elm$random$Random$step,
-				$elm_community$random_extra$Random$List$choose(
-					_Utils_ap(
-						A2($elm$core$List$repeat, 10, $author$project$ItemShop$Weapon),
-						_Utils_ap(
-							A2($elm$core$List$repeat, 10, $author$project$ItemShop$Armor),
-							A2($elm$core$List$repeat, 10, $author$project$ItemShop$Spellbook)))),
-				seed);
-		};
-		var _v0 = model;
-		var shop_trends = _v0.shop_trends;
-		var historical_shop_trends = _v0.historical_shop_trends;
-		var _v1 = shop_trends;
-		var item_type_sentiment = _v1.item_type_sentiment;
-		if (spec_event.$ === 'EventVeryDesiredItemType') {
-			var item_type = spec_event.a;
-			var _v3 = choose_item_type(model.globalSeed);
-			var _v4 = _v3.a;
-			var maybe_chosen_item_type = _v4.a;
-			var new_seed = _v3.b;
-			return A2(
-				$author$project$ItemShop$append_player_action_log,
-				$author$project$ItemShop$TookSpecialActionTriggerEvent(
-					$author$project$ItemShop$EventVeryDesiredItemType(maybe_chosen_item_type)),
-				A2(
-					$author$project$ItemShop$setGlobalSeed,
-					new_seed,
-					A2(
-						$author$project$ItemShop$update_shop_trends,
-						model,
-						function (st) {
-							return _Utils_update(
-								st,
-								{
-									item_type_sentiment: A3(
-										$author$project$ItemShop$set_item_type_sentiment,
-										st.item_type_sentiment,
-										A2($elm$core$Maybe$withDefault, $author$project$ItemShop$Weapon, maybe_chosen_item_type),
-										1.5)
-								});
-						})));
-		} else {
-			var _v5 = choose_item_type(model.globalSeed);
-			var _v6 = _v5.a;
-			var maybe_chosen_item_type = _v6.a;
-			var new_seed = _v5.b;
-			return A2(
-				$author$project$ItemShop$append_player_action_log,
-				$author$project$ItemShop$TookSpecialActionTriggerEvent(
-					$author$project$ItemShop$EventLeastDesiredItemType(maybe_chosen_item_type)),
-				A2(
-					$author$project$ItemShop$setGlobalSeed,
-					new_seed,
-					A2(
-						$author$project$ItemShop$update_shop_trends,
-						model,
-						function (st) {
-							return _Utils_update(
-								st,
-								{
-									item_type_sentiment: A3(
-										$author$project$ItemShop$set_item_type_sentiment,
-										st.item_type_sentiment,
-										A2($elm$core$Maybe$withDefault, $author$project$ItemShop$Weapon, maybe_chosen_item_type),
-										0.5)
-								});
-						})));
-		}
-	});
-var $author$project$ItemShop$hasEnoughGold = F2(
-	function (character, price) {
-		return _Utils_cmp(
-			character.held_gold,
-			$author$project$ItemShop$getPrice(price)) > -1;
-	});
-var $author$project$ItemShop$communityFundCost = $author$project$ItemShop$setPrice(25);
-var $author$project$ItemShop$special_action_community_fund = function (model) {
-	var price = $author$project$ItemShop$communityFundCost;
-	return function (_v0) {
-		var player = _v0.a;
-		return A2($author$project$ItemShop$hasEnoughGold, player, price) ? function (m) {
-			return _Utils_update(
-				m,
-				{
-					communityFund: model.communityFund + $author$project$ItemShop$getPrice(price)
-				});
-		}(
-			A2(
-				$author$project$ItemShop$replaceCharacter,
-				A2($author$project$ItemShop$subGold, player, price),
-				model)) : model;
-	}(
-		$author$project$ItemShop$getPlayer(model.characters));
-};
-var $author$project$ItemShop$scale_increase_bp_to_sp_cost = function (current_level) {
-	return $author$project$ItemShop$setPrice(60 + (((5 * current_level) * current_level) * 2));
-};
-var $author$project$ItemShop$special_action_increase_bp_to_sp = function (model) {
-	var _v0 = $author$project$ItemShop$getPlayer(model.characters);
-	var player = _v0.a;
-	var doUpgrade = function (upgrade) {
-		if (upgrade.$ === 'AutomaticBPtoSP') {
-			var level = upgrade.a;
-			return $author$project$ItemShop$AutomaticBPtoSP(level + 1);
-		} else {
-			return upgrade;
-		}
-	};
-	var automaticBPtoSPLevel = A2(
-		$elm$core$Maybe$withDefault,
-		1,
-		$elm$core$List$head(
-			A2(
-				$elm$core$List$filterMap,
-				function (upgrade) {
-					if (upgrade.$ === 'AutomaticBPtoSP') {
-						var level = upgrade.a;
-						return $elm$core$Maybe$Just(level);
-					} else {
-						return $elm$core$Maybe$Nothing;
-					}
-				},
-				model.playerUpgrades)));
-	var upgradeCost = $author$project$ItemShop$scale_increase_bp_to_sp_cost(automaticBPtoSPLevel);
-	return A2($author$project$ItemShop$hasEnoughGold, player, upgradeCost) ? function (m) {
-		return _Utils_update(
-			m,
-			{
-				playerUpgrades: A2($elm$core$List$map, doUpgrade, m.playerUpgrades)
-			});
-	}(
-		A2(
-			$author$project$ItemShop$replaceCharacter,
-			A2($author$project$ItemShop$subGold, player, upgradeCost),
-			model)) : model;
-};
-var $author$project$ItemShop$AutomaticGPM = function (a) {
-	return {$: 'AutomaticGPM', a: a};
-};
-var $author$project$ItemShop$scale_increase_income_cost = function (current_level) {
-	return $author$project$ItemShop$setPrice(20 + (((5 * current_level) * current_level) * 2));
-};
-var $author$project$ItemShop$special_action_increase_income = function (model) {
-	var _v0 = $author$project$ItemShop$getPlayer(model.characters);
-	var player = _v0.a;
-	var automaticGpmLevel = A2(
-		$elm$core$Maybe$withDefault,
-		1,
-		$elm$core$List$head(
-			A2(
-				$elm$core$List$filterMap,
-				function (upgrade) {
-					if (upgrade.$ === 'AutomaticGPM') {
-						var level = upgrade.a;
-						return $elm$core$Maybe$Just(level);
-					} else {
-						return $elm$core$Maybe$Nothing;
-					}
-				},
-				model.playerUpgrades)));
-	var upgradeCost = $author$project$ItemShop$scale_increase_income_cost(automaticGpmLevel);
-	return A2($author$project$ItemShop$hasEnoughGold, player, upgradeCost) ? function (m) {
-		return _Utils_update(
-			m,
-			{
-				playerUpgrades: A2(
-					$elm$core$List$map,
-					function (upgrade) {
-						if (upgrade.$ === 'AutomaticGPM') {
-							var level = upgrade.a;
-							return $author$project$ItemShop$AutomaticGPM(level + 1);
-						} else {
-							return upgrade;
-						}
-					},
-					m.playerUpgrades)
-			});
-	}(
-		A2(
-			$author$project$ItemShop$replaceCharacter,
-			A2($author$project$ItemShop$subGold, player, upgradeCost),
-			model)) : model;
-};
-var $author$project$ItemShop$TookSpecialActionUnlockItem = function (a) {
-	return {$: 'TookSpecialActionUnlockItem', a: a};
-};
-var $author$project$ItemShop$pick_random_locked_item_from_db = F2(
-	function (item_db, seed) {
-		var _v0 = function (gen) {
-			return A2($elm$random$Random$step, gen, seed);
-		}(
-			$elm_community$random_extra$Random$List$choose(
-				A2(
-					$elm$core$List$filter,
-					A2(
-						$elm$core$Basics$composeL,
-						$elm$core$Basics$not,
-						function ($) {
-							return $.is_unlocked;
-						}),
-					$elm$core$Dict$values(item_db))));
-		var _v1 = _v0.a;
-		var maybe_item = _v1.a;
-		var new_seed = _v0.b;
-		return _Utils_Tuple2(
-			A2(
-				$elm$core$Maybe$map,
-				function ($) {
-					return $.item;
-				},
-				maybe_item),
-			new_seed);
-	});
-var $author$project$ItemShop$special_action_unlock_item = function (model) {
-	var _v0 = model;
-	var item_db = _v0.item_db;
-	var globalSeed = _v0.globalSeed;
-	var _v1 = A2($author$project$ItemShop$pick_random_locked_item_from_db, item_db, globalSeed);
-	var mb_item_to_unlock = _v1.a;
-	var new_seed = _v1.b;
-	return function () {
-		if (mb_item_to_unlock.$ === 'Just') {
-			var item_to_unlock = mb_item_to_unlock.a;
-			return $author$project$ItemShop$append_player_action_log(
-				$author$project$ItemShop$TookSpecialActionUnlockItem(item_to_unlock.id));
-		} else {
-			return $elm$core$Basics$identity;
-		}
-	}()(
-		_Utils_update(
-			model,
-			{
-				globalSeed: new_seed,
-				item_db: function () {
-					if (mb_item_to_unlock.$ === 'Just') {
-						var item_to_unlock = mb_item_to_unlock.a;
-						return A3(
-							$author$project$ItemShop$update_item_db,
-							item_db,
-							item_to_unlock.id,
-							$elm$core$Maybe$map(
-								function (idbr) {
-									return _Utils_update(
-										idbr,
-										{is_unlocked: true});
-								}));
-					} else {
-						return item_db;
-					}
-				}()
-			}));
-};
-var $author$project$ItemShop$update_special_action = F3(
-	function (special_action, price, model) {
-		var _v0 = $author$project$ItemShop$getPlayer(model.characters);
-		var player = _v0.a;
-		return A2($author$project$ItemShop$hasEnoughGold, player, price) ? function (new_model) {
-			switch (special_action.$) {
-				case 'InviteTrader':
-					return _Utils_Tuple2(
-						$author$project$ItemShop$handle_invite_trader(
-							$author$project$ItemShop$handle_invite_trader(
-								$author$project$ItemShop$handle_invite_trader(
-									$author$project$ItemShop$handle_invite_trader(
-										$author$project$ItemShop$handle_invite_trader(
-											$author$project$ItemShop$handle_invite_trader(
-												$author$project$ItemShop$handle_invite_trader(
-													$author$project$ItemShop$handle_invite_trader(new_model)))))))),
-						$elm$core$Platform$Cmd$none);
-				case 'TriggerEvent':
-					var event = special_action.a;
-					return _Utils_Tuple2(
-						A2($author$project$ItemShop$handle_special_event, new_model, event),
-						$elm$core$Platform$Cmd$none);
-				case 'TogglePauseAi':
-					return _Utils_Tuple2(
-						A2(
-							$author$project$ItemShop$append_player_action_log,
-							$author$project$ItemShop$TookSpecialActionTogglePauseAi,
-							_Utils_update(
-								new_model,
-								{ai_updates_paused: !new_model.ai_updates_paused})),
-						$elm$core$Platform$Cmd$none);
-				case 'UnlockItem':
-					return _Utils_Tuple2(
-						$author$project$ItemShop$special_action_unlock_item(model),
-						$elm$core$Platform$Cmd$none);
-				case 'IncreaseIncome':
-					return _Utils_Tuple2(
-						$author$project$ItemShop$special_action_increase_income(model),
-						$elm$core$Platform$Cmd$none);
-				case 'IncreaseBPtoSP':
-					return _Utils_Tuple2(
-						$author$project$ItemShop$special_action_increase_bp_to_sp(model),
-						$elm$core$Platform$Cmd$none);
-				default:
-					return _Utils_Tuple2(
-						$author$project$ItemShop$special_action_community_fund(model),
-						$elm$core$Platform$Cmd$none);
-			}
-		}(
-			A2(
-				$author$project$ItemShop$replaceCharacter,
-				A2($author$project$ItemShop$subGold, player, price),
-				model)) : _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 	});
 var $author$project$ItemShop$update = F2(
 	function (msg, model) {
@@ -13088,7 +15302,7 @@ var $author$project$ItemShop$update = F2(
 									item_db: new_item_db,
 									shop_trends: new_trade_context.shop_trends
 								}))),
-					$elm$core$Platform$Cmd$none);
+					$author$project$ItemShop$playPlayerBuyItemSound(model.masterVol));
 			case 'PlayerSellItemToShop':
 				var item = msg.a;
 				var qty = msg.b;
@@ -13104,6 +15318,7 @@ var $author$project$ItemShop$update = F2(
 				if (trade_record.$ === 'CompletedTradeRecord') {
 					var new_trade_context = trade_record.a;
 					var item_trade_log = trade_record.b;
+					var earnedGold = item_trade_log.gold_cost * $author$project$ItemShop$getQuantity(item_trade_log.quantity);
 					return _Utils_Tuple2(
 						A2(
 							$author$project$ItemShop$replaceCharacter,
@@ -13114,6 +15329,7 @@ var $author$project$ItemShop$update = F2(
 								_Utils_update(
 									model,
 									{
+										goldGainedTimeline: A3($author$project$ItemShop$animateGoldGained, model.goldGainedTimeline, model.globalSeed, earnedGold),
 										historical_shop_trends: A2(
 											$elm$core$List$append,
 											model.historical_shop_trends,
@@ -13122,12 +15338,11 @@ var $author$project$ItemShop$update = F2(
 										item_db: new_item_db,
 										quests: A2(
 											$author$project$ItemShop$playerEarnedGold,
-											$author$project$ItemShop$setQuantity(
-												item_trade_log.gold_cost * $author$project$ItemShop$getQuantity(item_trade_log.quantity)),
+											$author$project$ItemShop$setQuantity(earnedGold),
 											A2($author$project$ItemShop$playerSoldItem, item_trade_log.quantity, model.quests)),
 										shop_trends: new_trade_context.shop_trends
 									}))),
-						$elm$core$Platform$Cmd$none);
+						$author$project$ItemShop$playPlayerSellItemSound(model.masterVol));
 				} else {
 					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 				}
@@ -13173,13 +15388,13 @@ var $author$project$ItemShop$update = F2(
 			case 'OnSpecialAction':
 				var special_action = msg.a;
 				var price = msg.b;
-				return A3($author$project$ItemShop$update_special_action, special_action, price, model);
+				return A3($author$project$ItemShop$updateSpecialAction, special_action, price, model);
 			case 'ChangeTabType':
-				var tab_type = msg.a;
+				var currentTabType = msg.a;
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
-						{tab_type: tab_type}),
+						{currentTabType: currentTabType}),
 					function () {
 						var _v8 = model.browserNavKey;
 						if (_v8.$ === 'Just') {
@@ -13187,7 +15402,7 @@ var $author$project$ItemShop$update = F2(
 							return A2(
 								$elm$browser$Browser$Navigation$pushUrl,
 								key,
-								'#' + $author$project$ItemShop$tabTypeToString(tab_type));
+								'#' + $author$project$ItemShop$tabTypeToString(currentTabType));
 						} else {
 							return $elm$core$Platform$Cmd$none;
 						}
@@ -13216,7 +15431,7 @@ var $author$project$ItemShop$update = F2(
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
-						{characters: newCharacters}),
+						{characters: newCharacters, hasHadAtLeastOneBlood: true}),
 					$elm$core$Platform$Cmd$none);
 			case 'ToggleColorTheme':
 				var newColorTheme = function () {
@@ -13284,11 +15499,80 @@ var $author$project$ItemShop$update = F2(
 					$author$project$ItemShop$getQuestTracker(questType)) ? _Utils_Tuple2(
 					A2($author$project$ItemShop$onCashInQuest, model, questData),
 					$elm$core$Platform$Cmd$none) : _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
-			default:
+			case 'ToggleViewGemUnlocksInPostPhase':
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
 						{shouldViewGemUpgradesInPostPhase: !model.shouldViewGemUpgradesInPostPhase}),
+					$elm$core$Platform$Cmd$none);
+			case 'UnlockProgressUnlock':
+				var progressUnlock = msg.a;
+				var gemPrice = msg.b;
+				var _v13 = $author$project$ItemShop$getPlayer(model.characters);
+				var player = _v13.a;
+				return (_Utils_cmp(
+					player.held_gems,
+					$author$project$ItemShop$getPrice(gemPrice)) > -1) ? _Utils_Tuple2(
+					function (m) {
+						return A2(
+							$author$project$ItemShop$setCharacters,
+							m,
+							A2(
+								$author$project$ItemShop$mapPlayer,
+								function (p) {
+									return _Utils_update(
+										p,
+										{
+											held_gems: p.held_gems - $author$project$ItemShop$getPrice(gemPrice)
+										});
+								},
+								m.characters));
+					}(
+						function (m) {
+							return _Utils_update(
+								m,
+								{
+									progressUnlocks: _Utils_ap(
+										m.progressUnlocks,
+										_List_fromArray(
+											[progressUnlock]))
+								});
+						}(model)),
+					$author$project$ItemShop$playUnlockProgressUnlock(model.masterVol)) : _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
+			case 'RuntimeTriggeredAnimationStep':
+				var newTime = msg.a;
+				return _Utils_Tuple2(
+					A3($mdgriffith$elm_animator$Animator$update, newTime, $author$project$ItemShop$animator, model),
+					$elm$core$Platform$Cmd$none);
+			case 'ClickedTitleTextLabel':
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{
+							titleScreenAnimationState: A3(
+								$mdgriffith$elm_animator$Animator$go,
+								$mdgriffith$elm_animator$Animator$quickly,
+								function () {
+									var _v14 = $mdgriffith$elm_animator$Animator$current(model.titleScreenAnimationState);
+									if (_v14.$ === 'HighTitle') {
+										return $author$project$ItemShop$LowTitle;
+									} else {
+										return $author$project$ItemShop$HighTitle;
+									}
+								}(),
+								model.titleScreenAnimationState)
+						}),
+					$elm$core$Platform$Cmd$none);
+			case 'ClickedTitlePlayLabel':
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{currentTabType: $author$project$ItemShop$ShopTabType}),
+					$elm$core$Platform$Cmd$none);
+			default:
+				var settingsMsg = msg.a;
+				return _Utils_Tuple2(
+					A2($author$project$ItemShop$updateSettings, settingsMsg, model),
 					$elm$core$Platform$Cmd$none);
 		}
 	});
@@ -13297,351 +15581,6 @@ var $author$project$Sfxr$GotImportSoundConfig = function (a) {
 };
 var $author$project$Sfxr$ImportedSoundConfigConvertedToString = function (a) {
 	return {$: 'ImportedSoundConfigConvertedToString', a: a};
-};
-var $author$project$Sfxr$Noise = {$: 'Noise'};
-var $author$project$Sfxr$Sawtooth = {$: 'Sawtooth'};
-var $author$project$Sfxr$Sine = {$: 'Sine'};
-var $author$project$Sfxr$decodeShape = function (shapeInt) {
-	switch (shapeInt) {
-		case 0:
-			return $author$project$Sfxr$Square;
-		case 1:
-			return $author$project$Sfxr$Sawtooth;
-		case 2:
-			return $author$project$Sfxr$Sine;
-		case 3:
-			return $author$project$Sfxr$Noise;
-		default:
-			return $author$project$Sfxr$Square;
-	}
-};
-var $author$project$Sfxr$combinePartialsIntoSoundConfig = F2(
-	function (partialA, partialB) {
-		return {
-			arpeggiation: partialA.arpeggiation,
-			duty: partialA.duty,
-			envelope: partialA.envelope,
-			flanger: partialA.flanger,
-			frequency: partialA.frequency,
-			highPassFilter: partialB.highPassFilter,
-			lowPassFilter: partialB.lowPassFilter,
-			misc: partialB.misc,
-			retrigger: partialA.retrigger,
-			shape: $author$project$Sfxr$decodeShape(partialA.shape),
-			vibrato: partialA.vibrato
-		};
-	});
-var $author$project$Sfxr$PartialSoundConfigA = F8(
-	function (shape, envelope, frequency, vibrato, arpeggiation, duty, retrigger, flanger) {
-		return {arpeggiation: arpeggiation, duty: duty, envelope: envelope, flanger: flanger, frequency: frequency, retrigger: retrigger, shape: shape, vibrato: vibrato};
-	});
-var $author$project$Sfxr$Arpeggiation = F2(
-	function (mod, speed) {
-		return {mod: mod, speed: speed};
-	});
-var $elm$json$Json$Decode$float = _Json_decodeFloat;
-var $author$project$Sfxr$decodeArpeggiation = A3(
-	$elm$json$Json$Decode$map2,
-	$author$project$Sfxr$Arpeggiation,
-	A2($elm$json$Json$Decode$field, 'p_arp_mod', $elm$json$Json$Decode$float),
-	A2($elm$json$Json$Decode$field, 'p_arp_speed', $elm$json$Json$Decode$float));
-var $author$project$Sfxr$Duty = F2(
-	function (duty, ramp) {
-		return {duty: duty, ramp: ramp};
-	});
-var $author$project$Sfxr$decodeDuty = A3(
-	$elm$json$Json$Decode$map2,
-	$author$project$Sfxr$Duty,
-	A2($elm$json$Json$Decode$field, 'p_duty', $elm$json$Json$Decode$float),
-	A2($elm$json$Json$Decode$field, 'p_duty_ramp', $elm$json$Json$Decode$float));
-var $author$project$Sfxr$Envelope = F4(
-	function (attack, sustain, punch, decay) {
-		return {attack: attack, decay: decay, punch: punch, sustain: sustain};
-	});
-var $elm$json$Json$Decode$map4 = _Json_map4;
-var $author$project$Sfxr$decodeEnvelope = A5(
-	$elm$json$Json$Decode$map4,
-	$author$project$Sfxr$Envelope,
-	A2($elm$json$Json$Decode$field, 'p_env_attack', $elm$json$Json$Decode$float),
-	A2($elm$json$Json$Decode$field, 'p_env_sustain', $elm$json$Json$Decode$float),
-	A2($elm$json$Json$Decode$field, 'p_env_punch', $elm$json$Json$Decode$float),
-	A2($elm$json$Json$Decode$field, 'p_env_decay', $elm$json$Json$Decode$float));
-var $author$project$Sfxr$Flanger = F2(
-	function (offset, ramp) {
-		return {offset: offset, ramp: ramp};
-	});
-var $author$project$Sfxr$decodeFlanger = A3(
-	$elm$json$Json$Decode$map2,
-	$author$project$Sfxr$Flanger,
-	A2($elm$json$Json$Decode$field, 'p_pha_offset', $elm$json$Json$Decode$float),
-	A2($elm$json$Json$Decode$field, 'p_pha_ramp', $elm$json$Json$Decode$float));
-var $author$project$Sfxr$Frequency = F4(
-	function (base, limit, ramp, dramp) {
-		return {base: base, dramp: dramp, limit: limit, ramp: ramp};
-	});
-var $author$project$Sfxr$decodeFrequency = A5(
-	$elm$json$Json$Decode$map4,
-	$author$project$Sfxr$Frequency,
-	A2($elm$json$Json$Decode$field, 'p_base_freq', $elm$json$Json$Decode$float),
-	A2($elm$json$Json$Decode$field, 'p_freq_limit', $elm$json$Json$Decode$float),
-	A2($elm$json$Json$Decode$field, 'p_freq_ramp', $elm$json$Json$Decode$float),
-	A2($elm$json$Json$Decode$field, 'p_freq_dramp', $elm$json$Json$Decode$float));
-var $author$project$Sfxr$Retrigger = function (repeatSpeed) {
-	return {repeatSpeed: repeatSpeed};
-};
-var $author$project$Sfxr$decodeRetrigger = A2(
-	$elm$json$Json$Decode$map,
-	$author$project$Sfxr$Retrigger,
-	A2($elm$json$Json$Decode$field, 'p_repeat_speed', $elm$json$Json$Decode$float));
-var $author$project$Sfxr$Vibrato = F2(
-	function (strength, speed) {
-		return {speed: speed, strength: strength};
-	});
-var $author$project$Sfxr$decodeVibrato = A3(
-	$elm$json$Json$Decode$map2,
-	$author$project$Sfxr$Vibrato,
-	A2($elm$json$Json$Decode$field, 'p_vib_strength', $elm$json$Json$Decode$float),
-	A2($elm$json$Json$Decode$field, 'p_vib_speed', $elm$json$Json$Decode$float));
-var $elm$json$Json$Decode$map8 = _Json_map8;
-var $author$project$Sfxr$decodeSoundConfigA = A9(
-	$elm$json$Json$Decode$map8,
-	$author$project$Sfxr$PartialSoundConfigA,
-	A2($elm$json$Json$Decode$field, 'wave_type', $elm$json$Json$Decode$int),
-	$author$project$Sfxr$decodeEnvelope,
-	$author$project$Sfxr$decodeFrequency,
-	$author$project$Sfxr$decodeVibrato,
-	$author$project$Sfxr$decodeArpeggiation,
-	$author$project$Sfxr$decodeDuty,
-	$author$project$Sfxr$decodeRetrigger,
-	$author$project$Sfxr$decodeFlanger);
-var $author$project$Sfxr$PartialSoundConfigB = F3(
-	function (lowPassFilter, highPassFilter, misc) {
-		return {highPassFilter: highPassFilter, lowPassFilter: lowPassFilter, misc: misc};
-	});
-var $author$project$Sfxr$HighPassFilter = F2(
-	function (frequency, ramp) {
-		return {frequency: frequency, ramp: ramp};
-	});
-var $author$project$Sfxr$decodeHighPassFilter = A3(
-	$elm$json$Json$Decode$map2,
-	$author$project$Sfxr$HighPassFilter,
-	A2($elm$json$Json$Decode$field, 'p_hpf_freq', $elm$json$Json$Decode$float),
-	A2($elm$json$Json$Decode$field, 'p_hpf_ramp', $elm$json$Json$Decode$float));
-var $author$project$Sfxr$LowPassFilter = F3(
-	function (frequency, ramp, resonance) {
-		return {frequency: frequency, ramp: ramp, resonance: resonance};
-	});
-var $elm$json$Json$Decode$map3 = _Json_map3;
-var $author$project$Sfxr$decodeLowPassFilter = A4(
-	$elm$json$Json$Decode$map3,
-	$author$project$Sfxr$LowPassFilter,
-	A2($elm$json$Json$Decode$field, 'p_lpf_freq', $elm$json$Json$Decode$float),
-	A2($elm$json$Json$Decode$field, 'p_lpf_ramp', $elm$json$Json$Decode$float),
-	A2($elm$json$Json$Decode$field, 'p_lpf_resonance', $elm$json$Json$Decode$float));
-var $author$project$Sfxr$Misc = F3(
-	function (volume, sampleRate, sampleSize) {
-		return {sampleRate: sampleRate, sampleSize: sampleSize, volume: volume};
-	});
-var $author$project$Sfxr$decodeMisc = A4(
-	$elm$json$Json$Decode$map3,
-	$author$project$Sfxr$Misc,
-	A2($elm$json$Json$Decode$field, 'sound_vol', $elm$json$Json$Decode$float),
-	A2($elm$json$Json$Decode$field, 'sample_rate', $elm$json$Json$Decode$int),
-	A2($elm$json$Json$Decode$field, 'sample_size', $elm$json$Json$Decode$int));
-var $author$project$Sfxr$decodeSoundConfigB = A4($elm$json$Json$Decode$map3, $author$project$Sfxr$PartialSoundConfigB, $author$project$Sfxr$decodeLowPassFilter, $author$project$Sfxr$decodeHighPassFilter, $author$project$Sfxr$decodeMisc);
-var $author$project$Sfxr$decodeSoundConfig = A3($elm$json$Json$Decode$map2, $author$project$Sfxr$combinePartialsIntoSoundConfig, $author$project$Sfxr$decodeSoundConfigA, $author$project$Sfxr$decodeSoundConfigB);
-var $elm$json$Json$Decode$decodeString = _Json_runOnString;
-var $elm$json$Json$Encode$bool = _Json_wrap;
-var $elm$json$Json$Encode$float = _Json_wrap;
-var $author$project$Sfxr$encodeArpeggiation = function (arpeggiation) {
-	return _List_fromArray(
-		[
-			_Utils_Tuple2(
-			'p_arp_mod',
-			$elm$json$Json$Encode$float(arpeggiation.mod)),
-			_Utils_Tuple2(
-			'p_arp_speed',
-			$elm$json$Json$Encode$float(arpeggiation.speed))
-		]);
-};
-var $author$project$Sfxr$encodeDuty = function (duty) {
-	return _List_fromArray(
-		[
-			_Utils_Tuple2(
-			'p_duty',
-			$elm$json$Json$Encode$float(duty.duty)),
-			_Utils_Tuple2(
-			'p_duty_ramp',
-			$elm$json$Json$Encode$float(duty.ramp))
-		]);
-};
-var $author$project$Sfxr$encodeEnvelope = function (envelope) {
-	return _List_fromArray(
-		[
-			_Utils_Tuple2(
-			'p_env_attack',
-			$elm$json$Json$Encode$float(envelope.attack)),
-			_Utils_Tuple2(
-			'p_env_sustain',
-			$elm$json$Json$Encode$float(envelope.sustain)),
-			_Utils_Tuple2(
-			'p_env_punch',
-			$elm$json$Json$Encode$float(envelope.punch)),
-			_Utils_Tuple2(
-			'p_env_decay',
-			$elm$json$Json$Encode$float(envelope.decay))
-		]);
-};
-var $author$project$Sfxr$encodeFlanger = function (flanger) {
-	return _List_fromArray(
-		[
-			_Utils_Tuple2(
-			'p_pha_offset',
-			$elm$json$Json$Encode$float(flanger.offset)),
-			_Utils_Tuple2(
-			'p_pha_ramp',
-			$elm$json$Json$Encode$float(flanger.ramp))
-		]);
-};
-var $author$project$Sfxr$encodeFrequency = function (frequency) {
-	return _List_fromArray(
-		[
-			_Utils_Tuple2(
-			'p_base_freq',
-			$elm$json$Json$Encode$float(frequency.base)),
-			_Utils_Tuple2(
-			'p_freq_limit',
-			$elm$json$Json$Encode$float(frequency.limit)),
-			_Utils_Tuple2(
-			'p_freq_ramp',
-			$elm$json$Json$Encode$float(frequency.ramp)),
-			_Utils_Tuple2(
-			'p_freq_dramp',
-			$elm$json$Json$Encode$float(frequency.dramp))
-		]);
-};
-var $author$project$Sfxr$encodeHighPassFilter = function (highPassFilter) {
-	return _List_fromArray(
-		[
-			_Utils_Tuple2(
-			'p_hpf_freq',
-			$elm$json$Json$Encode$float(highPassFilter.frequency)),
-			_Utils_Tuple2(
-			'p_hpf_ramp',
-			$elm$json$Json$Encode$float(highPassFilter.ramp))
-		]);
-};
-var $author$project$Sfxr$encodeLowPassFilter = function (lowPassFilter) {
-	return _List_fromArray(
-		[
-			_Utils_Tuple2(
-			'p_lpf_freq',
-			$elm$json$Json$Encode$float(lowPassFilter.frequency)),
-			_Utils_Tuple2(
-			'p_lpf_ramp',
-			$elm$json$Json$Encode$float(lowPassFilter.ramp)),
-			_Utils_Tuple2(
-			'p_lpf_resonance',
-			$elm$json$Json$Encode$float(lowPassFilter.resonance))
-		]);
-};
-var $elm$json$Json$Encode$int = _Json_wrap;
-var $author$project$Sfxr$encodeMisc = function (misc) {
-	return _List_fromArray(
-		[
-			_Utils_Tuple2(
-			'sound_vol',
-			$elm$json$Json$Encode$float(misc.volume)),
-			_Utils_Tuple2(
-			'sample_rate',
-			$elm$json$Json$Encode$int(misc.sampleRate)),
-			_Utils_Tuple2(
-			'sample_size',
-			$elm$json$Json$Encode$int(misc.sampleSize))
-		]);
-};
-var $author$project$Sfxr$encodeRetrigger = function (retrigger) {
-	return _List_fromArray(
-		[
-			_Utils_Tuple2(
-			'p_repeat_speed',
-			$elm$json$Json$Encode$float(retrigger.repeatSpeed))
-		]);
-};
-var $author$project$Sfxr$encodeShape = function (shape) {
-	return _Utils_Tuple2(
-		'wave_type',
-		$elm$json$Json$Encode$int(
-			function () {
-				switch (shape.$) {
-					case 'Square':
-						return 0;
-					case 'Sawtooth':
-						return 1;
-					case 'Sine':
-						return 2;
-					default:
-						return 3;
-				}
-			}()));
-};
-var $author$project$Sfxr$encodeVibrato = function (vibrato) {
-	return _List_fromArray(
-		[
-			_Utils_Tuple2(
-			'p_vib_strength',
-			$elm$json$Json$Encode$float(vibrato.strength)),
-			_Utils_Tuple2(
-			'p_vib_speed',
-			$elm$json$Json$Encode$float(vibrato.speed))
-		]);
-};
-var $elm$json$Json$Encode$object = function (pairs) {
-	return _Json_wrap(
-		A3(
-			$elm$core$List$foldl,
-			F2(
-				function (_v0, obj) {
-					var k = _v0.a;
-					var v = _v0.b;
-					return A3(_Json_addField, k, v, obj);
-				}),
-			_Json_emptyObject(_Utils_Tuple0),
-			pairs));
-};
-var $author$project$Sfxr$encodeSoundConfig = function (soundConfig) {
-	return $elm$json$Json$Encode$object(
-		_Utils_ap(
-			_List_fromArray(
-				[
-					_Utils_Tuple2(
-					'oldParams',
-					$elm$json$Json$Encode$bool(true))
-				]),
-			_Utils_ap(
-				_List_fromArray(
-					[
-						$author$project$Sfxr$encodeShape(soundConfig.shape)
-					]),
-				_Utils_ap(
-					$author$project$Sfxr$encodeEnvelope(soundConfig.envelope),
-					_Utils_ap(
-						$author$project$Sfxr$encodeFrequency(soundConfig.frequency),
-						_Utils_ap(
-							$author$project$Sfxr$encodeVibrato(soundConfig.vibrato),
-							_Utils_ap(
-								$author$project$Sfxr$encodeArpeggiation(soundConfig.arpeggiation),
-								_Utils_ap(
-									$author$project$Sfxr$encodeDuty(soundConfig.duty),
-									_Utils_ap(
-										$author$project$Sfxr$encodeRetrigger(soundConfig.retrigger),
-										_Utils_ap(
-											$author$project$Sfxr$encodeFlanger(soundConfig.flanger),
-											_Utils_ap(
-												$author$project$Sfxr$encodeLowPassFilter(soundConfig.lowPassFilter),
-												_Utils_ap(
-													$author$project$Sfxr$encodeHighPassFilter(soundConfig.highPassFilter),
-													$author$project$Sfxr$encodeMisc(soundConfig.misc)))))))))))));
 };
 var $elm$file$File$Select$file = F2(
 	function (mimes, toMsg) {
@@ -14090,7 +16029,6 @@ var $elm_community$list_extra$List$Extra$last = function (items) {
 		}
 	}
 };
-var $author$project$Sfxr$sfxrOut = _Platform_outgoingPort('sfxrOut', $elm$core$Basics$identity);
 var $author$project$Sfxr$setAndPlaySound = F2(
 	function (newSoundConfig, model) {
 		var newHistoricalSoundConfigs = function () {
@@ -20548,17 +22486,6 @@ var $elm$regex$Regex$fromString = function (string) {
 		{caseInsensitive: false, multiline: false},
 		string);
 };
-var $elm$core$Result$map = F2(
-	function (func, ra) {
-		if (ra.$ === 'Ok') {
-			var a = ra.a;
-			return $elm$core$Result$Ok(
-				func(a));
-		} else {
-			var e = ra.a;
-			return $elm$core$Result$Err(e);
-		}
-	});
 var $fredcy$elm_parseint$ParseInt$InvalidRadix = function (a) {
 	return {$: 'InvalidRadix', a: a};
 };
@@ -20863,16 +22790,16 @@ var $mdgriffith$elm_ui$Element$Lazy$lazy2 = F3(
 		return $mdgriffith$elm_ui$Internal$Model$Unstyled(
 			A4($elm$virtual_dom$VirtualDom$lazy4, $mdgriffith$elm_ui$Element$Lazy$apply2, fn, a, b));
 	});
-var $mdgriffith$elm_ui$Element$Lazy$apply4 = F5(
-	function (fn, a, b, c, d) {
+var $mdgriffith$elm_ui$Element$Lazy$apply5 = F6(
+	function (fn, a, b, c, d, e) {
 		return $mdgriffith$elm_ui$Element$Lazy$embed(
-			A4(fn, a, b, c, d));
+			A5(fn, a, b, c, d, e));
 	});
-var $elm$virtual_dom$VirtualDom$lazy6 = _VirtualDom_lazy6;
-var $mdgriffith$elm_ui$Element$Lazy$lazy4 = F5(
-	function (fn, a, b, c, d) {
+var $elm$virtual_dom$VirtualDom$lazy7 = _VirtualDom_lazy7;
+var $mdgriffith$elm_ui$Element$Lazy$lazy5 = F6(
+	function (fn, a, b, c, d, e) {
 		return $mdgriffith$elm_ui$Internal$Model$Unstyled(
-			A6($elm$virtual_dom$VirtualDom$lazy6, $mdgriffith$elm_ui$Element$Lazy$apply4, fn, a, b, c, d));
+			A7($elm$virtual_dom$VirtualDom$lazy7, $mdgriffith$elm_ui$Element$Lazy$apply5, fn, a, b, c, d, e));
 	});
 var $mdgriffith$elm_ui$Internal$Model$Text = function (a) {
 	return {$: 'Text', a: a};
@@ -22850,17 +24777,897 @@ var $author$project$Battle$view = function (model) {
 };
 var $mdgriffith$elm_ui$Internal$Model$Bottom = {$: 'Bottom'};
 var $mdgriffith$elm_ui$Element$alignBottom = $mdgriffith$elm_ui$Internal$Model$AlignY($mdgriffith$elm_ui$Internal$Model$Bottom);
+var $mdgriffith$elm_ui$Element$Font$alignLeft = A2($mdgriffith$elm_ui$Internal$Model$Class, $mdgriffith$elm_ui$Internal$Flag$fontAlignment, $mdgriffith$elm_ui$Internal$Style$classes.textLeft);
 var $mdgriffith$elm_ui$Element$Font$alignRight = A2($mdgriffith$elm_ui$Internal$Model$Class, $mdgriffith$elm_ui$Internal$Flag$fontAlignment, $mdgriffith$elm_ui$Internal$Style$classes.textRight);
 var $author$project$Interface$color_ultra_light_grey = A3($mdgriffith$elm_ui$Element$rgb, 0.95, 0.95, 0.95);
+var $mdgriffith$elm_animator$Internal$Interpolate$FullDefault = {$: 'FullDefault'};
+var $mdgriffith$elm_animator$Internal$Interpolate$Position = F2(
+	function (a, b) {
+		return {$: 'Position', a: a, b: b};
+	});
+var $mdgriffith$elm_animator$Animator$at = $mdgriffith$elm_animator$Internal$Interpolate$Position($mdgriffith$elm_animator$Internal$Interpolate$FullDefault);
+var $mdgriffith$elm_animator$Internal$Interpolate$dwellPeriod = function (movement) {
+	if (movement.$ === 'Pos') {
+		return $elm$core$Maybe$Nothing;
+	} else {
+		var period = movement.b;
+		return $elm$core$Maybe$Just(period);
+	}
+};
+var $mdgriffith$elm_animator$Internal$Interpolate$getPersonality = function (m) {
+	if (m.$ === 'Osc') {
+		var personality = m.a;
+		return personality;
+	} else {
+		var personality = m.a;
+		return personality;
+	}
+};
+var $ianmackenzie$elm_units$Pixels$inPixels = function (_v0) {
+	var numPixels = _v0.a;
+	return numPixels;
+};
+var $ianmackenzie$elm_units$Pixels$inPixelsPerSecond = function (_v0) {
+	var numPixelsPerSecond = _v0.a;
+	return numPixelsPerSecond;
+};
+var $mdgriffith$elm_animator$Internal$Interpolate$Spline = F4(
+	function (a, b, c, d) {
+		return {$: 'Spline', a: a, b: b, c: c, d: d};
+	});
+var $mdgriffith$elm_animator$Internal$Interpolate$zeroPoint = {x: 0, y: 0};
+var $mdgriffith$elm_animator$Internal$Interpolate$createSpline = function (config) {
+	var totalX = config.end.x - config.start.x;
+	var startVelScale = 1 / (config.startVelocity.x / totalX);
+	var startVelocity = (!config.departure.departSlowly) ? {x: 0, y: 0} : (((!(config.startVelocity.x - $mdgriffith$elm_animator$Internal$Interpolate$zeroPoint.x)) && (!(config.startVelocity.y - $mdgriffith$elm_animator$Internal$Interpolate$zeroPoint.y))) ? {x: totalX * (config.departure.departSlowly * 3), y: 0} : {x: (startVelScale * config.startVelocity.x) * (config.departure.departSlowly * 3), y: (startVelScale * config.startVelocity.y) * (config.departure.departSlowly * 3)});
+	var endVelScale = 1 / (config.endVelocity.x / totalX);
+	var endVelocity = (!config.arrival.arriveSlowly) ? {x: 0, y: 0} : (((!(config.endVelocity.x - $mdgriffith$elm_animator$Internal$Interpolate$zeroPoint.x)) && (!(config.endVelocity.y - $mdgriffith$elm_animator$Internal$Interpolate$zeroPoint.y))) ? {x: totalX * (config.arrival.arriveSlowly * 3), y: 0} : {x: (endVelScale * config.endVelocity.x) * (config.arrival.arriveSlowly * 3), y: (endVelScale * config.endVelocity.y) * (config.arrival.arriveSlowly * 3)});
+	return A4(
+		$mdgriffith$elm_animator$Internal$Interpolate$Spline,
+		config.start,
+		{x: config.start.x + ((1 / 3) * startVelocity.x), y: config.start.y + ((1 / 3) * startVelocity.y)},
+		{x: config.end.x + (((-1) / 3) * endVelocity.x), y: config.end.y + (((-1) / 3) * endVelocity.y)},
+		config.end);
+};
+var $mdgriffith$elm_animator$Internal$Interpolate$findAtXOnSpline = F6(
+	function (spline, desiredX, tolerance, jumpSize, t, depth) {
+		findAtXOnSpline:
+		while (true) {
+			var p1 = spline.a;
+			var p2 = spline.b;
+			var p3 = spline.c;
+			var p4 = spline.d;
+			var point = function () {
+				if (t <= 0.5) {
+					var q3 = {x: p3.x + (t * (p4.x - p3.x)), y: p3.y + (t * (p4.y - p3.y))};
+					var q2 = {x: p2.x + (t * (p3.x - p2.x)), y: p2.y + (t * (p3.y - p2.y))};
+					var r2 = {x: q2.x + (t * (q3.x - q2.x)), y: q2.y + (t * (q3.y - q2.y))};
+					var q1 = {x: p1.x + (t * (p2.x - p1.x)), y: p1.y + (t * (p2.y - p1.y))};
+					var r1 = {x: q1.x + (t * (q2.x - q1.x)), y: q1.y + (t * (q2.y - q1.y))};
+					return {x: r1.x + (t * (r2.x - r1.x)), y: r1.y + (t * (r2.y - r1.y))};
+				} else {
+					var q3 = {x: p4.x + ((1 - t) * (p3.x - p4.x)), y: p4.y + ((1 - t) * (p3.y - p4.y))};
+					var q2 = {x: p3.x + ((1 - t) * (p2.x - p3.x)), y: p3.y + ((1 - t) * (p2.y - p3.y))};
+					var r2 = {x: q3.x + ((1 - t) * (q2.x - q3.x)), y: q3.y + ((1 - t) * (q2.y - q3.y))};
+					var q1 = {x: p2.x + ((1 - t) * (p1.x - p2.x)), y: p2.y + ((1 - t) * (p1.y - p2.y))};
+					var r1 = {x: q2.x + ((1 - t) * (q1.x - q2.x)), y: q2.y + ((1 - t) * (q1.y - q2.y))};
+					return {x: r2.x + ((1 - t) * (r1.x - r2.x)), y: r2.y + ((1 - t) * (r1.y - r2.y))};
+				}
+			}();
+			if (depth === 10) {
+				return {point: point, t: t};
+			} else {
+				if (($elm$core$Basics$abs(point.x - desiredX) < 1) && ($elm$core$Basics$abs(point.x - desiredX) >= 0)) {
+					return {point: point, t: t};
+				} else {
+					if ((point.x - desiredX) > 0) {
+						var $temp$spline = spline,
+							$temp$desiredX = desiredX,
+							$temp$tolerance = tolerance,
+							$temp$jumpSize = jumpSize / 2,
+							$temp$t = t - jumpSize,
+							$temp$depth = depth + 1;
+						spline = $temp$spline;
+						desiredX = $temp$desiredX;
+						tolerance = $temp$tolerance;
+						jumpSize = $temp$jumpSize;
+						t = $temp$t;
+						depth = $temp$depth;
+						continue findAtXOnSpline;
+					} else {
+						var $temp$spline = spline,
+							$temp$desiredX = desiredX,
+							$temp$tolerance = tolerance,
+							$temp$jumpSize = jumpSize / 2,
+							$temp$t = t + jumpSize,
+							$temp$depth = depth + 1;
+						spline = $temp$spline;
+						desiredX = $temp$desiredX;
+						tolerance = $temp$tolerance;
+						jumpSize = $temp$jumpSize;
+						t = $temp$t;
+						depth = $temp$depth;
+						continue findAtXOnSpline;
+					}
+				}
+			}
+		}
+	});
+var $mdgriffith$elm_animator$Internal$Interpolate$interpolateValue = F3(
+	function (start, end, t) {
+		return (t <= 0.5) ? (start + (t * (end - start))) : (end + ((1 - t) * (start - end)));
+	});
+var $mdgriffith$elm_animator$Internal$Interpolate$firstDerivativeOnSpline = F2(
+	function (_v0, proportion) {
+		var p1 = _v0.a;
+		var p2 = _v0.b;
+		var p3 = _v0.c;
+		var p4 = _v0.d;
+		var vy3 = p4.y - p3.y;
+		var vy2 = p3.y - p2.y;
+		var wy2 = A3($mdgriffith$elm_animator$Internal$Interpolate$interpolateValue, vy2, vy3, proportion);
+		var vy1 = p2.y - p1.y;
+		var wy1 = A3($mdgriffith$elm_animator$Internal$Interpolate$interpolateValue, vy1, vy2, proportion);
+		var vx3 = p4.x - p3.x;
+		var vx2 = p3.x - p2.x;
+		var wx2 = A3($mdgriffith$elm_animator$Internal$Interpolate$interpolateValue, vx2, vx3, proportion);
+		var vx1 = p2.x - p1.x;
+		var wx1 = A3($mdgriffith$elm_animator$Internal$Interpolate$interpolateValue, vx1, vx2, proportion);
+		return {
+			x: 3 * A3($mdgriffith$elm_animator$Internal$Interpolate$interpolateValue, wx1, wx2, proportion),
+			y: 3 * A3($mdgriffith$elm_animator$Internal$Interpolate$interpolateValue, wy1, wy2, proportion)
+		};
+	});
+var $mdgriffith$elm_animator$Internal$Interpolate$guessTime = F2(
+	function (now, _v0) {
+		var one = _v0.a;
+		var two = _v0.b;
+		var three = _v0.c;
+		var four = _v0.d;
+		return (!(four.x - one.x)) ? 0.5 : ((now - one.x) / (four.x - one.x));
+	});
+var $mdgriffith$elm_animator$Internal$Interpolate$linearDefault = {arriveEarly: 0, arriveSlowly: 0, departLate: 0, departSlowly: 0, wobbliness: 0};
+var $ianmackenzie$elm_units$Quantity$divideBy = F2(
+	function (divisor, _v0) {
+		var value = _v0.a;
+		return $ianmackenzie$elm_units$Quantity$Quantity(value / divisor);
+	});
+var $ianmackenzie$elm_units$Quantity$per = F2(
+	function (_v0, _v1) {
+		var independentValue = _v0.a;
+		var dependentValue = _v1.a;
+		return $ianmackenzie$elm_units$Quantity$Quantity(dependentValue / independentValue);
+	});
+var $ianmackenzie$elm_units$Pixels$pixels = function (numPixels) {
+	return $ianmackenzie$elm_units$Quantity$Quantity(numPixels);
+};
+var $mdgriffith$elm_animator$Internal$Interpolate$derivativeOfEasing = F3(
+	function (ease, period, target) {
+		var targetPixels = $ianmackenzie$elm_units$Pixels$pixels(
+			ease(target));
+		var sampleSize = 16;
+		var deltaSample = sampleSize / $ianmackenzie$elm_units$Duration$inMilliseconds(period);
+		var next = $ianmackenzie$elm_units$Pixels$pixels(
+			ease(target + deltaSample));
+		var dx2 = A2($ianmackenzie$elm_units$Quantity$minus, targetPixels, next);
+		var prev = $ianmackenzie$elm_units$Pixels$pixels(
+			ease(target - deltaSample));
+		var dx1 = A2($ianmackenzie$elm_units$Quantity$minus, prev, targetPixels);
+		var dx = A2(
+			$ianmackenzie$elm_units$Quantity$divideBy,
+			2,
+			A2($ianmackenzie$elm_units$Quantity$plus, dx1, dx2));
+		return A2(
+			$ianmackenzie$elm_units$Quantity$per,
+			$ianmackenzie$elm_units$Duration$milliseconds(sampleSize),
+			dx);
+	});
+var $mdgriffith$elm_animator$Internal$Time$millis = function (ms) {
+	return $ianmackenzie$elm_units$Quantity$Quantity(ms);
+};
+var $ianmackenzie$elm_units$Pixels$pixelsPerSecond = function (numPixelsPerSecond) {
+	return $ianmackenzie$elm_units$Quantity$Quantity(numPixelsPerSecond);
+};
+var $elm$core$Basics$isInfinite = _Basics_isInfinite;
+var $ianmackenzie$elm_units$Quantity$isInfinite = function (_v0) {
+	var value = _v0.a;
+	return $elm$core$Basics$isInfinite(value);
+};
+var $elm$core$Basics$isNaN = _Basics_isNaN;
+var $ianmackenzie$elm_units$Quantity$isNaN = function (_v0) {
+	var value = _v0.a;
+	return $elm$core$Basics$isNaN(value);
+};
+var $ianmackenzie$elm_units$Quantity$zero = $ianmackenzie$elm_units$Quantity$Quantity(0);
+var $mdgriffith$elm_animator$Internal$Interpolate$velocityBetween = F4(
+	function (one, oneTime, two, twoTime) {
+		var duration = A2($mdgriffith$elm_animator$Internal$Time$duration, oneTime, twoTime);
+		var distance = A2($ianmackenzie$elm_units$Quantity$minus, one, two);
+		var vel = A2($ianmackenzie$elm_units$Quantity$per, duration, distance);
+		return ($ianmackenzie$elm_units$Quantity$isNaN(vel) || $ianmackenzie$elm_units$Quantity$isInfinite(vel)) ? $ianmackenzie$elm_units$Quantity$zero : vel;
+	});
+var $mdgriffith$elm_animator$Internal$Interpolate$newVelocityAtTarget = F3(
+	function (target, targetTime, maybeLookAhead) {
+		if (maybeLookAhead.$ === 'Nothing') {
+			if (target.$ === 'Pos') {
+				return $ianmackenzie$elm_units$Pixels$pixelsPerSecond(0);
+			} else {
+				var period = target.b;
+				var toX = target.c;
+				if (period.$ === 'Loop') {
+					var periodDuration = period.a;
+					return A3($mdgriffith$elm_animator$Internal$Interpolate$derivativeOfEasing, toX, periodDuration, 0);
+				} else {
+					var n = period.a;
+					var periodDuration = period.b;
+					return A3($mdgriffith$elm_animator$Internal$Interpolate$derivativeOfEasing, toX, periodDuration, 0);
+				}
+			}
+		} else {
+			var lookAhead = maybeLookAhead.a;
+			var targetPosition = function () {
+				if (target.$ === 'Osc') {
+					var toX = target.c;
+					return $ianmackenzie$elm_units$Pixels$pixels(
+						toX(0));
+				} else {
+					var x = target.b;
+					return $ianmackenzie$elm_units$Pixels$pixels(x);
+				}
+			}();
+			var _v3 = lookAhead.anchor;
+			if (_v3.$ === 'Pos') {
+				var aheadPosition = _v3.b;
+				return A4(
+					$mdgriffith$elm_animator$Internal$Interpolate$velocityBetween,
+					targetPosition,
+					$mdgriffith$elm_animator$Internal$Time$millis(targetTime),
+					$ianmackenzie$elm_units$Pixels$pixels(aheadPosition),
+					$mdgriffith$elm_animator$Internal$Time$millis(lookAhead.time));
+			} else {
+				var period = _v3.b;
+				var toX = _v3.c;
+				if (lookAhead.resting) {
+					if (period.$ === 'Loop') {
+						var periodDuration = period.a;
+						return A3($mdgriffith$elm_animator$Internal$Interpolate$derivativeOfEasing, toX, periodDuration, 0);
+					} else {
+						var n = period.a;
+						var periodDuration = period.b;
+						return A3($mdgriffith$elm_animator$Internal$Interpolate$derivativeOfEasing, toX, periodDuration, 0);
+					}
+				} else {
+					return A4(
+						$mdgriffith$elm_animator$Internal$Interpolate$velocityBetween,
+						targetPosition,
+						$mdgriffith$elm_animator$Internal$Time$millis(targetTime),
+						$ianmackenzie$elm_units$Pixels$pixels(
+							toX(0)),
+						$mdgriffith$elm_animator$Internal$Time$millis(lookAhead.time));
+				}
+			}
+		}
+	});
+var $mdgriffith$elm_animator$Internal$Interpolate$interpolateBetween = F7(
+	function (startTimeInMs, maybePrevious, target, targetTimeInMs, now, maybeLookAhead, state) {
+		var targetVelocity = $ianmackenzie$elm_units$Pixels$inPixelsPerSecond(
+			A3($mdgriffith$elm_animator$Internal$Interpolate$newVelocityAtTarget, target, targetTimeInMs, maybeLookAhead));
+		var targetPosition = function () {
+			if (target.$ === 'Osc') {
+				var toX = target.c;
+				return $ianmackenzie$elm_units$Pixels$pixels(
+					toX(0));
+			} else {
+				var x = target.b;
+				return $ianmackenzie$elm_units$Pixels$pixels(x);
+			}
+		}();
+		var curve = $mdgriffith$elm_animator$Internal$Interpolate$createSpline(
+			{
+				arrival: function () {
+					if (target.$ === 'Pos') {
+						var personality = target.a;
+						return personality;
+					} else {
+						var personality = target.a;
+						return personality;
+					}
+				}(),
+				departure: function () {
+					if (maybePrevious.$ === 'Nothing') {
+						return $mdgriffith$elm_animator$Internal$Interpolate$linearDefault;
+					} else {
+						if (maybePrevious.a.$ === 'Pos') {
+							var _v2 = maybePrevious.a;
+							var personality = _v2.a;
+							return personality;
+						} else {
+							var _v3 = maybePrevious.a;
+							var personality = _v3.a;
+							return personality;
+						}
+					}
+				}(),
+				end: {
+					x: targetTimeInMs,
+					y: $ianmackenzie$elm_units$Pixels$inPixels(targetPosition)
+				},
+				endVelocity: {x: 1000, y: targetVelocity},
+				start: {
+					x: startTimeInMs,
+					y: $ianmackenzie$elm_units$Pixels$inPixels(state.position)
+				},
+				startVelocity: {
+					x: 1000,
+					y: $ianmackenzie$elm_units$Pixels$inPixelsPerSecond(state.velocity)
+				}
+			});
+		var current = A6(
+			$mdgriffith$elm_animator$Internal$Interpolate$findAtXOnSpline,
+			curve,
+			now,
+			1,
+			0.25,
+			A2($mdgriffith$elm_animator$Internal$Interpolate$guessTime, now, curve),
+			0);
+		var firstDerivative = A2($mdgriffith$elm_animator$Internal$Interpolate$firstDerivativeOnSpline, curve, current.t);
+		return {
+			position: $ianmackenzie$elm_units$Pixels$pixels(current.point.y),
+			velocity: $ianmackenzie$elm_units$Pixels$pixelsPerSecond(1000 * (firstDerivative.y / firstDerivative.x))
+		};
+	});
+var $elm$core$Basics$sqrt = _Basics_sqrt;
+var $mdgriffith$elm_animator$Internal$Spring$criticalDamping = F2(
+	function (k, m) {
+		return 2 * $elm$core$Basics$sqrt(k * m);
+	});
+var $elm$core$Basics$e = _Basics_e;
+var $mdgriffith$elm_animator$Internal$Spring$toleranceForSpringSettleTimeCalculation = (-1) * A2($elm$core$Basics$logBase, $elm$core$Basics$e, 0.005);
+var $mdgriffith$elm_animator$Internal$Spring$settlesAt = function (_v0) {
+	var stiffness = _v0.stiffness;
+	var damping = _v0.damping;
+	var mass = _v0.mass;
+	var m = mass;
+	var k = stiffness;
+	var springAspect = $elm$core$Basics$sqrt(k / m);
+	var cCritical = A2($mdgriffith$elm_animator$Internal$Spring$criticalDamping, k, m);
+	var c = damping;
+	if (_Utils_eq(
+		$elm$core$Basics$round(c),
+		$elm$core$Basics$round(cCritical))) {
+		return 1000 * (8.5 / springAspect);
+	} else {
+		if ((c - cCritical) > 0) {
+			var dampingAspect = c / cCritical;
+			return 1000 * ($mdgriffith$elm_animator$Internal$Spring$toleranceForSpringSettleTimeCalculation / (dampingAspect * springAspect));
+		} else {
+			var dampingAspect = c / cCritical;
+			return 1000 * ($mdgriffith$elm_animator$Internal$Spring$toleranceForSpringSettleTimeCalculation / (dampingAspect * springAspect));
+		}
+	}
+};
+var $mdgriffith$elm_animator$Internal$Spring$mapToRange = F3(
+	function (minimum, maximum, x) {
+		var total = maximum - minimum;
+		return minimum + (x * total);
+	});
+var $mdgriffith$elm_animator$Internal$Spring$wobble2Ratio = F2(
+	function (wobble, duration) {
+		var ms = $ianmackenzie$elm_units$Duration$inMilliseconds(duration);
+		var scalingBelowDur = ms / 350;
+		var top = A2(
+			$elm$core$Basics$max,
+			0.43,
+			0.8 * A2($elm$core$Basics$min, 1, scalingBelowDur));
+		var bounded = A2(
+			$elm$core$Basics$min,
+			1,
+			A2($elm$core$Basics$max, 0, wobble));
+		return A3($mdgriffith$elm_animator$Internal$Spring$mapToRange, 0.43, top, 1 - bounded);
+	});
+var $mdgriffith$elm_animator$Internal$Spring$wobble2Damping = F4(
+	function (wobble, k, m, duration) {
+		return A2($mdgriffith$elm_animator$Internal$Spring$wobble2Ratio, wobble, duration) * A2($mdgriffith$elm_animator$Internal$Spring$criticalDamping, k, m);
+	});
+var $mdgriffith$elm_animator$Internal$Spring$select = F2(
+	function (wobbliness, duration) {
+		var k = 150;
+		var durMS = $ianmackenzie$elm_units$Duration$inMilliseconds(duration);
+		var damping = A4($mdgriffith$elm_animator$Internal$Spring$wobble2Damping, wobbliness, k, 1, duration);
+		var initiallySettlesAt = $mdgriffith$elm_animator$Internal$Spring$settlesAt(
+			{damping: damping, mass: 1, stiffness: k});
+		var newCritical = A2($mdgriffith$elm_animator$Internal$Spring$criticalDamping, k, durMS / initiallySettlesAt);
+		return {damping: damping, mass: durMS / initiallySettlesAt, stiffness: k};
+	});
+var $mdgriffith$elm_animator$Internal$Spring$step = F4(
+	function (target, _v0, dtms, motion) {
+		var stiffness = _v0.stiffness;
+		var damping = _v0.damping;
+		var mass = _v0.mass;
+		var fspring = stiffness * (target - motion.position);
+		var fdamper = ((-1) * damping) * motion.velocity;
+		var dt = dtms / 1000;
+		var a = (fspring + fdamper) / mass;
+		var newVelocity = motion.velocity + (a * dt);
+		var newPos = motion.position + (newVelocity * dt);
+		return {position: newPos, velocity: newVelocity};
+	});
+var $mdgriffith$elm_animator$Internal$Spring$stepOver = F4(
+	function (duration, params, target, state) {
+		var durMS = $ianmackenzie$elm_units$Duration$inMilliseconds(duration);
+		var frames = durMS / 16;
+		var remainder = 16 * (frames - $elm$core$Basics$floor(frames));
+		var steps = (remainder > 0) ? A2(
+			$elm$core$List$cons,
+			remainder,
+			A2(
+				$elm$core$List$repeat,
+				($elm$core$Basics$floor(durMS) / 16) | 0,
+				16)) : A2(
+			$elm$core$List$repeat,
+			($elm$core$Basics$floor(durMS) / 16) | 0,
+			16);
+		return A3(
+			$elm$core$List$foldl,
+			A2($mdgriffith$elm_animator$Internal$Spring$step, target, params),
+			state,
+			steps);
+	});
+var $mdgriffith$elm_animator$Internal$Interpolate$springInterpolation = F7(
+	function (prevEndTime, _v0, target, targetTime, now, _v1, state) {
+		var wobble = function () {
+			if (target.$ === 'Osc') {
+				var personality = target.a;
+				return personality.wobbliness;
+			} else {
+				var personality = target.a;
+				return personality.wobbliness;
+			}
+		}();
+		var targetPos = function () {
+			if (target.$ === 'Osc') {
+				var toX = target.c;
+				return toX(0);
+			} else {
+				var x = target.b;
+				return x;
+			}
+		}();
+		var duration = A2(
+			$mdgriffith$elm_animator$Internal$Time$duration,
+			$mdgriffith$elm_animator$Internal$Time$millis(prevEndTime),
+			$mdgriffith$elm_animator$Internal$Time$millis(targetTime));
+		var params = A2($mdgriffith$elm_animator$Internal$Spring$select, wobble, duration);
+		var _new = A4(
+			$mdgriffith$elm_animator$Internal$Spring$stepOver,
+			A2(
+				$mdgriffith$elm_animator$Internal$Time$duration,
+				$mdgriffith$elm_animator$Internal$Time$millis(prevEndTime),
+				$mdgriffith$elm_animator$Internal$Time$millis(now)),
+			params,
+			targetPos,
+			{
+				position: $ianmackenzie$elm_units$Pixels$inPixels(state.position),
+				velocity: $ianmackenzie$elm_units$Pixels$inPixelsPerSecond(state.velocity)
+			});
+		return {
+			position: $ianmackenzie$elm_units$Pixels$pixels(_new.position),
+			velocity: $ianmackenzie$elm_units$Pixels$pixelsPerSecond(_new.velocity)
+		};
+	});
+var $mdgriffith$elm_animator$Internal$Interpolate$lerp = F7(
+	function (prevEndTime, maybePrev, target, targetTime, now, maybeLookAhead, state) {
+		var wobble = function () {
+			if (target.$ === 'Osc') {
+				var personality = target.a;
+				return personality.wobbliness;
+			} else {
+				var personality = target.a;
+				return personality.wobbliness;
+			}
+		}();
+		var nothingHappened = function () {
+			if (target.$ === 'Osc') {
+				return false;
+			} else {
+				var x = target.b;
+				return _Utils_eq(
+					x,
+					$ianmackenzie$elm_units$Pixels$inPixels(state.position)) && (!$ianmackenzie$elm_units$Pixels$inPixelsPerSecond(state.velocity));
+			}
+		}();
+		if (nothingHappened) {
+			return state;
+		} else {
+			if (maybeLookAhead.$ === 'Nothing') {
+				return (!(!wobble)) ? A7($mdgriffith$elm_animator$Internal$Interpolate$springInterpolation, prevEndTime, maybePrev, target, targetTime, now, maybeLookAhead, state) : A7($mdgriffith$elm_animator$Internal$Interpolate$interpolateBetween, prevEndTime, maybePrev, target, targetTime, now, maybeLookAhead, state);
+			} else {
+				return A7($mdgriffith$elm_animator$Internal$Interpolate$interpolateBetween, prevEndTime, maybePrev, target, targetTime, now, maybeLookAhead, state);
+			}
+		}
+	});
+var $mdgriffith$elm_animator$Internal$Interpolate$startMoving = function (movement) {
+	return {
+		position: function () {
+			if (movement.$ === 'Osc') {
+				var toX = movement.c;
+				return $ianmackenzie$elm_units$Pixels$pixels(
+					toX(0));
+			} else {
+				var x = movement.b;
+				return $ianmackenzie$elm_units$Pixels$pixels(x);
+			}
+		}(),
+		velocity: $ianmackenzie$elm_units$Pixels$pixelsPerSecond(0)
+	};
+};
+var $mdgriffith$elm_animator$Internal$Time$earliest = F2(
+	function (oneQty, twoQty) {
+		var one = oneQty.a;
+		var two = twoQty.a;
+		return ((one - two) >= 0) ? twoQty : oneQty;
+	});
+var $mdgriffith$elm_animator$Internal$Interpolate$wrapUnitAfter = F2(
+	function (dur, total) {
+		var totalDuration = $elm$core$Basics$round(
+			$ianmackenzie$elm_units$Duration$inMilliseconds(total));
+		var periodDuration = $elm$core$Basics$round(
+			$ianmackenzie$elm_units$Duration$inMilliseconds(dur));
+		if ((!periodDuration) || (!totalDuration)) {
+			return 0;
+		} else {
+			var remaining = A2($elm$core$Basics$modBy, periodDuration, totalDuration);
+			return (!remaining) ? 1 : (remaining / periodDuration);
+		}
+	});
+var $mdgriffith$elm_animator$Internal$Interpolate$visit = F5(
+	function (lookup, occurring, now, maybeLookAhead, state) {
+		var event = occurring.a;
+		var start = occurring.b;
+		var eventEnd = occurring.c;
+		var dwellTime = function () {
+			if (maybeLookAhead.$ === 'Nothing') {
+				return A2($mdgriffith$elm_animator$Internal$Time$duration, start, now);
+			} else {
+				return A2(
+					$mdgriffith$elm_animator$Internal$Time$duration,
+					start,
+					A2($mdgriffith$elm_animator$Internal$Time$earliest, now, eventEnd));
+			}
+		}();
+		if ($mdgriffith$elm_animator$Internal$Time$zeroDuration(dwellTime)) {
+			return {
+				position: function () {
+					var _v0 = lookup(event);
+					if (_v0.$ === 'Osc') {
+						var period = _v0.b;
+						var toX = _v0.c;
+						return $ianmackenzie$elm_units$Pixels$pixels(
+							toX(0));
+					} else {
+						var x = _v0.b;
+						return $ianmackenzie$elm_units$Pixels$pixels(x);
+					}
+				}(),
+				velocity: A3(
+					$mdgriffith$elm_animator$Internal$Interpolate$newVelocityAtTarget,
+					lookup(event),
+					$mdgriffith$elm_animator$Internal$Time$inMilliseconds(start),
+					maybeLookAhead)
+			};
+		} else {
+			var _v1 = lookup(event);
+			if (_v1.$ === 'Pos') {
+				var pos = _v1.b;
+				return {
+					position: $ianmackenzie$elm_units$Pixels$pixels(pos),
+					velocity: $ianmackenzie$elm_units$Pixels$pixelsPerSecond(0)
+				};
+			} else {
+				var period = _v1.b;
+				var toX = _v1.c;
+				if (period.$ === 'Loop') {
+					var periodDuration = period.a;
+					var progress = A2($mdgriffith$elm_animator$Internal$Interpolate$wrapUnitAfter, periodDuration, dwellTime);
+					return {
+						position: $ianmackenzie$elm_units$Pixels$pixels(
+							toX(progress)),
+						velocity: A3($mdgriffith$elm_animator$Internal$Interpolate$derivativeOfEasing, toX, periodDuration, progress)
+					};
+				} else {
+					var n = period.a;
+					var periodDuration = period.b;
+					var totalMS = $ianmackenzie$elm_units$Duration$inMilliseconds(dwellTime);
+					var iterationTimeMS = $ianmackenzie$elm_units$Duration$inMilliseconds(periodDuration);
+					var iteration = $elm$core$Basics$floor(totalMS / iterationTimeMS);
+					if (_Utils_cmp(iteration, n) > -1) {
+						return {
+							position: $ianmackenzie$elm_units$Pixels$pixels(
+								toX(1)),
+							velocity: $ianmackenzie$elm_units$Pixels$pixelsPerSecond(0)
+						};
+					} else {
+						var progress = A2($mdgriffith$elm_animator$Internal$Interpolate$wrapUnitAfter, periodDuration, dwellTime);
+						return {
+							position: $ianmackenzie$elm_units$Pixels$pixels(
+								toX(progress)),
+							velocity: A3($mdgriffith$elm_animator$Internal$Interpolate$derivativeOfEasing, toX, periodDuration, progress)
+						};
+					}
+				}
+			}
+		}
+	});
+var $mdgriffith$elm_animator$Internal$Interpolate$moving = {adjustor: $mdgriffith$elm_animator$Internal$Interpolate$getPersonality, dwellPeriod: $mdgriffith$elm_animator$Internal$Interpolate$dwellPeriod, lerp: $mdgriffith$elm_animator$Internal$Interpolate$lerp, start: $mdgriffith$elm_animator$Internal$Interpolate$startMoving, visit: $mdgriffith$elm_animator$Internal$Interpolate$visit};
+var $mdgriffith$elm_animator$Internal$Interpolate$unwrapUnits = function (_v0) {
+	var position = _v0.position;
+	var velocity = _v0.velocity;
+	return {
+		position: function () {
+			var val = position.a;
+			return val;
+		}(),
+		velocity: function () {
+			var val = velocity.a;
+			return val;
+		}()
+	};
+};
+var $mdgriffith$elm_animator$Internal$Interpolate$details = F2(
+	function (timeline, lookup) {
+		return $mdgriffith$elm_animator$Internal$Interpolate$unwrapUnits(
+			A3($mdgriffith$elm_animator$Internal$Timeline$foldp, lookup, $mdgriffith$elm_animator$Internal$Interpolate$moving, timeline));
+	});
+var $mdgriffith$elm_animator$Internal$Interpolate$Osc = F3(
+	function (a, b, c) {
+		return {$: 'Osc', a: a, b: b, c: c};
+	});
+var $mdgriffith$elm_animator$Internal$Interpolate$Pos = F2(
+	function (a, b) {
+		return {$: 'Pos', a: a, b: b};
+	});
+var $mdgriffith$elm_animator$Internal$Interpolate$withDefault = F2(
+	function (def, defaultOr) {
+		if (defaultOr.$ === 'Default') {
+			return def;
+		} else {
+			var specified = defaultOr.a;
+			return specified;
+		}
+	});
+var $mdgriffith$elm_animator$Internal$Interpolate$fillDefaults = F2(
+	function (builtInDefault, specified) {
+		if (specified.$ === 'FullDefault') {
+			return builtInDefault;
+		} else {
+			var partial = specified.a;
+			return {
+				arriveEarly: A2($mdgriffith$elm_animator$Internal$Interpolate$withDefault, builtInDefault.arriveEarly, partial.arriveEarly),
+				arriveSlowly: A2($mdgriffith$elm_animator$Internal$Interpolate$withDefault, builtInDefault.arriveSlowly, partial.arriveSlowly),
+				departLate: A2($mdgriffith$elm_animator$Internal$Interpolate$withDefault, builtInDefault.departLate, partial.departLate),
+				departSlowly: A2($mdgriffith$elm_animator$Internal$Interpolate$withDefault, builtInDefault.departSlowly, partial.departSlowly),
+				wobbliness: A2($mdgriffith$elm_animator$Internal$Interpolate$withDefault, builtInDefault.wobbliness, partial.wobbliness)
+			};
+		}
+	});
+var $mdgriffith$elm_animator$Internal$Interpolate$withLinearDefault = function (defMovement) {
+	if (defMovement.$ === 'Oscillate') {
+		var specifiedPersonality = defMovement.a;
+		var period = defMovement.b;
+		var fn = defMovement.c;
+		var personality = A2($mdgriffith$elm_animator$Internal$Interpolate$fillDefaults, $mdgriffith$elm_animator$Internal$Interpolate$linearDefault, specifiedPersonality);
+		return A3($mdgriffith$elm_animator$Internal$Interpolate$Osc, personality, period, fn);
+	} else {
+		var specifiedPersonality = defMovement.a;
+		var p = defMovement.b;
+		var personality = A2($mdgriffith$elm_animator$Internal$Interpolate$fillDefaults, $mdgriffith$elm_animator$Internal$Interpolate$linearDefault, specifiedPersonality);
+		return A2($mdgriffith$elm_animator$Internal$Interpolate$Pos, personality, p);
+	}
+};
+var $mdgriffith$elm_animator$Animator$linear = F2(
+	function (timeline, lookup) {
+		return A2(
+			$mdgriffith$elm_animator$Internal$Interpolate$details,
+			timeline,
+			A2($elm$core$Basics$composeL, $mdgriffith$elm_animator$Internal$Interpolate$withLinearDefault, lookup)).position;
+	});
+var $author$project$ItemShop$getGoldGainedAlpha = function (timeline) {
+	return A2(
+		$mdgriffith$elm_animator$Animator$linear,
+		timeline,
+		function (state) {
+			return $mdgriffith$elm_animator$Animator$at(
+				function () {
+					switch (state.$) {
+						case 'ShowGoldGainedAnimation':
+							var seed = state.a;
+							return 1.0;
+						case 'HideGoldAnimation':
+							var seed = state.a;
+							return 0.0;
+						default:
+							return 0.0;
+					}
+				}());
+		});
+};
+var $mdgriffith$elm_animator$Internal$Interpolate$Specified = function (a) {
+	return {$: 'Specified', a: a};
+};
+var $mdgriffith$elm_animator$Internal$Interpolate$Oscillate = F3(
+	function (a, b, c) {
+		return {$: 'Oscillate', a: a, b: b, c: c};
+	});
+var $mdgriffith$elm_animator$Internal$Interpolate$PartialDefault = function (a) {
+	return {$: 'PartialDefault', a: a};
+};
+var $mdgriffith$elm_animator$Internal$Interpolate$Default = {$: 'Default'};
+var $mdgriffith$elm_animator$Internal$Interpolate$emptyDefaults = {arriveEarly: $mdgriffith$elm_animator$Internal$Interpolate$Default, arriveSlowly: $mdgriffith$elm_animator$Internal$Interpolate$Default, departLate: $mdgriffith$elm_animator$Internal$Interpolate$Default, departSlowly: $mdgriffith$elm_animator$Internal$Interpolate$Default, wobbliness: $mdgriffith$elm_animator$Internal$Interpolate$Default};
+var $mdgriffith$elm_animator$Animator$withDefault = F2(
+	function (toDef, currentDefault) {
+		if (currentDefault.$ === 'FullDefault') {
+			return $mdgriffith$elm_animator$Internal$Interpolate$PartialDefault(
+				toDef($mdgriffith$elm_animator$Internal$Interpolate$emptyDefaults));
+		} else {
+			var thing = currentDefault.a;
+			return $mdgriffith$elm_animator$Internal$Interpolate$PartialDefault(
+				toDef(thing));
+		}
+	});
+var $mdgriffith$elm_animator$Animator$applyOption = F2(
+	function (toOption, movement) {
+		if (movement.$ === 'Position') {
+			var personality = movement.a;
+			var pos = movement.b;
+			return A2(
+				$mdgriffith$elm_animator$Internal$Interpolate$Position,
+				A2($mdgriffith$elm_animator$Animator$withDefault, toOption, personality),
+				pos);
+		} else {
+			var personality = movement.a;
+			var dur = movement.b;
+			var fn = movement.c;
+			return A3(
+				$mdgriffith$elm_animator$Internal$Interpolate$Oscillate,
+				A2($mdgriffith$elm_animator$Animator$withDefault, toOption, personality),
+				dur,
+				fn);
+		}
+	});
+var $mdgriffith$elm_animator$Animator$arriveSmoothly = F2(
+	function (s, movement) {
+		return A2(
+			$mdgriffith$elm_animator$Animator$applyOption,
+			function (def) {
+				return _Utils_update(
+					def,
+					{
+						arriveSlowly: $mdgriffith$elm_animator$Internal$Interpolate$Specified(
+							A3($elm$core$Basics$clamp, 0, 1, s))
+					});
+			},
+			movement);
+	});
+var $mdgriffith$elm_animator$Animator$leaveSmoothly = F2(
+	function (s, movement) {
+		return A2(
+			$mdgriffith$elm_animator$Animator$applyOption,
+			function (def) {
+				return _Utils_update(
+					def,
+					{
+						departSlowly: $mdgriffith$elm_animator$Internal$Interpolate$Specified(
+							A3($elm$core$Basics$clamp, 0, 1, s))
+					});
+			},
+			movement);
+	});
+var $mdgriffith$elm_animator$Internal$Interpolate$standardDefault = {arriveEarly: 0, arriveSlowly: 0.8, departLate: 0, departSlowly: 0.4, wobbliness: 0};
+var $mdgriffith$elm_animator$Internal$Interpolate$withStandardDefault = function (defMovement) {
+	if (defMovement.$ === 'Oscillate') {
+		var specifiedPersonality = defMovement.a;
+		var period = defMovement.b;
+		var fn = defMovement.c;
+		var personality = A2($mdgriffith$elm_animator$Internal$Interpolate$fillDefaults, $mdgriffith$elm_animator$Internal$Interpolate$standardDefault, specifiedPersonality);
+		return A3($mdgriffith$elm_animator$Internal$Interpolate$Osc, personality, period, fn);
+	} else {
+		var specifiedPersonality = defMovement.a;
+		var p = defMovement.b;
+		var personality = A2($mdgriffith$elm_animator$Internal$Interpolate$fillDefaults, $mdgriffith$elm_animator$Internal$Interpolate$standardDefault, specifiedPersonality);
+		return A2($mdgriffith$elm_animator$Internal$Interpolate$Pos, personality, p);
+	}
+};
+var $mdgriffith$elm_animator$Animator$move = F2(
+	function (timeline, lookup) {
+		return A2(
+			$mdgriffith$elm_animator$Internal$Interpolate$details,
+			timeline,
+			A2($elm$core$Basics$composeL, $mdgriffith$elm_animator$Internal$Interpolate$withStandardDefault, lookup)).position;
+	});
+var $author$project$ItemShop$getGoldGainedLabelMovementY = function (timeline) {
+	return A2(
+		$mdgriffith$elm_animator$Animator$move,
+		timeline,
+		function (shouldShow) {
+			switch (shouldShow.$) {
+				case 'ShowGoldGainedAnimation':
+					var seed = shouldShow.a;
+					return A2(
+						$mdgriffith$elm_animator$Animator$arriveSmoothly,
+						0.5,
+						A2(
+							$mdgriffith$elm_animator$Animator$leaveSmoothly,
+							0.5,
+							$mdgriffith$elm_animator$Animator$at(50)));
+				case 'HideGoldAnimation':
+					var seed = shouldShow.a;
+					return $mdgriffith$elm_animator$Animator$at(50);
+				default:
+					return A2(
+						$mdgriffith$elm_animator$Animator$arriveSmoothly,
+						0.5,
+						A2(
+							$mdgriffith$elm_animator$Animator$leaveSmoothly,
+							0.5,
+							$mdgriffith$elm_animator$Animator$at(0)));
+			}
+		});
+};
+var $author$project$ItemShop$getGoldGainedQuantity = function (timeline) {
+	return function (state) {
+		switch (state.$) {
+			case 'ShowGoldGainedAnimation':
+				var goldGained = state.b;
+				return $elm$core$Maybe$Just(goldGained);
+			case 'HideGoldAnimation':
+				var goldGained = state.b;
+				return $elm$core$Maybe$Just(goldGained);
+			default:
+				return $elm$core$Maybe$Nothing;
+		}
+	}(
+		$mdgriffith$elm_animator$Animator$current(timeline));
+};
 var $author$project$Interface$noUserSelect = $mdgriffith$elm_ui$Element$htmlAttribute(
 	A2($elm$html$Html$Attributes$style, 'userSelect', 'none'));
 var $author$project$Interface$pointerEventsAll = $mdgriffith$elm_ui$Element$htmlAttribute(
 	A2($elm$html$Html$Attributes$style, 'pointer-events', 'all'));
 var $author$project$Interface$pointerEventsNone = $mdgriffith$elm_ui$Element$htmlAttribute(
 	A2($elm$html$Html$Attributes$style, 'pointer-events', 'none'));
+var $author$project$ItemShop$ToggleShowDebugInventories = {$: 'ToggleShowDebugInventories'};
+var $author$project$ItemShop$MouseEntersButton = {$: 'MouseEntersButton'};
+var $author$project$ItemShop$MouseLeavesButton = {$: 'MouseLeavesButton'};
+var $author$project$ItemShop$defaultCustomAttrs = _List_fromArray(
+	[
+		$mdgriffith$elm_ui$Element$Events$onMouseEnter(
+		$author$project$ItemShop$GotUiOptionsMsg($author$project$ItemShop$MouseEntersButton)),
+		$mdgriffith$elm_ui$Element$Events$onMouseLeave(
+		$author$project$ItemShop$GotUiOptionsMsg($author$project$ItemShop$MouseLeavesButton))
+	]);
+var $author$project$Interface$defineHtmlId = function (name) {
+	return $mdgriffith$elm_ui$Element$htmlAttribute(
+		$elm$html$Html$Attributes$id(name));
+};
+var $author$project$ItemShop$showHideDebugInventoriesButton = F3(
+	function (colorTheme, attrs, show_debug_inventories) {
+		var buttonText = show_debug_inventories ? 'Hide Debug' : 'Show Debug';
+		return $author$project$Interface$button(
+			$author$project$Interface$TextParams(
+				{
+					buttonType: $author$project$Interface$Danger,
+					colorTheme: colorTheme,
+					customAttrs: A2(
+						$elm$core$List$cons,
+						$author$project$Interface$defineHtmlId('show_debug_inventories'),
+						_Utils_ap($author$project$ItemShop$defaultCustomAttrs, attrs)),
+					onPressMsg: $author$project$ItemShop$GotUiOptionsMsg($author$project$ItemShop$ToggleShowDebugInventories),
+					textLabel: buttonText
+				}));
+	});
+var $author$project$Interface$color_black = A3($mdgriffith$elm_ui$Element$rgb, 0, 0, 0);
 var $author$project$Interface$color_gem = $author$project$Interface$hex_to_color('#70d6ff');
 var $author$project$Interface$font_gem = $mdgriffith$elm_ui$Element$Font$color($author$project$Interface$color_gem);
-var $author$project$Interface$renderGem_sized = F3(
+var $author$project$Interface$renderGemSized = F3(
 	function (colorTheme, count, font_size) {
 		return A2(
 			$mdgriffith$elm_ui$Element$paragraph,
@@ -22881,32 +25688,89 @@ var $author$project$Interface$renderGem_sized = F3(
 	});
 var $author$project$Interface$renderGem = F2(
 	function (colorTheme, count) {
-		return A3($author$project$Interface$renderGem_sized, colorTheme, count, 12);
+		return A3($author$project$Interface$renderGemSized, colorTheme, count, 12);
 	});
-var $author$project$ItemShop$ToggleShowDebugInventories = {$: 'ToggleShowDebugInventories'};
-var $author$project$Interface$defineHtmlId = function (name) {
-	return $mdgriffith$elm_ui$Element$htmlAttribute(
-		$elm$html$Html$Attributes$id(name));
+var $author$project$ItemShop$viewCurrenciesOverlay = F5(
+	function (colorTheme, _v0, goldGainedLabelMovementY, goldGainedAlpha, goldGainedQuantity) {
+		var player = _v0.a;
+		return A2(
+			$mdgriffith$elm_ui$Element$row,
+			_List_Nil,
+			_List_fromArray(
+				[
+					$mdgriffith$elm_ui$Element$text('Held: '),
+					A2(
+					$mdgriffith$elm_ui$Element$el,
+					_List_fromArray(
+						[
+							$mdgriffith$elm_ui$Element$inFront(
+							A2(
+								$mdgriffith$elm_ui$Element$el,
+								_List_fromArray(
+									[
+										$mdgriffith$elm_ui$Element$alpha(goldGainedAlpha),
+										$mdgriffith$elm_ui$Element$moveUp(goldGainedLabelMovementY),
+										$mdgriffith$elm_ui$Element$Font$family(
+										_List_fromArray(
+											[$mdgriffith$elm_ui$Element$Font$monospace])),
+										$mdgriffith$elm_ui$Element$Font$size(16),
+										$mdgriffith$elm_ui$Element$Font$color($author$project$Interface$color_black)
+									]),
+								A2($author$project$Interface$renderGp, colorTheme, goldGainedQuantity)))
+						]),
+					A2($author$project$Interface$renderGp, colorTheme, player.held_gold)),
+					$mdgriffith$elm_ui$Element$text(' '),
+					A2($author$project$Interface$renderBlood, colorTheme, player.held_blood),
+					$mdgriffith$elm_ui$Element$text(' '),
+					A2($author$project$Interface$renderGem, colorTheme, player.held_gems)
+				]));
+	});
+var $author$project$ItemShop$ChangeTabType = function (a) {
+	return {$: 'ChangeTabType', a: a};
 };
-var $author$project$ItemShop$showHideDebugInventoriesButton = F3(
-	function (colorTheme, attrs, show_debug_inventories) {
-		var buttonText = show_debug_inventories ? 'Hide Debug' : 'Show Debug';
-		return $author$project$Interface$button(
-			$author$project$Interface$TextParams(
-				{
-					buttonType: $author$project$Interface$Danger,
-					colorTheme: colorTheme,
-					customAttrs: A2(
-						$elm$core$List$cons,
-						$author$project$Interface$defineHtmlId('show_debug_inventories'),
-						attrs),
-					onPressMsg: $author$project$ItemShop$GotUiOptionsMsg($author$project$ItemShop$ToggleShowDebugInventories),
-					textLabel: buttonText
-				}));
-	});
+var $author$project$ItemShop$SettingsTabType = {$: 'SettingsTabType'};
+var $elm$html$Html$Events$onMouseDown = function (msg) {
+	return A2(
+		$elm$html$Html$Events$on,
+		'mousedown',
+		$elm$json$Json$Decode$succeed(msg));
+};
+var $mdgriffith$elm_ui$Element$Events$onMouseDown = A2($elm$core$Basics$composeL, $mdgriffith$elm_ui$Internal$Model$Attr, $elm$html$Html$Events$onMouseDown);
+var $author$project$ItemShop$viewSettingsOverlay = function (currentTabType) {
+	return A2(
+		$mdgriffith$elm_ui$Element$el,
+		_List_fromArray(
+			[
+				$mdgriffith$elm_ui$Element$pointer,
+				$mdgriffith$elm_ui$Element$mouseOver(
+				_List_fromArray(
+					[
+						$mdgriffith$elm_ui$Element$Font$color($author$project$Interface$color_primary)
+					])),
+				$mdgriffith$elm_ui$Element$Events$onMouseDown(
+				(!_Utils_eq(currentTabType, $author$project$ItemShop$SettingsTabType)) ? $author$project$ItemShop$ChangeTabType($author$project$ItemShop$SettingsTabType) : $author$project$ItemShop$ChangeTabType($author$project$ItemShop$ShopTabType))
+			]),
+		$mdgriffith$elm_ui$Element$text('Settings'));
+};
 var $author$project$ItemShop$viewOverlay = function (model) {
-	var _v0 = $author$project$ItemShop$getPlayer(model.characters);
-	var player = _v0.a;
+	var overlayAttrs = _List_fromArray(
+		[
+			$author$project$Interface$defaultBackgroundColor(model.colorTheme),
+			$mdgriffith$elm_ui$Element$Border$color(
+			function () {
+				var _v0 = model.colorTheme;
+				if (_v0.$ === 'BrightTheme') {
+					return $author$project$Interface$color_ultra_light_grey;
+				} else {
+					return $author$project$Interface$convertColor($avh4$elm_color$Color$lightCharcoal);
+				}
+			}()),
+			$mdgriffith$elm_ui$Element$Border$width(1),
+			$mdgriffith$elm_ui$Element$Border$rounded(3),
+			$author$project$Interface$pointerEventsAll,
+			$author$project$Interface$noUserSelect,
+			$mdgriffith$elm_ui$Element$padding(10)
+		]);
 	return A2(
 		$mdgriffith$elm_ui$Element$el,
 		_List_fromArray(
@@ -22934,57 +25798,285 @@ var $author$project$ItemShop$viewOverlay = function (model) {
 						model.uiOptions.show_debug_inventories)) : $mdgriffith$elm_ui$Element$none)
 			]),
 		A2(
-			$mdgriffith$elm_ui$Element$el,
+			$mdgriffith$elm_ui$Element$row,
 			_List_fromArray(
 				[
-					$mdgriffith$elm_ui$Element$Font$alignRight,
-					$mdgriffith$elm_ui$Element$alignRight,
-					$mdgriffith$elm_ui$Element$alignBottom,
-					$author$project$Interface$defaultBackgroundColor(model.colorTheme),
-					$mdgriffith$elm_ui$Element$Border$color(
-					function () {
-						var _v1 = model.colorTheme;
-						if (_v1.$ === 'BrightTheme') {
-							return $author$project$Interface$color_ultra_light_grey;
-						} else {
-							return $author$project$Interface$convertColor($avh4$elm_color$Color$lightCharcoal);
-						}
-					}()),
-					$mdgriffith$elm_ui$Element$Border$width(1),
-					$mdgriffith$elm_ui$Element$Border$rounded(3),
-					$author$project$Interface$pointerEventsAll,
-					$mdgriffith$elm_ui$Element$padding(10)
+					$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
+					$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$fill)
 				]),
-			A2(
-				$mdgriffith$elm_ui$Element$row,
-				_List_fromArray(
-					[$author$project$Interface$noUserSelect]),
-				_List_fromArray(
-					[
-						$mdgriffith$elm_ui$Element$text('Held: '),
-						A2($author$project$Interface$renderGp, model.colorTheme, player.held_gold),
-						$mdgriffith$elm_ui$Element$text(' '),
-						A2($author$project$Interface$renderBlood, model.colorTheme, player.held_blood),
-						$mdgriffith$elm_ui$Element$text(' '),
-						A2($author$project$Interface$renderGem, model.colorTheme, player.held_gems)
-					]))));
+			_List_fromArray(
+				[
+					A2(
+					$mdgriffith$elm_ui$Element$row,
+					A2(
+						$elm$core$List$cons,
+						$mdgriffith$elm_ui$Element$Font$alignLeft,
+						A2(
+							$elm$core$List$cons,
+							$mdgriffith$elm_ui$Element$alignLeft,
+							A2($elm$core$List$cons, $mdgriffith$elm_ui$Element$alignBottom, overlayAttrs))),
+					_List_fromArray(
+						[
+							$author$project$ItemShop$viewSettingsOverlay(model.currentTabType)
+						])),
+					A2(
+					$mdgriffith$elm_ui$Element$row,
+					A2(
+						$elm$core$List$cons,
+						$mdgriffith$elm_ui$Element$Font$alignRight,
+						A2(
+							$elm$core$List$cons,
+							$mdgriffith$elm_ui$Element$alignRight,
+							A2($elm$core$List$cons, $mdgriffith$elm_ui$Element$alignBottom, overlayAttrs))),
+					_List_fromArray(
+						[
+							A5(
+							$author$project$ItemShop$viewCurrenciesOverlay,
+							model.colorTheme,
+							$author$project$ItemShop$getPlayer(model.characters),
+							$author$project$ItemShop$getGoldGainedLabelMovementY(model.goldGainedTimeline),
+							$author$project$ItemShop$getGoldGainedAlpha(model.goldGainedTimeline),
+							A2(
+								$elm$core$Maybe$withDefault,
+								0,
+								$author$project$ItemShop$getGoldGainedQuantity(model.goldGainedTimeline)))
+						]))
+				])));
 };
-var $author$project$ItemShop$ToggleViewGemUpgradesInPostPhase = {$: 'ToggleViewGemUpgradesInPostPhase'};
-var $mdgriffith$elm_ui$Element$modular = F3(
-	function (normal, ratio, rescale) {
-		return (!rescale) ? normal : ((rescale < 0) ? (normal * A2($elm$core$Basics$pow, ratio, rescale)) : (normal * A2($elm$core$Basics$pow, ratio, rescale - 1)));
+var $author$project$ItemShop$ChangedMasterVol = function (a) {
+	return {$: 'ChangedMasterVol', a: a};
+};
+var $author$project$ItemShop$GotSettingsMsg = function (a) {
+	return {$: 'GotSettingsMsg', a: a};
+};
+var $mdgriffith$elm_ui$Internal$Model$Behind = {$: 'Behind'};
+var $mdgriffith$elm_ui$Element$behindContent = function (element) {
+	return A2($mdgriffith$elm_ui$Element$createNearby, $mdgriffith$elm_ui$Internal$Model$Behind, element);
+};
+var $author$project$Interface$color_off_black = $author$project$Interface$hex_to_color('#0a0a0a');
+var $author$project$ItemShop$float_to_percent = function (flt) {
+	return function (str) {
+		return str + '%';
+	}(
+		$elm$core$String$fromInt(
+			$elm$core$Basics$floor(flt * 100)));
+};
+var $mdgriffith$elm_ui$Element$Input$Label = F3(
+	function (a, b, c) {
+		return {$: 'Label', a: a, b: b, c: c};
 	});
-var $author$project$Interface$scaled = function (val) {
-	return $elm$core$Basics$round(
-		A3($mdgriffith$elm_ui$Element$modular, 14, 1.25, val));
+var $mdgriffith$elm_ui$Element$Input$OnRight = {$: 'OnRight'};
+var $mdgriffith$elm_ui$Element$Input$labelRight = $mdgriffith$elm_ui$Element$Input$Label($mdgriffith$elm_ui$Element$Input$OnRight);
+var $mdgriffith$elm_ui$Internal$Model$Scale = function (a) {
+	return {$: 'Scale', a: a};
 };
-var $author$project$Interface$font_scaled = function (scale) {
-	return $mdgriffith$elm_ui$Element$Font$size(
-		$author$project$Interface$scaled(scale));
+var $mdgriffith$elm_ui$Internal$Flag$scale = $mdgriffith$elm_ui$Internal$Flag$flag(23);
+var $mdgriffith$elm_ui$Element$scale = function (n) {
+	return A2(
+		$mdgriffith$elm_ui$Internal$Model$TransformComponent,
+		$mdgriffith$elm_ui$Internal$Flag$scale,
+		$mdgriffith$elm_ui$Internal$Model$Scale(
+			_Utils_Tuple3(n, n, 1)));
 };
-var $author$project$Interface$padding_bottom = function (pad) {
-	return $mdgriffith$elm_ui$Element$paddingEach(
-		{bottom: pad, left: 0, right: 0, top: 0});
+var $mdgriffith$elm_ui$Internal$Flag$active = $mdgriffith$elm_ui$Internal$Flag$flag(32);
+var $mdgriffith$elm_ui$Internal$Model$LivePolite = {$: 'LivePolite'};
+var $mdgriffith$elm_ui$Element$Region$announce = $mdgriffith$elm_ui$Internal$Model$Describe($mdgriffith$elm_ui$Internal$Model$LivePolite);
+var $mdgriffith$elm_ui$Element$Input$applyLabel = F3(
+	function (attrs, label, input) {
+		if (label.$ === 'HiddenLabel') {
+			var labelText = label.a;
+			return A4(
+				$mdgriffith$elm_ui$Internal$Model$element,
+				$mdgriffith$elm_ui$Internal$Model$asColumn,
+				$mdgriffith$elm_ui$Internal$Model$NodeName('label'),
+				attrs,
+				$mdgriffith$elm_ui$Internal$Model$Unkeyed(
+					_List_fromArray(
+						[input])));
+		} else {
+			var position = label.a;
+			var labelAttrs = label.b;
+			var labelChild = label.c;
+			var labelElement = A4(
+				$mdgriffith$elm_ui$Internal$Model$element,
+				$mdgriffith$elm_ui$Internal$Model$asEl,
+				$mdgriffith$elm_ui$Internal$Model$div,
+				labelAttrs,
+				$mdgriffith$elm_ui$Internal$Model$Unkeyed(
+					_List_fromArray(
+						[labelChild])));
+			switch (position.$) {
+				case 'Above':
+					return A4(
+						$mdgriffith$elm_ui$Internal$Model$element,
+						$mdgriffith$elm_ui$Internal$Model$asColumn,
+						$mdgriffith$elm_ui$Internal$Model$NodeName('label'),
+						A2(
+							$elm$core$List$cons,
+							$mdgriffith$elm_ui$Internal$Model$htmlClass($mdgriffith$elm_ui$Internal$Style$classes.inputLabel),
+							attrs),
+						$mdgriffith$elm_ui$Internal$Model$Unkeyed(
+							_List_fromArray(
+								[labelElement, input])));
+				case 'Below':
+					return A4(
+						$mdgriffith$elm_ui$Internal$Model$element,
+						$mdgriffith$elm_ui$Internal$Model$asColumn,
+						$mdgriffith$elm_ui$Internal$Model$NodeName('label'),
+						A2(
+							$elm$core$List$cons,
+							$mdgriffith$elm_ui$Internal$Model$htmlClass($mdgriffith$elm_ui$Internal$Style$classes.inputLabel),
+							attrs),
+						$mdgriffith$elm_ui$Internal$Model$Unkeyed(
+							_List_fromArray(
+								[input, labelElement])));
+				case 'OnRight':
+					return A4(
+						$mdgriffith$elm_ui$Internal$Model$element,
+						$mdgriffith$elm_ui$Internal$Model$asRow,
+						$mdgriffith$elm_ui$Internal$Model$NodeName('label'),
+						A2(
+							$elm$core$List$cons,
+							$mdgriffith$elm_ui$Internal$Model$htmlClass($mdgriffith$elm_ui$Internal$Style$classes.inputLabel),
+							attrs),
+						$mdgriffith$elm_ui$Internal$Model$Unkeyed(
+							_List_fromArray(
+								[input, labelElement])));
+				default:
+					return A4(
+						$mdgriffith$elm_ui$Internal$Model$element,
+						$mdgriffith$elm_ui$Internal$Model$asRow,
+						$mdgriffith$elm_ui$Internal$Model$NodeName('label'),
+						A2(
+							$elm$core$List$cons,
+							$mdgriffith$elm_ui$Internal$Model$htmlClass($mdgriffith$elm_ui$Internal$Style$classes.inputLabel),
+							attrs),
+						$mdgriffith$elm_ui$Internal$Model$Unkeyed(
+							_List_fromArray(
+								[labelElement, input])));
+			}
+		}
+	});
+var $elm$html$Html$Attributes$attribute = $elm$virtual_dom$VirtualDom$attribute;
+var $mdgriffith$elm_ui$Internal$Flag$focus = $mdgriffith$elm_ui$Internal$Flag$flag(31);
+var $mdgriffith$elm_ui$Internal$Model$getHeight = function (attrs) {
+	return A3(
+		$elm$core$List$foldr,
+		F2(
+			function (attr, acc) {
+				if (acc.$ === 'Just') {
+					var x = acc.a;
+					return $elm$core$Maybe$Just(x);
+				} else {
+					if (attr.$ === 'Height') {
+						var len = attr.a;
+						return $elm$core$Maybe$Just(len);
+					} else {
+						return $elm$core$Maybe$Nothing;
+					}
+				}
+			}),
+		$elm$core$Maybe$Nothing,
+		attrs);
+};
+var $mdgriffith$elm_ui$Internal$Model$getSpacing = F2(
+	function (attrs, _default) {
+		return A2(
+			$elm$core$Maybe$withDefault,
+			_default,
+			A3(
+				$elm$core$List$foldr,
+				F2(
+					function (attr, acc) {
+						if (acc.$ === 'Just') {
+							var x = acc.a;
+							return $elm$core$Maybe$Just(x);
+						} else {
+							if ((attr.$ === 'StyleClass') && (attr.b.$ === 'SpacingStyle')) {
+								var _v2 = attr.b;
+								var x = _v2.b;
+								var y = _v2.c;
+								return $elm$core$Maybe$Just(
+									_Utils_Tuple2(x, y));
+							} else {
+								return $elm$core$Maybe$Nothing;
+							}
+						}
+					}),
+				$elm$core$Maybe$Nothing,
+				attrs));
+	});
+var $mdgriffith$elm_ui$Internal$Model$getWidth = function (attrs) {
+	return A3(
+		$elm$core$List$foldr,
+		F2(
+			function (attr, acc) {
+				if (acc.$ === 'Just') {
+					var x = acc.a;
+					return $elm$core$Maybe$Just(x);
+				} else {
+					if (attr.$ === 'Width') {
+						var len = attr.a;
+						return $elm$core$Maybe$Just(len);
+					} else {
+						return $elm$core$Maybe$Nothing;
+					}
+				}
+			}),
+		$elm$core$Maybe$Nothing,
+		attrs);
+};
+var $mdgriffith$elm_ui$Internal$Model$Label = function (a) {
+	return {$: 'Label', a: a};
+};
+var $mdgriffith$elm_ui$Element$Input$hiddenLabelAttribute = function (label) {
+	if (label.$ === 'HiddenLabel') {
+		var textLabel = label.a;
+		return $mdgriffith$elm_ui$Internal$Model$Describe(
+			$mdgriffith$elm_ui$Internal$Model$Label(textLabel));
+	} else {
+		return $mdgriffith$elm_ui$Internal$Model$NoAttribute;
+	}
+};
+var $mdgriffith$elm_ui$Element$Input$isHiddenLabel = function (label) {
+	if (label.$ === 'HiddenLabel') {
+		return true;
+	} else {
+		return false;
+	}
+};
+var $elm$html$Html$Attributes$max = $elm$html$Html$Attributes$stringProperty('max');
+var $elm$html$Html$Attributes$min = $elm$html$Html$Attributes$stringProperty('min');
+var $elm$html$Html$Events$alwaysStop = function (x) {
+	return _Utils_Tuple2(x, true);
+};
+var $elm$virtual_dom$VirtualDom$MayStopPropagation = function (a) {
+	return {$: 'MayStopPropagation', a: a};
+};
+var $elm$html$Html$Events$stopPropagationOn = F2(
+	function (event, decoder) {
+		return A2(
+			$elm$virtual_dom$VirtualDom$on,
+			event,
+			$elm$virtual_dom$VirtualDom$MayStopPropagation(decoder));
+	});
+var $elm$json$Json$Decode$at = F2(
+	function (fields, decoder) {
+		return A3($elm$core$List$foldr, $elm$json$Json$Decode$field, decoder, fields);
+	});
+var $elm$html$Html$Events$targetValue = A2(
+	$elm$json$Json$Decode$at,
+	_List_fromArray(
+		['target', 'value']),
+	$elm$json$Json$Decode$string);
+var $elm$html$Html$Events$onInput = function (tagger) {
+	return A2(
+		$elm$html$Html$Events$stopPropagationOn,
+		'input',
+		A2(
+			$elm$json$Json$Decode$map,
+			$elm$html$Html$Events$alwaysStop,
+			A2($elm$json$Json$Decode$map, tagger, $elm$html$Html$Events$targetValue)));
 };
 var $mdgriffith$elm_ui$Element$spacingXY = F2(
 	function (x, y) {
@@ -22997,8 +26089,646 @@ var $mdgriffith$elm_ui$Element$spacingXY = F2(
 				x,
 				y));
 	});
-var $author$project$ItemShop$viewGemUpgradesInPostPhase = F3(
-	function (colorTheme, postPhaseData, quests) {
+var $elm$html$Html$Attributes$step = function (n) {
+	return A2($elm$html$Html$Attributes$stringProperty, 'step', n);
+};
+var $elm$core$String$toFloat = _String_toFloat;
+var $elm$html$Html$Attributes$type_ = $elm$html$Html$Attributes$stringProperty('type');
+var $elm$html$Html$Attributes$value = $elm$html$Html$Attributes$stringProperty('value');
+var $mdgriffith$elm_ui$Internal$Model$mapAttr = F2(
+	function (fn, attr) {
+		switch (attr.$) {
+			case 'NoAttribute':
+				return $mdgriffith$elm_ui$Internal$Model$NoAttribute;
+			case 'Describe':
+				var description = attr.a;
+				return $mdgriffith$elm_ui$Internal$Model$Describe(description);
+			case 'AlignX':
+				var x = attr.a;
+				return $mdgriffith$elm_ui$Internal$Model$AlignX(x);
+			case 'AlignY':
+				var y = attr.a;
+				return $mdgriffith$elm_ui$Internal$Model$AlignY(y);
+			case 'Width':
+				var x = attr.a;
+				return $mdgriffith$elm_ui$Internal$Model$Width(x);
+			case 'Height':
+				var x = attr.a;
+				return $mdgriffith$elm_ui$Internal$Model$Height(x);
+			case 'Class':
+				var x = attr.a;
+				var y = attr.b;
+				return A2($mdgriffith$elm_ui$Internal$Model$Class, x, y);
+			case 'StyleClass':
+				var flag = attr.a;
+				var style = attr.b;
+				return A2($mdgriffith$elm_ui$Internal$Model$StyleClass, flag, style);
+			case 'Nearby':
+				var location = attr.a;
+				var elem = attr.b;
+				return A2(
+					$mdgriffith$elm_ui$Internal$Model$Nearby,
+					location,
+					A2($mdgriffith$elm_ui$Internal$Model$map, fn, elem));
+			case 'Attr':
+				var htmlAttr = attr.a;
+				return $mdgriffith$elm_ui$Internal$Model$Attr(
+					A2($elm$virtual_dom$VirtualDom$mapAttribute, fn, htmlAttr));
+			default:
+				var fl = attr.a;
+				var trans = attr.b;
+				return A2($mdgriffith$elm_ui$Internal$Model$TransformComponent, fl, trans);
+		}
+	});
+var $mdgriffith$elm_ui$Element$Input$viewHorizontalThumb = F3(
+	function (factor, thumbAttributes, trackHeight) {
+		return A2(
+			$mdgriffith$elm_ui$Element$row,
+			_List_fromArray(
+				[
+					$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
+					$mdgriffith$elm_ui$Element$height(
+					A2($elm$core$Maybe$withDefault, $mdgriffith$elm_ui$Element$fill, trackHeight)),
+					$mdgriffith$elm_ui$Element$centerY
+				]),
+			_List_fromArray(
+				[
+					A2(
+					$mdgriffith$elm_ui$Element$el,
+					_List_fromArray(
+						[
+							$mdgriffith$elm_ui$Element$width(
+							$mdgriffith$elm_ui$Element$fillPortion(
+								$elm$core$Basics$round(factor * 10000)))
+						]),
+					$mdgriffith$elm_ui$Element$none),
+					A2(
+					$mdgriffith$elm_ui$Element$el,
+					A2(
+						$elm$core$List$cons,
+						$mdgriffith$elm_ui$Element$centerY,
+						A2(
+							$elm$core$List$map,
+							$mdgriffith$elm_ui$Internal$Model$mapAttr($elm$core$Basics$never),
+							thumbAttributes)),
+					$mdgriffith$elm_ui$Element$none),
+					A2(
+					$mdgriffith$elm_ui$Element$el,
+					_List_fromArray(
+						[
+							$mdgriffith$elm_ui$Element$width(
+							$mdgriffith$elm_ui$Element$fillPortion(
+								$elm$core$Basics$round(
+									$elm$core$Basics$abs(1 - factor) * 10000)))
+						]),
+					$mdgriffith$elm_ui$Element$none)
+				]));
+	});
+var $mdgriffith$elm_ui$Element$Input$viewVerticalThumb = F3(
+	function (factor, thumbAttributes, trackWidth) {
+		return A2(
+			$mdgriffith$elm_ui$Element$column,
+			_List_fromArray(
+				[
+					$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$fill),
+					$mdgriffith$elm_ui$Element$width(
+					A2($elm$core$Maybe$withDefault, $mdgriffith$elm_ui$Element$fill, trackWidth)),
+					$mdgriffith$elm_ui$Element$centerX
+				]),
+			_List_fromArray(
+				[
+					A2(
+					$mdgriffith$elm_ui$Element$el,
+					_List_fromArray(
+						[
+							$mdgriffith$elm_ui$Element$height(
+							$mdgriffith$elm_ui$Element$fillPortion(
+								$elm$core$Basics$round(
+									$elm$core$Basics$abs(1 - factor) * 10000)))
+						]),
+					$mdgriffith$elm_ui$Element$none),
+					A2(
+					$mdgriffith$elm_ui$Element$el,
+					A2(
+						$elm$core$List$cons,
+						$mdgriffith$elm_ui$Element$centerX,
+						A2(
+							$elm$core$List$map,
+							$mdgriffith$elm_ui$Internal$Model$mapAttr($elm$core$Basics$never),
+							thumbAttributes)),
+					$mdgriffith$elm_ui$Element$none),
+					A2(
+					$mdgriffith$elm_ui$Element$el,
+					_List_fromArray(
+						[
+							$mdgriffith$elm_ui$Element$height(
+							$mdgriffith$elm_ui$Element$fillPortion(
+								$elm$core$Basics$round(factor * 10000)))
+						]),
+					$mdgriffith$elm_ui$Element$none)
+				]));
+	});
+var $mdgriffith$elm_ui$Element$Input$slider = F2(
+	function (attributes, input) {
+		var trackWidth = $mdgriffith$elm_ui$Internal$Model$getWidth(attributes);
+		var trackHeight = $mdgriffith$elm_ui$Internal$Model$getHeight(attributes);
+		var vertical = function () {
+			var _v8 = _Utils_Tuple2(trackWidth, trackHeight);
+			_v8$3:
+			while (true) {
+				if (_v8.a.$ === 'Nothing') {
+					if (_v8.b.$ === 'Nothing') {
+						var _v9 = _v8.a;
+						var _v10 = _v8.b;
+						return false;
+					} else {
+						break _v8$3;
+					}
+				} else {
+					if ((_v8.a.a.$ === 'Px') && (_v8.b.$ === 'Just')) {
+						switch (_v8.b.a.$) {
+							case 'Px':
+								var w = _v8.a.a.a;
+								var h = _v8.b.a.a;
+								return _Utils_cmp(h, w) > 0;
+							case 'Fill':
+								return true;
+							default:
+								break _v8$3;
+						}
+					} else {
+						break _v8$3;
+					}
+				}
+			}
+			return false;
+		}();
+		var factor = (input.value - input.min) / (input.max - input.min);
+		var _v0 = input.thumb;
+		var thumbAttributes = _v0.a;
+		var height = $mdgriffith$elm_ui$Internal$Model$getHeight(thumbAttributes);
+		var thumbHeightString = function () {
+			if (height.$ === 'Nothing') {
+				return '20px';
+			} else {
+				if (height.a.$ === 'Px') {
+					var px = height.a.a;
+					return $elm$core$String$fromInt(px) + 'px';
+				} else {
+					return '100%';
+				}
+			}
+		}();
+		var width = $mdgriffith$elm_ui$Internal$Model$getWidth(thumbAttributes);
+		var thumbWidthString = function () {
+			if (width.$ === 'Nothing') {
+				return '20px';
+			} else {
+				if (width.a.$ === 'Px') {
+					var px = width.a.a;
+					return $elm$core$String$fromInt(px) + 'px';
+				} else {
+					return '100%';
+				}
+			}
+		}();
+		var className = 'thmb-' + (thumbWidthString + ('-' + thumbHeightString));
+		var thumbShadowStyle = _List_fromArray(
+			[
+				A2($mdgriffith$elm_ui$Internal$Model$Property, 'width', thumbWidthString),
+				A2($mdgriffith$elm_ui$Internal$Model$Property, 'height', thumbHeightString)
+			]);
+		var _v1 = A2(
+			$mdgriffith$elm_ui$Internal$Model$getSpacing,
+			attributes,
+			_Utils_Tuple2(5, 5));
+		var spacingX = _v1.a;
+		var spacingY = _v1.b;
+		return A3(
+			$mdgriffith$elm_ui$Element$Input$applyLabel,
+			_List_fromArray(
+				[
+					$mdgriffith$elm_ui$Element$Input$isHiddenLabel(input.label) ? $mdgriffith$elm_ui$Internal$Model$NoAttribute : A2($mdgriffith$elm_ui$Element$spacingXY, spacingX, spacingY),
+					$mdgriffith$elm_ui$Element$Region$announce,
+					$mdgriffith$elm_ui$Element$width(
+					function () {
+						if (trackWidth.$ === 'Nothing') {
+							return $mdgriffith$elm_ui$Element$fill;
+						} else {
+							if (trackWidth.a.$ === 'Px') {
+								return $mdgriffith$elm_ui$Element$shrink;
+							} else {
+								var x = trackWidth.a;
+								return x;
+							}
+						}
+					}()),
+					$mdgriffith$elm_ui$Element$height(
+					function () {
+						if (trackHeight.$ === 'Nothing') {
+							return $mdgriffith$elm_ui$Element$shrink;
+						} else {
+							if (trackHeight.a.$ === 'Px') {
+								return $mdgriffith$elm_ui$Element$shrink;
+							} else {
+								var x = trackHeight.a;
+								return x;
+							}
+						}
+					}())
+				]),
+			input.label,
+			A2(
+				$mdgriffith$elm_ui$Element$row,
+				_List_fromArray(
+					[
+						$mdgriffith$elm_ui$Element$width(
+						A2($elm$core$Maybe$withDefault, $mdgriffith$elm_ui$Element$fill, trackWidth)),
+						$mdgriffith$elm_ui$Element$height(
+						A2(
+							$elm$core$Maybe$withDefault,
+							$mdgriffith$elm_ui$Element$px(20),
+							trackHeight))
+					]),
+				_List_fromArray(
+					[
+						A4(
+						$mdgriffith$elm_ui$Internal$Model$element,
+						$mdgriffith$elm_ui$Internal$Model$asEl,
+						$mdgriffith$elm_ui$Internal$Model$NodeName('input'),
+						_List_fromArray(
+							[
+								$mdgriffith$elm_ui$Element$Input$hiddenLabelAttribute(input.label),
+								A2(
+								$mdgriffith$elm_ui$Internal$Model$StyleClass,
+								$mdgriffith$elm_ui$Internal$Flag$active,
+								A2($mdgriffith$elm_ui$Internal$Model$Style, 'input[type=\"range\"].' + (className + '::-moz-range-thumb'), thumbShadowStyle)),
+								A2(
+								$mdgriffith$elm_ui$Internal$Model$StyleClass,
+								$mdgriffith$elm_ui$Internal$Flag$hover,
+								A2($mdgriffith$elm_ui$Internal$Model$Style, 'input[type=\"range\"].' + (className + '::-webkit-slider-thumb'), thumbShadowStyle)),
+								A2(
+								$mdgriffith$elm_ui$Internal$Model$StyleClass,
+								$mdgriffith$elm_ui$Internal$Flag$focus,
+								A2($mdgriffith$elm_ui$Internal$Model$Style, 'input[type=\"range\"].' + (className + '::-ms-thumb'), thumbShadowStyle)),
+								$mdgriffith$elm_ui$Internal$Model$Attr(
+								$elm$html$Html$Attributes$class(className + ' ui-slide-bar focusable-parent')),
+								$mdgriffith$elm_ui$Internal$Model$Attr(
+								$elm$html$Html$Events$onInput(
+									function (str) {
+										var _v4 = $elm$core$String$toFloat(str);
+										if (_v4.$ === 'Nothing') {
+											return input.onChange(0);
+										} else {
+											var val = _v4.a;
+											return input.onChange(val);
+										}
+									})),
+								$mdgriffith$elm_ui$Internal$Model$Attr(
+								$elm$html$Html$Attributes$type_('range')),
+								$mdgriffith$elm_ui$Internal$Model$Attr(
+								$elm$html$Html$Attributes$step(
+									function () {
+										var _v5 = input.step;
+										if (_v5.$ === 'Nothing') {
+											return 'any';
+										} else {
+											var step = _v5.a;
+											return $elm$core$String$fromFloat(step);
+										}
+									}())),
+								$mdgriffith$elm_ui$Internal$Model$Attr(
+								$elm$html$Html$Attributes$min(
+									$elm$core$String$fromFloat(input.min))),
+								$mdgriffith$elm_ui$Internal$Model$Attr(
+								$elm$html$Html$Attributes$max(
+									$elm$core$String$fromFloat(input.max))),
+								$mdgriffith$elm_ui$Internal$Model$Attr(
+								$elm$html$Html$Attributes$value(
+									$elm$core$String$fromFloat(input.value))),
+								vertical ? $mdgriffith$elm_ui$Internal$Model$Attr(
+								A2($elm$html$Html$Attributes$attribute, 'orient', 'vertical')) : $mdgriffith$elm_ui$Internal$Model$NoAttribute,
+								$mdgriffith$elm_ui$Element$width(
+								vertical ? A2(
+									$elm$core$Maybe$withDefault,
+									$mdgriffith$elm_ui$Element$px(20),
+									trackHeight) : A2($elm$core$Maybe$withDefault, $mdgriffith$elm_ui$Element$fill, trackWidth)),
+								$mdgriffith$elm_ui$Element$height(
+								vertical ? A2($elm$core$Maybe$withDefault, $mdgriffith$elm_ui$Element$fill, trackWidth) : A2(
+									$elm$core$Maybe$withDefault,
+									$mdgriffith$elm_ui$Element$px(20),
+									trackHeight))
+							]),
+						$mdgriffith$elm_ui$Internal$Model$Unkeyed(_List_Nil)),
+						A2(
+						$mdgriffith$elm_ui$Element$el,
+						A2(
+							$elm$core$List$cons,
+							$mdgriffith$elm_ui$Element$width(
+								A2($elm$core$Maybe$withDefault, $mdgriffith$elm_ui$Element$fill, trackWidth)),
+							A2(
+								$elm$core$List$cons,
+								$mdgriffith$elm_ui$Element$height(
+									A2(
+										$elm$core$Maybe$withDefault,
+										$mdgriffith$elm_ui$Element$px(20),
+										trackHeight)),
+								_Utils_ap(
+									attributes,
+									_List_fromArray(
+										[
+											$mdgriffith$elm_ui$Element$behindContent(
+											vertical ? A3(
+												$mdgriffith$elm_ui$Element$Input$viewVerticalThumb,
+												factor,
+												A2(
+													$elm$core$List$cons,
+													$mdgriffith$elm_ui$Internal$Model$htmlClass('focusable-thumb'),
+													thumbAttributes),
+												trackWidth) : A3(
+												$mdgriffith$elm_ui$Element$Input$viewHorizontalThumb,
+												factor,
+												A2(
+													$elm$core$List$cons,
+													$mdgriffith$elm_ui$Internal$Model$htmlClass('focusable-thumb'),
+													thumbAttributes),
+												trackHeight))
+										])))),
+						$mdgriffith$elm_ui$Element$none)
+					])));
+	});
+var $mdgriffith$elm_ui$Element$Input$Thumb = function (a) {
+	return {$: 'Thumb', a: a};
+};
+var $mdgriffith$elm_ui$Element$Input$thumb = $mdgriffith$elm_ui$Element$Input$Thumb;
+var $author$project$ItemShop$settingsSlider = F3(
+	function (attrs, onChange, value) {
+		var rightSize = $elm$core$Basics$round((1 - value) * 100);
+		var leftSize = $elm$core$Basics$round(value * 100);
+		var background = A2(
+			$mdgriffith$elm_ui$Element$row,
+			_List_fromArray(
+				[
+					$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
+					$mdgriffith$elm_ui$Element$height(
+					$mdgriffith$elm_ui$Element$px(6)),
+					$mdgriffith$elm_ui$Element$centerY
+				]),
+			_List_fromArray(
+				[
+					A2(
+					$mdgriffith$elm_ui$Element$el,
+					_List_fromArray(
+						[
+							$mdgriffith$elm_ui$Element$Background$color($author$project$Interface$color_off_black),
+							$mdgriffith$elm_ui$Element$width(
+							$mdgriffith$elm_ui$Element$fillPortion(leftSize)),
+							$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$fill),
+							$mdgriffith$elm_ui$Element$Border$width(1),
+							$mdgriffith$elm_ui$Element$Border$rounded(2)
+						]),
+					$mdgriffith$elm_ui$Element$none),
+					A2(
+					$mdgriffith$elm_ui$Element$el,
+					_List_fromArray(
+						[
+							$mdgriffith$elm_ui$Element$Background$color($author$project$Interface$color_grey),
+							$mdgriffith$elm_ui$Element$width(
+							$mdgriffith$elm_ui$Element$fillPortion(rightSize)),
+							$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$fill),
+							$mdgriffith$elm_ui$Element$Border$width(1),
+							$mdgriffith$elm_ui$Element$Border$rounded(2)
+						]),
+					$mdgriffith$elm_ui$Element$none)
+				]));
+		return A2(
+			$mdgriffith$elm_ui$Element$Input$slider,
+			_Utils_ap(
+				_List_fromArray(
+					[
+						$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
+						$mdgriffith$elm_ui$Element$behindContent(background),
+						$mdgriffith$elm_ui$Element$mouseOver(
+						_List_fromArray(
+							[
+								$mdgriffith$elm_ui$Element$scale(2.0),
+								$mdgriffith$elm_ui$Element$Background$color($author$project$Interface$color_primary)
+							]))
+					]),
+				attrs),
+			{
+				label: A2(
+					$mdgriffith$elm_ui$Element$Input$labelRight,
+					_List_fromArray(
+						[
+							$mdgriffith$elm_ui$Element$width(
+							$mdgriffith$elm_ui$Element$px(100))
+						]),
+					$mdgriffith$elm_ui$Element$text(
+						$author$project$ItemShop$float_to_percent(value))),
+				max: 1.0,
+				min: 0.0,
+				onChange: onChange,
+				step: $elm$core$Maybe$Just(0.00001),
+				thumb: $mdgriffith$elm_ui$Element$Input$thumb(
+					_List_fromArray(
+						[
+							$mdgriffith$elm_ui$Element$mouseOver(
+							_List_fromArray(
+								[
+									$mdgriffith$elm_ui$Element$scale(2.0),
+									$mdgriffith$elm_ui$Element$Background$color($author$project$Interface$color_primary)
+								])),
+							$mdgriffith$elm_ui$Element$height(
+							$mdgriffith$elm_ui$Element$px(20)),
+							$mdgriffith$elm_ui$Element$width(
+							$mdgriffith$elm_ui$Element$px(20)),
+							$mdgriffith$elm_ui$Element$Background$color($author$project$Interface$color_grey),
+							$mdgriffith$elm_ui$Element$Border$rounded(10),
+							$mdgriffith$elm_ui$Element$Border$width(2),
+							$mdgriffith$elm_ui$Element$Border$color($author$project$Interface$color_off_black)
+						])),
+				value: value
+			});
+	});
+var $author$project$ItemShop$viewSettingsTab = function (model) {
+	var _v0 = model;
+	var colorTheme = _v0.colorTheme;
+	var masterVol = _v0.masterVol;
+	return A2(
+		$mdgriffith$elm_ui$Element$column,
+		_List_fromArray(
+			[
+				$mdgriffith$elm_ui$Element$width(
+				A2($mdgriffith$elm_ui$Element$maximum, 700, $mdgriffith$elm_ui$Element$fill)),
+				$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$fill),
+				$mdgriffith$elm_ui$Element$centerX,
+				$mdgriffith$elm_ui$Element$Font$center,
+				$mdgriffith$elm_ui$Element$Font$size(16)
+			]),
+		_List_fromArray(
+			[
+				A2(
+				$mdgriffith$elm_ui$Element$el,
+				_List_fromArray(
+					[
+						$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
+						$mdgriffith$elm_ui$Element$Font$size(24),
+						$mdgriffith$elm_ui$Element$padding(20)
+					]),
+				$mdgriffith$elm_ui$Element$text('Settings')),
+				A2(
+				$mdgriffith$elm_ui$Element$row,
+				_List_fromArray(
+					[
+						$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
+						$mdgriffith$elm_ui$Element$spacing(10)
+					]),
+				_List_fromArray(
+					[
+						$mdgriffith$elm_ui$Element$text('Master Vol'),
+						A3(
+						$author$project$ItemShop$settingsSlider,
+						_List_Nil,
+						A2($elm$core$Basics$composeL, $author$project$ItemShop$GotSettingsMsg, $author$project$ItemShop$ChangedMasterVol),
+						masterVol)
+					])),
+				A2(
+				$mdgriffith$elm_ui$Element$el,
+				_List_fromArray(
+					[
+						$mdgriffith$elm_ui$Element$padding(50),
+						$mdgriffith$elm_ui$Element$centerX,
+						$mdgriffith$elm_ui$Element$alignBottom
+					]),
+				$author$project$Interface$button(
+					$author$project$Interface$TextParams(
+						{
+							buttonType: $author$project$Interface$Primary,
+							colorTheme: colorTheme,
+							customAttrs: $author$project$ItemShop$defaultCustomAttrs,
+							onPressMsg: $author$project$ItemShop$ChangeTabType($author$project$ItemShop$ShopTabType),
+							textLabel: 'Back'
+						})))
+			]));
+};
+var $author$project$ItemShop$Noop = {$: 'Noop'};
+var $author$project$ItemShop$ToggleViewGemUnlocksInPostPhase = {$: 'ToggleViewGemUnlocksInPostPhase'};
+var $author$project$ItemShop$UnlockProgressUnlock = F2(
+	function (a, b) {
+		return {$: 'UnlockProgressUnlock', a: a, b: b};
+	});
+var $author$project$ItemShop$UnlockedBattles = {$: 'UnlockedBattles'};
+var $author$project$ItemShop$UnlockedCharts = {$: 'UnlockedCharts'};
+var $author$project$ItemShop$UnlockedCodex = {$: 'UnlockedCodex'};
+var $author$project$ItemShop$UnlockedDarkMode = {$: 'UnlockedDarkMode'};
+var $author$project$ItemShop$UnlockedInventoryFilters = {$: 'UnlockedInventoryFilters'};
+var $author$project$ItemShop$UnlockedLifeQuests = {$: 'UnlockedLifeQuests'};
+var $author$project$ItemShop$UnlockedShopTrends = {$: 'UnlockedShopTrends'};
+var $author$project$ItemShop$UnlockedSpecialActions = {$: 'UnlockedSpecialActions'};
+var $author$project$ItemShop$UnlockedUpgrades = {$: 'UnlockedUpgrades'};
+var $author$project$ItemShop$allProgressUnlocks = _List_fromArray(
+	[$author$project$ItemShop$UnlockedCharts, $author$project$ItemShop$UnlockedCodex, $author$project$ItemShop$UnlockedBattles, $author$project$ItemShop$UnlockedDarkMode, $author$project$ItemShop$UnlockedUpgrades, $author$project$ItemShop$UnlockedShopTrends, $author$project$ItemShop$UnlockedSpecialActions, $author$project$ItemShop$UnlockedLifeQuests, $author$project$ItemShop$UnlockedInventoryFilters]);
+var $author$project$ItemShop$containsProgressUnlock = F2(
+	function (progressUnlock, progressUnlocks) {
+		return A2($elm$core$List$member, progressUnlock, progressUnlocks);
+	});
+var $mdgriffith$elm_ui$Element$modular = F3(
+	function (normal, ratio, rescale) {
+		return (!rescale) ? normal : ((rescale < 0) ? (normal * A2($elm$core$Basics$pow, ratio, rescale)) : (normal * A2($elm$core$Basics$pow, ratio, rescale - 1)));
+	});
+var $author$project$Interface$scaled = function (val) {
+	return $elm$core$Basics$round(
+		A3($mdgriffith$elm_ui$Element$modular, 14, 1.25, val));
+};
+var $author$project$Interface$font_scaled = function (scale) {
+	return $mdgriffith$elm_ui$Element$Font$size(
+		$author$project$Interface$scaled(scale));
+};
+var $author$project$ItemShop$getProgressUnlockGemPrice = function (progressUnlock) {
+	var specialUnlocks = _List_fromArray(
+		[$author$project$ItemShop$UnlockedBattles]);
+	var mechanicalUnlocks = _List_fromArray(
+		[$author$project$ItemShop$UnlockedLifeQuests, $author$project$ItemShop$UnlockedSpecialActions]);
+	var cosmeticUnlocks = _List_fromArray(
+		[$author$project$ItemShop$UnlockedDarkMode, $author$project$ItemShop$UnlockedCodex, $author$project$ItemShop$UnlockedCharts, $author$project$ItemShop$UnlockedShopTrends, $author$project$ItemShop$UnlockedInventoryFilters]);
+	var containsUnlock = function (unlocks) {
+		return A2($elm$core$List$member, progressUnlock, unlocks);
+	};
+	return containsUnlock(specialUnlocks) ? $author$project$ItemShop$setPrice(3) : (containsUnlock(mechanicalUnlocks) ? $author$project$ItemShop$setPrice(2) : (containsUnlock(cosmeticUnlocks) ? $author$project$ItemShop$setPrice(1) : $author$project$ItemShop$setPrice(1)));
+};
+var $author$project$Interface$padding_bottom = function (pad) {
+	return $mdgriffith$elm_ui$Element$paddingEach(
+		{bottom: pad, left: 0, right: 0, top: 0});
+};
+var $author$project$ItemShop$progressUnlockToString = function (progressUnlock) {
+	switch (progressUnlock.$) {
+		case 'UnlockedCharts':
+			return 'Charts';
+		case 'UnlockedCodex':
+			return 'Codex';
+		case 'UnlockedBattles':
+			return 'Battles';
+		case 'UnlockedDarkMode':
+			return 'Dark Mode';
+		case 'UnlockedUpgrades':
+			return 'Upgrades';
+		case 'UnlockedShopTrends':
+			return 'Shop Trends';
+		case 'UnlockedSpecialActions':
+			return 'Special Actions';
+		case 'UnlockedLifeQuests':
+			return 'Life Quests';
+		default:
+			return 'Life Quests';
+	}
+};
+var $author$project$ItemShop$viewGemUnlocksInPostPhase = F5(
+	function (colorTheme, progressUnlocks, postPhaseData, heldGems, quests) {
+		var progressUnlockButton = function (progressUnlock) {
+			var price = $author$project$ItemShop$getProgressUnlockGemPrice(progressUnlock);
+			var canAfford = _Utils_cmp(
+				$author$project$ItemShop$getQuantity(heldGems),
+				$author$project$ItemShop$getPrice(price)) > -1;
+			var alreadyHasUnlock = A2($author$project$ItemShop$containsProgressUnlock, progressUnlock, progressUnlocks);
+			var buttonType = alreadyHasUnlock ? $author$project$Interface$Outline : (canAfford ? $author$project$Interface$Primary : $author$project$Interface$Danger);
+			var onPressMsg = alreadyHasUnlock ? $author$project$ItemShop$Noop : ((true || canAfford) ? A2($author$project$ItemShop$UnlockProgressUnlock, progressUnlock, price) : $author$project$ItemShop$Noop);
+			return (!alreadyHasUnlock) ? $author$project$Interface$button(
+				$author$project$Interface$CustomParams(
+					{
+						buttonType: buttonType,
+						colorTheme: colorTheme,
+						customAttrs: _Utils_ap(
+							$author$project$ItemShop$defaultCustomAttrs,
+							_List_fromArray(
+								[
+									$mdgriffith$elm_ui$Element$width(
+									A2($mdgriffith$elm_ui$Element$minimum, 200, $mdgriffith$elm_ui$Element$fill))
+								])),
+						customLabel: A2(
+							$mdgriffith$elm_ui$Element$paragraph,
+							_List_Nil,
+							_List_fromArray(
+								[
+									$mdgriffith$elm_ui$Element$text(
+									$author$project$ItemShop$progressUnlockToString(progressUnlock)),
+									$mdgriffith$elm_ui$Element$text(' ('),
+									(!canAfford) ? A2(
+									$mdgriffith$elm_ui$Element$el,
+									_List_fromArray(
+										[$mdgriffith$elm_ui$Element$Font$underline]),
+									A2(
+										$author$project$Interface$renderGem,
+										colorTheme,
+										$author$project$ItemShop$getPrice(price))) : A2(
+									$author$project$Interface$renderGem,
+									colorTheme,
+									$author$project$ItemShop$getPrice(price)),
+									$mdgriffith$elm_ui$Element$text(')')
+								])),
+						onPressMsg: onPressMsg
+					})) : $mdgriffith$elm_ui$Element$none;
+		};
 		var columnStyle = _List_fromArray(
 			[
 				$mdgriffith$elm_ui$Element$centerX,
@@ -23023,7 +26753,7 @@ var $author$project$ItemShop$viewGemUpgradesInPostPhase = F3(
 							$author$project$Interface$font_scaled(3),
 							$author$project$Interface$padding_bottom(10)
 						]),
-					$mdgriffith$elm_ui$Element$text('Upgrades')),
+					$mdgriffith$elm_ui$Element$text('Unlocks')),
 					A2(
 					$mdgriffith$elm_ui$Element$column,
 					_List_fromArray(
@@ -23044,6 +26774,45 @@ var $author$project$ItemShop$viewGemUpgradesInPostPhase = F3(
 								[
 									$mdgriffith$elm_ui$Element$text('Each unlock is permanent. It might be cosmetic, it might be useless, it might be a whole new mechanic. Only one way to find out.')
 								]))
+						])),
+					A2(
+					$mdgriffith$elm_ui$Element$column,
+					_List_fromArray(
+						[
+							A2($mdgriffith$elm_ui$Element$paddingXY, 0, 10),
+							$mdgriffith$elm_ui$Element$spacing(5),
+							$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill)
+						]),
+					_List_fromArray(
+						[
+							$mdgriffith$elm_ui$Element$text('These are the things you can unlock:'),
+							A2(
+							$mdgriffith$elm_ui$Element$column,
+							_List_fromArray(
+								[
+									$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
+									$mdgriffith$elm_ui$Element$spacing(5)
+								]),
+							A2(
+								$elm$core$List$map,
+								A2(
+									$elm$core$Basics$composeL,
+									$mdgriffith$elm_ui$Element$row(
+										_List_fromArray(
+											[
+												$mdgriffith$elm_ui$Element$spacing(5),
+												$mdgriffith$elm_ui$Element$centerX
+											])),
+									$elm$core$List$map(progressUnlockButton)),
+								A2(
+									$elm_community$list_extra$List$Extra$greedyGroupsOf,
+									3,
+									A2(
+										$elm$core$List$filter,
+										function (apu) {
+											return !A2($elm$core$List$member, apu, progressUnlocks);
+										},
+										$author$project$ItemShop$allProgressUnlocks))))
 						])),
 					A2(
 					$mdgriffith$elm_ui$Element$column,
@@ -23071,12 +26840,14 @@ var $author$project$ItemShop$viewGemUpgradesInPostPhase = F3(
 								{
 									buttonType: $author$project$Interface$Secondary,
 									colorTheme: colorTheme,
-									customAttrs: _List_fromArray(
-										[
-											$mdgriffith$elm_ui$Element$width(
-											A2($mdgriffith$elm_ui$Element$minimum, 200, $mdgriffith$elm_ui$Element$fill))
-										]),
-									onPressMsg: $author$project$ItemShop$ToggleViewGemUpgradesInPostPhase,
+									customAttrs: _Utils_ap(
+										$author$project$ItemShop$defaultCustomAttrs,
+										_List_fromArray(
+											[
+												$mdgriffith$elm_ui$Element$width(
+												A2($mdgriffith$elm_ui$Element$minimum, 200, $mdgriffith$elm_ui$Element$fill))
+											])),
+									onPressMsg: $author$project$ItemShop$ToggleViewGemUnlocksInPostPhase,
 									textLabel: 'Back'
 								}))
 						]))
@@ -23133,8 +26904,8 @@ var $author$project$ItemShop$viewShopSummary = F3(
 					]),
 				$mdgriffith$elm_ui$Element$text(title));
 		};
-		var getSoldNumFromItemDbRecord = function (_v3) {
-			var trade_stats = _v3.trade_stats;
+		var getSoldNumFromItemDbRecord = function (_v4) {
+			var trade_stats = _v4.trade_stats;
 			return trade_stats.times_others_traded + trade_stats.times_you_sold;
 		};
 		var getNumItemTypeSold = function (itemType) {
@@ -23143,9 +26914,9 @@ var $author$project$ItemShop$viewShopSummary = F3(
 				F2(
 					function (newIdbr, totalTypeSold) {
 						if (_Utils_eq(newIdbr.item.item_type, itemType)) {
-							var _v2 = A2($author$project$ItemShop$lookup_item_id, postPhaseData.itemDbAtStart, newIdbr.item.id);
-							if (_v2.$ === 'Just') {
-								var origItemDbRecord = _v2.a;
+							var _v3 = A2($author$project$ItemShop$lookup_item_id, postPhaseData.itemDbAtStart, newIdbr.item.id);
+							if (_v3.$ === 'Just') {
+								var origItemDbRecord = _v3.a;
 								return totalTypeSold + (getSoldNumFromItemDbRecord(newIdbr) - getSoldNumFromItemDbRecord(origItemDbRecord));
 							} else {
 								return totalTypeSold;
@@ -23235,7 +27006,7 @@ var $author$project$ItemShop$viewShopSummary = F3(
 																{
 																	buttonType: $author$project$Interface$Primary,
 																	colorTheme: colorTheme,
-																	customAttrs: _List_Nil,
+																	customAttrs: $author$project$ItemShop$defaultCustomAttrs,
 																	onPressMsg: $author$project$ItemShop$CashInQuestType(questData),
 																	textLabel: 'Cash In'
 																}));
@@ -23253,7 +27024,18 @@ var $author$project$ItemShop$viewShopSummary = F3(
 											[
 												header('Daily Quests')
 											]),
-										A2($elm$core$List$map, questRender, quests.dailyQuests)));
+										function () {
+											var _v0 = quests.dailyQuests;
+											if (!_v0.b) {
+												return _List_fromArray(
+													[
+														$mdgriffith$elm_ui$Element$text('No Quests')
+													]);
+											} else {
+												var qs = _v0;
+												return A2($elm$core$List$map, questRender, qs);
+											}
+										}()));
 							}()),
 							A2(
 							$mdgriffith$elm_ui$Element$column,
@@ -23340,12 +27122,14 @@ var $author$project$ItemShop$viewShopSummary = F3(
 												{
 													buttonType: $author$project$Interface$Primary,
 													colorTheme: colorTheme,
-													customAttrs: _List_fromArray(
-														[
-															$mdgriffith$elm_ui$Element$width(
-															A2($mdgriffith$elm_ui$Element$minimum, 200, $mdgriffith$elm_ui$Element$fill))
-														]),
-													onPressMsg: $author$project$ItemShop$ToggleViewGemUpgradesInPostPhase,
+													customAttrs: _Utils_ap(
+														$author$project$ItemShop$defaultCustomAttrs,
+														_List_fromArray(
+															[
+																$mdgriffith$elm_ui$Element$width(
+																A2($mdgriffith$elm_ui$Element$minimum, 200, $mdgriffith$elm_ui$Element$fill))
+															])),
+													onPressMsg: $author$project$ItemShop$ToggleViewGemUnlocksInPostPhase,
 													textLabel: 'Upgrades'
 												}))
 										])),
@@ -23367,11 +27151,13 @@ var $author$project$ItemShop$viewShopSummary = F3(
 												{
 													buttonType: $author$project$Interface$Secondary,
 													colorTheme: colorTheme,
-													customAttrs: _List_fromArray(
-														[
-															$mdgriffith$elm_ui$Element$width(
-															A2($mdgriffith$elm_ui$Element$minimum, 200, $mdgriffith$elm_ui$Element$fill))
-														]),
+													customAttrs: _Utils_ap(
+														$author$project$ItemShop$defaultCustomAttrs,
+														_List_fromArray(
+															[
+																$mdgriffith$elm_ui$Element$width(
+																A2($mdgriffith$elm_ui$Element$minimum, 200, $mdgriffith$elm_ui$Element$fill))
+															])),
 													onPressMsg: $author$project$ItemShop$EndDay,
 													textLabel: 'Go to sleep'
 												}))
@@ -23380,9 +27166,23 @@ var $author$project$ItemShop$viewShopSummary = F3(
 					}())
 				]));
 	});
-var $author$project$ItemShop$viewShopPostPhase = F4(
-	function (colorTheme, shouldViewGemUpgradesInPostPhase, postPhaseData, quests) {
-		return (!shouldViewGemUpgradesInPostPhase) ? A3($author$project$ItemShop$viewShopSummary, colorTheme, postPhaseData, quests) : A3($author$project$ItemShop$viewGemUpgradesInPostPhase, colorTheme, postPhaseData, quests);
+var $author$project$ItemShop$viewShopPostPhase = F5(
+	function (_v0, progressUnlocks, postPhaseData, characters, quests) {
+		var colorTheme = _v0.a;
+		var shouldViewGemUpgradesInPostPhase = _v0.b;
+		if (!shouldViewGemUpgradesInPostPhase) {
+			return A3($author$project$ItemShop$viewShopSummary, colorTheme, postPhaseData, quests);
+		} else {
+			var _v1 = $author$project$ItemShop$getPlayer(characters);
+			var player = _v1.a;
+			return A5(
+				$author$project$ItemShop$viewGemUnlocksInPostPhase,
+				colorTheme,
+				progressUnlocks,
+				postPhaseData,
+				$author$project$ItemShop$setQuantity(player.held_gems),
+				quests);
+		}
 	});
 var $author$project$ItemShop$BeginDay = {$: 'BeginDay'};
 var $elm$core$Dict$filter = F2(
@@ -23465,49 +27265,74 @@ var $author$project$ItemShop$viewShopPrepPhase = function (model) {
 								$mdgriffith$elm_ui$Element$text('You are about to begin a new day, running your shop the best you can.'))
 							])),
 						A2(
-						$mdgriffith$elm_ui$Element$paragraph,
-						_List_Nil,
+						$mdgriffith$elm_ui$Element$row,
 						_List_fromArray(
 							[
-								$mdgriffith$elm_ui$Element$text('Each day, the shop\'s wares change, opposing trades come and go, and who knows what else might happen.')
-							])),
-						A2(
-						$mdgriffith$elm_ui$Element$paragraph,
-						_List_Nil,
+								$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill)
+							]),
 						_List_fromArray(
 							[
-								$mdgriffith$elm_ui$Element$text(
-								'You may see one of ' + ($elm$core$String$fromInt(
-									$elm$core$Dict$size(
-										A2(
-											$elm$core$Dict$filter,
-											F2(
-												function (_v0, idbr) {
-													return idbr.is_unlocked;
-												}),
-											model.item_db))) + (' unlocked items, among the ' + ($elm$core$String$fromInt(model.numItemsToStartDayWith) + ' the Shop will be starting with today. Maybe you can find more?'))))
+								A2(
+								$mdgriffith$elm_ui$Element$paragraph,
+								_List_fromArray(
+									[$mdgriffith$elm_ui$Element$alignTop]),
+								_List_fromArray(
+									[
+										$mdgriffith$elm_ui$Element$text('Each day, the shop\'s wares change, opposing trades come and go, and who knows what else might happen.')
+									])),
+								A2(
+								$mdgriffith$elm_ui$Element$paragraph,
+								_List_fromArray(
+									[$mdgriffith$elm_ui$Element$alignTop]),
+								_List_fromArray(
+									[
+										$mdgriffith$elm_ui$Element$text(
+										'You may see one of ' + ($elm$core$String$fromInt(
+											$elm$core$Dict$size(
+												A2(
+													$elm$core$Dict$filter,
+													F2(
+														function (_v0, idbr) {
+															return idbr.is_unlocked;
+														}),
+													model.item_db))) + (' unlocked items, among the ' + ($elm$core$String$fromInt(model.numItemsToStartDayWith) + ' the Shop will be starting with today. Maybe you can find more?'))))
+									]))
 							])),
 						A2(
-						$mdgriffith$elm_ui$Element$paragraph,
-						_List_Nil,
+						$mdgriffith$elm_ui$Element$row,
 						_List_fromArray(
 							[
-								$mdgriffith$elm_ui$Element$text(
-								'There has been word that ' + ($elm$core$String$fromInt(
-									$elm$core$List$length(
-										$author$project$ItemShop$getOthers(model.characters))) + ' other traders have come to trade.'))
-							])),
-						A2(
-						$mdgriffith$elm_ui$Element$paragraph,
-						_List_Nil,
+								$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill)
+							]),
 						_List_fromArray(
 							[
-								$mdgriffith$elm_ui$Element$text(
-								'The day tomorrow will last: ' + ($elm$core$String$fromInt((model.timeOfDay.dayLengthInMs / 1000) | 0) + ' seconds.'))
+								A2(
+								$mdgriffith$elm_ui$Element$paragraph,
+								_List_fromArray(
+									[$mdgriffith$elm_ui$Element$alignTop]),
+								_List_fromArray(
+									[
+										$mdgriffith$elm_ui$Element$text(
+										'There has been word that ' + ($elm$core$String$fromInt(
+											$elm$core$List$length(
+												$author$project$ItemShop$getOthers(model.characters))) + ' other traders have come to trade.'))
+									])),
+								A2(
+								$mdgriffith$elm_ui$Element$paragraph,
+								_List_fromArray(
+									[$mdgriffith$elm_ui$Element$alignTop]),
+								_List_fromArray(
+									[
+										$mdgriffith$elm_ui$Element$text(
+										'The day tomorrow will last: ' + ($elm$core$String$fromInt((model.timeOfDay.dayLengthInMs / 1000) | 0) + ' seconds.'))
+									]))
 							])),
 						A2(
-						$mdgriffith$elm_ui$Element$paragraph,
-						_List_Nil,
+						$mdgriffith$elm_ui$Element$row,
+						_List_fromArray(
+							[
+								$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill)
+							]),
 						function () {
 							var unpopularItemTypes = A2(
 								$elm$core$List$filterMap,
@@ -23533,30 +27358,70 @@ var $author$project$ItemShop$viewShopPrepPhase = function (model) {
 										model.shop_trends.item_type_sentiment)));
 							return _List_fromArray(
 								[
-									$mdgriffith$elm_ui$Element$text(
+									A2(
+									$mdgriffith$elm_ui$Element$column,
+									_List_fromArray(
+										[
+											$mdgriffith$elm_ui$Element$alignTop,
+											$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill)
+										]),
 									function () {
 										var _v1 = A2(
 											$elm$core$String$join,
 											', ',
 											A2($elm$core$List$map, $author$project$ItemShop$itemTypeToString, unpopularItemTypes));
 										if (_v1 === '') {
-											return '';
+											return _List_fromArray(
+												[
+													$mdgriffith$elm_ui$Element$text('')
+												]);
 										} else {
 											var item_types = _v1;
-											return 'The following types of things are less popular: ' + (item_types + '. ');
+											return _List_fromArray(
+												[
+													$mdgriffith$elm_ui$Element$text('The following types of things are less popular: '),
+													A2(
+													$mdgriffith$elm_ui$Element$paragraph,
+													_List_Nil,
+													_List_fromArray(
+														[
+															$mdgriffith$elm_ui$Element$text(item_types),
+															$mdgriffith$elm_ui$Element$text('. ')
+														]))
+												]);
 										}
 									}()),
-									$mdgriffith$elm_ui$Element$text(
+									A2(
+									$mdgriffith$elm_ui$Element$column,
+									_List_fromArray(
+										[
+											$mdgriffith$elm_ui$Element$alignTop,
+											$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill)
+										]),
 									function () {
 										var _v2 = A2(
 											$elm$core$String$join,
 											', ',
 											A2($elm$core$List$map, $author$project$ItemShop$itemTypeToString, popularItemTypes));
 										if (_v2 === '') {
-											return '';
+											return _List_fromArray(
+												[
+													$mdgriffith$elm_ui$Element$text('')
+												]);
 										} else {
 											var item_types = _v2;
-											return 'The following types of things are more popular: ' + (item_types + '.');
+											return _List_fromArray(
+												[
+													$mdgriffith$elm_ui$Element$text('The following types of things are more popular: '),
+													A2(
+													$mdgriffith$elm_ui$Element$paragraph,
+													_List_Nil,
+													_List_fromArray(
+														[
+															$mdgriffith$elm_ui$Element$text(item_types),
+															$mdgriffith$elm_ui$Element$text('. ')
+														]))
+												]);
 										}
 									}())
 								]);
@@ -23625,19 +27490,125 @@ var $author$project$ItemShop$viewShopPrepPhase = function (model) {
 								{
 									buttonType: $author$project$Interface$Secondary,
 									colorTheme: model.colorTheme,
-									customAttrs: _List_fromArray(
-										[
-											$mdgriffith$elm_ui$Element$width(
-											A2($mdgriffith$elm_ui$Element$minimum, 200, $mdgriffith$elm_ui$Element$fill))
-										]),
+									customAttrs: _Utils_ap(
+										$author$project$ItemShop$defaultCustomAttrs,
+										_List_fromArray(
+											[
+												$mdgriffith$elm_ui$Element$width(
+												A2($mdgriffith$elm_ui$Element$minimum, 200, $mdgriffith$elm_ui$Element$fill))
+											])),
 									onPressMsg: $author$project$ItemShop$BeginDay,
 									textLabel: 'Begin Day'
 								}))
 						])))
 			]));
 };
-var $author$project$ItemShop$ChangeTabType = function (a) {
-	return {$: 'ChangeTabType', a: a};
+var $author$project$ItemShop$ClickedTitlePlayLabel = {$: 'ClickedTitlePlayLabel'};
+var $author$project$ItemShop$ClickedTitleTextLabel = {$: 'ClickedTitleTextLabel'};
+var $mdgriffith$elm_ui$Internal$Flag$overflow = $mdgriffith$elm_ui$Internal$Flag$flag(20);
+var $mdgriffith$elm_ui$Element$clip = A2($mdgriffith$elm_ui$Internal$Model$Class, $mdgriffith$elm_ui$Internal$Flag$overflow, $mdgriffith$elm_ui$Internal$Style$classes.clip);
+var $author$project$ItemShop$viewTitleScreen = function (model) {
+	var scaling = A2(
+		$mdgriffith$elm_animator$Animator$linear,
+		model.titleScreenAnimationState,
+		function (state) {
+			return $mdgriffith$elm_animator$Animator$at(
+				function () {
+					var _v0 = model.uiOptions.device;
+					var _class = _v0._class;
+					var orientation = _v0.orientation;
+					var _v1 = _Utils_Tuple2(_class, orientation);
+					if (_v1.a.$ === 'Desktop') {
+						var _v2 = _v1.a;
+						return _Utils_eq(state, $author$project$ItemShop$HighTitle) ? 1 : 5;
+					} else {
+						if (_v1.b.$ === 'Portrait') {
+							var _v3 = _v1.b;
+							return _Utils_eq(state, $author$project$ItemShop$HighTitle) ? 3 : 10;
+						} else {
+							return _Utils_eq(state, $author$project$ItemShop$HighTitle) ? 1 : 5;
+						}
+					}
+				}());
+		});
+	var continueBtnMoveDown = A2(
+		$mdgriffith$elm_animator$Animator$linear,
+		model.titleScreenAnimationState,
+		function (state) {
+			return $mdgriffith$elm_animator$Animator$at(
+				_Utils_eq(state, $author$project$ItemShop$HighTitle) ? 500 : 0);
+		});
+	return A2(
+		$mdgriffith$elm_ui$Element$column,
+		_List_fromArray(
+			[
+				$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
+				$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$fill),
+				$mdgriffith$elm_ui$Element$centerX,
+				$mdgriffith$elm_ui$Element$centerY,
+				$mdgriffith$elm_ui$Element$clip
+			]),
+		_List_fromArray(
+			[
+				A2(
+				$mdgriffith$elm_ui$Element$column,
+				_List_fromArray(
+					[
+						$mdgriffith$elm_ui$Element$centerX,
+						$mdgriffith$elm_ui$Element$centerY,
+						$mdgriffith$elm_ui$Element$Font$center,
+						$mdgriffith$elm_ui$Element$scale(scaling),
+						$mdgriffith$elm_ui$Element$pointer,
+						$mdgriffith$elm_ui$Element$Events$onMouseDown($author$project$ItemShop$ClickedTitleTextLabel),
+						$author$project$Interface$noUserSelect
+					]),
+				_List_fromArray(
+					[
+						A2(
+						$mdgriffith$elm_ui$Element$el,
+						_List_fromArray(
+							[
+								$mdgriffith$elm_ui$Element$Font$size(14),
+								$mdgriffith$elm_ui$Element$centerX
+							]),
+						$mdgriffith$elm_ui$Element$text('Our')),
+						A2(
+						$mdgriffith$elm_ui$Element$el,
+						_List_Nil,
+						$mdgriffith$elm_ui$Element$text('Item Shop')),
+						A2(
+						$mdgriffith$elm_ui$Element$el,
+						_List_fromArray(
+							[
+								$mdgriffith$elm_ui$Element$Font$size(14),
+								$mdgriffith$elm_ui$Element$centerX
+							]),
+						$mdgriffith$elm_ui$Element$text('wants ')),
+						A2(
+						$mdgriffith$elm_ui$Element$el,
+						_List_fromArray(
+							[
+								$mdgriffith$elm_ui$Element$Font$size(12),
+								$mdgriffith$elm_ui$Element$centerX
+							]),
+						$mdgriffith$elm_ui$Element$text('you '))
+					])),
+				A2(
+				$mdgriffith$elm_ui$Element$column,
+				_List_fromArray(
+					[
+						$mdgriffith$elm_ui$Element$centerX,
+						$mdgriffith$elm_ui$Element$alignBottom,
+						$mdgriffith$elm_ui$Element$Font$size(128),
+						$mdgriffith$elm_ui$Element$moveDown(continueBtnMoveDown),
+						$mdgriffith$elm_ui$Element$Events$onMouseDown($author$project$ItemShop$ClickedTitlePlayLabel),
+						$mdgriffith$elm_ui$Element$pointer
+					]),
+				_List_fromArray(
+					[
+						$mdgriffith$elm_ui$Element$text('Play')
+					]))
+			]));
 };
 var $elm$html$Html$Attributes$href = function (url) {
 	return A2(
@@ -23979,7 +27950,7 @@ var $mdgriffith$elm_ui$Element$wrappedRow = F2(
 			}
 		}
 	});
-var $author$project$ItemShop$view_items_unlocked_tab_type = F2(
+var $author$project$ItemShop$view_items_unlocked_currentTabType = F2(
 	function (colorTheme, item_db) {
 		var render_item_grid = A2(
 			$elm$core$Basics$composeR,
@@ -24006,7 +27977,7 @@ var $author$project$ItemShop$view_items_unlocked_tab_type = F2(
 						{
 							buttonType: $author$project$Interface$Danger,
 							colorTheme: colorTheme,
-							customAttrs: _List_Nil,
+							customAttrs: $author$project$ItemShop$defaultCustomAttrs,
 							onPressMsg: $author$project$ItemShop$ChangeTabType($author$project$ItemShop$ShopTabType),
 							textLabel: 'Back to Shop'
 						})),
@@ -24044,13 +28015,122 @@ var $author$project$ItemShop$InventoryItems = {$: 'InventoryItems'};
 var $author$project$ItemShop$ShopItems = {$: 'ShopItems'};
 var $author$project$ItemShop$ToggleColorTheme = {$: 'ToggleColorTheme'};
 var $author$project$ItemShop$ToggleShowMainChart = {$: 'ToggleShowMainChart'};
-var $author$project$ItemShop$UnlockedCharts = {$: 'UnlockedCharts'};
-var $author$project$ItemShop$UnlockedCodex = {$: 'UnlockedCodex'};
-var $author$project$ItemShop$UnlockedDarkMode = {$: 'UnlockedDarkMode'};
-var $author$project$ItemShop$UnlockedShopTrends = {$: 'UnlockedShopTrends'};
 var $author$project$Interface$color_light_grey = A3($mdgriffith$elm_ui$Element$rgb, 0.55, 0.55, 0.55);
 var $mdgriffith$elm_ui$Internal$Flag$borderStyle = $mdgriffith$elm_ui$Internal$Flag$flag(11);
 var $mdgriffith$elm_ui$Element$Border$dashed = A2($mdgriffith$elm_ui$Internal$Model$Class, $mdgriffith$elm_ui$Internal$Flag$borderStyle, $mdgriffith$elm_ui$Internal$Style$classes.borderDashed);
+var $author$project$ItemShop$ChangeCurrentPhase = function (a) {
+	return {$: 'ChangeCurrentPhase', a: a};
+};
+var $author$project$ItemShop$debugTimeOfDayControls = function (_v0) {
+	var colorTheme = _v0.colorTheme;
+	var timeOfDay = _v0.timeOfDay;
+	var ai_tick_time = _v0.ai_tick_time;
+	var characters = _v0.characters;
+	var item_db = _v0.item_db;
+	return A2(
+		$mdgriffith$elm_ui$Element$el,
+		_List_fromArray(
+			[
+				$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
+				A2($mdgriffith$elm_ui$Element$paddingXY, 0, 10)
+			]),
+		A2(
+			$mdgriffith$elm_ui$Element$row,
+			_List_fromArray(
+				[
+					$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
+					$mdgriffith$elm_ui$Element$spaceEvenly
+				]),
+			_List_fromArray(
+				[
+					$author$project$Interface$button(
+					$author$project$Interface$TextParams(
+						{
+							buttonType: $author$project$Interface$Primary,
+							colorTheme: colorTheme,
+							customAttrs: $author$project$ItemShop$defaultCustomAttrs,
+							onPressMsg: $author$project$ItemShop$ChangeCurrentPhase($author$project$ItemShop$PrepPhase),
+							textLabel: function () {
+								var _v1 = timeOfDay.currentPhase;
+								if (_v1.$ === 'PrepPhase') {
+									return 'Currently PrepPhase';
+								} else {
+									return 'Change to PrepPhase';
+								}
+							}()
+						})),
+					$author$project$Interface$button(
+					$author$project$Interface$TextParams(
+						{
+							buttonType: $author$project$Interface$Primary,
+							colorTheme: colorTheme,
+							customAttrs: $author$project$ItemShop$defaultCustomAttrs,
+							onPressMsg: $author$project$ItemShop$ChangeCurrentPhase(
+								A2(
+									$author$project$ItemShop$ActivePhase,
+									ai_tick_time,
+									{
+										goldAtStartOfDay: function () {
+											var _v2 = $author$project$ItemShop$getPlayer(characters);
+											var player = _v2.a;
+											return player.held_gold;
+										}(),
+										itemDbAtStart: item_db,
+										msSinceStartOfDay: 0
+									})),
+							textLabel: function () {
+								var _v3 = timeOfDay.currentPhase;
+								if (_v3.$ === 'ActivePhase') {
+									return 'Currently ActivePhase';
+								} else {
+									return 'Change to ActivePhase';
+								}
+							}()
+						})),
+					$author$project$Interface$button(
+					$author$project$Interface$TextParams(
+						{
+							buttonType: $author$project$Interface$Primary,
+							colorTheme: colorTheme,
+							customAttrs: $author$project$ItemShop$defaultCustomAttrs,
+							onPressMsg: $author$project$ItemShop$ChangeCurrentPhase(
+								$author$project$ItemShop$PostPhase(
+									function () {
+										var _v4 = timeOfDay.currentPhase;
+										if (_v4.$ === 'ActivePhase') {
+											var timeDayStarted = _v4.a;
+											var itemDbAtStart = _v4.b.itemDbAtStart;
+											var goldAtStartOfDay = _v4.b.goldAtStartOfDay;
+											return {
+												goldAtEndOfDay: function () {
+													var _v5 = $author$project$ItemShop$getPlayer(characters);
+													var player = _v5.a;
+													return player.held_gold;
+												}(),
+												goldAtStartOfDay: goldAtStartOfDay,
+												itemDbAtEnd: item_db,
+												itemDbAtStart: itemDbAtStart
+											};
+										} else {
+											return _Debug_todo(
+												'ItemShop',
+												{
+													start: {line: 7222, column: 41},
+													end: {line: 7222, column: 51}
+												})('cant really switch to PostPhase without being in ActivePhase first');
+										}
+									}())),
+							textLabel: function () {
+								var _v6 = timeOfDay.currentPhase;
+								if (_v6.$ === 'PostPhase') {
+									return 'Currently PostPhase';
+								} else {
+									return 'Change to PostPhase';
+								}
+							}()
+						}))
+				])));
+};
 var $author$project$Interface$deviceClassToString = function (deviceClass) {
 	switch (deviceClass.$) {
 		case 'Phone':
@@ -24080,14 +28160,6 @@ var $mdgriffith$elm_ui$Element$Keyed$el = F2(
 				_List_fromArray(
 					[child])));
 	});
-var $author$project$ItemShop$containsProgressUnlock = F2(
-	function (progressUnlock, progressUnlocks) {
-		return true;
-	});
-var $author$project$ItemShop$hasProgressUnlock = F2(
-	function (progressUnlock, model) {
-		return A2($author$project$ItemShop$containsProgressUnlock, progressUnlock, model.progressUnlocks);
-	});
 var $mdgriffith$elm_ui$Element$Lazy$apply3 = F4(
 	function (fn, a, b, c) {
 		return $mdgriffith$elm_ui$Element$Lazy$embed(
@@ -24098,6 +28170,17 @@ var $mdgriffith$elm_ui$Element$Lazy$lazy3 = F4(
 	function (fn, a, b, c) {
 		return $mdgriffith$elm_ui$Internal$Model$Unstyled(
 			A5($elm$virtual_dom$VirtualDom$lazy5, $mdgriffith$elm_ui$Element$Lazy$apply3, fn, a, b, c));
+	});
+var $mdgriffith$elm_ui$Element$Lazy$apply4 = F5(
+	function (fn, a, b, c, d) {
+		return $mdgriffith$elm_ui$Element$Lazy$embed(
+			A4(fn, a, b, c, d));
+	});
+var $elm$virtual_dom$VirtualDom$lazy6 = _VirtualDom_lazy6;
+var $mdgriffith$elm_ui$Element$Lazy$lazy4 = F5(
+	function (fn, a, b, c, d) {
+		return $mdgriffith$elm_ui$Internal$Model$Unstyled(
+			A6($elm$virtual_dom$VirtualDom$lazy6, $mdgriffith$elm_ui$Element$Lazy$apply4, fn, a, b, c, d));
 	});
 var $author$project$Interface$orientationToString = function (orientation) {
 	if (orientation.$ === 'Portrait') {
@@ -24123,12 +28206,14 @@ var $author$project$ItemShop$shop_sell_button = F3(
 				{
 					buttonType: button_type,
 					colorTheme: colorTheme,
-					customAttrs: _List_fromArray(
-						[
-							$mdgriffith$elm_ui$Element$transparent(!has_items_to_sell_),
-							$mdgriffith$elm_ui$Element$width(
-							A2($mdgriffith$elm_ui$Element$minimum, 120, $mdgriffith$elm_ui$Element$fill))
-						]),
+					customAttrs: _Utils_ap(
+						_List_fromArray(
+							[
+								$mdgriffith$elm_ui$Element$transparent(!has_items_to_sell_),
+								$mdgriffith$elm_ui$Element$width(
+								A2($mdgriffith$elm_ui$Element$minimum, 120, $mdgriffith$elm_ui$Element$fill))
+							]),
+						$author$project$ItemShop$defaultCustomAttrs),
 					onPressMsg: A2(
 						$author$project$ItemShop$PlayerSellItemToShop,
 						item,
@@ -24157,17 +28242,18 @@ var $author$project$ItemShop$playerInventoryControls = F3(
 				{
 					buttonType: $author$project$Interface$Danger,
 					colorTheme: colorTheme,
-					customAttrs: _List_fromArray(
-						[
-							$mdgriffith$elm_ui$Element$transparent(!hasItemsToSell),
-							$mdgriffith$elm_ui$Element$width(
-							A2($mdgriffith$elm_ui$Element$minimum, 120, $mdgriffith$elm_ui$Element$fill))
-						]),
+					customAttrs: _Utils_ap(
+						$author$project$ItemShop$defaultCustomAttrs,
+						_List_fromArray(
+							[
+								$mdgriffith$elm_ui$Element$transparent(!hasItemsToSell),
+								$mdgriffith$elm_ui$Element$width(
+								A2($mdgriffith$elm_ui$Element$minimum, 120, $mdgriffith$elm_ui$Element$fill))
+							])),
 					onPressMsg: $author$project$ItemShop$SacrificeItem(item),
 					textLabel: 'Sacrifice'
 				}));
 	});
-var $author$project$ItemShop$UnlockedUpgrades = {$: 'UnlockedUpgrades'};
 var $author$project$Interface$border_bottom = function (bord) {
 	return $mdgriffith$elm_ui$Element$Border$widthEach(
 		{bottom: bord, left: 0, right: 0, top: 0});
@@ -24343,7 +28429,6 @@ var $author$project$ItemShop$player_action_log_display = F2(
 									$elm$core$List$reverse(player_action_logs)))))
 					])));
 	});
-var $author$project$ItemShop$UnlockedLifeQuests = {$: 'UnlockedLifeQuests'};
 var $author$project$ItemShop$viewSingleQuest = function (quest) {
 	if (quest.$ === 'IncompleteQuest') {
 		var questType = quest.a.questType;
@@ -24399,14 +28484,28 @@ var $author$project$ItemShop$quests_display = F3(
 							]),
 						_List_fromArray(
 							[
-								A2(
-								$mdgriffith$elm_ui$Element$column,
-								_List_fromArray(
-									[
-										A2($mdgriffith$elm_ui$Element$paddingXY, 0, 10),
-										$mdgriffith$elm_ui$Element$spacing(5)
-									]),
-								A2($elm$core$List$map, $author$project$ItemShop$viewSingleQuest, quests.dailyQuests))
+								function () {
+								var _v0 = quests.dailyQuests;
+								if (!_v0.b) {
+									return A2(
+										$mdgriffith$elm_ui$Element$el,
+										_List_fromArray(
+											[
+												A2($mdgriffith$elm_ui$Element$paddingXY, 0, 10),
+												$mdgriffith$elm_ui$Element$spacing(5)
+											]),
+										$mdgriffith$elm_ui$Element$text('Nothing for now!'));
+								} else {
+									return A2(
+										$mdgriffith$elm_ui$Element$column,
+										_List_fromArray(
+											[
+												A2($mdgriffith$elm_ui$Element$paddingXY, 0, 10),
+												$mdgriffith$elm_ui$Element$spacing(5)
+											]),
+										A2($elm$core$List$map, $author$project$ItemShop$viewSingleQuest, quests.dailyQuests));
+								}
+							}()
 							]))),
 					A2($author$project$ItemShop$containsProgressUnlock, $author$project$ItemShop$UnlockedLifeQuests, progressUnlocks) ? A2(
 					$mdgriffith$elm_ui$Element$column,
@@ -24441,11 +28540,11 @@ var $author$project$ItemShop$quests_display = F3(
 									_List_fromArray(
 										[
 											function () {
-											var _v0 = quests.persistentQuests;
-											if (!_v0.b) {
+											var _v1 = quests.persistentQuests;
+											if (!_v1.b) {
 												return $mdgriffith$elm_ui$Element$text('Go find a Life Quest');
 											} else {
-												var persistentQuests = _v0;
+												var persistentQuests = _v1;
 												return A2(
 													$mdgriffith$elm_ui$Element$column,
 													_List_fromArray(
@@ -24460,94 +28559,7 @@ var $author$project$ItemShop$quests_display = F3(
 								])))) : $mdgriffith$elm_ui$Element$none
 				]));
 	});
-var $author$project$ItemShop$ChangeInventorySortType = function (a) {
-	return {$: 'ChangeInventorySortType', a: a};
-};
-var $author$project$ItemShop$CycleFilterDisplayedItemsBackward = F2(
-	function (a, b) {
-		return {$: 'CycleFilterDisplayedItemsBackward', a: a, b: b};
-	});
-var $author$project$ItemShop$CycleFilterDisplayedItemsForward = F2(
-	function (a, b) {
-		return {$: 'CycleFilterDisplayedItemsForward', a: a, b: b};
-	});
-var $author$project$ItemShop$MouseEnterShopItem = F2(
-	function (a, b) {
-		return {$: 'MouseEnterShopItem', a: a, b: b};
-	});
-var $author$project$ItemShop$MouseLeaveShopItem = F2(
-	function (a, b) {
-		return {$: 'MouseLeaveShopItem', a: a, b: b};
-	});
-var $author$project$ItemShop$SortByAvgPrice = {$: 'SortByAvgPrice'};
-var $author$project$ItemShop$SortByItemDesc = {$: 'SortByItemDesc'};
-var $author$project$ItemShop$SortByItemType = {$: 'SortByItemType'};
-var $author$project$ItemShop$SortByPrice = {$: 'SortByPrice'};
-var $author$project$ItemShop$SortByQuantity = {$: 'SortByQuantity'};
-var $author$project$ItemShop$ToggleHideNonZeroRows = function (a) {
-	return {$: 'ToggleHideNonZeroRows', a: a};
-};
-var $author$project$ItemShop$is_item_trade_log_to_shop = function (item_trade_log) {
-	return _Utils_eq(item_trade_log.to_party, $author$project$ItemShop$ShopParty);
-};
-var $author$project$Interface$renderGpString = function (count) {
-	return $elm$core$String$fromInt(count) + 'gp';
-};
-var $author$project$ItemShop$action_log_to_str = F3(
-	function (colorTheme, item_db, action_log) {
-		var _v0 = action_log.log_type;
-		switch (_v0.$) {
-			case 'Traded':
-				var item_trade_log = _v0.a;
-				var traded_prefix = $author$project$ItemShop$is_item_trade_log_to_shop(item_trade_log) ? 'Sold: ' : 'Bought: ';
-				return _Utils_ap(
-					traded_prefix,
-					function () {
-						var _v1 = A2($author$project$ItemShop$lookup_item_id, item_db, item_trade_log.item_id);
-						if (_v1.$ === 'Nothing') {
-							return 'Unknown Item';
-						} else {
-							var db_record = _v1.a;
-							return db_record.item.name;
-						}
-					}());
-			case 'WantedButCouldntTrade':
-				var action = _v0.a;
-				if (action.$ === 'WantedToSell') {
-					return 'Wanted to sell, but couldn\'t';
-				} else {
-					return 'Wanted to buy, but couldn\'t';
-				}
-			case 'FetchedItem':
-				var itemId = _v0.a;
-				return 'Fetched an item: ' + A2($author$project$ItemShop$lookup_item_id_default, item_db, itemId).name;
-			case 'FetchedItemButFundNotBigEnough':
-				var itemId = _v0.a;
-				return 'Tried to fetch an item, but the Community Fund didn\'t contain enough gold. Needed' + $author$project$Interface$renderGpString(
-					A2($author$project$ItemShop$lookup_item_id_default, item_db, itemId).raw_gold_cost);
-			default:
-				return 'Did nothing';
-		}
-	});
-var $mdgriffith$elm_ui$Internal$Flag$overflow = $mdgriffith$elm_ui$Internal$Flag$flag(20);
-var $mdgriffith$elm_ui$Element$clip = A2($mdgriffith$elm_ui$Internal$Model$Class, $mdgriffith$elm_ui$Internal$Flag$overflow, $mdgriffith$elm_ui$Internal$Style$classes.clip);
-var $author$project$Interface$clipText = F2(
-	function (str, length) {
-		return (_Utils_cmp(
-			$elm$core$String$length(str),
-			length) > 0) ? (A2($elm$core$String$left, length, str) + '...') : str;
-	});
-var $author$project$Interface$colorFromInt = F4(
-	function (_int, positiveColor, neutralColor, negativeColor) {
-		return (_int > 0) ? positiveColor : ((!_int) ? neutralColor : negativeColor);
-	});
-var $author$project$Interface$color_black = A3($mdgriffith$elm_ui$Element$rgb, 0, 0, 0);
 var $author$project$Interface$color_very_light_grey = A3($mdgriffith$elm_ui$Element$rgb, 0.75, 0.75, 0.75);
-var $author$project$Interface$cssRule = F2(
-	function (name, value) {
-		return $mdgriffith$elm_ui$Element$htmlAttribute(
-			A2($elm$html$Html$Attributes$style, name, value));
-	});
 var $author$project$ItemShop$divider = _List_fromArray(
 	[
 		A2(
@@ -24567,29 +28579,48 @@ var $author$project$ItemShop$divider = _List_fromArray(
 				]),
 			$mdgriffith$elm_ui$Element$none))
 	]);
-var $avh4$elm_color$Color$green = A4($avh4$elm_color$Color$RgbaSpace, 115 / 255, 210 / 255, 22 / 255, 1.0);
-var $mdgriffith$elm_ui$Internal$Model$Behind = {$: 'Behind'};
-var $mdgriffith$elm_ui$Element$behindContent = function (element) {
-	return A2($mdgriffith$elm_ui$Element$createNearby, $mdgriffith$elm_ui$Internal$Model$Behind, element);
+var $author$project$ItemShop$MouseEnterShopItem = F2(
+	function (a, b) {
+		return {$: 'MouseEnterShopItem', a: a, b: b};
+	});
+var $author$project$ItemShop$MouseLeaveShopItem = F2(
+	function (a, b) {
+		return {$: 'MouseLeaveShopItem', a: a, b: b};
+	});
+var $author$project$ItemShop$SortByAvgPrice = {$: 'SortByAvgPrice'};
+var $author$project$ItemShop$SortByItemDesc = {$: 'SortByItemDesc'};
+var $author$project$ItemShop$SortByItemType = {$: 'SortByItemType'};
+var $author$project$ItemShop$SortByPrice = {$: 'SortByPrice'};
+var $author$project$ItemShop$SortByQuantity = {$: 'SortByQuantity'};
+var $author$project$ItemShop$buildCompare = function (getter) {
+	return F2(
+		function (left, right) {
+			return A2(
+				$elm$core$Basics$compare,
+				getter(left),
+				getter(right));
+		});
 };
+var $author$project$Interface$clipText = F2(
+	function (str, length) {
+		return (_Utils_cmp(
+			$elm$core$String$length(str),
+			length) > 0) ? (A2($elm$core$String$left, length, str) + '...') : str;
+	});
+var $author$project$Interface$colorFromInt = F4(
+	function (_int, positiveColor, neutralColor, negativeColor) {
+		return (_int > 0) ? positiveColor : ((!_int) ? neutralColor : negativeColor);
+	});
+var $author$project$Interface$cssRule = F2(
+	function (name, value) {
+		return $mdgriffith$elm_ui$Element$htmlAttribute(
+			A2($elm$html$Html$Attributes$style, name, value));
+	});
+var $avh4$elm_color$Color$green = A4($avh4$elm_color$Color$RgbaSpace, 115 / 255, 210 / 255, 22 / 255, 1.0);
 var $author$project$ItemShop$html_title = function (string) {
 	return $mdgriffith$elm_ui$Element$behindContent($mdgriffith$elm_ui$Element$none);
 };
-var $author$project$ItemShop$is_item_trending = F2(
-	function (item_type_sentiments, item) {
-		var _v0 = A2(
-			$elm$core$Dict$get,
-			$author$project$ItemShop$item_type_to_id(item.item_type),
-			item_type_sentiments);
-		if (_v0.$ === 'Just') {
-			var existing_sent = _v0.a;
-			return existing_sent !== 1.0;
-		} else {
-			return false;
-		}
-	});
 var $author$project$ItemShop$portion = A2($elm$core$Basics$composeL, $mdgriffith$elm_ui$Element$width, $mdgriffith$elm_ui$Element$fillPortion);
-var $mdgriffith$elm_ui$Element$Font$alignLeft = A2($mdgriffith$elm_ui$Internal$Model$Class, $mdgriffith$elm_ui$Internal$Flag$fontAlignment, $mdgriffith$elm_ui$Internal$Style$classes.textLeft);
 var $author$project$ItemShop$get_item_type_trend = F2(
 	function (item_type_sentiments, item_type) {
 		var _v0 = A2(
@@ -24707,6 +28738,45 @@ var $author$project$ItemShop$renderItemTypeWithoutTrend = function (item_type) {
 var $author$project$ItemShop$signedFromInt = function (_int) {
 	return (_int > 0) ? ('+' + $elm$core$String$fromInt(_int)) : $elm$core$String$fromInt(_int);
 };
+var $author$project$ItemShop$ChangeInventorySortType = function (a) {
+	return {$: 'ChangeInventorySortType', a: a};
+};
+var $author$project$ItemShop$smallHeaderInGrid = F3(
+	function (uiOptions, str, sortType) {
+		return A2(
+			$mdgriffith$elm_ui$Element$el,
+			_List_fromArray(
+				[
+					$mdgriffith$elm_ui$Element$Font$size(10),
+					$mdgriffith$elm_ui$Element$Events$onClick(
+					$author$project$ItemShop$GotUiOptionsMsg(
+						$author$project$ItemShop$ChangeInventorySortType(sortType))),
+					$author$project$Interface$noUserSelect,
+					$mdgriffith$elm_ui$Element$Border$rounded(2),
+					$mdgriffith$elm_ui$Element$mouseOver(
+					_List_fromArray(
+						[
+							$mdgriffith$elm_ui$Element$Background$color($author$project$Interface$color_very_light_grey)
+						])),
+					$mdgriffith$elm_ui$Element$padding(2),
+					$mdgriffith$elm_ui$Element$pointer
+				]),
+			$mdgriffith$elm_ui$Element$text(
+				_Utils_ap(
+					str,
+					function () {
+						if (_Utils_eq(uiOptions.inventorySortType, sortType)) {
+							var _v0 = uiOptions.inventorySortDir;
+							if (_v0.$ === 'Descending') {
+								return '▲';
+							} else {
+								return '▼';
+							}
+						} else {
+							return '';
+						}
+					}())));
+	});
 var $elm$core$List$sortWith = _List_sortWith;
 var $mdgriffith$elm_ui$Element$InternalColumn = function (a) {
 	return {$: 'InternalColumn', a: a};
@@ -24726,33 +28796,6 @@ var $elm$core$List$all = F2(
 	});
 var $mdgriffith$elm_ui$Internal$Model$AsGrid = {$: 'AsGrid'};
 var $mdgriffith$elm_ui$Internal$Model$asGrid = $mdgriffith$elm_ui$Internal$Model$AsGrid;
-var $mdgriffith$elm_ui$Internal$Model$getSpacing = F2(
-	function (attrs, _default) {
-		return A2(
-			$elm$core$Maybe$withDefault,
-			_default,
-			A3(
-				$elm$core$List$foldr,
-				F2(
-					function (attr, acc) {
-						if (acc.$ === 'Just') {
-							var x = acc.a;
-							return $elm$core$Maybe$Just(x);
-						} else {
-							if ((attr.$ === 'StyleClass') && (attr.b.$ === 'SpacingStyle')) {
-								var _v2 = attr.b;
-								var x = _v2.b;
-								var y = _v2.c;
-								return $elm$core$Maybe$Just(
-									_Utils_Tuple2(x, y));
-							} else {
-								return $elm$core$Maybe$Nothing;
-							}
-						}
-					}),
-				$elm$core$Maybe$Nothing,
-				attrs));
-	});
 var $mdgriffith$elm_ui$Internal$Flag$gridPosition = $mdgriffith$elm_ui$Internal$Flag$flag(35);
 var $mdgriffith$elm_ui$Internal$Flag$gridTemplate = $mdgriffith$elm_ui$Internal$Flag$flag(34);
 var $mdgriffith$elm_ui$Element$tableHelper = F2(
@@ -24910,6 +28953,564 @@ var $mdgriffith$elm_ui$Element$table = F2(
 				columns: A2($elm$core$List$map, $mdgriffith$elm_ui$Element$InternalColumn, config.columns),
 				data: config.data
 			});
+	});
+var $author$project$ItemShop$inventoryGrid = F7(
+	function (colorTheme, uiOptions, shop_trends, character, context, progressUnlocks, controls_column) {
+		var sortFunc = function () {
+			var _v11 = uiOptions.inventorySortType;
+			switch (_v11.$) {
+				case 'SortByName':
+					return $author$project$ItemShop$buildCompare(
+						A2(
+							$elm$core$Basics$composeR,
+							function ($) {
+								return $.item;
+							},
+							function ($) {
+								return $.name;
+							}));
+				case 'SortByPrice':
+					return $author$project$ItemShop$buildCompare(
+						A2(
+							$elm$core$Basics$composeR,
+							function ($) {
+								return $.item;
+							},
+							$author$project$ItemShop$get_single_adjusted_item_cost(shop_trends)));
+				case 'SortByAvgPrice':
+					return $author$project$ItemShop$buildCompare(
+						A2(
+							$elm$core$Basics$composeR,
+							function ($) {
+								return $.avg_price;
+							},
+							$author$project$ItemShop$getPrice));
+				case 'SortByQuantity':
+					return $author$project$ItemShop$buildCompare(
+						A2(
+							$elm$core$Basics$composeR,
+							function ($) {
+								return $.quantity;
+							},
+							$author$project$ItemShop$getQuantity));
+				case 'SortByItemType':
+					return $author$project$ItemShop$buildCompare(
+						A2(
+							$elm$core$Basics$composeR,
+							function ($) {
+								return $.item;
+							},
+							A2(
+								$elm$core$Basics$composeR,
+								function ($) {
+									return $.item_type;
+								},
+								$author$project$ItemShop$itemTypeToString)));
+				default:
+					return $author$project$ItemShop$buildCompare(
+						A2(
+							$elm$core$Basics$composeR,
+							function ($) {
+								return $.item;
+							},
+							function ($) {
+								return $.description;
+							}));
+			}
+		}();
+		var mouse_hover_attrs = function (item) {
+			return _List_fromArray(
+				[
+					$mdgriffith$elm_ui$Element$Events$onMouseEnter(
+					$author$project$ItemShop$GotUiOptionsMsg(
+						A2(
+							$author$project$ItemShop$MouseEnterShopItem,
+							context,
+							_Utils_Tuple2(character.char_id, item)))),
+					$mdgriffith$elm_ui$Element$Events$onMouseLeave(
+					$author$project$ItemShop$GotUiOptionsMsg(
+						A2(
+							$author$project$ItemShop$MouseLeaveShopItem,
+							context,
+							_Utils_Tuple2(character.char_id, item))))
+				]);
+		};
+		var table_columns = A2(
+			$elm$core$List$map,
+			function (col) {
+				return _Utils_update(
+					col,
+					{
+						view: function (item) {
+							return A2(
+								$mdgriffith$elm_ui$Element$el,
+								(!$author$project$ItemShop$getQuantity(item.quantity)) ? _List_fromArray(
+									[
+										A2($author$project$Interface$cssRule, 'opacity', '0.5'),
+										$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$fill)
+									]) : _List_fromArray(
+									[
+										A2($author$project$Interface$cssRule, 'opacity', '1.0'),
+										$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$fill)
+									]),
+								A2(
+									$mdgriffith$elm_ui$Element$el,
+									_List_fromArray(
+										[
+											$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$fill),
+											$mdgriffith$elm_ui$Element$centerY
+										]),
+									col.view(item)));
+						}
+					});
+			},
+			_List_fromArray(
+				[
+					{
+					header: A4($mdgriffith$elm_ui$Element$Lazy$lazy3, $author$project$ItemShop$smallHeaderInGrid, uiOptions, 'Name', $author$project$ItemShop$SortByName),
+					view: function (_v2) {
+						var item = _v2.item;
+						var quantity = _v2.quantity;
+						var avg_price = _v2.avg_price;
+						return A2(
+							$mdgriffith$elm_ui$Element$el,
+							_Utils_ap(
+								mouse_hover_attrs(item),
+								_List_fromArray(
+									[
+										$mdgriffith$elm_ui$Element$width(
+										A2(
+											$mdgriffith$elm_ui$Element$maximum,
+											150,
+											$mdgriffith$elm_ui$Element$fillPortion(2))),
+										$mdgriffith$elm_ui$Element$Font$size(16),
+										$author$project$ItemShop$html_title('Item Name'),
+										$mdgriffith$elm_ui$Element$centerY
+									])),
+							$mdgriffith$elm_ui$Element$text(
+								A2($author$project$Interface$clipText, item.name, 25)));
+					},
+					width: $mdgriffith$elm_ui$Element$fillPortion(2)
+				},
+					{
+					header: A4($mdgriffith$elm_ui$Element$Lazy$lazy3, $author$project$ItemShop$smallHeaderInGrid, uiOptions, 'Price', $author$project$ItemShop$SortByPrice),
+					view: function (_v3) {
+						var item = _v3.item;
+						var quantity = _v3.quantity;
+						var avg_price = _v3.avg_price;
+						return A2(
+							$mdgriffith$elm_ui$Element$el,
+							_List_fromArray(
+								[
+									$author$project$ItemShop$portion(1),
+									$mdgriffith$elm_ui$Element$centerY,
+									$author$project$ItemShop$html_title('Current cost')
+								]),
+							function () {
+								var adjustedPrice = A2($author$project$ItemShop$get_single_adjusted_item_cost, shop_trends, item);
+								var priceDiff = adjustedPrice - $author$project$ItemShop$getPrice(avg_price);
+								return A2(
+									$mdgriffith$elm_ui$Element$paragraph,
+									_List_Nil,
+									_Utils_ap(
+										_List_fromArray(
+											[
+												A2(
+												$author$project$Interface$renderGp,
+												colorTheme,
+												A2($author$project$ItemShop$get_single_adjusted_item_cost, shop_trends, item))
+											]),
+										_List_fromArray(
+											[
+												function () {
+												if ((!_Utils_eq(context, $author$project$ItemShop$ShopItems)) && ((!(!priceDiff)) && (!(!$author$project$ItemShop$getQuantity(quantity))))) {
+													var diffColor = A4(
+														$author$project$Interface$colorFromInt,
+														priceDiff,
+														$author$project$Interface$convertColor($avh4$elm_color$Color$green),
+														$author$project$Interface$color_black,
+														$author$project$Interface$color_danger);
+													return A2(
+														$mdgriffith$elm_ui$Element$el,
+														_List_fromArray(
+															[
+																$mdgriffith$elm_ui$Element$Font$size(12),
+																$mdgriffith$elm_ui$Element$Font$color(diffColor)
+															]),
+														$mdgriffith$elm_ui$Element$text(
+															' (' + ($author$project$ItemShop$signedFromInt(priceDiff) + ')')));
+												} else {
+													return $mdgriffith$elm_ui$Element$none;
+												}
+											}()
+											])));
+							}());
+					},
+					width: $mdgriffith$elm_ui$Element$fillPortion(1)
+				},
+					{
+					header: A4($mdgriffith$elm_ui$Element$Lazy$lazy3, $author$project$ItemShop$smallHeaderInGrid, uiOptions, 'Avg Px', $author$project$ItemShop$SortByAvgPrice),
+					view: function (_v4) {
+						var quantity = _v4.quantity;
+						var avg_price = _v4.avg_price;
+						return A2(
+							$mdgriffith$elm_ui$Element$el,
+							_List_fromArray(
+								[
+									$author$project$ItemShop$portion(1),
+									$mdgriffith$elm_ui$Element$centerY,
+									$author$project$ItemShop$html_title('Average Cost')
+								]),
+							function () {
+								if (context.$ === 'ShopItems') {
+									return $mdgriffith$elm_ui$Element$text('');
+								} else {
+									return (!(!$author$project$ItemShop$getQuantity(quantity))) ? A2(
+										$author$project$Interface$renderGp,
+										colorTheme,
+										$author$project$ItemShop$getPrice(avg_price)) : $mdgriffith$elm_ui$Element$none;
+								}
+							}());
+					},
+					width: $mdgriffith$elm_ui$Element$fillPortion(1)
+				},
+					{
+					header: A4($mdgriffith$elm_ui$Element$Lazy$lazy3, $author$project$ItemShop$smallHeaderInGrid, uiOptions, 'Qty.', $author$project$ItemShop$SortByQuantity),
+					view: function (_v6) {
+						var quantity = _v6.quantity;
+						return A2(
+							$mdgriffith$elm_ui$Element$el,
+							_List_fromArray(
+								[$mdgriffith$elm_ui$Element$centerY]),
+							function () {
+								if (!$author$project$ItemShop$getQuantity(quantity)) {
+									switch (context.$) {
+										case 'ShopItems':
+											return $mdgriffith$elm_ui$Element$text('OUT');
+										case 'InventoryItems':
+											return $mdgriffith$elm_ui$Element$text('NONE');
+										default:
+											return $mdgriffith$elm_ui$Element$text('NONE');
+									}
+								} else {
+									return $mdgriffith$elm_ui$Element$text(
+										'x' + $elm$core$String$fromInt(
+											$author$project$ItemShop$getQuantity(quantity)));
+								}
+							}());
+					},
+					width: $mdgriffith$elm_ui$Element$fillPortion(1)
+				},
+					{
+					header: A4($mdgriffith$elm_ui$Element$Lazy$lazy3, $author$project$ItemShop$smallHeaderInGrid, uiOptions, 'Item Type', $author$project$ItemShop$SortByItemType),
+					view: A2($author$project$ItemShop$containsProgressUnlock, $author$project$ItemShop$UnlockedShopTrends, progressUnlocks) ? function (_v8) {
+						var item = _v8.item;
+						return A2(
+							$mdgriffith$elm_ui$Element$el,
+							_List_fromArray(
+								[$mdgriffith$elm_ui$Element$centerY]),
+							A2($author$project$ItemShop$renderItemTypeWithTrend, shop_trends, item.item_type));
+					} : function (_v9) {
+						var item = _v9.item;
+						return A2(
+							$mdgriffith$elm_ui$Element$el,
+							_List_fromArray(
+								[$mdgriffith$elm_ui$Element$centerY]),
+							$author$project$ItemShop$renderItemTypeWithoutTrend(item.item_type));
+					},
+					width: $mdgriffith$elm_ui$Element$fillPortion(2)
+				},
+					{
+					header: A4($mdgriffith$elm_ui$Element$Lazy$lazy3, $author$project$ItemShop$smallHeaderInGrid, uiOptions, 'Item Desc.', $author$project$ItemShop$SortByItemDesc),
+					view: function (_v10) {
+						var item = _v10.item;
+						return A2(
+							$mdgriffith$elm_ui$Element$el,
+							_List_fromArray(
+								[$mdgriffith$elm_ui$Element$centerY]),
+							$mdgriffith$elm_ui$Element$text(
+								A2($author$project$Interface$clipText, item.description, 24)));
+					},
+					width: $mdgriffith$elm_ui$Element$fillPortion(3)
+				},
+					{
+					header: A4($mdgriffith$elm_ui$Element$Lazy$lazy3, $author$project$ItemShop$smallHeaderInGrid, uiOptions, 'Controls', $author$project$ItemShop$SortByName),
+					view: controls_column,
+					width: $mdgriffith$elm_ui$Element$fillPortion(1)
+				}
+				]));
+		var items = function (irs) {
+			var _v1 = character.displayedItemType;
+			if (_v1.$ === 'Nothing') {
+				return irs;
+			} else {
+				var item_type = _v1.a;
+				return A2(
+					$elm$core$List$filter,
+					function (ir) {
+						return _Utils_eq(ir.item.item_type, item_type);
+					},
+					irs);
+			}
+		}(
+			A2(
+				$elm$core$List$sortWith,
+				sortFunc,
+				character.hide_zero_qty_inv_rows ? A2(
+					$elm$core$List$filter,
+					function (_v0) {
+						var quantity = _v0.quantity;
+						return $author$project$ItemShop$getQuantity(quantity) > 0;
+					},
+					character.held_items) : character.held_items));
+		return A2(
+			$mdgriffith$elm_ui$Element$table,
+			_List_fromArray(
+				[
+					$mdgriffith$elm_ui$Element$spacing(5)
+				]),
+			{columns: table_columns, data: items});
+	});
+var $author$project$ItemShop$is_item_trending = F2(
+	function (item_type_sentiments, item) {
+		var _v0 = A2(
+			$elm$core$Dict$get,
+			$author$project$ItemShop$item_type_to_id(item.item_type),
+			item_type_sentiments);
+		if (_v0.$ === 'Just') {
+			var existing_sent = _v0.a;
+			return existing_sent !== 1.0;
+		} else {
+			return false;
+		}
+	});
+var $author$project$ItemShop$CycleFilterDisplayedItemsBackward = F2(
+	function (a, b) {
+		return {$: 'CycleFilterDisplayedItemsBackward', a: a, b: b};
+	});
+var $author$project$ItemShop$CycleFilterDisplayedItemsForward = F2(
+	function (a, b) {
+		return {$: 'CycleFilterDisplayedItemsForward', a: a, b: b};
+	});
+var $author$project$ItemShop$ToggleHideNonZeroRows = function (a) {
+	return {$: 'ToggleHideNonZeroRows', a: a};
+};
+var $author$project$ItemShop$is_item_trade_log_to_shop = function (item_trade_log) {
+	return _Utils_eq(item_trade_log.to_party, $author$project$ItemShop$ShopParty);
+};
+var $author$project$Interface$renderGpString = function (count) {
+	return $elm$core$String$fromInt(count) + 'gp';
+};
+var $author$project$ItemShop$action_log_to_str = F3(
+	function (colorTheme, item_db, action_log) {
+		var _v0 = action_log.log_type;
+		switch (_v0.$) {
+			case 'Traded':
+				var item_trade_log = _v0.a;
+				var traded_prefix = $author$project$ItemShop$is_item_trade_log_to_shop(item_trade_log) ? 'Sold: ' : 'Bought: ';
+				return _Utils_ap(
+					traded_prefix,
+					function () {
+						var _v1 = A2($author$project$ItemShop$lookup_item_id, item_db, item_trade_log.item_id);
+						if (_v1.$ === 'Nothing') {
+							return 'Unknown Item';
+						} else {
+							var db_record = _v1.a;
+							return db_record.item.name;
+						}
+					}());
+			case 'WantedButCouldntTrade':
+				var action = _v0.a;
+				if (action.$ === 'WantedToSell') {
+					return 'Wanted to sell, but couldn\'t';
+				} else {
+					return 'Wanted to buy, but couldn\'t';
+				}
+			case 'FetchedItem':
+				var itemId = _v0.a;
+				return 'Fetched an item: ' + A2($author$project$ItemShop$lookup_item_id_default, item_db, itemId).name;
+			case 'FetchedItemButFundNotBigEnough':
+				var itemId = _v0.a;
+				return 'Tried to fetch an item, but the Community Fund didn\'t contain enough gold. Needed ' + $author$project$Interface$renderGpString(
+					A2($author$project$ItemShop$lookup_item_id_default, item_db, itemId).raw_gold_cost);
+			default:
+				return 'Did nothing';
+		}
+	});
+var $author$project$ItemShop$renderDesires = function (item_types_desired) {
+	return A2(
+		$elm$core$List$map,
+		function (_v0) {
+			var it_id = _v0.a;
+			var trd = _v0.b;
+			return A2(
+				$mdgriffith$elm_ui$Element$el,
+				_List_fromArray(
+					[$mdgriffith$elm_ui$Element$alignTop]),
+				$mdgriffith$elm_ui$Element$text(
+					'Desires: ' + function () {
+						var _v1 = $author$project$ItemShop$id_to_item_type(it_id);
+						if (_v1.$ === 'Just') {
+							var item_type = _v1.a;
+							return $author$project$ItemShop$itemTypeToString(item_type);
+						} else {
+							return 'Unknown';
+						}
+					}()));
+		},
+		A2(
+			$elm$core$List$filter,
+			A2(
+				$elm$core$Basics$composeR,
+				$elm$core$Tuple$second,
+				function (trd) {
+					return trd > 0.0;
+				}),
+			$elm$core$Dict$toList(item_types_desired)));
+};
+var $author$project$ItemShop$renderDislikes = function (item_types_desired) {
+	return A2(
+		$elm$core$List$map,
+		function (_v0) {
+			var it_id = _v0.a;
+			var trd = _v0.b;
+			return A2(
+				$mdgriffith$elm_ui$Element$el,
+				_List_fromArray(
+					[$mdgriffith$elm_ui$Element$alignTop]),
+				$mdgriffith$elm_ui$Element$text(
+					'Dislikes: ' + function () {
+						var _v1 = $author$project$ItemShop$id_to_item_type(it_id);
+						if (_v1.$ === 'Just') {
+							var item_type = _v1.a;
+							return $author$project$ItemShop$itemTypeToString(item_type);
+						} else {
+							return 'Unknown';
+						}
+					}()));
+		},
+		A2(
+			$elm$core$List$filter,
+			A2(
+				$elm$core$Basics$composeR,
+				$elm$core$Tuple$second,
+				function (trd) {
+					return trd <= 0.0;
+				}),
+			$elm$core$Dict$toList(item_types_desired)));
+};
+var $mdgriffith$elm_ui$Element$scrollbars = A2($mdgriffith$elm_ui$Internal$Model$Class, $mdgriffith$elm_ui$Internal$Flag$overflow, $mdgriffith$elm_ui$Internal$Style$classes.scrollbars);
+var $author$project$ItemShop$renderCharacterDetails = F5(
+	function (colorTheme, character, item_db, progressUnlocks, is_shop_context) {
+		var rendered_inventory_controls = _List_fromArray(
+			[
+				A2(
+				$mdgriffith$elm_ui$Element$row,
+				_List_fromArray(
+					[
+						A2($mdgriffith$elm_ui$Element$spacingXY, 10, 0)
+					]),
+				_List_fromArray(
+					[
+						$author$project$Interface$button(
+						$author$project$Interface$TextParams(
+							{
+								buttonType: $author$project$Interface$Primary,
+								colorTheme: colorTheme,
+								customAttrs: $author$project$ItemShop$defaultCustomAttrs,
+								onPressMsg: $author$project$ItemShop$GotUiOptionsMsg(
+									$author$project$ItemShop$ToggleHideNonZeroRows(character.char_id)),
+								textLabel: character.hide_zero_qty_inv_rows ? 'Show Nonzero' : 'Hide Nonzero'
+							})),
+						$author$project$Interface$button(
+						$author$project$Interface$TextParams(
+							{
+								buttonType: $author$project$Interface$Secondary,
+								colorTheme: colorTheme,
+								customAttrs: _Utils_ap(
+									_List_fromArray(
+										[
+											$mdgriffith$elm_ui$Element$htmlAttribute(
+											A2(
+												$elm$html$Html$Events$preventDefaultOn,
+												'contextmenu',
+												$elm$json$Json$Decode$succeed(
+													_Utils_Tuple2(
+														$author$project$ItemShop$GotUiOptionsMsg(
+															A2($author$project$ItemShop$CycleFilterDisplayedItemsBackward, character.char_id, character.displayedItemType)),
+														true))))
+										]),
+									$author$project$ItemShop$defaultCustomAttrs),
+								onPressMsg: $author$project$ItemShop$GotUiOptionsMsg(
+									A2($author$project$ItemShop$CycleFilterDisplayedItemsForward, character.char_id, character.displayedItemType)),
+								textLabel: 'Filter: ' + function () {
+									var _v1 = character.displayedItemType;
+									if (_v1.$ === 'Nothing') {
+										return 'All';
+									} else {
+										var itemType = _v1.a;
+										return $author$project$ItemShop$itemTypeToString(itemType);
+									}
+								}()
+							}))
+					]))
+			]);
+		var rendered_dislikes = $author$project$ItemShop$renderDislikes(character.item_types_desired);
+		var rendered_desires = $author$project$ItemShop$renderDesires(character.item_types_desired);
+		var render_single_action_log = function (log) {
+			return A2(
+				$mdgriffith$elm_ui$Element$el,
+				_List_fromArray(
+					[$mdgriffith$elm_ui$Element$alignTop]),
+				$mdgriffith$elm_ui$Element$text(
+					A3($author$project$ItemShop$action_log_to_str, colorTheme, item_db, log)));
+		};
+		var rendered_action_log_items = ($elm$core$List$length(character.action_log) > 0) ? A2(
+			$elm$core$List$map,
+			render_single_action_log,
+			A2(
+				$elm$core$List$take,
+				50,
+				$elm$core$List$reverse(character.action_log))) : _List_fromArray(
+			[
+				$mdgriffith$elm_ui$Element$text('No actions taken')
+			]);
+		var rendered_action_log = _List_fromArray(
+			[
+				A2(
+				$mdgriffith$elm_ui$Element$column,
+				_List_fromArray(
+					[
+						$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
+						$mdgriffith$elm_ui$Element$scrollbars,
+						((!is_shop_context) && ($elm$core$List$length(character.action_log) > 0)) ? $mdgriffith$elm_ui$Element$height(
+						A2(
+							$mdgriffith$elm_ui$Element$minimum,
+							50,
+							A2($mdgriffith$elm_ui$Element$maximum, 50, $mdgriffith$elm_ui$Element$fill))) : $mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$fill),
+						$mdgriffith$elm_ui$Element$alignTop
+					]),
+				(!is_shop_context) ? rendered_action_log_items : _List_Nil)
+			]);
+		var _v0 = character;
+		var char_id = _v0.char_id;
+		var held_items = _v0.held_items;
+		var held_gold = _v0.held_gold;
+		return A2(
+			$mdgriffith$elm_ui$Element$row,
+			_List_fromArray(
+				[
+					$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
+					$mdgriffith$elm_ui$Element$spacing(15),
+					$mdgriffith$elm_ui$Element$alignTop
+				]),
+			_Utils_ap(
+				rendered_desires,
+				_Utils_ap(
+					rendered_dislikes,
+					_Utils_ap(
+						rendered_action_log,
+						A2($author$project$ItemShop$containsProgressUnlock, $author$project$ItemShop$UnlockedInventoryFilters, progressUnlocks) ? rendered_inventory_controls : _List_Nil))));
 	});
 var $author$project$ItemShop$OnTrendChartHover = function (a) {
 	return {$: 'OnTrendChartHover', a: a};
@@ -25094,13 +29695,6 @@ var $elm$svg$Svg$Attributes$id = _VirtualDom_attribute('id');
 var $elm$svg$Svg$Events$on = $elm$html$Html$Events$on;
 var $elm$svg$Svg$rect = $elm$svg$Svg$trustedNode('rect');
 var $elm$svg$Svg$svg = $elm$svg$Svg$trustedNode('svg');
-var $elm$core$String$replace = F3(
-	function (before, after, string) {
-		return A2(
-			$elm$core$String$join,
-			after,
-			A2($elm$core$String$split, before, string));
-	});
 var $terezka$elm_charts$Internal$Coordinates$toId = function (plane) {
 	var numToStr = A2(
 		$elm$core$Basics$composeR,
@@ -25602,10 +30196,6 @@ var $elm$svg$Svg$Attributes$cy = _VirtualDom_attribute('cy');
 var $elm$svg$Svg$Attributes$d = _VirtualDom_attribute('d');
 var $elm$svg$Svg$Attributes$fillOpacity = _VirtualDom_attribute('fill-opacity');
 var $elm$svg$Svg$g = $elm$svg$Svg$trustedNode('g');
-var $elm$core$Basics$clamp = F3(
-	function (low, high, number) {
-		return (_Utils_cmp(number, low) < 0) ? low : ((_Utils_cmp(number, high) > 0) ? high : number);
-	});
 var $terezka$elm_charts$Internal$Svg$isWithinPlane = F3(
 	function (plane, x, y) {
 		return _Utils_eq(
@@ -25616,7 +30206,6 @@ var $terezka$elm_charts$Internal$Svg$isWithinPlane = F3(
 	});
 var $elm$svg$Svg$path = $elm$svg$Svg$trustedNode('path');
 var $elm$core$Basics$pi = _Basics_pi;
-var $elm$core$Basics$sqrt = _Basics_sqrt;
 var $terezka$elm_charts$Internal$Svg$plusPath = F4(
 	function (area_, off, x_, y_) {
 		var side = $elm$core$Basics$sqrt(area_ / 4) + off;
@@ -26624,15 +31213,6 @@ var $terezka$elm_charts$Chart$Svg$line = F2(
 			plane,
 			A2($terezka$elm_charts$Internal$Helpers$apply, edits, $terezka$elm_charts$Internal$Svg$defaultLine));
 	});
-var $elm$core$List$member = F2(
-	function (x, xs) {
-		return A2(
-			$elm$core$List$any,
-			function (a) {
-				return _Utils_eq(a, x);
-			},
-			xs);
-	});
 var $terezka$elm_charts$Chart$Attributes$size = F2(
 	function (v, config) {
 		return _Utils_update(
@@ -27091,13 +31671,6 @@ var $terezka$elm_charts$Internal$Many$dots = function () {
 		$elm$core$List$filterMap($terezka$elm_charts$Internal$Item$isDot));
 }();
 var $terezka$elm_charts$Chart$Item$dots = $terezka$elm_charts$Internal$Many$dots;
-var $author$project$ItemShop$float_to_percent = function (flt) {
-	return function (str) {
-		return str + '%';
-	}(
-		$elm$core$String$fromInt(
-			$elm$core$Basics$floor(flt * 100)));
-};
 var $terezka$elm_charts$Chart$Attributes$format = F2(
 	function (v, config) {
 		return _Utils_update(
@@ -27926,7 +32499,6 @@ var $terezka$elm_charts$Internal$Interpolation$slope2 = F3(
 		var h = point1.x - point0.x;
 		return (!(!h)) ? ((((3 * (point1.y - point0.y)) / h) - t) / 2) : t;
 	});
-var $elm$core$Basics$isNaN = _Basics_isNaN;
 var $terezka$elm_charts$Internal$Interpolation$sign = function (x) {
 	return (x < 0) ? (-1) : 1;
 };
@@ -29386,7 +33958,6 @@ var $myrho$elm_round$Round$increaseNum = function (_v0) {
 			tail) : '0';
 	}
 };
-var $elm$core$Basics$isInfinite = _Basics_isInfinite;
 var $myrho$elm_round$Round$splitComma = function (str) {
 	var _v0 = A2($elm$core$String$split, '.', str);
 	if (_v0.b) {
@@ -29538,7 +34109,6 @@ var $myrho$elm_round$Round$round = $myrho$elm_round$Round$roundFun(
 				}
 			}
 		}));
-var $elm$core$String$toFloat = _String_toFloat;
 var $terezka$intervals$Intervals$correctFloat = function (prec) {
 	return A2(
 		$elm$core$Basics$composeR,
@@ -29592,7 +34162,6 @@ var $terezka$intervals$Intervals$getPrecision = function (number) {
 		}
 	}
 };
-var $elm$core$Basics$e = _Basics_e;
 var $terezka$intervals$Intervals$toMagnitude = function (num) {
 	return A2(
 		$elm$core$Basics$pow,
@@ -31617,7 +36186,6 @@ var $terezka$elm_charts$Chart$generateValues = F4(
 						axis));
 		}
 	});
-var $elm$html$Html$Attributes$attribute = $elm$virtual_dom$VirtualDom$attribute;
 var $elm$svg$Svg$foreignObject = $elm$svg$Svg$trustedNode('foreignObject');
 var $terezka$elm_charts$Internal$Svg$position = F6(
 	function (plane, rotation, x_, y_, xOff_, yOff_) {
@@ -32105,486 +36673,34 @@ var $author$project$ItemShop$viewSingleItemTypeCharts = F2(
 				A2($terezka$elm_charts$Chart$chart, chart_attributes, chart_elements)));
 	});
 var $author$project$ItemShop$render_inventory_grid = F7(
-	function (model, header, character, shop_trends, hovered_item, context, controls_column) {
-		var small_header = F2(
-			function (str, sortType) {
-				return A2(
-					$mdgriffith$elm_ui$Element$el,
-					_List_fromArray(
-						[
-							$mdgriffith$elm_ui$Element$Font$size(10),
-							$mdgriffith$elm_ui$Element$Events$onClick(
-							$author$project$ItemShop$GotUiOptionsMsg(
-								$author$project$ItemShop$ChangeInventorySortType(sortType))),
-							$author$project$Interface$noUserSelect,
-							$mdgriffith$elm_ui$Element$Border$rounded(2),
-							$mdgriffith$elm_ui$Element$mouseOver(
-							_List_fromArray(
-								[
-									$mdgriffith$elm_ui$Element$Background$color($author$project$Interface$color_very_light_grey)
-								])),
-							$mdgriffith$elm_ui$Element$padding(2),
-							$mdgriffith$elm_ui$Element$pointer
-						]),
-					$mdgriffith$elm_ui$Element$text(
-						_Utils_ap(
-							str,
-							function () {
-								if (_Utils_eq(model.uiOptions.inventorySortType, sortType)) {
-									var _v23 = model.uiOptions.inventorySortDir;
-									if (_v23.$ === 'Descending') {
-										return '▲';
-									} else {
-										return '▼';
-									}
-								} else {
-									return '';
-								}
-							}())));
-			});
-		var rendered_dislikes = A2(
-			$elm$core$List$map,
-			function (_v21) {
-				var it_id = _v21.a;
-				var trd = _v21.b;
-				return $mdgriffith$elm_ui$Element$text(
-					'Dislikes: ' + function () {
-						var _v22 = $author$project$ItemShop$id_to_item_type(it_id);
-						if (_v22.$ === 'Just') {
-							var item_type = _v22.a;
-							return $author$project$ItemShop$itemTypeToString(item_type);
-						} else {
-							return 'Unknown';
-						}
-					}());
-			},
-			A2(
-				$elm$core$List$filter,
-				A2(
-					$elm$core$Basics$composeR,
-					$elm$core$Tuple$second,
-					function (trd) {
-						return trd <= 0.0;
-					}),
-				$elm$core$Dict$toList(character.item_types_desired)));
-		var rendered_desires = A2(
-			$elm$core$List$map,
-			function (_v19) {
-				var it_id = _v19.a;
-				var trd = _v19.b;
-				return $mdgriffith$elm_ui$Element$text(
-					'Desires: ' + function () {
-						var _v20 = $author$project$ItemShop$id_to_item_type(it_id);
-						if (_v20.$ === 'Just') {
-							var item_type = _v20.a;
-							return $author$project$ItemShop$itemTypeToString(item_type);
-						} else {
-							return 'Unknown';
-						}
-					}());
-			},
-			A2(
-				$elm$core$List$filter,
-				A2(
-					$elm$core$Basics$composeR,
-					$elm$core$Tuple$second,
-					function (trd) {
-						return trd > 0.0;
-					}),
-				$elm$core$Dict$toList(character.item_types_desired)));
+	function (_v0, header, character, shop_trends, hovered_item, context, controls_column) {
+		var historical_shop_trends = _v0.historical_shop_trends;
+		var item_db = _v0.item_db;
+		var colorTheme = _v0.colorTheme;
+		var uiOptions = _v0.uiOptions;
+		var progressUnlocks = _v0.progressUnlocks;
+		var communityFund = _v0.communityFund;
 		var is_shop_context = _Utils_eq(context, $author$project$ItemShop$ShopItems);
 		var is_player_context = _Utils_eq(context, $author$project$ItemShop$InventoryItems);
 		var current_price = function (item) {
 			return A2($author$project$ItemShop$get_single_adjusted_item_cost, shop_trends, item);
 		};
-		var buildCompare = function (getter) {
-			return F2(
-				function (left, right) {
-					return A2(
-						$elm$core$Basics$compare,
-						getter(left),
-						getter(right));
-				});
-		};
-		var sortFunc = function () {
-			var _v18 = model.uiOptions.inventorySortType;
-			switch (_v18.$) {
-				case 'SortByName':
-					return buildCompare(
-						A2(
-							$elm$core$Basics$composeR,
-							function ($) {
-								return $.item;
-							},
-							function ($) {
-								return $.name;
-							}));
-				case 'SortByPrice':
-					return buildCompare(
-						A2(
-							$elm$core$Basics$composeR,
-							function ($) {
-								return $.item;
-							},
-							$author$project$ItemShop$get_single_adjusted_item_cost(shop_trends)));
-				case 'SortByAvgPrice':
-					return buildCompare(
-						A2(
-							$elm$core$Basics$composeR,
-							function ($) {
-								return $.avg_price;
-							},
-							$author$project$ItemShop$getPrice));
-				case 'SortByQuantity':
-					return buildCompare(
-						A2(
-							$elm$core$Basics$composeR,
-							function ($) {
-								return $.quantity;
-							},
-							$author$project$ItemShop$getQuantity));
-				case 'SortByItemType':
-					return buildCompare(
-						A2(
-							$elm$core$Basics$composeR,
-							function ($) {
-								return $.item;
-							},
-							A2(
-								$elm$core$Basics$composeR,
-								function ($) {
-									return $.item_type;
-								},
-								$author$project$ItemShop$itemTypeToString)));
-				default:
-					return buildCompare(
-						A2(
-							$elm$core$Basics$composeR,
-							function ($) {
-								return $.item;
-							},
-							function ($) {
-								return $.description;
-							}));
-			}
-		}();
-		var _v0 = model.uiOptions;
-		var show_charts_in_hovered_item = _v0.show_charts_in_hovered_item;
-		var _v1 = character;
-		var char_id = _v1.char_id;
-		var held_items = _v1.held_items;
-		var held_gold = _v1.held_gold;
-		var hide_zero_qty_inv_rows = _v1.hide_zero_qty_inv_rows;
+		var _v1 = uiOptions;
+		var show_charts_in_hovered_item = _v1.show_charts_in_hovered_item;
+		var _v2 = character;
+		var char_id = _v2.char_id;
+		var held_items = _v2.held_items;
+		var held_gold = _v2.held_gold;
 		var is_hovered_item = function (item) {
 			if (hovered_item.$ === 'Just') {
-				var _v17 = hovered_item.a;
-				var hovered_char_id = _v17.a;
-				var hovered_item_ = _v17.b;
+				var _v5 = hovered_item.a;
+				var hovered_char_id = _v5.a;
+				var hovered_item_ = _v5.b;
 				return _Utils_eq(char_id, hovered_char_id) && _Utils_eq(item, hovered_item_);
 			} else {
 				return false;
 			}
 		};
-		var mouse_hover_attrs = function (item) {
-			return _List_fromArray(
-				[
-					$mdgriffith$elm_ui$Element$Events$onMouseEnter(
-					$author$project$ItemShop$GotUiOptionsMsg(
-						A2(
-							$author$project$ItemShop$MouseEnterShopItem,
-							context,
-							_Utils_Tuple2(char_id, item)))),
-					$mdgriffith$elm_ui$Element$Events$onMouseLeave(
-					$author$project$ItemShop$GotUiOptionsMsg(
-						A2(
-							$author$project$ItemShop$MouseLeaveShopItem,
-							context,
-							_Utils_Tuple2(char_id, item))))
-				]);
-		};
-		var table_columns = A2(
-			$elm$core$List$map,
-			function (col) {
-				return _Utils_update(
-					col,
-					{
-						view: function (item) {
-							return A2(
-								$mdgriffith$elm_ui$Element$el,
-								(!$author$project$ItemShop$getQuantity(item.quantity)) ? _List_fromArray(
-									[
-										A2($author$project$Interface$cssRule, 'opacity', '0.5'),
-										$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$fill)
-									]) : _List_fromArray(
-									[
-										A2($author$project$Interface$cssRule, 'opacity', '1.0'),
-										$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$fill)
-									]),
-								A2(
-									$mdgriffith$elm_ui$Element$el,
-									_List_fromArray(
-										[
-											$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$fill),
-											$mdgriffith$elm_ui$Element$centerY
-										]),
-									col.view(item)));
-						}
-					});
-			},
-			_List_fromArray(
-				[
-					{
-					header: A2(small_header, 'Name', $author$project$ItemShop$SortByName),
-					view: function (_v7) {
-						var item = _v7.item;
-						var quantity = _v7.quantity;
-						var avg_price = _v7.avg_price;
-						return A2(
-							$mdgriffith$elm_ui$Element$el,
-							_Utils_ap(
-								mouse_hover_attrs(item),
-								_List_fromArray(
-									[
-										$mdgriffith$elm_ui$Element$width(
-										A2(
-											$mdgriffith$elm_ui$Element$maximum,
-											150,
-											$mdgriffith$elm_ui$Element$fillPortion(2))),
-										$mdgriffith$elm_ui$Element$Font$size(16),
-										$author$project$ItemShop$html_title('Item Name'),
-										$mdgriffith$elm_ui$Element$centerY
-									])),
-							$mdgriffith$elm_ui$Element$text(
-								A2($author$project$Interface$clipText, item.name, 25)));
-					},
-					width: $mdgriffith$elm_ui$Element$fillPortion(2)
-				},
-					{
-					header: A2(small_header, 'Price', $author$project$ItemShop$SortByPrice),
-					view: function (_v8) {
-						var item = _v8.item;
-						var quantity = _v8.quantity;
-						var avg_price = _v8.avg_price;
-						return A2(
-							$mdgriffith$elm_ui$Element$el,
-							_List_fromArray(
-								[
-									$author$project$ItemShop$portion(1),
-									$mdgriffith$elm_ui$Element$centerY,
-									$author$project$ItemShop$html_title('Current cost')
-								]),
-							function () {
-								var adjustedPrice = A2($author$project$ItemShop$get_single_adjusted_item_cost, shop_trends, item);
-								var priceDiff = adjustedPrice - $author$project$ItemShop$getPrice(avg_price);
-								return A2(
-									$mdgriffith$elm_ui$Element$paragraph,
-									_List_Nil,
-									_Utils_ap(
-										_List_fromArray(
-											[
-												A2(
-												$author$project$Interface$renderGp,
-												model.colorTheme,
-												A2($author$project$ItemShop$get_single_adjusted_item_cost, shop_trends, item))
-											]),
-										_List_fromArray(
-											[
-												function () {
-												if ((!_Utils_eq(context, $author$project$ItemShop$ShopItems)) && ((!(!priceDiff)) && (!(!$author$project$ItemShop$getQuantity(quantity))))) {
-													var diffColor = A4(
-														$author$project$Interface$colorFromInt,
-														priceDiff,
-														$author$project$Interface$convertColor($avh4$elm_color$Color$green),
-														$author$project$Interface$color_black,
-														$author$project$Interface$color_danger);
-													return A2(
-														$mdgriffith$elm_ui$Element$el,
-														_List_fromArray(
-															[
-																$mdgriffith$elm_ui$Element$Font$size(12),
-																$mdgriffith$elm_ui$Element$Font$color(diffColor)
-															]),
-														$mdgriffith$elm_ui$Element$text(
-															' (' + ($author$project$ItemShop$signedFromInt(priceDiff) + ')')));
-												} else {
-													return $mdgriffith$elm_ui$Element$none;
-												}
-											}()
-											])));
-							}());
-					},
-					width: $mdgriffith$elm_ui$Element$fillPortion(1)
-				},
-					{
-					header: A2(small_header, 'Avg Px', $author$project$ItemShop$SortByAvgPrice),
-					view: function (_v9) {
-						var quantity = _v9.quantity;
-						var avg_price = _v9.avg_price;
-						return A2(
-							$mdgriffith$elm_ui$Element$el,
-							_List_fromArray(
-								[
-									$author$project$ItemShop$portion(1),
-									$mdgriffith$elm_ui$Element$centerY,
-									$author$project$ItemShop$html_title('Average Cost')
-								]),
-							function () {
-								if (context.$ === 'ShopItems') {
-									return $mdgriffith$elm_ui$Element$text('');
-								} else {
-									return (!(!$author$project$ItemShop$getQuantity(quantity))) ? A2(
-										$author$project$Interface$renderGp,
-										model.colorTheme,
-										$author$project$ItemShop$getPrice(avg_price)) : $mdgriffith$elm_ui$Element$none;
-								}
-							}());
-					},
-					width: $mdgriffith$elm_ui$Element$fillPortion(1)
-				},
-					{
-					header: A2(small_header, 'Qty.', $author$project$ItemShop$SortByQuantity),
-					view: function (_v11) {
-						var quantity = _v11.quantity;
-						return A2(
-							$mdgriffith$elm_ui$Element$el,
-							_List_fromArray(
-								[$mdgriffith$elm_ui$Element$centerY]),
-							function () {
-								if (!$author$project$ItemShop$getQuantity(quantity)) {
-									switch (context.$) {
-										case 'ShopItems':
-											return $mdgriffith$elm_ui$Element$text('OUT');
-										case 'InventoryItems':
-											return $mdgriffith$elm_ui$Element$text('NONE');
-										default:
-											return $mdgriffith$elm_ui$Element$text('NONE');
-									}
-								} else {
-									return $mdgriffith$elm_ui$Element$text(
-										'x' + $elm$core$String$fromInt(
-											$author$project$ItemShop$getQuantity(quantity)));
-								}
-							}());
-					},
-					width: $mdgriffith$elm_ui$Element$fillPortion(1)
-				},
-					{
-					header: A2(small_header, 'Item Type', $author$project$ItemShop$SortByItemType),
-					view: A2($author$project$ItemShop$hasProgressUnlock, $author$project$ItemShop$UnlockedShopTrends, model) ? function (_v13) {
-						var item = _v13.item;
-						return A2(
-							$mdgriffith$elm_ui$Element$el,
-							_List_fromArray(
-								[$mdgriffith$elm_ui$Element$centerY]),
-							A2($author$project$ItemShop$renderItemTypeWithTrend, shop_trends, item.item_type));
-					} : function (_v14) {
-						var item = _v14.item;
-						return A2(
-							$mdgriffith$elm_ui$Element$el,
-							_List_fromArray(
-								[$mdgriffith$elm_ui$Element$centerY]),
-							$author$project$ItemShop$renderItemTypeWithoutTrend(item.item_type));
-					},
-					width: $mdgriffith$elm_ui$Element$fillPortion(2)
-				},
-					{
-					header: A2(small_header, 'Item Desc.', $author$project$ItemShop$SortByItemDesc),
-					view: function (_v15) {
-						var item = _v15.item;
-						return A2(
-							$mdgriffith$elm_ui$Element$el,
-							_List_fromArray(
-								[$mdgriffith$elm_ui$Element$centerY]),
-							$mdgriffith$elm_ui$Element$text(
-								A2($author$project$Interface$clipText, item.description, 24)));
-					},
-					width: $mdgriffith$elm_ui$Element$fillPortion(3)
-				},
-					{
-					header: A2(small_header, 'Controls', $author$project$ItemShop$SortByName),
-					view: controls_column,
-					width: $mdgriffith$elm_ui$Element$fillPortion(1)
-				}
-				]));
-		var items = function (irs) {
-			var _v6 = character.displayedItemType;
-			if (_v6.$ === 'Nothing') {
-				return irs;
-			} else {
-				var item_type = _v6.a;
-				return A2(
-					$elm$core$List$filter,
-					function (ir) {
-						return _Utils_eq(ir.item.item_type, item_type);
-					},
-					irs);
-			}
-		}(
-			A2(
-				$elm$core$List$sortWith,
-				sortFunc,
-				hide_zero_qty_inv_rows ? A2(
-					$elm$core$List$filter,
-					function (_v5) {
-						var quantity = _v5.quantity;
-						return $author$project$ItemShop$getQuantity(quantity) > 0;
-					},
-					held_items) : held_items));
-		var rendered_inventory_controls = _List_fromArray(
-			[
-				A2(
-				$mdgriffith$elm_ui$Element$row,
-				_List_fromArray(
-					[
-						A2($mdgriffith$elm_ui$Element$spacingXY, 10, 0)
-					]),
-				_List_fromArray(
-					[
-						$author$project$Interface$button(
-						$author$project$Interface$TextParams(
-							{
-								buttonType: $author$project$Interface$Primary,
-								colorTheme: model.colorTheme,
-								customAttrs: _List_Nil,
-								onPressMsg: $author$project$ItemShop$GotUiOptionsMsg(
-									$author$project$ItemShop$ToggleHideNonZeroRows(character.char_id)),
-								textLabel: hide_zero_qty_inv_rows ? 'Show Nonzero' : 'Hide Nonzero'
-							})),
-						$author$project$Interface$button(
-						$author$project$Interface$TextParams(
-							{
-								buttonType: $author$project$Interface$Secondary,
-								colorTheme: model.colorTheme,
-								customAttrs: _List_fromArray(
-									[
-										$mdgriffith$elm_ui$Element$htmlAttribute(
-										A2(
-											$elm$html$Html$Events$preventDefaultOn,
-											'contextmenu',
-											$elm$json$Json$Decode$succeed(
-												_Utils_Tuple2(
-													$author$project$ItemShop$GotUiOptionsMsg(
-														A2($author$project$ItemShop$CycleFilterDisplayedItemsBackward, character.char_id, character.displayedItemType)),
-													true))))
-									]),
-								onPressMsg: $author$project$ItemShop$GotUiOptionsMsg(
-									A2($author$project$ItemShop$CycleFilterDisplayedItemsForward, character.char_id, character.displayedItemType)),
-								textLabel: 'Filter: ' + function () {
-									var _v4 = character.displayedItemType;
-									if (_v4.$ === 'Nothing') {
-										return 'All';
-									} else {
-										var itemType = _v4.a;
-										return $author$project$ItemShop$itemTypeToString(itemType);
-									}
-								}()
-							}))
-					]))
-			]);
-		var _v2 = model;
-		var historical_shop_trends = _v2.historical_shop_trends;
-		var item_db = _v2.item_db;
-		var colorTheme = _v2.colorTheme;
 		var expanded_display = function (item) {
 			return is_hovered_item(item) ? A2(
 				$mdgriffith$elm_ui$Element$Keyed$el,
@@ -32636,8 +36752,7 @@ var $author$project$ItemShop$render_inventory_grid = F7(
 												$mdgriffith$elm_ui$Element$alignRight,
 												$mdgriffith$elm_ui$Element$Font$color(
 												function () {
-													var _v3 = model.colorTheme;
-													if (_v3.$ === 'BrightTheme') {
+													if (colorTheme.$ === 'BrightTheme') {
 														return $author$project$Interface$color_grey;
 													} else {
 														return $author$project$Interface$convertColor($avh4$elm_color$Color$white);
@@ -32656,7 +36771,7 @@ var $author$project$ItemShop$render_inventory_grid = F7(
 											$mdgriffith$elm_ui$Element$text('Current Price: '),
 											A2(
 											$author$project$Interface$renderGp,
-											model.colorTheme,
+											colorTheme,
 											current_price(item))
 										]),
 									(A2($author$project$ItemShop$is_item_trending, shop_trends.item_type_sentiment, item) && (!_Utils_eq(
@@ -32664,7 +36779,7 @@ var $author$project$ItemShop$render_inventory_grid = F7(
 										current_price(item)))) ? _List_fromArray(
 										[
 											$mdgriffith$elm_ui$Element$text(' (originally '),
-											A2($author$project$Interface$renderGp, model.colorTheme, item.raw_gold_cost),
+											A2($author$project$Interface$renderGp, colorTheme, item.raw_gold_cost),
 											$mdgriffith$elm_ui$Element$text(')')
 										]) : _List_Nil)),
 								show_charts_in_hovered_item ? A2(
@@ -32676,40 +36791,6 @@ var $author$project$ItemShop$render_inventory_grid = F7(
 								A2($author$project$ItemShop$viewSingleItemTypeCharts, historical_shop_trends, item.item_type)) : $mdgriffith$elm_ui$Element$none
 							])))) : $mdgriffith$elm_ui$Element$none;
 		};
-		var render_single_action_log = function (log) {
-			return A2(
-				$mdgriffith$elm_ui$Element$el,
-				_List_Nil,
-				$mdgriffith$elm_ui$Element$text(
-					A3($author$project$ItemShop$action_log_to_str, colorTheme, item_db, log)));
-		};
-		var rendered_action_log_items = ($elm$core$List$length(character.action_log) > 0) ? A2(
-			$elm$core$List$map,
-			render_single_action_log,
-			A2(
-				$elm$core$List$take,
-				50,
-				$elm$core$List$reverse(character.action_log))) : _List_fromArray(
-			[
-				$mdgriffith$elm_ui$Element$text('No actions taken')
-			]);
-		var rendered_action_log = _List_fromArray(
-			[
-				A2(
-				$mdgriffith$elm_ui$Element$column,
-				_List_fromArray(
-					[
-						$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
-						$mdgriffith$elm_ui$Element$clip,
-						A2($mdgriffith$elm_ui$Element$paddingXY, 0, 10),
-						((!is_shop_context) && ($elm$core$List$length(character.action_log) > 0)) ? $mdgriffith$elm_ui$Element$height(
-						A2(
-							$mdgriffith$elm_ui$Element$minimum,
-							50,
-							A2($mdgriffith$elm_ui$Element$maximum, 600, $mdgriffith$elm_ui$Element$fill))) : $mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$fill)
-					]),
-				(!is_shop_context) ? rendered_action_log_items : _List_Nil)
-			]);
 		return A2(
 			$mdgriffith$elm_ui$Element$column,
 			_List_fromArray(
@@ -32766,7 +36847,7 @@ var $author$project$ItemShop$render_inventory_grid = F7(
 												_List_fromArray(
 													[
 														$mdgriffith$elm_ui$Element$text('Held: '),
-														A2($author$project$Interface$renderGp, model.colorTheme, held_gold)
+														A2($author$project$Interface$renderGp, colorTheme, held_gold)
 													])),
 												(is_player_context && (character.held_blood > 0)) ? A2(
 												$mdgriffith$elm_ui$Element$row,
@@ -32776,7 +36857,7 @@ var $author$project$ItemShop$render_inventory_grid = F7(
 													]),
 												_List_fromArray(
 													[
-														A2($author$project$Interface$renderBlood, model.colorTheme, character.held_blood)
+														A2($author$project$Interface$renderBlood, colorTheme, character.held_blood)
 													])) : $mdgriffith$elm_ui$Element$none,
 												A2(
 												$mdgriffith$elm_ui$Element$row,
@@ -32787,32 +36868,23 @@ var $author$project$ItemShop$render_inventory_grid = F7(
 												_List_fromArray(
 													[
 														$mdgriffith$elm_ui$Element$text('Community Fund: '),
-														A2($author$project$Interface$renderGp, model.colorTheme, model.communityFund)
+														A2($author$project$Interface$renderGp, colorTheme, communityFund)
 													]))
 											]))
 									])) : $mdgriffith$elm_ui$Element$none
 							]))
 					]),
 				_Utils_ap(
-					rendered_desires,
+					_List_fromArray(
+						[
+							A6($mdgriffith$elm_ui$Element$Lazy$lazy5, $author$project$ItemShop$renderCharacterDetails, colorTheme, character, item_db, progressUnlocks, is_shop_context)
+						]),
 					_Utils_ap(
-						rendered_dislikes,
-						_Utils_ap(
-							rendered_action_log,
-							_Utils_ap(
-								rendered_inventory_controls,
-								_Utils_ap(
-									((!is_shop_context) && ($elm$core$List$length(character.action_log) > 0)) ? $author$project$ItemShop$divider : _List_Nil,
-									_List_fromArray(
-										[
-											A2(
-											$mdgriffith$elm_ui$Element$table,
-											_List_fromArray(
-												[
-													$mdgriffith$elm_ui$Element$spacing(5)
-												]),
-											{columns: table_columns, data: items})
-										]))))))));
+						((!is_shop_context) && ($elm$core$List$length(character.action_log) > 0)) ? $author$project$ItemShop$divider : _List_Nil,
+						_List_fromArray(
+							[
+								A7($author$project$ItemShop$inventoryGrid, colorTheme, uiOptions, shop_trends, character, context, progressUnlocks, controls_column)
+							])))));
 	});
 var $author$project$ItemShop$PlayerBuyItemFromShop = F2(
 	function (a, b) {
@@ -32830,13 +36902,15 @@ var $author$project$ItemShop$shop_buy_button = F4(
 				{
 					buttonType: button_type,
 					colorTheme: colorTheme,
-					customAttrs: _List_fromArray(
-						[
-							$mdgriffith$elm_ui$Element$transparent(
+					customAttrs: A2(
+						$elm$core$List$cons,
+						$mdgriffith$elm_ui$Element$transparent(
 							$author$project$ItemShop$getQuantity(quantity) < 1),
+						A2(
+							$elm$core$List$cons,
 							$mdgriffith$elm_ui$Element$width(
-							A2($mdgriffith$elm_ui$Element$minimum, 120, $mdgriffith$elm_ui$Element$fill))
-						]),
+								A2($mdgriffith$elm_ui$Element$minimum, 120, $mdgriffith$elm_ui$Element$fill)),
+							$author$project$ItemShop$defaultCustomAttrs)),
 					onPressMsg: A2(
 						$author$project$ItemShop$PlayerBuyItemFromShop,
 						item,
@@ -32857,21 +36931,9 @@ var $author$project$ItemShop$shopInventoryControls = F4(
 			player.held_gold,
 			{avg_price: avg_price, item: item, quantity: quantity});
 	});
-var $author$project$ItemShop$CommunityFund = {$: 'CommunityFund'};
-var $author$project$ItemShop$IncreaseBPtoSP = {$: 'IncreaseBPtoSP'};
-var $author$project$ItemShop$IncreaseIncome = {$: 'IncreaseIncome'};
-var $author$project$ItemShop$InviteTrader = {$: 'InviteTrader'};
-var $author$project$ItemShop$TogglePauseAi = {$: 'TogglePauseAi'};
-var $author$project$ItemShop$TriggerEvent = function (a) {
-	return {$: 'TriggerEvent', a: a};
-};
-var $author$project$ItemShop$UnlockItem = {$: 'UnlockItem'};
-var $author$project$ItemShop$UnlockedBattles = {$: 'UnlockedBattles'};
-var $author$project$ItemShop$UnlockedSpecialActions = {$: 'UnlockedSpecialActions'};
 var $author$project$ItemShop$GotTooltipMsg = function (a) {
 	return {$: 'GotTooltipMsg', a: a};
 };
-var $author$project$ItemShop$Noop = {$: 'Noop'};
 var $author$project$ItemShop$OnSpecialAction = F2(
 	function (a, b) {
 		return {$: 'OnSpecialAction', a: a, b: b};
@@ -32881,8 +36943,7 @@ var $author$project$Interface$buildTooltipElementConfig = F3(
 		return {
 			onTooltipMsg: onTooltipMsg,
 			tooltip_body: $author$project$Interface$TooltipElement(element),
-			tooltip_id: $TSFoster$elm_uuid$UUID$toString(
-				A2($TSFoster$elm_uuid$UUID$forName, tooltip_id, $TSFoster$elm_uuid$UUID$dnsNamespace))
+			tooltip_id: tooltip_id
 		};
 	});
 var $author$project$Interface$buildTooltipTextConfig = F2(
@@ -32890,8 +36951,7 @@ var $author$project$Interface$buildTooltipTextConfig = F2(
 		return {
 			onTooltipMsg: onTooltipMsg,
 			tooltip_body: $author$project$Interface$TooltipText(text),
-			tooltip_id: $TSFoster$elm_uuid$UUID$toString(
-				A2($TSFoster$elm_uuid$UUID$forName, text, $TSFoster$elm_uuid$UUID$dnsNamespace))
+			tooltip_id: text
 		};
 	});
 var $author$project$Interface$primary_button_custom = F2(
@@ -32935,22 +36995,28 @@ var $author$project$Interface$primary_button_tooltip = F3(
 				buttonType: $author$project$Interface$Primary,
 				colorTheme: colorTheme,
 				customAttrs: _Utils_ap(
-					_List_fromArray(
-						[
-							$mdgriffith$elm_ui$Element$Events$onMouseLeave(
-							onTooltipMsg(
-								$author$project$Interface$EndTooltipHover(tooltip_id))),
-							$mdgriffith$elm_ui$Element$Events$onMouseEnter(
-							onTooltipMsg(
-								$author$project$Interface$StartTooltipHover(tooltip_id)))
-						]),
-					_Utils_ap(tooltipAttr, customAttrs)),
+					tooltipAttr,
+					_Utils_ap(
+						customAttrs,
+						_List_fromArray(
+							[
+								$mdgriffith$elm_ui$Element$Events$onMouseLeave(
+								onTooltipMsg(
+									$author$project$Interface$EndTooltipHover(tooltip_id))),
+								$mdgriffith$elm_ui$Element$Events$onMouseEnter(
+								onTooltipMsg(
+									$author$project$Interface$StartTooltipHover(tooltip_id)))
+							]))),
 				onPressMsg: onPressMsg,
 				textLabel: textLabel
 			});
 	});
-var $author$project$ItemShop$build_special_action_button = F7(
-	function (colorTheme, hoveredTooltip, character, special_action, title, tooltip_text, price) {
+var $author$project$ItemShop$build_special_action_button = F4(
+	function (colorTheme, hoveredTooltip, character, _v0) {
+		var action = _v0.action;
+		var title = _v0.title;
+		var tooltip_text = _v0.tooltip_text;
+		var price = _v0.price;
 		var tooltip_config = function (t) {
 			if (!_Utils_eq(price, $author$project$ItemShop$Free)) {
 				var renderedCost = A2(
@@ -33005,7 +37071,7 @@ var $author$project$ItemShop$build_special_action_button = F7(
 				return (_Utils_cmp(character.held_gold, cost) > -1) ? false : true;
 			}
 		}();
-		var msg = (!is_disabled) ? A2($author$project$ItemShop$OnSpecialAction, special_action, price) : $author$project$ItemShop$Noop;
+		var msg = (!is_disabled) ? A2($author$project$ItemShop$OnSpecialAction, action, price) : $author$project$ItemShop$Noop;
 		var button_attrs = is_disabled ? _Utils_ap(
 			_List_fromArray(
 				[
@@ -33027,50 +37093,169 @@ var $author$project$ItemShop$build_special_action_button = F7(
 				]) : _List_Nil) : _List_Nil;
 		return A3(
 			$author$project$Interface$primary_button_tooltip,
-			{buttonType: $author$project$Interface$Primary, colorTheme: colorTheme, customAttrs: button_attrs, onPressMsg: msg, textLabel: title},
+			{
+				buttonType: $author$project$Interface$Primary,
+				colorTheme: colorTheme,
+				customAttrs: _Utils_ap($author$project$ItemShop$defaultCustomAttrs, button_attrs),
+				onPressMsg: msg,
+				textLabel: title
+			},
 			tooltip_config,
 			hoveredTooltip);
 	});
-var $author$project$ItemShop$special_actions_display = F6(
-	function (colorTheme, progressUnlocks, playerUpgrades, hoveredTooltip, player, ai_updates_paused) {
+var $author$project$ItemShop$CommunityFund = {$: 'CommunityFund'};
+var $author$project$ItemShop$sacCommunityFund = {action: $author$project$ItemShop$CommunityFund, price: $author$project$ItemShop$communityFundCost, title: 'Contribute', tooltip_text: 'You\'ve always been a public member of the community. Add to the Community fund.\n\nAllows for invited traders to be able to afford finding new items.'};
+var $author$project$ItemShop$TriggerEvent = function (a) {
+	return {$: 'TriggerEvent', a: a};
+};
+var $author$project$ItemShop$sacHighDesire = {
+	action: $author$project$ItemShop$TriggerEvent(
+		$author$project$ItemShop$EventVeryDesiredItemType($elm$core$Maybe$Nothing)),
+	price: $author$project$ItemShop$setPrice(45),
+	title: 'Spread Good Rumour',
+	tooltip_text: 'Sets a random Item Type to high value.\n\nSpreads a rumour that a given Item Type was the talk of the next town over.'
+};
+var $author$project$ItemShop$IncreaseBPtoSP = {$: 'IncreaseBPtoSP'};
+var $author$project$ItemShop$sacIncreaseBpToSp = function (bp_to_sp_level) {
+	return {
+		action: $author$project$ItemShop$IncreaseBPtoSP,
+		price: $author$project$ItemShop$scale_increase_bp_to_sp_cost(bp_to_sp_level),
+		title: 'Cut',
+		tooltip_text: 'Cut deeper, using more of the blood to help yourself.\n\nIncreases the stamina your golem will regain per second, and the amount of blood you\'ll spend.'
+	};
+};
+var $author$project$ItemShop$IncreaseIncome = {$: 'IncreaseIncome'};
+var $author$project$ItemShop$sacIncreaseIncome = function (income_level) {
+	return {
+		action: $author$project$ItemShop$IncreaseIncome,
+		price: $author$project$ItemShop$scale_increase_income_cost(income_level),
+		title: 'Invest',
+		tooltip_text: 'Invest in another business, earning more income.\n\nIncreases the gold you get per second.'
+	};
+};
+var $author$project$ItemShop$sacLowDesire = {
+	action: $author$project$ItemShop$TriggerEvent(
+		$author$project$ItemShop$EventLeastDesiredItemType($elm$core$Maybe$Nothing)),
+	price: $author$project$ItemShop$setPrice(45),
+	title: 'Spread Bad Rumour',
+	tooltip_text: 'Sets a random Item Type to low value.\n\nSpreads a rumour that a given Item Type has a surplus of sellers.'
+};
+var $author$project$ItemShop$Mine = {$: 'Mine'};
+var $author$project$ItemShop$sacMine = {action: $author$project$ItemShop$Mine, price: $author$project$ItemShop$Free, title: 'Mine', tooltip_text: 'Chip away at the mountain, hoping for a sliver of silver.\n\nHas a chance of giving you some GP.'};
+var $author$project$ItemShop$InviteTrader = {$: 'InviteTrader'};
+var $author$project$ItemShop$sacSearch = {
+	action: $author$project$ItemShop$InviteTrader,
+	price: $author$project$ItemShop$setPrice(50),
+	title: 'Invite Trader',
+	tooltip_text: 'Invite a fellow Trader.\n\nThey may or may not have new wares you\'ve never seen!'
+};
+var $author$project$ItemShop$TogglePauseAi = {$: 'TogglePauseAi'};
+var $author$project$ItemShop$sacToggleAiPause = function (ai_updates_paused) {
+	return {
+		action: $author$project$ItemShop$TogglePauseAi,
+		price: $author$project$ItemShop$Free,
+		title: ai_updates_paused ? 'Resume' : 'Pause',
+		tooltip_text: 'You tap your medallion, and time comes to a halt.\n\nYou take a breath, and feel a weight off your shoulders. You\'ll take your time with things.'
+	};
+};
+var $author$project$ItemShop$UnlockItem = {$: 'UnlockItem'};
+var $author$project$ItemShop$sacUnlockItem = {
+	action: $author$project$ItemShop$UnlockItem,
+	price: $author$project$ItemShop$setPrice(25),
+	title: 'Item Search',
+	tooltip_text: 'Spend cash to hire a mercenary to seek out items.\n\nAllows for invited traders to have new items.'
+};
+var $author$project$ItemShop$viewMineGpGained = function (showMineGpGained) {
+	var gpGainedMovementY = A2(
+		$mdgriffith$elm_animator$Animator$move,
+		showMineGpGained,
+		function (shouldShow) {
+			switch (shouldShow.$) {
+				case 'ShowMineAnimation':
+					var seed = shouldShow.a;
+					return $mdgriffith$elm_animator$Animator$at(
+						A2(
+							$elm$random$Random$step,
+							A2($elm$random$Random$float, -30, 30),
+							seed).a);
+				case 'HideMineAnimation':
+					var seed = shouldShow.a;
+					return $mdgriffith$elm_animator$Animator$at(
+						A2(
+							$elm$random$Random$step,
+							A2($elm$random$Random$float, -30, 30),
+							seed).a);
+				default:
+					return $mdgriffith$elm_animator$Animator$at(0);
+			}
+		});
+	var gpGainedMovementX = A2(
+		$mdgriffith$elm_animator$Animator$move,
+		showMineGpGained,
+		function (shouldShow) {
+			switch (shouldShow.$) {
+				case 'ShowMineAnimation':
+					var seed = shouldShow.a;
+					return A2(
+						$mdgriffith$elm_animator$Animator$arriveSmoothly,
+						0.5,
+						A2(
+							$mdgriffith$elm_animator$Animator$leaveSmoothly,
+							0.5,
+							$mdgriffith$elm_animator$Animator$at(50)));
+				case 'HideMineAnimation':
+					var seed = shouldShow.a;
+					return $mdgriffith$elm_animator$Animator$at(50);
+				default:
+					return A2(
+						$mdgriffith$elm_animator$Animator$arriveSmoothly,
+						0.5,
+						A2(
+							$mdgriffith$elm_animator$Animator$leaveSmoothly,
+							0.5,
+							$mdgriffith$elm_animator$Animator$at(0)));
+			}
+		});
+	var alpha = A2(
+		$mdgriffith$elm_animator$Animator$linear,
+		showMineGpGained,
+		function (state) {
+			return $mdgriffith$elm_animator$Animator$at(
+				function () {
+					switch (state.$) {
+						case 'ShowMineAnimation':
+							var seed = state.a;
+							return 1.0;
+						case 'HideMineAnimation':
+							var seed = state.a;
+							return 0.0;
+						default:
+							return 0.0;
+					}
+				}());
+		});
+	return A2(
+		$mdgriffith$elm_ui$Element$el,
+		_List_fromArray(
+			[
+				$mdgriffith$elm_ui$Element$moveRight(gpGainedMovementX),
+				$mdgriffith$elm_ui$Element$moveUp(gpGainedMovementY),
+				$mdgriffith$elm_ui$Element$alpha(alpha)
+			]),
+		$mdgriffith$elm_ui$Element$text('+1'));
+};
+var $author$project$ItemShop$special_actions_display = F7(
+	function (colorTheme, progressUnlocks, playerUpgrades, hoveredTooltip, player, ai_updates_paused, showMineGpGained) {
+		var specialButtonBuilder = function (specialActionConfig) {
+			return A4($author$project$ItemShop$build_special_action_button, colorTheme, hoveredTooltip, player, specialActionConfig);
+		};
 		var hasUnlockedSpecialActions = A2($author$project$ItemShop$containsProgressUnlock, $author$project$ItemShop$UnlockedSpecialActions, progressUnlocks);
-		var button_unlock_item = A7(
-			$author$project$ItemShop$build_special_action_button,
-			colorTheme,
-			hoveredTooltip,
-			player,
-			$author$project$ItemShop$UnlockItem,
-			'Item Search',
-			'Spend cash to hire a mercenary to seek out items.\n\nAllows for invited traders to have new items.',
-			$author$project$ItemShop$setPrice(25));
-		var button_toggle_ai_pause = A7(
-			$author$project$ItemShop$build_special_action_button,
-			colorTheme,
-			hoveredTooltip,
-			player,
-			$author$project$ItemShop$TogglePauseAi,
-			ai_updates_paused ? 'Resume' : 'Pause',
-			'You tap your medallion, and time comes to a halt.\n\nYou take a breath, and feel a weight off your shoulders. You\'ll take your time with things.',
-			$author$project$ItemShop$Free);
-		var button_search = A7(
-			$author$project$ItemShop$build_special_action_button,
-			colorTheme,
-			hoveredTooltip,
-			player,
-			$author$project$ItemShop$InviteTrader,
-			'Invite Trader',
-			'Invite a fellow Trader.\n\nThey may or may not have new wares you\'ve never seen!',
-			$author$project$ItemShop$setPrice(50));
-		var button_low_desire = A7(
-			$author$project$ItemShop$build_special_action_button,
-			colorTheme,
-			hoveredTooltip,
-			player,
-			$author$project$ItemShop$TriggerEvent(
-				$author$project$ItemShop$EventLeastDesiredItemType($elm$core$Maybe$Nothing)),
-			'Spread Bad Rumour',
-			'Sets a random Item Type to low value.\n\nSpreads a rumour that a given Item Type has a surplus of sellers.',
-			$author$project$ItemShop$setPrice(45));
+		var button_unlock_item = A2($mdgriffith$elm_ui$Element$Lazy$lazy, specialButtonBuilder, $author$project$ItemShop$sacUnlockItem);
+		var button_toggle_ai_pause = specialButtonBuilder(
+			$author$project$ItemShop$sacToggleAiPause(ai_updates_paused));
+		var button_search = A2($mdgriffith$elm_ui$Element$Lazy$lazy, specialButtonBuilder, $author$project$ItemShop$sacSearch);
+		var button_mine = A2($mdgriffith$elm_ui$Element$Lazy$lazy, specialButtonBuilder, $author$project$ItemShop$sacMine);
+		var button_low_desire = A2($mdgriffith$elm_ui$Element$Lazy$lazy, specialButtonBuilder, $author$project$ItemShop$sacLowDesire);
 		var button_increase_income = function () {
 			var income_level = A3(
 				$elm$core$List$foldl,
@@ -33085,15 +37270,8 @@ var $author$project$ItemShop$special_actions_display = F6(
 					}),
 				1,
 				playerUpgrades);
-			return A7(
-				$author$project$ItemShop$build_special_action_button,
-				colorTheme,
-				hoveredTooltip,
-				player,
-				$author$project$ItemShop$IncreaseIncome,
-				'Invest',
-				'Invest in another business, earning more income.\n\nIncreases the gold you get per second.',
-				$author$project$ItemShop$scale_increase_income_cost(income_level));
+			return specialButtonBuilder(
+				$author$project$ItemShop$sacIncreaseIncome(income_level));
 		}();
 		var button_increase_bp_to_sp = function () {
 			var bp_to_sp_level = A3(
@@ -33109,33 +37287,17 @@ var $author$project$ItemShop$special_actions_display = F6(
 					}),
 				1,
 				playerUpgrades);
-			return A7(
-				$author$project$ItemShop$build_special_action_button,
-				colorTheme,
-				hoveredTooltip,
-				player,
-				$author$project$ItemShop$IncreaseBPtoSP,
-				'Cut',
-				'Cut deeper, using more of the blood to help yourself.\n\nIncreases the stamina your golem will regain per second, and the amount of blood you\'ll spend.',
-				$author$project$ItemShop$scale_increase_bp_to_sp_cost(bp_to_sp_level));
+			return specialButtonBuilder(
+				$author$project$ItemShop$sacIncreaseBpToSp(bp_to_sp_level));
 		}();
-		var button_high_desire = A7(
-			$author$project$ItemShop$build_special_action_button,
-			colorTheme,
-			hoveredTooltip,
-			player,
-			$author$project$ItemShop$TriggerEvent(
-				$author$project$ItemShop$EventVeryDesiredItemType($elm$core$Maybe$Nothing)),
-			'Spread Good Rumour',
-			'Sets a random Item Type to high value.\n\nSpreads a rumour that a given Item Type was the talk of the next town over.',
-			$author$project$ItemShop$setPrice(45));
-		var button_community_fund = A7($author$project$ItemShop$build_special_action_button, colorTheme, hoveredTooltip, player, $author$project$ItemShop$CommunityFund, 'Contribute', 'You\'ve always been a public member of the community. Add to the Community fund.\n\nAllows for invited traders to be able to afford finding new items.', $author$project$ItemShop$communityFundCost);
+		var button_high_desire = A2($mdgriffith$elm_ui$Element$Lazy$lazy, specialButtonBuilder, $author$project$ItemShop$sacHighDesire);
+		var button_community_fund = A2($mdgriffith$elm_ui$Element$Lazy$lazy, specialButtonBuilder, $author$project$ItemShop$sacCommunityFund);
 		var button_battle = A2($author$project$ItemShop$containsProgressUnlock, $author$project$ItemShop$UnlockedBattles, progressUnlocks) ? $author$project$Interface$button(
 			$author$project$Interface$TextParams(
 				{
 					buttonType: $author$project$Interface$Primary,
 					colorTheme: colorTheme,
-					customAttrs: _List_Nil,
+					customAttrs: $author$project$ItemShop$defaultCustomAttrs,
 					onPressMsg: $author$project$ItemShop$ChangeTabType($author$project$ItemShop$BattleTabType),
 					textLabel: 'To Battle!'
 				})) : $mdgriffith$elm_ui$Element$none;
@@ -33176,7 +37338,12 @@ var $author$project$ItemShop$special_actions_display = F6(
 									$mdgriffith$elm_ui$Element$alignTop
 								]),
 							_List_fromArray(
-								[button_toggle_ai_pause, button_battle])),
+								[
+									button_toggle_ai_pause,
+									button_mine,
+									A2($mdgriffith$elm_ui$Element$Lazy$lazy, $author$project$ItemShop$viewMineGpGained, showMineGpGained),
+									button_battle
+								])),
 							hasUnlockedSpecialActions ? A2(
 							$mdgriffith$elm_ui$Element$wrappedRow,
 							_List_fromArray(
@@ -33527,9 +37694,6 @@ var $author$project$ItemShop$trends_display = F6(
 					rendered_popularity
 				]));
 	});
-var $author$project$ItemShop$ChangeCurrentPhase = function (a) {
-	return {$: 'ChangeCurrentPhase', a: a};
-};
 var $author$project$Interface$defaultRounded = {bottomLeft: 0, bottomRight: 0, topLeft: 0, topRight: 0};
 var $mdgriffith$elm_ui$Element$Font$glow = F2(
 	function (clr, i) {
@@ -33585,239 +37749,132 @@ var $mdgriffith$elm_ui$Element$Border$shadow = function (almostShade) {
 			'box-shadow',
 			$mdgriffith$elm_ui$Internal$Model$formatBoxShadow(shade)));
 };
-var $author$project$ItemShop$viewDayTimer = function (_v0) {
-	var colorTheme = _v0.colorTheme;
-	var timeOfDay = _v0.timeOfDay;
-	var item_db = _v0.item_db;
-	var characters = _v0.characters;
-	var ai_tick_time = _v0.ai_tick_time;
-	var sharedAttrs = _List_fromArray(
-		[
-			$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$fill),
-			$mdgriffith$elm_ui$Element$Border$shadow(
-			{
-				blur: 1.0,
-				color: $author$project$Interface$color_light_grey,
-				offset: _Utils_Tuple2(2, 2),
-				size: 0
-			})
-		]);
-	var fillingAttrs = _Utils_ap(
-		_List_fromArray(
+var $author$project$ItemShop$viewDayTimer = F5(
+	function (colorTheme, timeOfDay, item_db, characters, ai_tick_time) {
+		var sharedAttrs = _List_fromArray(
 			[
-				$mdgriffith$elm_ui$Element$Background$color($author$project$Interface$color_primary),
-				$mdgriffith$elm_ui$Element$Border$roundEach(
-				_Utils_update(
-					$author$project$Interface$defaultRounded,
-					{bottomLeft: 5, topLeft: 5}))
-			]),
-		sharedAttrs);
-	var emptyAttrs = _Utils_ap(
-		_List_fromArray(
-			[
-				$mdgriffith$elm_ui$Element$Background$color($author$project$Interface$color_white),
-				$mdgriffith$elm_ui$Element$Border$roundEach(
-				_Utils_update(
-					$author$project$Interface$defaultRounded,
-					{bottomRight: 5, topRight: 5}))
-			]),
-		sharedAttrs);
-	return A2(
-		$mdgriffith$elm_ui$Element$column,
-		_List_fromArray(
-			[
-				$mdgriffith$elm_ui$Element$centerX,
-				$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill)
-			]),
-		_List_fromArray(
-			[
-				A2(
-				$mdgriffith$elm_ui$Element$el,
-				_List_fromArray(
-					[
-						$mdgriffith$elm_ui$Element$centerX,
-						$mdgriffith$elm_ui$Element$Font$underline,
-						$mdgriffith$elm_ui$Element$padding(10)
-					]),
-				$mdgriffith$elm_ui$Element$text('Day Timer')),
-				function () {
-				var _v1 = timeOfDay.currentPhase;
-				if (_v1.$ === 'ActivePhase') {
-					var timeDayStarted = _v1.a;
-					var msSinceStartOfDay = _v1.b.msSinceStartOfDay;
-					var dayElapsedRaw = function () {
-						var sinceStart = msSinceStartOfDay;
-						var dayLength = timeOfDay.dayLengthInMs;
-						return sinceStart / dayLength;
-					}();
-					var dayElapsed = dayElapsedRaw * 100;
-					return A2(
-						$mdgriffith$elm_ui$Element$row,
-						_List_fromArray(
-							[
-								$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
-								$mdgriffith$elm_ui$Element$height(
-								$mdgriffith$elm_ui$Element$px(20)),
-								$mdgriffith$elm_ui$Element$inFront(
-								A2(
-									$mdgriffith$elm_ui$Element$el,
-									_List_fromArray(
-										[
-											$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill)
-										]),
+				$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$fill),
+				$mdgriffith$elm_ui$Element$Border$shadow(
+				{
+					blur: 1.0,
+					color: $author$project$Interface$color_light_grey,
+					offset: _Utils_Tuple2(2, 2),
+					size: 0
+				})
+			]);
+		var fillingAttrs = _Utils_ap(
+			_List_fromArray(
+				[
+					$mdgriffith$elm_ui$Element$Background$color($author$project$Interface$color_primary),
+					$mdgriffith$elm_ui$Element$Border$roundEach(
+					_Utils_update(
+						$author$project$Interface$defaultRounded,
+						{bottomLeft: 5, topLeft: 5}))
+				]),
+			sharedAttrs);
+		var emptyAttrs = _Utils_ap(
+			_List_fromArray(
+				[
+					$mdgriffith$elm_ui$Element$Background$color($author$project$Interface$color_white),
+					$mdgriffith$elm_ui$Element$Border$roundEach(
+					_Utils_update(
+						$author$project$Interface$defaultRounded,
+						{bottomRight: 5, topRight: 5}))
+				]),
+			sharedAttrs);
+		return A2(
+			$mdgriffith$elm_ui$Element$column,
+			_List_fromArray(
+				[
+					$mdgriffith$elm_ui$Element$centerX,
+					$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill)
+				]),
+			_List_fromArray(
+				[
+					A2(
+					$mdgriffith$elm_ui$Element$el,
+					_List_fromArray(
+						[
+							$mdgriffith$elm_ui$Element$centerX,
+							$mdgriffith$elm_ui$Element$Font$underline,
+							$mdgriffith$elm_ui$Element$padding(10)
+						]),
+					$mdgriffith$elm_ui$Element$text('Time of Day')),
+					function () {
+					var _v0 = timeOfDay.currentPhase;
+					if (_v0.$ === 'ActivePhase') {
+						var timeDayStarted = _v0.a;
+						var msSinceStartOfDay = _v0.b.msSinceStartOfDay;
+						var dayElapsedRaw = function () {
+							var sinceStart = msSinceStartOfDay;
+							var dayLength = timeOfDay.dayLengthInMs;
+							return sinceStart / dayLength;
+						}();
+						var dayElapsed = dayElapsedRaw * 100;
+						return A2(
+							$mdgriffith$elm_ui$Element$row,
+							_List_fromArray(
+								[
+									$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
+									$mdgriffith$elm_ui$Element$height(
+									$mdgriffith$elm_ui$Element$px(20)),
+									$mdgriffith$elm_ui$Element$inFront(
 									A2(
 										$mdgriffith$elm_ui$Element$el,
 										_List_fromArray(
 											[
-												$mdgriffith$elm_ui$Element$width(
-												A2($mdgriffith$elm_ui$Element$minimum, 50, $mdgriffith$elm_ui$Element$shrink)),
-												$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$fill),
-												$mdgriffith$elm_ui$Element$Font$center,
-												$mdgriffith$elm_ui$Element$centerY,
-												$mdgriffith$elm_ui$Element$centerX,
-												$mdgriffith$elm_ui$Element$Font$color($author$project$Interface$color_black),
-												A2($mdgriffith$elm_ui$Element$Font$glow, $author$project$Interface$color_white, 1),
-												$mdgriffith$elm_ui$Element$Background$color($author$project$Interface$color_light_grey),
-												$mdgriffith$elm_ui$Element$padding(2),
-												$mdgriffith$elm_ui$Element$Border$rounded(5)
+												$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill)
 											]),
-										$mdgriffith$elm_ui$Element$text(
-											$author$project$ItemShop$float_to_percent(dayElapsedRaw)))))
-							]),
-						_List_fromArray(
-							[
-								A2(
-								$mdgriffith$elm_ui$Element$row,
-								_Utils_ap(
-									_List_fromArray(
-										[
-											$mdgriffith$elm_ui$Element$width(
-											$mdgriffith$elm_ui$Element$fillPortion(
-												$elm$core$Basics$round(dayElapsed)))
-										]),
-									fillingAttrs),
-								_List_Nil),
-								A2(
-								$mdgriffith$elm_ui$Element$row,
-								_Utils_ap(
-									_List_fromArray(
-										[
-											$mdgriffith$elm_ui$Element$width(
-											$mdgriffith$elm_ui$Element$fillPortion(
-												$elm$core$Basics$round(100 - dayElapsed)))
-										]),
-									emptyAttrs),
-								_List_Nil)
-							]));
-				} else {
-					return $mdgriffith$elm_ui$Element$none;
-				}
-			}(),
-				A2(
-				$mdgriffith$elm_ui$Element$el,
-				_List_fromArray(
-					[
-						$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
-						A2($mdgriffith$elm_ui$Element$paddingXY, 0, 10)
-					]),
-				A2(
-					$mdgriffith$elm_ui$Element$row,
-					_List_fromArray(
-						[
-							$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
-							$mdgriffith$elm_ui$Element$spaceEvenly
-						]),
-					_List_fromArray(
-						[
-							$author$project$Interface$button(
-							$author$project$Interface$TextParams(
-								{
-									buttonType: $author$project$Interface$Primary,
-									colorTheme: colorTheme,
-									customAttrs: _List_Nil,
-									onPressMsg: $author$project$ItemShop$ChangeCurrentPhase($author$project$ItemShop$PrepPhase),
-									textLabel: function () {
-										var _v2 = timeOfDay.currentPhase;
-										if (_v2.$ === 'PrepPhase') {
-											return 'Currently PrepPhase';
-										} else {
-											return 'Change to PrepPhase';
-										}
-									}()
-								})),
-							$author$project$Interface$button(
-							$author$project$Interface$TextParams(
-								{
-									buttonType: $author$project$Interface$Primary,
-									colorTheme: colorTheme,
-									customAttrs: _List_Nil,
-									onPressMsg: $author$project$ItemShop$ChangeCurrentPhase(
 										A2(
-											$author$project$ItemShop$ActivePhase,
-											ai_tick_time,
-											{
-												goldAtStartOfDay: function () {
-													var _v3 = $author$project$ItemShop$getPlayer(characters);
-													var player = _v3.a;
-													return player.held_gold;
-												}(),
-												itemDbAtStart: item_db,
-												msSinceStartOfDay: 0
-											})),
-									textLabel: function () {
-										var _v4 = timeOfDay.currentPhase;
-										if (_v4.$ === 'ActivePhase') {
-											return 'Currently ActivePhase';
-										} else {
-											return 'Change to ActivePhase';
-										}
-									}()
-								})),
-							$author$project$Interface$button(
-							$author$project$Interface$TextParams(
-								{
-									buttonType: $author$project$Interface$Primary,
-									colorTheme: colorTheme,
-									customAttrs: _List_Nil,
-									onPressMsg: $author$project$ItemShop$ChangeCurrentPhase(
-										$author$project$ItemShop$PostPhase(
-											function () {
-												var _v5 = timeOfDay.currentPhase;
-												if (_v5.$ === 'ActivePhase') {
-													var timeDayStarted = _v5.a;
-													var itemDbAtStart = _v5.b.itemDbAtStart;
-													var goldAtStartOfDay = _v5.b.goldAtStartOfDay;
-													return {
-														goldAtEndOfDay: function () {
-															var _v6 = $author$project$ItemShop$getPlayer(characters);
-															var player = _v6.a;
-															return player.held_gold;
-														}(),
-														goldAtStartOfDay: goldAtStartOfDay,
-														itemDbAtEnd: item_db,
-														itemDbAtStart: itemDbAtStart
-													};
-												} else {
-													return _Debug_todo(
-														'ItemShop',
-														{
-															start: {line: 6375, column: 45},
-															end: {line: 6375, column: 55}
-														})('cant really switch to PostPhase without being in ActivePhase first');
-												}
-											}())),
-									textLabel: function () {
-										var _v7 = timeOfDay.currentPhase;
-										if (_v7.$ === 'PostPhase') {
-											return 'Currently PostPhase';
-										} else {
-											return 'Change to PostPhase';
-										}
-									}()
-								}))
-						])))
-			]));
-};
+											$mdgriffith$elm_ui$Element$el,
+											_List_fromArray(
+												[
+													$mdgriffith$elm_ui$Element$width(
+													A2($mdgriffith$elm_ui$Element$minimum, 50, $mdgriffith$elm_ui$Element$shrink)),
+													$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$fill),
+													$mdgriffith$elm_ui$Element$Font$center,
+													$mdgriffith$elm_ui$Element$centerY,
+													$mdgriffith$elm_ui$Element$centerX,
+													$mdgriffith$elm_ui$Element$Font$color($author$project$Interface$color_black),
+													A2($mdgriffith$elm_ui$Element$Font$glow, $author$project$Interface$color_white, 1),
+													$mdgriffith$elm_ui$Element$Background$color($author$project$Interface$color_light_grey),
+													$mdgriffith$elm_ui$Element$padding(2),
+													$mdgriffith$elm_ui$Element$Border$rounded(5)
+												]),
+											$mdgriffith$elm_ui$Element$text(
+												$author$project$ItemShop$float_to_percent(dayElapsedRaw)))))
+								]),
+							_List_fromArray(
+								[
+									A2(
+									$mdgriffith$elm_ui$Element$row,
+									_Utils_ap(
+										_List_fromArray(
+											[
+												$mdgriffith$elm_ui$Element$width(
+												$mdgriffith$elm_ui$Element$fillPortion(
+													$elm$core$Basics$round(dayElapsed)))
+											]),
+										fillingAttrs),
+									_List_Nil),
+									A2(
+									$mdgriffith$elm_ui$Element$row,
+									_Utils_ap(
+										_List_fromArray(
+											[
+												$mdgriffith$elm_ui$Element$width(
+												$mdgriffith$elm_ui$Element$fillPortion(
+													$elm$core$Basics$round(100 - dayElapsed)))
+											]),
+										emptyAttrs),
+									_List_Nil)
+								]));
+					} else {
+						return $mdgriffith$elm_ui$Element$none;
+					}
+				}()
+				]));
+	});
 var $terezka$elm_charts$Chart$SubElements = function (a) {
 	return {$: 'SubElements', a: a};
 };
@@ -34211,41 +38268,38 @@ var $author$project$ItemShop$viewShopTrendsChart = F3(
 			$mdgriffith$elm_ui$Element$html(
 				A2($terezka$elm_charts$Chart$chart, chart_attributes, chart_elements)));
 	});
-var $author$project$ItemShop$view_shop_tab_type = function (model) {
-	var welcome_header = A2(
-		$mdgriffith$elm_ui$Element$el,
-		_List_fromArray(
-			[
-				$author$project$Interface$font_scaled(3),
-				$author$project$Interface$padding_bottom(10)
-			]),
-		$mdgriffith$elm_ui$Element$text('Welcome to the Item Shop!'));
-	var unpaused_border_attrs = _List_fromArray(
-		[
-			$mdgriffith$elm_ui$Element$Border$color(
-			$author$project$Interface$defaultSolidColor(model.colorTheme)),
-			$mdgriffith$elm_ui$Element$Border$width(10),
-			$mdgriffith$elm_ui$Element$Border$dashed
-		]);
-	var tickSecondButton = $author$project$Interface$button(
-		$author$project$Interface$TextParams(
-			{buttonType: $author$project$Interface$Secondary, colorTheme: model.colorTheme, customAttrs: _List_Nil, onPressMsg: $author$project$ItemShop$ForceTickSecond, textLabel: 'Force Tick'}));
-	var shopChar = function () {
-		var _v4 = $author$project$ItemShop$getShop(model.characters);
-		var s = _v4.a;
-		return s;
-	}();
+var $author$project$ItemShop$view_shop_currentTabType = function (model) {
+	var _v0 = model;
+	var historical_player_actions = _v0.historical_player_actions;
+	var colorTheme = _v0.colorTheme;
+	var timeOfDay = _v0.timeOfDay;
+	var ai_updates_paused = _v0.ai_updates_paused;
+	var ai_tick_time = _v0.ai_tick_time;
+	var characters = _v0.characters;
+	var item_db = _v0.item_db;
+	var progressUnlocks = _v0.progressUnlocks;
+	var playerUpgrades = _v0.playerUpgrades;
+	var quests = _v0.quests;
+	var showMineGpGained = _v0.showMineGpGained;
+	var uiOptions = _v0.uiOptions;
+	var historical_shop_trends = _v0.historical_shop_trends;
+	var shop_trends = _v0.shop_trends;
+	var player = $author$project$ItemShop$getPlayer(characters);
 	var playerChar = function () {
-		var _v3 = $author$project$ItemShop$getPlayer(model.characters);
-		var p = _v3.a;
+		var _v4 = $author$project$ItemShop$getPlayer(characters);
+		var p = _v4.a;
 		return p;
+	}();
+	var shopChar = function () {
+		var _v3 = $author$project$ItemShop$getShop(characters);
+		var s = _v3.a;
+		return s;
 	}();
 	var paused_border_attrs = _List_fromArray(
 		[
 			$mdgriffith$elm_ui$Element$Border$color(
 			function () {
-				var _v2 = model.colorTheme;
-				if (_v2.$ === 'BrightTheme') {
+				if (colorTheme.$ === 'BrightTheme') {
 					return $author$project$Interface$color_light_grey;
 				} else {
 					return $author$project$Interface$color_grey;
@@ -34254,38 +38308,16 @@ var $author$project$ItemShop$view_shop_tab_type = function (model) {
 			$mdgriffith$elm_ui$Element$Border$width(10),
 			$mdgriffith$elm_ui$Element$Border$dashed
 		]);
-	var debug_inventories = A2(
-		$elm$core$List$map,
-		function (character) {
-			return A2(
-				$mdgriffith$elm_ui$Element$Keyed$el,
-				_List_fromArray(
-					[
-						$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$fill),
-						A2($mdgriffith$elm_ui$Element$paddingXY, 0, 10),
-						$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill)
-					]),
-				_Utils_Tuple2(
-					$TSFoster$elm_uuid$UUID$toString(character.char_id),
-					A7(
-						$author$project$ItemShop$render_inventory_grid,
-						model,
-						character.name + '\'s Inventory',
-						character,
-						model.shop_trends,
-						model.uiOptions.hovered_item_in_character,
-						$author$project$ItemShop$CharacterItems,
-						$elm$core$Basics$always($mdgriffith$elm_ui$Element$none))));
-		},
-		A2(
-			$elm$core$List$sortBy,
-			A2(
-				$elm$core$Basics$composeR,
-				function ($) {
-					return $.char_id;
-				},
-				$TSFoster$elm_uuid$UUID$toString),
-			$author$project$ItemShop$getOthers(model.characters)));
+	var tickSecondButton = $author$project$Interface$button(
+		$author$project$Interface$TextParams(
+			{buttonType: $author$project$Interface$Secondary, colorTheme: colorTheme, customAttrs: $author$project$ItemShop$defaultCustomAttrs, onPressMsg: $author$project$ItemShop$ForceTickSecond, textLabel: 'Force Tick'}));
+	var unpaused_border_attrs = _List_fromArray(
+		[
+			$mdgriffith$elm_ui$Element$Border$color(
+			$author$project$Interface$defaultSolidColor(colorTheme)),
+			$mdgriffith$elm_ui$Element$Border$width(10),
+			$mdgriffith$elm_ui$Element$Border$dashed
+		]);
 	return A2(
 		$mdgriffith$elm_ui$Element$el,
 		_Utils_ap(
@@ -34294,7 +38326,7 @@ var $author$project$ItemShop$view_shop_tab_type = function (model) {
 					$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
 					$mdgriffith$elm_ui$Element$padding(10)
 				]),
-			model.ai_updates_paused ? paused_border_attrs : unpaused_border_attrs),
+			ai_updates_paused ? paused_border_attrs : unpaused_border_attrs),
 		A2(
 			$mdgriffith$elm_ui$Element$column,
 			_List_fromArray(
@@ -34306,7 +38338,6 @@ var $author$project$ItemShop$view_shop_tab_type = function (model) {
 			_Utils_ap(
 				_List_fromArray(
 					[
-						welcome_header,
 						A2(
 						$mdgriffith$elm_ui$Element$row,
 						_List_fromArray(
@@ -34316,7 +38347,7 @@ var $author$project$ItemShop$view_shop_tab_type = function (model) {
 							]),
 						_List_fromArray(
 							[
-								A2($author$project$ItemShop$hasProgressUnlock, $author$project$ItemShop$UnlockedCodex, model) ? A2(
+								A2($author$project$ItemShop$containsProgressUnlock, $author$project$ItemShop$UnlockedCodex, progressUnlocks) ? A2(
 								$mdgriffith$elm_ui$Element$link,
 								_List_Nil,
 								{
@@ -34324,40 +38355,39 @@ var $author$project$ItemShop$view_shop_tab_type = function (model) {
 										$author$project$Interface$TextParams(
 											{
 												buttonType: $author$project$Interface$Secondary,
-												colorTheme: model.colorTheme,
-												customAttrs: _List_Nil,
+												colorTheme: colorTheme,
+												customAttrs: $author$project$ItemShop$defaultCustomAttrs,
 												onPressMsg: $author$project$ItemShop$ChangeTabType($author$project$ItemShop$ItemsUnlockedTabType),
 												textLabel: 'View Codex'
 											})),
 									url: '#items'
 								}) : $mdgriffith$elm_ui$Element$none,
-								A2($author$project$ItemShop$hasProgressUnlock, $author$project$ItemShop$UnlockedCharts, model) ? A3(
+								A2($author$project$ItemShop$containsProgressUnlock, $author$project$ItemShop$UnlockedCharts, progressUnlocks) ? A3(
 								$author$project$Interface$outline_button,
 								_List_Nil,
 								$author$project$ItemShop$GotUiOptionsMsg($author$project$ItemShop$ToggleShowMainChart),
-								model.uiOptions.show_main_chart ? 'Hide Charts' : 'Charts') : $mdgriffith$elm_ui$Element$none,
-								A2($author$project$ItemShop$hasProgressUnlock, $author$project$ItemShop$UnlockedDarkMode, model) ? A3(
+								uiOptions.show_main_chart ? 'Hide Charts' : 'Charts') : $mdgriffith$elm_ui$Element$none,
+								A2($author$project$ItemShop$containsProgressUnlock, $author$project$ItemShop$UnlockedDarkMode, progressUnlocks) ? A3(
 								$author$project$Interface$outline_button,
 								_List_fromArray(
 									[$mdgriffith$elm_ui$Element$alignRight]),
 								$author$project$ItemShop$ToggleColorTheme,
 								function () {
-									var _v0 = model.colorTheme;
-									if (_v0.$ === 'BrightTheme') {
+									if (colorTheme.$ === 'BrightTheme') {
 										return 'Darken';
 									} else {
 										return 'Brighten';
 									}
 								}()) : $mdgriffith$elm_ui$Element$none
 							])),
-						(model.uiOptions.show_main_chart && A2($author$project$ItemShop$hasProgressUnlock, $author$project$ItemShop$UnlockedCharts, model)) ? A2(
+						(uiOptions.show_main_chart && A2($author$project$ItemShop$containsProgressUnlock, $author$project$ItemShop$UnlockedCharts, progressUnlocks)) ? A2(
 						$mdgriffith$elm_ui$Element$el,
 						_List_fromArray(
 							[
 								A2($mdgriffith$elm_ui$Element$paddingXY, 0, 10),
 								$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill)
 							]),
-						A3($author$project$ItemShop$viewShopTrendsChart, model.uiOptions.device, model.historical_shop_trends, model.uiOptions.hovered_trend_chart)) : $mdgriffith$elm_ui$Element$none,
+						A3($author$project$ItemShop$viewShopTrendsChart, uiOptions.device, historical_shop_trends, uiOptions.hovered_trend_chart)) : $mdgriffith$elm_ui$Element$none,
 						A2(
 						$mdgriffith$elm_ui$Element$row,
 						_List_fromArray(
@@ -34366,7 +38396,7 @@ var $author$project$ItemShop$view_shop_tab_type = function (model) {
 							]),
 						_List_fromArray(
 							[
-								$author$project$ItemShop$viewDayTimer(model)
+								A6($mdgriffith$elm_ui$Element$Lazy$lazy5, $author$project$ItemShop$viewDayTimer, colorTheme, timeOfDay, item_db, characters, ai_tick_time)
 							])),
 						A2(
 						$mdgriffith$elm_ui$Element$row,
@@ -34394,7 +38424,7 @@ var $author$project$ItemShop$view_shop_tab_type = function (model) {
 										$mdgriffith$elm_ui$Element$fillPortion(3)),
 										$mdgriffith$elm_ui$Element$alignTop
 									]),
-								A3($mdgriffith$elm_ui$Element$Lazy$lazy2, $author$project$ItemShop$player_action_log_display, model.item_db, model.historical_player_actions)),
+								A3($mdgriffith$elm_ui$Element$Lazy$lazy2, $author$project$ItemShop$player_action_log_display, item_db, historical_player_actions)),
 								A2(
 								$mdgriffith$elm_ui$Element$el,
 								_List_fromArray(
@@ -34403,7 +38433,7 @@ var $author$project$ItemShop$view_shop_tab_type = function (model) {
 										$mdgriffith$elm_ui$Element$fillPortion(6)),
 										$mdgriffith$elm_ui$Element$alignTop
 									]),
-								A4($mdgriffith$elm_ui$Element$Lazy$lazy3, $author$project$ItemShop$playerUpgrades_display, model.colorTheme, model.playerUpgrades, model.progressUnlocks)),
+								A4($mdgriffith$elm_ui$Element$Lazy$lazy3, $author$project$ItemShop$playerUpgrades_display, colorTheme, playerUpgrades, progressUnlocks)),
 								A2(
 								$mdgriffith$elm_ui$Element$el,
 								_List_fromArray(
@@ -34412,14 +38442,10 @@ var $author$project$ItemShop$view_shop_tab_type = function (model) {
 										$mdgriffith$elm_ui$Element$fillPortion(3)),
 										$mdgriffith$elm_ui$Element$alignTop
 									]),
-								A4($mdgriffith$elm_ui$Element$Lazy$lazy3, $author$project$ItemShop$quests_display, model.colorTheme, model.quests, model.progressUnlocks))
+								A4($mdgriffith$elm_ui$Element$Lazy$lazy3, $author$project$ItemShop$quests_display, colorTheme, quests, progressUnlocks))
 							])),
-						function () {
-						var _v1 = $author$project$ItemShop$getPlayer(model.characters);
-						var player = _v1.a;
-						return A6($author$project$ItemShop$special_actions_display, model.colorTheme, model.progressUnlocks, model.playerUpgrades, model.uiOptions.hoveredTooltip, player, model.ai_updates_paused);
-					}(),
-						A2($author$project$ItemShop$hasProgressUnlock, $author$project$ItemShop$UnlockedShopTrends, model) ? A6($author$project$ItemShop$trends_display, model.colorTheme, model.uiOptions.shiftIsPressed, model.item_db, model.shop_trends, model.characters, model.uiOptions.shop_trends_hovered) : $mdgriffith$elm_ui$Element$none,
+						A7($author$project$ItemShop$special_actions_display, colorTheme, progressUnlocks, playerUpgrades, uiOptions.hoveredTooltip, playerChar, ai_updates_paused, showMineGpGained),
+						A2($author$project$ItemShop$containsProgressUnlock, $author$project$ItemShop$UnlockedShopTrends, progressUnlocks) ? A6($author$project$ItemShop$trends_display, colorTheme, uiOptions.shiftIsPressed, item_db, shop_trends, characters, uiOptions.shop_trends_hovered) : $mdgriffith$elm_ui$Element$none,
 						A2(
 						$mdgriffith$elm_ui$Element$el,
 						_List_fromArray(
@@ -34432,14 +38458,12 @@ var $author$project$ItemShop$view_shop_tab_type = function (model) {
 							model,
 							'Items For Sale',
 							shopChar,
-							model.shop_trends,
-							model.uiOptions.hovered_item_in_character,
+							shop_trends,
+							uiOptions.hovered_item_in_character,
 							$author$project$ItemShop$ShopItems,
-							A3(
-								$author$project$ItemShop$shopInventoryControls,
-								model.colorTheme,
-								$author$project$ItemShop$getPlayer(model.characters),
-								model.shop_trends))),
+							function (ir) {
+								return A5($mdgriffith$elm_ui$Element$Lazy$lazy4, $author$project$ItemShop$shopInventoryControls, colorTheme, player, shop_trends, ir);
+							})),
 						A2(
 						$mdgriffith$elm_ui$Element$el,
 						_List_fromArray(
@@ -34452,13 +38476,13 @@ var $author$project$ItemShop$view_shop_tab_type = function (model) {
 							model,
 							'Items In Inventory',
 							playerChar,
-							model.shop_trends,
-							model.uiOptions.hovered_item_in_character,
+							shop_trends,
+							uiOptions.hovered_item_in_character,
 							$author$project$ItemShop$InventoryItems,
 							A2(
 								$author$project$ItemShop$playerInventoryControls,
-								model.colorTheme,
-								_Utils_Tuple2(model.uiOptions.shiftIsPressed, model.shop_trends))))
+								colorTheme,
+								_Utils_Tuple2(uiOptions.shiftIsPressed, shop_trends))))
 					]),
 				_List_fromArray(
 					[
@@ -34469,17 +38493,53 @@ var $author$project$ItemShop$view_shop_tab_type = function (model) {
 								$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
 								A2($mdgriffith$elm_ui$Element$spacingXY, 0, 20)
 							]),
-						A2(
-							$elm$core$List$cons,
-							A3($author$project$ItemShop$showHideDebugInventoriesButton, model.colorTheme, _List_Nil, model.uiOptions.show_debug_inventories),
-							model.uiOptions.show_debug_inventories ? _Utils_ap(
+						_Utils_ap(
+							_List_Nil,
+							_Utils_ap(
 								_List_fromArray(
 									[
-										A2($mdgriffith$elm_ui$Element$el, _List_Nil, tickSecondButton),
-										$mdgriffith$elm_ui$Element$text(
-										$author$project$Interface$deviceClassToString(model.uiOptions.device._class) + (' - ' + $author$project$Interface$orientationToString(model.uiOptions.device.orientation)))
+										A3($author$project$ItemShop$showHideDebugInventoriesButton, colorTheme, _List_Nil, uiOptions.show_debug_inventories)
 									]),
-								debug_inventories) : _List_Nil))
+								uiOptions.show_debug_inventories ? _Utils_ap(
+									_List_fromArray(
+										[
+											tickSecondButton,
+											$author$project$ItemShop$debugTimeOfDayControls(model),
+											$mdgriffith$elm_ui$Element$text(
+											$author$project$Interface$deviceClassToString(uiOptions.device._class) + (' - ' + $author$project$Interface$orientationToString(uiOptions.device.orientation)))
+										]),
+									A2(
+										$elm$core$List$map,
+										function (character) {
+											return A2(
+												$mdgriffith$elm_ui$Element$Keyed$el,
+												_List_fromArray(
+													[
+														$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$fill),
+														A2($mdgriffith$elm_ui$Element$paddingXY, 0, 10),
+														$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill)
+													]),
+												_Utils_Tuple2(
+													$TSFoster$elm_uuid$UUID$toString(character.char_id),
+													A7(
+														$author$project$ItemShop$render_inventory_grid,
+														model,
+														character.name + '\'s Inventory',
+														character,
+														shop_trends,
+														uiOptions.hovered_item_in_character,
+														$author$project$ItemShop$CharacterItems,
+														$elm$core$Basics$always($mdgriffith$elm_ui$Element$none))));
+										},
+										A2(
+											$elm$core$List$sortBy,
+											A2(
+												$elm$core$Basics$composeR,
+												function ($) {
+													return $.char_id;
+												},
+												$TSFoster$elm_uuid$UUID$toString),
+											$author$project$ItemShop$getOthers(characters)))) : _List_Nil)))
 					]))));
 };
 var $author$project$ItemShop$view = function (model) {
@@ -34499,7 +38559,7 @@ var $author$project$ItemShop$view = function (model) {
 				$mdgriffith$elm_ui$Element$htmlAttribute(
 				$elm$html$Html$Attributes$id('itemshop')),
 				$mdgriffith$elm_ui$Element$inFront(
-				$author$project$ItemShop$viewOverlay(model)),
+				(!_Utils_eq(model.currentTabType, $author$project$ItemShop$TitleScreenTabType)) ? $author$project$ItemShop$viewOverlay(model) : $mdgriffith$elm_ui$Element$none),
 				$mdgriffith$elm_ui$Element$htmlAttribute(
 				A2(
 					$elm$html$Html$Events$on,
@@ -34518,22 +38578,31 @@ var $author$project$ItemShop$view = function (model) {
 				$author$project$Interface$defaultFontColor(model.colorTheme)
 			]),
 		function () {
-			var _v0 = model.tab_type;
+			var _v0 = model.currentTabType;
 			switch (_v0.$) {
+				case 'TitleScreenTabType':
+					return A2($mdgriffith$elm_ui$Element$Lazy$lazy, $author$project$ItemShop$viewTitleScreen, model);
 				case 'ShopTabType':
 					var _v1 = model.timeOfDay.currentPhase;
 					switch (_v1.$) {
 						case 'ActivePhase':
-							return A2($mdgriffith$elm_ui$Element$Lazy$lazy, $author$project$ItemShop$view_shop_tab_type, model);
+							return A2($mdgriffith$elm_ui$Element$Lazy$lazy, $author$project$ItemShop$view_shop_currentTabType, model);
 						case 'PrepPhase':
 							return A2($mdgriffith$elm_ui$Element$Lazy$lazy, $author$project$ItemShop$viewShopPrepPhase, model);
 						default:
 							var postPhaseData = _v1.a;
-							return A5($mdgriffith$elm_ui$Element$Lazy$lazy4, $author$project$ItemShop$viewShopPostPhase, model.colorTheme, model.shouldViewGemUpgradesInPostPhase, postPhaseData, model.quests);
+							return A6(
+								$mdgriffith$elm_ui$Element$Lazy$lazy5,
+								$author$project$ItemShop$viewShopPostPhase,
+								_Utils_Tuple2(model.colorTheme, model.shouldViewGemUpgradesInPostPhase),
+								model.progressUnlocks,
+								postPhaseData,
+								model.characters,
+								model.quests);
 					}
 				case 'ItemsUnlockedTabType':
-					return A3($mdgriffith$elm_ui$Element$Lazy$lazy2, $author$project$ItemShop$view_items_unlocked_tab_type, model.colorTheme, model.item_db);
-				default:
+					return A3($mdgriffith$elm_ui$Element$Lazy$lazy2, $author$project$ItemShop$view_items_unlocked_currentTabType, model.colorTheme, model.item_db);
+				case 'BattleTabType':
 					return A2(
 						$mdgriffith$elm_ui$Element$map,
 						$author$project$ItemShop$GotBattleMsg,
@@ -34542,6 +38611,8 @@ var $author$project$ItemShop$view = function (model) {
 							var player = _v2.a;
 							return A2($mdgriffith$elm_ui$Element$Lazy$lazy, $author$project$Battle$view, model.battleModel);
 						}());
+				default:
+					return $author$project$ItemShop$viewSettingsTab(model);
 			}
 		}());
 };
